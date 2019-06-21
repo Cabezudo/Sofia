@@ -1,6 +1,6 @@
 # Presentación
 ## ¿Quien es Sofía?
-Sofía es un servidor con soporte para crear rápidamente aplicaciones web. marco de trabajo utilizado para crear aplicaciones Web.
+Sofía es un servidor con soporte para crear rápidamente aplicaciones Web.
 La filosofía atrás de Sofía se basa en la idea de que una gran parte de una aplicación Web es común a muchas otras aplicaciones Web y se busca facilitar la reutilización de ese código en común.
 Al diseñar el marco de trabajo se tuvo presente la idea crear la menor cantidad de conceptos nuevos posibles. El marco de trabajo permite la reutilización de código Java y HTML5 utilizando muy pocas ideas básicas
 Se trató de reducir al máximo los nuevos conceptos para evitar ampliar la distancia entre las tecnologías existentes y la metodología de trabajo.
