@@ -50,19 +50,20 @@ Pueden existir algunos problemas si, por ejemplo, detenemos la ejecuación en la
 ## Opciones de línea de comandos
 En los casos que la base de datos quede en un estado inconsistente o que nos hayamos equivocado al colocar el usuario administrador podemos ejecutar operaciones directamente desde la linea de comandos. Una de las operaciones podría ser borrar la base de datos.
 Intente arrancar el servidor agregando la opcion `--help`
-```$ java -jar sofia.cabezudo.net.jar --help
+```
+$ java -jar sofia.cabezudo.net.jar --help
 Sofia 0.1 (http://sofia.systems)
 -h, --help - This help.
 -d, --debug - Print all the debug information.
 -cr, --configureRoot - Configure the root information.
 -dd, --dropDatabase - Drop de database and create a new one.
--i, --ide - Configure the system to work inside an IDE```
+-i, --ide - Configure the system to work inside an IDE
+```
 La opción `--help` muestra todas las opciones actuales del servidor y termina, para cuando nos olvidemos de que podemos hacer en la línea de comandos.
 La opcion `--debug` indica que aumente la información mostrada en consola. Hay pequeños detalles que nos pueden ayudar a resolver problemas.
 Si queremos modificar el usuario administrador podemos usar `--configureRoot`, que permite modificar la información del usuario administrador sin tener que borrar la base de datos.
 Si queremos borrar toda la base de datos para que vuelva a recrearla podemos utilizar la opción `dropDatabase` que directamente borra la base de datos definida en la configuración.
-La opcion `--ide`, le indica al servidor que vamos a trabajar dentro de un IDE y modifica su comportamiento para facilitar la tarea de desarrollar. Dentro de un IDE podemos indicar que
-  queremos que siempre se borre la base de datos mediante constantes o crear automáticamente el administrador para no tener que configurarlo cada vez que borremos la base de datos. Dentro de un IDE el log mostrado es el mas detallado.
+La opcion `--ide`, le indica al servidor que vamos a trabajar dentro de un IDE y modifica su comportamiento para facilitar la tarea de desarrollar. Dentro de un IDE podemos indicar que queremos que siempre se borre la base de datos mediante constantes o crear automáticamente el administrador para no tener que configurarlo cada vez que borremos la base de datos. Dentro de un IDE el log mostrado es el mas detallado.
 ### Instalación en Debian
 La siguiente es una guía para instalar sobre un sistema Linux con la distribución Debian o Ubuntu. La guía está pensada para instalar el servidor en un sistema que no tenga instalado ni mySQL ni Java.
 Primero vamos a instalar Java. Para esto vamos a actualizar los paquetes y vamos a instalar la versión abierta de Java.
