@@ -37,6 +37,7 @@
           <h2>Prerequisitos</h2>
           <p>Para utilizar Sofía necesitamos tener instalado Java versión 8 o superior, mySQL 8 o MariaDB 10.</p>
           <h1>Instalación</h1>
+          <h2>Instalar localmente</h2>
           <p>Descargue el archivo ZIP del sistema y descomprímalo en la ubicación que desee. El archivo ZIP contiene un
             JAR para ejecutar el servidor y un directorio de datos de la aplicación.</p>
           <h1>Configuración</h1>
@@ -144,6 +145,76 @@ Sofia 0.1 (http://sofia.systems)
             queremos que siempre se borre la base de datos mediante constantes o crear automáticamente el administrador
             para no tener que configurarlo cada vez que borremos la base de datos. Dentro de un IDE el log mostrado es el
             mas detallado.</p>
+          <h2>Instalación en Debian</h2>
+          <p>La siguiente es una guía para instalar sobre un sistema Linux con la distribución Debian o Ubuntu. La guía está pensada para instalar el servidor en un sistema que no tenga instalado ni mySQL ni Java.</p>
+          <p>Primero vamos a instalar Java. Para esto vamos a actualizar los paquetes y vamos a instalar la versión abierta de Java.</p>
+          <pre>sudo apt-get update && sudo apt-get upgrade
+sudo apt-get update
+sudo apt-get install openjdk-8-jdk</pre>
+          <p>Vamos a verificar que la versión de Java sea la correcta para asegurarnos de que instaló correctamente.</p>
+          <pre>java -version</pre>
+          <p>Luego vamos a instalar mySQL</p>
+          <pre>sudo apt-get install mysql-server</pre>
+          <p>Utilizando el cliente del servidor mySQL recién instalado vamos a crear el usuario para que Sofía pueda accedera a la base de datos.</p>
+          <pre>CREATE USER 'sofia'@'localhost' IDENTIFIED BY 'databasUserPassword';
+GRANT ALL PRIVILEGES ON sofia.* TO 'sofia'@'localhost';
+FLUSH PRIVILEGES;</pre>
+          <p>Luego vamos a crear el archivo para servicio que va a arrancar Sofía cada vez que se reinicio el servidor.</p>
+          <pre>$ sudo nano /etc/systemd/system/sofia.service</pre>
+          <p>Dentro del archivo de servicio vamos a copiar el siguiente text:</p>
+          <pre>[Unit]
+Description=Sofia server
+
+[Service]
+User=esteban
+# The configuration file application.properties should be here:
+# change this to your workspace
+WorkingDirectory=/home/esteban/sofia
+# path to executable.
+# executable is a bash script which calls jar file
+ExecStart=/home/esteban/sofia/run.server.sh
+SuccessExitStatus=143
+TimeoutStopSec=10
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target</pre>
+          <p>Luego vamos a crear un directorio para colocar los archivos del servidor.</p>
+          <pre>$ mkdir /home/esteban/sofia
+$ nano /home/esteban/sofia/run.server.sh</pre>
+          <p>Vamos a copiar en el archivo el siguiente contenido:</p>
+          <pre>#!/bin/sh
+sudo java -jar dist/sofia.cabezudo.net.jar</pre>
+          <p>No olvidemos agregar los permisos de ejecución para el archivo.</p>
+          <pre>$ chmod u+x /home/esteban/sofia/run.server.sh</pre>
+          <p>El siguiente paso en bajar el paquete de Sofía. Vamos a cambiarnos de directorio para que sea mas fácil la descarga y la descompresión. Bajamos el paquete con <span class="code">wget</span> y luego lo descomprimimos con <span class="code">unzip</span>. Borramos el paquete para que no haga ruido.</p>
+          <pre>$ cd /home/esteban/sofia/
+$ wget https://github.com/Cabezudo/Sofia/raw/master/sofia.dist.zip
+$ unzip sofia.dist.zip
+$ rm sofia.dist.zip</pre>
+          <p>Luego vamos a crear el archivo de configuración de Sofía. Los mas directo es crearlo en el directorio donde se va a ejecutar el servidor.</p>
+          <pre>$ nano sofia.configuration.properties</pre>
+          <p>Vamos a copiar las siguientes líneas dentro del archivo. Como ya mensionamos hay que colocar los valores que se hayan definido para el nombre de usuario y la contraseña de base de datos.</p>
+          <pre>environment=production
+server.port=80
+database.driver=com.mysql.cj.jdbc.Driver
+database.hostname=127.0.0.1
+database.port=3306
+database.name=sofia
+database.username=sofia
+database.password=password
+system.home=/home/esteban/sofia</pre>
+          <p>Ahora vamos a poder arrancar nuestro servidor utilizando</p>
+          <pre>$ sudo systemctl start sofia.service</pre>
+          <p>Dejamos una guía para tener a mano de las opciones que tenemos con <span class="code">systemctl</span>.</p>
+          <pre>$ sudo systemctl daemon-reload
+$ sudo systemctl enable sofia.service
+$ sudo systemctl stop sofia.service
+$ sudo systemctl status sofia.service
+$ sudo systemctl</pre>
+          <p>Por último, si queremos ver lo que el servidor está registrando podemos utilizar:</p>
+          <pre>$ sudo tail -f /var/log/syslog</pre>
           <h1>El servidor</h1>
           <p>Sofía es un servidor de aplicaciones a la cual se le puede agregar cualquier cantidad de sitios, en el
             contexto del servidor los llamamos sitios. Cada sitio puede responder a uno o mas nombres de dominios o
