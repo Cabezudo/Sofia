@@ -15,7 +15,7 @@ Descargue el archivo ZIP del sistema y descomprímalo en la ubicación que desee
 ## Configuración
 Antes de que el servidor funcione debemos de configurarlo. Sofía utiliza solo un archivo de configuración llamado `sofia.configuration.properties` que debemos de crear en una ubicación específica. El servidor primero busca el archivo de configuración en el directorio donde se está ejecutando y luego lo busca en el home del usuario que se está ejecutando. Si encuentra un archivo con ese nombre en alguna de estas ubicaciones lo toma. Si no lo encuentra muestra un mensaje de error. Las ubicaciones donde busca del archivo de configurarión se muestra en el log al ejecutar el jar.
 El archivo de configuración está pensado para contener la mínima configuración necesaria para ejecutar el servidor. La siguiente es un ejemplo de la mínima configuración que se debe de tener. La forma mas directa de configurar el servidor es tomando el siguiente código y copiarlo en un archivo de nombre `sofia.configuration.properties` en una de las rutas mostradas al arrancar el servidor y luego cambiar los valores a los que se desee. Vamos a explicar brevemente de que se trata cada uno de los valores.
-```
+```properties
 environment=local
 server.port=8080
 database.driver=com.mysql.cj.jdbc.Driver
@@ -81,7 +81,7 @@ Luego vamos a instalar mySQL
 sudo apt-get install mysql-server
 ```
 Utilizando el cliente del servidor mySQL recién instalado vamos a crear el usuario para que Sofía pueda accedera a la base de datos.
-```
+```sql
 CREATE USER 'sofia'@'localhost' IDENTIFIED BY 'databasUserPassword';
 GRANT ALL PRIVILEGES ON sofia.* TO 'sofia'@'localhost';
 FLUSH PRIVILEGES;
