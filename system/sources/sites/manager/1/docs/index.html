@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html profiles="all">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Empezando</title>
+    <link rel="stylesheet" type="text/css" href="/css/docs/index.css">
+    <script src="/js/docs/index.js"></script>
+    <script>
+    </script>
+    <style file="documentation.css"></style>
+    <style>
+    </style>
+  </head>
+
+  <body>
+    <div id="application">
+      <div id="container">
+        <section id="introducingSofia" class="documentation">
+          <span class="title">Presentación</span>
+          <h1>¿Quien es Sofía?</h1>
+          <p>Sofía es un marco de trabajo utilizado para crear aplicaciones Web.</p>
+          <p>La filosofía atrás de Sofía se basa en la idea de que una gran parte de una aplicación Web es común a muchas
+            otras aplicaciones Web y se busca facilitar la reutilización de ese código en común.</p>
+          <p>Al diseñar el marco de trabajo se tuvo presente la idea crear la menor cantidad de conceptos nuevos posibles.
+            El marco de trabajo permite la reutilización de código Java y HTML5 utilizando muy pocas ideas básicas</p>
+          <p>Se trató de reducir al máximo los nuevos conceptos para evitar ampliar la distancia entre las tecnologías
+            existentes y la metodología de trabajo.</p>
+          <p>Sofía es un servidor web, un marco de trabajo, un conjunto de librerías y una API que permite crear
+            aplicaciones Web utilizando componentes ya existentes que trabajan apoyándose en una API que ofrece una gran
+            cantidad de servicios.</p>
+          <p>La forma de trabajo de Sofía se basa en la reutilización de código. Cuando creamos nuestras páginas podemos
+            reutilizar plantillas de páginas ya existentes, componentes ya existentes, reutilizar fragmentos de código
+            HTML y crear plantillas o componentes propios.</p>
+          <p>El Core en el cliente Web se comunica con servicios ya existentes en el backend y permite crear servicios
+            propios o extender la funcionalidad con nuevas características.</p>
+          <h2>Prerequisitos</h2>
+          <p>Para utilizar Sofía necesitamos tener instalado Java versión 8 o superior, mySQL 8 o MariaDB 10.</p>
+          <h1>Instalación</h1>
+          <p>Descargue el archivo ZIP del sistema y descomprímalo en la ubicación que desee. El archivo ZIP contiene un
+            JAR para ejecutar el servidor y un directorio de datos de la aplicación.</p>
+          <h1>Configuración</h1>
+          <p>Antes de que el servidor funcione debemos de configurarlo. Sofía utiliza solo un archivo de configuración
+            llamado <span class="code">sofia.configuration.properties</span> que debemos de crear en una ubicación
+            específica. El servidor primero busca el archivo de configuración en el directorio donde se está ejecutando y
+            luego lo busca en el home del usuario que se está ejecutando. Si encuentra un archivo con ese nombre en alguna
+            de estas ubicaciones lo toma. Si no lo encuentra muestra un mensaje de error. Las ubicaciones donde busca del
+            archivo de configurarión se muestra en el log al ejecutar el jar.</p>
+          <p>El archivo de configuración está pensado para contener la mínima configuración necesaria para ejecutar el
+            servidor. La siguiente es un ejemplo de la mínima configuración que se debe de tener. La forma mas directa de
+            configurar el servidor es tomando el siguiente código y copiarlo en un archivo de nombre <span
+              class="code">sofia.configuration.properties</span> en una de las rutas mostradas al arrancar el servidor y
+            luego cambiar los valores a los que se desee. Vamos a explicar brevemente de que se trata cada uno de los
+            valores.</p>
+          <pre>
+environment=local
+server.port=8080
+database.driver=com.mysql.cj.jdbc.Driver
+database.hostname=127.0.0.1
+database.port=3306
+database.name=sofia
+database.username=juan
+database.password=tenorio2017
+system.home=/home/juan/servidor</pre>
+          <p><span class="code">environment</span> hace referencia al ambiente donde se está ejecutando el servidor. Puede
+            tomar dos valores: <span class="code">local</span> o <span class="code">production</span>. <span
+              class="code">local</span> indica que se está ejecutando el servidor en un ambiente local que permite reducir
+            ciertos aspectos que facilitan el desarrollo. Por ejemplo, se puede indicar que se ha accedido al sistema con
+            determinado usuario desde la url para evitar registrarse para hacer pruebas con determinado usuario. También
+            se genera código mas fácil de leer y debugear, se muestran nombres de archivos origne en el código generado y
+            un sinumero de otras facilidades de las cuales hablaremos mas adelante. Cuando se configura como <span
+              class="code">production</span> el servidor se centra en la velocidad y elimina información innecesaria del
+            código.</p>
+          <p><span class="code">server.port</span> es un valor entero que indica el puerto donde se va a arrancar el
+            servidor. Si vamos a usarlo localmente, la opción mas común es <span class="code">8080</span> ya que no se
+            necesitan privilegios de root para ejecutarlo y nos evitamos problemas de permisos. En producción vamos a
+            querer correrlo en el 80 para que sirva HTTP.</p>
+          <p>La propiedad <span class="code">database.driver</span> indica el driver jdbc que vamos a utilizar para
+            acceder a la base de datos. Está ahí para que se pueda cambiar en el futuro. Actualmente se utiliza solamente
+            mySQL para desarrollar, pero se podría usar otras bases de datos en el futuro. Por lo pronto no es necesario
+            tocar esta propiedad.</p>
+          <p>El host del servidor de base de datos se indica en <span class="code">database.hostname</span>. La mayoría de
+            las veces se puede dejar esta propiedad sin cambiar.</p>
+          <p><span class="code">database.port</span> permite configurar el puerto en el cual la base de datos está
+            corriendo. Ya que usamos únicamente mySQL o MariaDB no hay necesidad de modificarlo.</p>
+          <p><span class="code">database.name</span> define el nombre de la base de datos a utilizar. A no ser que ya se
+            esté utilizando una base de datos con el mismo nombre no es necesario modificar esta propiedad.</p>
+          <p>Las propiedades que seguro hay que modificar son las siguietnes tres.</p>
+          <p><span class="code">database.username</span> indica el usuario con el cual el sistema va a acceder a la base
+            de
+            datos. Este usuario debe tener los siguientes privilegios: <span class="code">CREATE</span>, <span
+              class="code">DROP</span>, <span class="code">INDEX</span>, <span class="code">INSERT</span>, <span
+              class="code">LOCK TABLES</span>, <span class="code">SELECT</span> y <span class="code">UPDATE</span>.</p>
+          <p>Con <span class="code">database.password</span> especificamos la contraseña que se va a utilizar para acceder
+            a la base de datos.</p>
+          <p><span class="code">system.home</span> indica el directorio donde se va a colocar el directorio de datos de la
+            aplicación. Este viene en el paquete del servidor y se llama <span class="code">system</span>. La propiedad
+            <span class="code">system.home</span> indica mediante una ruta completa el directorio donde <span
+              class="code">system</span> es colocado sin especificar la barra al final.
+          </p>
+          <p>Una vez que hemos editado el archivo de configuración y estamos seguros de que vamos a utilizar esas
+            propiedades de configuración podemos correr el servidor.</p>
+          <h1>Ejecutando el servidor</h1>
+          <p>Para ejecutar el servidor usamos el siguiente comando: </p>
+          <pre>java -jar sofia.cabezudo.net.jar</pre>
+          <p>Es importante tener presente que se necesitan permisos de root para ejecutar en puertos por abajo de 1024. El
+            servidor no va a indicar que no tiene permisos para ejecutarse, solo va a quedar esperando indefinidamente.
+          </p>
+          <p>En este punto, luego de configurado, el servidor debe mostrar la ruta donde encuentra el archivo de
+            configuración y la configuración leida. Luego va a crear la base de datos y las tablas y la configuración por
+            defecto.</p>
+          <p>En este punto, el servidor nos va a solicitar los datos para la cuenta administrador del servidor. Debemos
+            colocar el nombre y apellido del administrador, la dirección de correo y la contraseña. Cuando terminemos de
+            colocar estos datos, se continua creando valores por defecto en la base de datos y se termina el proceso de
+            configuración indicando que el servidor ha sido arrancado y a la espera de peticiones.</p>
+          <h2>Problemas al arrancar</h2>
+          <p>Pueden existir algunos problemas si, por ejemplo, detenemos la ejecuación en la mitad de la configuración. Si
+            esto sucede pueden existir una inconsistencia en los datos por defecto generados o simplemente no existen
+            todos los datos necesarios para ejecutar. Si esto sucede podemos borrar la base de datos desde un cliente de
+            mySQL. Pero podemos solucionar este tipo de problemas indicandole al servidor que ejecute ciertas tareas desde
+            línea de comandos.</p>
+          <h1>Opciones de línea de comandos</h1>
+          <p>En los casos que la base de datos quede en un estado inconsistente o que nos hayamos equivocado al colocar el
+            usuario administrador podemos ejecutar operaciones directamente desde la linea de comandos. Una de las
+            operaciones podría ser borrar la base de datos.</p>
+          <p>Intente arrancar el servidor agregando la opcion <span class="code">--help</span></p>
+          <pre>$ java -jar sofia.cabezudo.net.jar --help
+Sofia 0.1 (http://sofia.systems)
+-h, --help - This help.
+-d, --debug - Print all the debug information.
+-cr, --configureRoot - Configure the root information.
+-dd, --dropDatabase - Drop de database and create a new one.
+-i, --ide - Configure the system to work inside an IDE</pre>
+          <p>La opción <span class="code">--help</span> muestra todas las opciones actuales del servidor y termina, para
+            cuando nos olvidemos de que podemos hacer en la línea de comandos.</p>
+          <p>La opcion <span class="code">--debug</span> indica que aumente la información mostrada en consola. Hay
+            pequeños detalles que nos pueden ayudar a resolver problemas.</p>
+          <p>Si queremos modificar el usuario administrador podemos usar <span class="code">--configureRoot</span>, que
+            permite modificar la información del usuario administrador sin tener que borrar la base de datos.</p>
+          <p>Si queremos borrar toda la base de datos para que vuelva a recrearla podemos utilizar la opción <span
+              class="code">dropDatabase</span> que directamente borra la base de datos definida en la configuración.</p>
+          <p>La opcion <span class="code">--ide</span>, le indica al servidor que vamos a trabajar dentro de un IDE y
+            modifica su comportamiento para facilitar la tarea de desarrollar. Dentro de un IDE podemos indicar que
+            queremos que siempre se borre la base de datos mediante constantes o crear automáticamente el administrador
+            para no tener que configurarlo cada vez que borremos la base de datos. Dentro de un IDE el log mostrado es el
+            mas detallado.</p>
+          <h1>El servidor</h1>
+          <p>Sofía es un servidor de aplicaciones a la cual se le puede agregar cualquier cantidad de sitios, en el
+            contexto del servidor los llamamos sitios. Cada sitio puede responder a uno o mas nombres de dominios o
+            subdominios. El servidor está pensado para correr muchos aplicaciones en dominios diferentes de forma rápida y
+            haciendo economía de recursos. Cuando se instala el servidor automáticamente se crean dos espacios de trabajo.
+            El primero es la administración del servidor. Podemos ver la administración escribiendo en la URL de un
+            navegador lo siguiente:
+          </p>
+          <pre>http://localhost:8080/</pre>
+          <p>Por defecto tambien se asocia el administrador del servidor como <span class="code">manager</span>. Esto
+            quiere decir que si asignamos <span class="code">manager</span> a localhost en el archivo de hosts podemos
+            entrar a la consola de administración usando:</p>
+          <pre>http://manager:8080/</pre>
+          <p>En entornos Linux podemos configurar esto en <span class="code">/etc/hosts</span> para agregar manager. El archivo de hosts quedaría parecido a este:</p>
+          <pre>127.0.0.1	localhost
+127.0.0.1	manager
+
+# The following lines are desirable for IPv6 capable hosts
+::1     localhost ip6-localhost ip6-loopback
+#milky.anemonagroup.com
+ff02::1 ip6-allnodes
+ff02::2 ip6-allrouters</pre>
+          <p>Sobre macOS podemos modificar el archivo <span class="code">/private/etc/hosts</span>. Debería de quedar de la siguiente forma:</p>
+          <pre>##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting. Do not change this entry.
+##
+127.0.0.1 localhost
+255.255.255.255 broadcasthost
+::1 localhost
+127.0.0.1 manager</pre>
+          <p>Ya que modificamos el archivo de host podríamos agregar también <span class="code">playground</span> ya que cuando el servidor crea los datos básicos para funcionar también crea un sitio Playground. Este es utilizado para hacer pruebas y es el que vamos a utilizar para todos los ejemplos.</p>
+          <h1>Crear aplicaciones</h1>
+          <h2>Espacios de trabajo y directorios</h2>
+          <p>Cada sitio tiene su propio espacio de trabajo y es en este espacio donde vamos a crear nuestras aplicaciones. El sitema tiene un directorio que configuramos en nuestro archivo de configuración con el nombre de <span class="code">system.home</span>. Dentro de ese directorio se encuentra un directorio <span class="code">system</span> donde se encuentra un directorio <span class="code">sources</span> donde están todos los fuentes de todos los sitios y las librerías. El directorio donde se encuentran los fuentes de los sitios se llama <span class="code">sites</span> y dentro de este se encuentran todos los directorios de los sitios existentes en el servidor. Si el sitio es totalmente nuevo solo vamos a tener <span class="code">manager</span> y <span class="code">playground</span>. Pero cuando creemos nuevos sitios van a comenzar a aparecer otros directorios con el nombre del host principal de nuestro sitio. Mas adelante vamos ver de que se trata esto al crear nuevos sitios.</p>
+          <h2>Versionamiento</h2>
+          <p>Vamos a notar que dentro de cada directorio hay un directorio con un número uno. Ese número uno es la versión del sitio. Cada versión para un sitio se encuentra en un directorio. Para crear una nueva versión solo tenemos que copiar el directorio anterior y agregar lo que queramos. La versión del sitio que se va a correr se puede especificar en la configuración del sitio.</p>
+          <p>Dentro del directorio de versión encontramos los fuentes para esa versión y es donde vamos a comenzar a desarrollar nuestra apliacación.</p>
+          <h2>Construyendo una página</h2>
+          <p>Para crear una página Sofía toma todos los elementos involucrados en la página y genera, sin contar imágenes, videos y fuentes, tres archivos. Uno para HTML, uno para JavaScript y otro para los estilos. De esta forma solo son tres los archivos que se transfieren reduciendo el tiempo de carga de la página.</p>
+          <p>Los archivos creados son almacenados en una ubicación específica que podemos consultar para depurar nuestras aplicaciones. En el mismo directorio donde se encuentran el directorio <span class="code">sources</span> existe un directorio llamado <span class="code">sites</span> donde se crean, con el nombre del host principal del sitio un directorio que contiene un directorio con el numero de versión y dentro de este los archivos generados. Vamos a encontrar un directorio <span class="code">css</span> para las hojas de estilo, un directorio <span class="code">js</span> para el código JavaScript y todos los archivos HTML generados. Debemos notar que por cada arvhico HTML hay un archivo CSS con el mismo nombre y un archivo de JavaScript con el mismo nombre. De esta forma podemos saber que archivo corresponde a que HTML. Debemos notar también que si se colocan archivos dentro de directorios, la estructura de directorio se crea de igual forma. Podemos, para ver esta estructura, navegar por los archivos generados para <span class="code">manager</span>.</p>
+          <p>Vamos a crear una página para comenzar nuestro sitio. En el patio de juegos ya existe un archivo llamado <span class="code">index.html</span>. Si colocamos en la URL de un navegador <span class="code">http://playground/</span> y todo está bien configurado vamos a poder ver una página en blanco con un mensaje. "Bienvenido al patio de juegos de tus ideas".</p>
+          <p>Cuando Sofía crea un sitio utiliza páginas principales y fragmentos. La forma de distinguir una página principal de un framento es mediante la primer línea. Si la primera línea comienza con <span class="code">&lt;!DOCTYPE html></span> estamos frente a una página principal.</p>
+          <p>Solamente se van a crear páginas que tengan esa línea al inicio y se van a convertir en páginas del sitio que se pueden referir como un recurso de la apliación. Esto quiere decir que si marcamos una página <span class="code">test.html</span> como principal vamos a poder acceder a ella utilizando <span class="code">http://playground/test.html</span>, de otra forma va a ser un fragmento y no vamos a poder acceder a ella desde el navegador.</p>
+          <p>Los fragmentos entonces, son utilizados cuando hay código HTML que se repite en varias de nuestras páginas. El encabezado, el pie de página o inclusive componentes pueden ser creados como fragmentos. La diferencia entre un componente y un fragmento es que los componentes son mas genéricos y pueden ser insertados varias veces en una página con diferentes configuraciones. Un fragmento pertenece al sitio donde se encuentra y a nadie mas, en cambio un componente puede ser utilizado por cualquier sitio dentro del servidor.</p>
+          <p>Para acelerar el proceso de desarrollo y hacer mas rápido el ambiente de producción, el servidor, cuando es local, siempre crea a partir de los archivos el archivo solicitado en el navegador cada vez que se solicita. En producción no, los archivos solamente son creados cuando se fuerza una creación, o cuando el sitio es creado.</p>
+          <h2>Estructura de una página principal</h2>
+          <p>Si bien hay algunas diferencias entre una página principal de Sofía y una pagina HTML, estas son mínimas. Se trató de introducir la menor cantidad de conceptos nuevos posibles para evitar tener que considerar mas cosas de las que se consideran cuando se programa únicamente HTML5.</p>
+          <p>La primer diferencia con una página HTML es el atributo <span class="code">profiles</span> en la etiqueta <span class="code">&lt;html></span>. Este atributo define que perfiles pueden acceder a la página. En el caso del patio de juegos, e inclusive de esta página, este atributo tiene el valor <span class="code">all</span>. Esto quiere decir que todos los perfiles pueden acceder a la página, inclusive cuando no existe perfil como cuando no hay ningún usuario registrado en el sistema. En este caso tampoco hay un perfil asociado.</p>
+          <p>La segunda diferencia no es una diferencia. Es algo que debemos hacer para que todo funcione correctamente. Supongamos que tenemos una página llamada <span class="code">test.html</span> en el directorio raíz de nuestra aplicación. En ese caso estamos obligados a colocar estas líneas en la página principal:</p>
+          <pre>&lt;link rel="stylesheet" type="text/css" href="/css/test.css">
+&lt;script src="/js/test.js">&lt;/script></pre>
+          <p>Estas líneas incluyen los archivos de estilos y de JavaScript necesarios para funcionar. Deben tener el mismo nombre que el archivo HTML que se está escribiendo. Si el archivo HTML está en una ruta en particular hay que incluir la ruta para que pueda encontrar los archivos generados.</p>
+          <p>Otra diferencia con un archivo de HTML5 es que podemos colocar dentro de la etiqueta <span class="code">&lt;head></span> una línea como la siguiente:</p>
+          <pre>&lt;style file="documentation.css">&lt;/style></pre>
+          <p>No importan si tiene espacios en blanco adelante y atrás, lo único a tener en cuenta es que debe ser lo único escrito en esa línea. Esta línea permite especificar un archivo de estilos a ser agregado a el archivo de estilos generado. No es posible agregar de manera indiscriminada archivos de estilos porque solo serán generados los archivos anteriormente mencionados y cualquier otro archivos que se intente colocar será ignorado en el momento de creación.</p>
+          <p>Otra diferencia son dos atributos en la etiqueta <span class="code">&lt;section></span>. Esta etiqueta ahora admite dos atributos: <span class="code">file</span> y <span class="code">template</span>.</p>
+          <p>Si le colocamos el atributo <span class="code">file</span> el contenido de la etiqueta será sustituido por el contenido del fichero especificado. De esta forma incluimos fragmentos de archivos HTML que se encuentran en la estructura de directorios de nuestros fuentes, dentro de nuestro código.</p>
+          <p>Si especificamos el atributo <span class="code">template</span> el contenido de la etiqueta será sustituido por una plantilla de componente que se encuentre dentro de las librerías. Esta es la forma que tiene el sistema de reutilizar componentes que ya hechos.</p>
+          <p>Si se agrega contenido a la etiqueta o se escribe en varias líneas o se agrega otro atributo la etiqueta será tratada como una etiqueta normal. El siguiente código muestra ejemplos de uso de la etiqueta.</p>
+          <pre>&lt;section file="login/loginForm.html">&lt;/section>
+&lt;section template="logins/basic-login/login.html">&lt;/section></pre>
+          <p>La primer línea lee un archivo, la segunda carga un componente.</p>
+          <p>Por otro lado los siguientes ejemplos se van a comportar como si fueran código HTML normal.</p>
+          <pre>&lt;section id="menu">&lt;/section>
+&lt;section>Este es un ejemplo de sección HTML&lt;/section>
+&lt;section class="listaDeNombres">&lt;/section></pre>
+          <h2>Estructura de un fragmento de página</h2>
+          <p>Un fragmento es mucho más simple que una página HTML. Es apenas un poco mas del código que quedaría si tomaramos el contenido de una etiqueta HTML y lo colcaramos en un archivo. El siguiente es un ejemplo muy simple de fragmento.</p>
+          <pre>&lt;div id="foot">
+  &lt;div class="copy">© 2019 Cabezudo. All rights reserved.v/div>
+&lt;/div></pre>
+          <p>Es exactamente el contenido de una etiqueta cualquiera. La diferencia es que podemos colocar dos etiquetas mas dentro del archivo.</p>
+          <p>Para organizar el código de HTML5 en Sofía tratamos de agrupar todo el código que tiene relación entre si en un solo lugar. Es por eso que un fragmento puede tener dos etiquetas de una página HTML normal. Estas son <span class="code">&lt;script></span> y <span class="code">&lt;style>.</span>. Estas deben de ir solas en una línea. La de apertura y la de cierre. Todo lo que se encuentre dentro de estas etiquetas serán movidos a sus respectivos archivos de estilos y JavaScript.</p>
+          <p>El uso de la etiqueta de JavaScript es el mas fácil de explicar. Tenemos un componente, queremos iniciarlo, agregarle disparadores, estilos, crearlo a partir de un archivo de configuración o para lo que se nos ocurra que podemos aplicarle JavaScript. Para esto, usamos la sección <span class="code">&lt;script></span></p>
+          <p>La sección <span class="code">&lt;style></span> es para lo mismo. Definir un estilo en particular para un componente en particular. El siguiente es un ejemplo de fragmento de código con toda su funcionalidad.</p>
+          <pre>&lt;style>
+  #foot {
+    border-top: 1px solid lightgray;
+  }
+  #foot > div.content {
+    width: #{foot.container.width};
+    margin: auto;
+    border-bottom: 1px solid lightgray;
+    display: flex;
+  }
+&lt;/style>
+&lt;script>
+  const createGUI = () => {
+    // Crear algo de la interfaz
+  };
+  Core.addOnloadFunction(createGUI);
+&lt;/script>
+&lt;div id="foot">
+  &lt;div class="copy">© 2019 Cabezudo. All rights reserved.&lt;/div>
+&lt;/div></pre>
+          <p>No importa si colocamos una sección antes de la otra o inclusive si colocamos varias. Serán agregadas al archivo final en el orden que se encuentran en el archivo fuente.</p>
+          <h2>¡Hola mundo!</h2>
+          <p>Vamos a crear nuestra primer página. Para esto vamos a usar el patio de juegos. Como no queremos perder la página principal del patio de juegos vamos a copiarla y a crear una nuevo que vamos a llamar <span class="code">test.html</span>. Vamos al sistema de ficheros y copiamos <span class="code">index.html</span> y le ponemos el nombre <span class="code">test.html</span>. Ahora tenemos una pagina nueva con la estructura mínima para una página principal.</p>
+          <p>Vamos a cambiar la línea 7 y vamos a poner <span class="code">test.css</span> en lugar de <span class="code">index.css</span> y vamos a cambiar la línea 8 para que diga <span class="code">test.js</span> en lugar de <span class="code">index.js</span>.</p>
+          <p>Vamos a borrar la línea 30 y a borrar el contenido de la etiqueta <span class="code">style</span>.</p>
+          <p>Ahora está lista nuestra completamente nueva página. El siguiente paso es colocar un texto centrado en nuestra pantalla que diga "¡Hola mundo!".</p>
+          <p>Podríamos haber dejado el código anterior ya que este mostraba un texto centrado en la pantalla, pero no iba a servir para nuestros propósitos ya que vamos a utilizar un componente prehecho que centra los textos dentro de una etiqueta HTML.</p>
+          <p>Para hacer esto vamos a preparar nuestra aplicación para que utilice la pantalla completa como espacio para un componente. El siguiente estilo hará que se use toda la pantalla aun cuando no haya contenido. Además, queremos que los diferentes componentes se coloquen uno encima del otro como una pila. Por eso usamos la dirección <span class="code">column</span></p>
+          <pre>#application {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}</pre>
+          <p>Una vez que está preparado el espacio para la aplicación vamos a agregar dentro de sección de la apliación la siguiente línea:</p>
+          <pre>&lt;section id="helloWord" template="text/centered/index.html">&lt;/section></pre>
+          <p>Esta línea indica que hay que agregar una sección que utilice el template <span class="code">text/centered/index.html</span> en ese lugar. Ahora podemos colocar en la entrada de URL de nuestro navegador <span class="code">http://playground/test.html</span> y ver el texto centrado.</p>
+          <p>Vemos un texto centrado pero no es el texto que queremos. Necesitamos colocar nuestro propio texto en ese lugar. Para esto tenemos que configurar el componente para colocar el texto que vamos a usar. Por lo general los componentes tienen un archivo de configuración, este tiene el mismo nombre que el archivo HTML del componente pero con extensión <span class="code">json</span>. En ese archivo podemos ver las opciones de configuración de nuestro componente. Vamos a buscar el archivo para nuestro texto centrado. Si abrimos el archivo vemos que tiene muchas propiedades. La que nos interesa es la propiedad llamada <span class="code">text</span>. Esa propiedad define el texto que se va a mostrar en pantalla. Vamos a definir entonces esa propieada para nuestro componente. No vamos a cambiarla ahí porque estaríamos cambiando el valor por defecto para todas las aplicaciones que usen ese componente. En lugar de eso vamos a agregar la propiedad en el archivo de configuración de nuestra página <span class="code">test.html</span>.</p>
+          <p>A todas las páginas principales se les puede colocar un archivo con propiedades para los componentes que está utilizando. En el caso de nuestra página <span class="code">test.html</span> el archivo de configuración se va a llamar <span class="code">test.json</span>. Vamos a crear este archivo y vamos a escribir la configuración para nuestro componente.</p>
+          <pre>{
+  "helloWord": {
+    "text": "¡Hola mundo!"
+  }
+}</pre>
+          <p>Cada etiqueta <span class="code">section</span> que hace referencia a un componente tiene un id. Este id sirve, no solamente para hacer referencia al componente en la página, también es utilizado para indicar que configuración corresponde a que componente dentro del archivo de configuración de nuestra página principal. En este caso el id de nuestro componente es <span class="code">helloWord</span>, por lo tanto vamos a agregar una propiedad con ese nombre para colocar la configuración que le corresponde a ese componente como un objeto valor.</p>
+          <p>Solo vamos a colocar las propiedades que nos interesan cambiar. En este caso, solo el texto. Pero podemos jugar con los otros valores para experimentar un poco.</p>
+          <p>Esto parece muy simple. Podríamos hablerlo escrito en 5 minutos y sin tanto problema. Pero imaginemos algo mas complicado. Imaginemos que tenemos que colocar varios textos centrados en una misma página. Imaginemos ahora algo mas complejo como un menú o un acceso a usuarios registrados. Utilizando esta idea, para agregar un acceso a usuarios a nuestro sitio solo debemos cambiar la propiedad template de la linea a la cual apunta nuestro componente y poner la siguiente línea.</p>
+          <pre>&lt;section id="login" template="logins/basic-login/login">&lt;/section></pre>
+          <p>Si. Un login completo, totalmente funcional, que permite a una persona registrarse en el sistema, que valida en tiempo real si el correo está bien formado o si el nombre de dominio es válido. Todo sin hacer absolutamente nada mas.</p>
+          <h2>Estilos</h2>
+          <h2>Javascript</h2>
+          <h2>Core</h2>
+          <h2>Variables de plantillas</h2>
+          <h2>Variables para todo el sitio</h2>
+          <p>Las variables colocadas en el archivo <span class="code">commons.json</span> pueden ser utilizadas en los archivos de configuración de fragmentos y componentes.</p>
+          <h2>Componentes</h2>
+        </section>
+      </div>
+      <section file="foot"></section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+.linkTo-1_00_00 {
+  cursor: auto;
+}
+.linkTo-1_00_00:hover {
+  cursor: pointer;
+}

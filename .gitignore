@@ -1,0 +1,11 @@
+build/
+build.xml
+manifest.mf
+nbproject/
+.jacocoverage/
+/dist/
+/system/sites
+sofia.configuration.properties
+**/.DS_Store
+varios/
+sql.tests.txt

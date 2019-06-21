@@ -1,0 +1,193 @@
+<style>
+  .form {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formContainer {
+    padding: 10px;
+  }
+
+  .formContainer .titleContainer {
+    padding: 10px 0 20px 0;
+    text-align: center;
+  }
+
+  .formContainer .footContainer {
+    padding: 10px 0 20px 0;
+    text-align: center;
+  }
+
+  .formContainer .title {
+    font-family: 'Facit';
+    font-weight: bold;
+    color: #333;
+    font-size: 38px;
+    line-height: 48px;
+  }
+
+  .form input {
+    width: 100%;
+    display: block;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    -webkit-border-radius: 3px;
+    border-radius: 4px;
+    background-color: rgba(197, 223, 255, .2);
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    color: rgba(52,73,50,1);
+    letter-spacing: 1px;
+    -webkit-transition: all 400ms cubic-bezier(0.42, 0, 0.58, 1);
+    -moz-transition: all 400ms cubic-bezier(0.42, 0, 0.58, 1);
+    -o-transition: all 400ms cubic-bezier(0.42, 0, 0.58, 1);
+    transition: all 400ms cubic-bezier(0.42, 0, 0.58, 1);
+    outline: none;
+    margin: 5px 0;
+  }
+
+  .form input:focus {
+    border-color: rgb(175, 207, 245);
+    background-color: white;
+    box-shadow: 0 0 5px rgba(6, 92, 199, 1);
+  }
+
+  .form input::placeholder {
+    color: #CCD2CB;
+    opacity: 1; /* Firefox */
+  }
+
+  .form input:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: #CCD2CB;
+  }
+
+  .form input::-ms-input-placeholder { /* Microsoft Edge */
+    color: #CCD2CB;
+  }
+
+  @media all and ( min-width: 750px ) {
+    .formContainer {
+      width: 500px;
+      margin: auto;
+    }
+
+    .formContainer .title {
+      font-size: 44px;
+      line-height: 52px;
+    }
+  }
+</style>
+<script>
+  const loginForm = (() => {
+    let loginEMailElement;
+    let loginPasswordElement;
+    let loginAcceptButton;
+    let validEMail = false;
+    let passwordValid = false;
+
+    const changeAcceptButton = () => {
+      if (validEMail && passwordValid) {
+        Core.trigger(loginAcceptButton, 'enabled');
+        Core.cleanMessagesContainer();
+      } else {
+        Core.trigger(loginAcceptButton, 'disabled');
+      }
+    };
+
+    const createGUI = () => {
+      loginEMailElement = Core.validateById('loginEMail');
+      loginPasswordElement = Core.validateById('loginPassword');
+      loginAcceptButton = Core.validateById('loginAcceptButton');
+
+      inputEMailValidator_1_00_00({
+        element: loginEMailElement,
+        onValid: () => {
+          validEMail = true;
+          changeAcceptButton();
+        },
+        onNotValid: () => {
+          validEMail = false;
+          changeAcceptButton();
+        },
+        onKeyPress: event => {
+          if (Core.isEnter(event)) {
+            sendLoginInformation();
+          }
+        }
+      });
+
+      inputPasswordValidator_1_00_00({
+        element: loginPasswordElement,
+        onValid: () => {
+          passwordValid = true;
+          changeAcceptButton();
+        },
+        onNotValid: () => {
+          passwordValid = false;
+          changeAcceptButton();
+        },
+        onKeyPress: event => {
+          if (Core.isEnter(event)) {
+            sendLoginInformation();
+          }
+        }
+      });
+
+      greenButton_1_00_00({
+        id: 'loginAcceptButton',
+        enabled: false,
+        onClick: () => {
+          sendLoginInformation();
+        },
+        onResponse: event => {
+          const data = event.detail;
+          if (data.type === 'LOGIN' && data.messages.length === 1) {
+            if (data.messages[0].status === 'VALID') {
+              if (variables.lastPage === null) {
+                location.assign('#{afterLoginSucessfullPage}');
+              } else {
+                location.assign(variables.lastPage);
+              }
+            } else {
+              Core.cleanMessagesContainer();
+              Core.addMessage(data.messages[0]);
+            }
+          }
+        }
+      });
+      messages_1_00_00({
+        id: 'loginMessages'
+      });
+      const sendLoginInformation = () => {
+        const formObject = {
+          email: loginEMailElement.value,
+          password: btoa(loginPasswordElement.value)
+        };
+        Core.sendPost(`/api/v1/users/login`, loginAcceptButton, 0, formObject);
+      };
+      loginEMailElement.focus();
+    };
+    Core.addOnloadFunction(createGUI);
+  })();
+
+</script>
+<div class="formContainer">
+  <div class="form">
+    <div class="titleContainer">
+      <div class="title">#{title}</div>
+      <div>o&nbsp;<a href="register.html">crear una cuenta</a></div>
+    </div>
+    <input id="loginEMail" type="email" name="username" placeholder="correo electrónico">
+    <input id="loginPassword" type="password" name="password" placeholder="contraseña">
+    <div id="loginMessages"></div>
+    <div id="loginAcceptButton">Acceder</div>
+    <div class="footContainer">
+      <div><a href="recoverPassword.html">recuperar contraseña</a></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<style>
+</style>
+<script>
+  const login = (() => {
+    const createGUI = () => {
+      const logoutElement = Core.validateById('loginLink');
+      if (variables.user === null) {
+        const element = document.createElement('A');
+        element.setAttribute('href', '/login.html');
+        element.textContent = 'login';
+        logoutElement.append(element);
+      }
+    };
+    Core.addOnloadFunction(createGUI);
+  })();
+</script>
+<section>
+  <span id="loginLink"></span>
+</section>

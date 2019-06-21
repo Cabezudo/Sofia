@@ -1,0 +1,11 @@
+{
+  "sitio": {
+    "nombre": "Manager de Sofía",
+    "nombreCorto": "Manager"
+  },
+  "application": {
+    "container": {
+      "width": "1000px"
+    }
+  }
+}

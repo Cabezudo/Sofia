@@ -1,0 +1,16 @@
+Hola ${name}.
+
+Se ha intentado registrar un usuario en ${site.name} utilizando esta dirección de correo.
+Si tu no has sido quien ha intentado realizar el registro no debes de preocuparse. Tus datos y tu contraseña están seguras y no debes realizar ninguna acción adicional. Solo ignora este correo.
+Si has sido tu quien ha realizado el intento de registro, debes de saber que ya estás registrado. Si no recuerdas tu contraseña puedes solicitar la recuperación de contraseña usando la siguiente URL
+
+${password.recover.page.url}
+
+Gracias.
+El equipo de ${site.name}.
+${site.uri}
+
+
+
+
+

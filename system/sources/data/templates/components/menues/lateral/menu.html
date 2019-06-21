@@ -1,0 +1,35 @@
+<style>
+  #menu {
+    height: 100vh;
+    width: 250px;
+    flex-shrink: 0;
+    background-color: #460057;
+    color: white;
+  }
+  #menu > .content {
+    padding: 10px;
+  }
+  #menu > .content > .title {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  #menu > .content > .space {
+    height: 10px;
+  }
+  #menu > .content > .item {
+    padding: 5px 0 5px 20px;
+    font-size: 20px;
+    font-weight: 300;
+  }
+</style>
+<html profiles="administrator">
+  <div id="menu">
+    <div class="content">
+      <div class="title">#{sitio.nombre}</div>
+      <div class="space"></div>
+      <div class="item">Usuarios</div>
+      <div class="item">Permisos</div>
+      <div class="item">Sitios</div>
+    </div>
+  </div>
+</html>

@@ -1,0 +1,64 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+@font-face {
+  font-family: Facit;
+  src: url(/fonts/Facit-Light.woff2);
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: Facit;
+  src: url(/fonts/Facit-Regular.woff2);
+}
+
+@font-face {
+  font-family: Facit;
+  src: url(/fonts/Facit-Bold.woff2);
+  font-weight: bold;
+}
+
+html {
+  font-family: Facit;
+  font-weight: 300;
+  color: lightslategrey;
+}
+
+#application {
+  min-width: 350px;
+  font-family: Facit;
+  font-size: 18px;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+a {
+  color: #298FCA;
+}
+
+.titleContainer {
+  margin: 12px 0 0 0;
+}
+
+.titleContainer div {
+  display: flex;
+  justify-content: center;
+}
+
+.titleContainer .side {
+  display: block;
+  width: 60px;
+}
+
+.titleContainer .title {
+  font-family: 'Facit';
+  font-weight: bold;
+  color: #444;
+  font-size: 38px;
+  line-height: 48px;
+  justify-content: center;
+  flex-grow: 1;
+}

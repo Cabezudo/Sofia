@@ -1,0 +1,19 @@
+<style>
+</style>
+<script>
+  const logout = (() => {
+    const createGUI = () => {
+      const logoutElement = Core.validateById('logoutLink');
+      if (variables.user !== null) {
+        const element = document.createElement('A');
+        element.setAttribute('href', '/logout');
+        element.textContent = 'salir';
+        logoutElement.append(element);
+      }
+    };
+    Core.addOnloadFunction(createGUI);
+  })();
+</script>
+<section>
+  <span id="logoutLink"></span>
+</section>

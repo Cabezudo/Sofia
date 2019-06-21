@@ -1,0 +1,30 @@
+#clientDetail {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+#clientDetailContainer {
+  flex-grow: 1;
+  padding: 10px 20px;
+}
+
+.detail span {
+  width: 100%;
+  display: block;
+  padding: 6px 10px;
+  font-family: 'Roboto Condensed', sans-serif;
+  font-weight: 300;
+  color: rgba(52,73,50,1);
+  letter-spacing: 1px;
+}
+
+.detail span.fullName {
+  font-size: 26px;
+  text-align: center;
+}
+
+.detail span.eMail {
+  font-size: 16px;
+}

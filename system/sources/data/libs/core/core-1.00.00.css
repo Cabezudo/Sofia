@@ -1,0 +1,49 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+@import url('https://fonts.googleapis.com/css?family=Roboto+Condensed:300,400,700&subset=latin-ext');
+
+@font-face {
+  font-family: Menu;
+  src: url(/fonts/Menu-Bold.woff2);
+  font-weight: bold;
+}
+@font-face {
+  font-family: MenuText;
+  src: url(/fonts/MenuText-Regular.woff2);
+  font-weight: normal;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+section {
+  width: 100%;
+}
+
+.container {
+  margin: auto;
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  grid-gap: 40px;
+  color: white;
+}
+.container {
+  grid-column-start: span 1;
+}
+
+@media all and ( min-width: 750px ) {
+  .container {
+    width: 800px;
+    margin: auto;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+  }
+  .six {
+    grid-column-start: span 6;
+  }
+}

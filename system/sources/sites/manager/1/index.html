@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html profiles="all">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina principal</title>
+    <link rel="stylesheet" type="text/css" href="css/index.css">
+    <script src="js/index.js"></script>
+    <script>
+      const createGUI = () => {
+        const userIdLabel = Core.validateById('userId');
+        if (variables.user !== null) {
+          userIdLabel.textContent = variables.user.id;
+        }
+      };
+      Core.addOnloadFunction(createGUI);
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+    <span id="userId"></span>
+    <section id="menu" template="headers/top/menu"></section>
+  </body>
+</html>
