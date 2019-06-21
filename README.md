@@ -112,32 +112,32 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 Luego vamos a crear un directorio para colocar los archivos del servidor.
-```
+``` bash
 $ mkdir /home/esteban/sofia
 $ nano /home/esteban/sofia/run.server.sh
 ```
 Vamos a copiar en el archivo el siguiente contenido:
-```
+``` bash
 #!/bin/sh
 sudo java -jar dist/sofia.cabezudo.net.jar
 ```
 No olvidemos agregar los permisos de ejecución para el archivo.
-```
+``` bash
 $ chmod u+x /home/esteban/sofia/run.server.sh
 ```
 El siguiente paso en bajar el paquete de Sofía. Vamos a cambiarnos de directorio para que sea mas fácil la descarga y la descompresión. Bajamos el paquete con `wget` y luego lo descomprimimos con `unzip`. Borramos el paquete para que no haga ruido.
-```
+``` bash
 $ cd /home/esteban/sofia/
 $ wget https://github.com/Cabezudo/Sofia/raw/master/sofia.dist.zip
 $ unzip sofia.dist.zip
 $ rm sofia.dist.zip
 ```
 Luego vamos a crear el archivo de configuración de Sofía. Los mas directo es crearlo en el directorio donde se va a ejecutar el servidor.
-```
+```bash
 $ nano sofia.configuration.properties
 ```
 Vamos a copiar las siguientes líneas dentro del archivo. Como ya mensionamos hay que colocar los valores que se hayan definido para el nombre de usuario y la contraseña de base de datos.
-```
+```properties
 environment=production
 server.port=80
 database.driver=com.mysql.cj.jdbc.Driver
@@ -149,11 +149,11 @@ database.password=password
 system.home=/home/esteban/sofia
 ```
 Ahora vamos a poder arrancar nuestro servidor utilizando
-```
+```bash
 $ sudo systemctl start sofia.service
 ```
 Dejamos una guía para tener a mano de las opciones que tenemos con `systemctl`.
-```
+```bash
 $ sudo systemctl daemon-reload
 $ sudo systemctl enable sofia.service
 $ sudo systemctl stop sofia.service
@@ -161,7 +161,7 @@ $ sudo systemctl status sofia.service
 $ sudo systemctl
 ```
 Por último, si queremos ver lo que el servidor está registrando podemos utilizar:
-```
+```bash
 $ sudo tail -f /var/log/syslog
 ```
 ## El servidor
@@ -217,7 +217,7 @@ Para acelerar el proceso de desarrollo y hacer mas rápido el ambiente de produc
 Si bien hay algunas diferencias entre una página principal de Sofía y una pagina HTML, estas son mínimas. Se trató de introducir la menor cantidad de conceptos nuevos posibles para evitar tener que considerar mas cosas de las que se consideran cuando se programa únicamente HTML5.
 La primer diferencia con una página HTML es el atributo `profiles` en la etiqueta `<html>`. Este atributo define que perfiles pueden acceder a la página. En el caso del patio de juegos, e inclusive de esta página, este atributo tiene el valor `all`. Esto quiere decir que todos los perfiles pueden acceder a la página, inclusive cuando no existe perfil como cuando no hay ningún usuario registrado en el sistema. En este caso tampoco hay un perfil asociado.
 La segunda diferencia no es una diferencia. Es algo que debemos hacer para que todo funcione correctamente. Supongamos que tenemos una página llamada `test.html` en el directorio raíz de nuestra aplicación. En ese caso estamos obligados a colocar estas líneas en la página principal:
-```
+```html
 <link rel="stylesheet" type="text/css" href="/css/test.css">
 <script src="/js/test.js"></script>
 ```
@@ -229,20 +229,20 @@ Otra diferencia son dos atributos en la etiqueta `<section>`. Esta etiqueta ahor
 Si le colocamos el atributo `file` el contenido de la etiqueta será sustituido por el contenido del fichero especificado. De esta forma incluimos fragmentos de archivos HTML que se encuentran en la estructura de directorios de nuestros fuentes, dentro de nuestro código.
 Si especificamos el atributo `template` el contenido de la etiqueta será sustituido por una plantilla de componente que se encuentre dentro de las librerías. Esta es la forma que tiene el sistema de reutilizar componentes que ya hechos.
 Si se agrega contenido a la etiqueta o se escribe en varias líneas o se agrega otro atributo la etiqueta será tratada como una etiqueta normal. El siguiente código muestra ejemplos de uso de la etiqueta.
-```
+```html
 <section file="login/loginForm.html"></section>
 <section template="logins/basic-login/login.html"></section>
 ```
 La primer línea lee un archivo, la segunda carga un componente.
 Por otro lado los siguientes ejemplos se van a comportar como si fueran código HTML normal.
-```
+```html
 <section id="menu"></section>
 <section>Este es un ejemplo de sección HTML</section>
 <section class="listaDeNombres"></section>
 ```
 ### Estructura de un fragmento de página
 Un fragmento es mucho más simple que una página HTML. Es apenas un poco mas del código que quedaría si tomaramos el contenido de una etiqueta HTML y lo colcaramos en un archivo. El siguiente es un ejemplo muy simple de fragmento.
-```
+```html
 <div id="foot">
   <div class="copy">© 2019 Cabezudo. All rights reserved.v/div>
 </div>
@@ -251,7 +251,7 @@ Es exactamente el contenido de una etiqueta cualquiera. La diferencia es que pod
 Para organizar el código de HTML5 en Sofía tratamos de agrupar todo el código que tiene relación entre si en un solo lugar. Es por eso que un fragmento puede tener dos etiquetas de una página HTML normal. Estas son `<script>` y `<style>.`. Estas deben de ir solas en una línea. La de apertura y la de cierre. Todo lo que se encuentre dentro de estas etiquetas serán movidos a sus respectivos archivos de estilos y JavaScript.
 El uso de la etiqueta de JavaScript es el mas fácil de explicar. Tenemos un componente, queremos iniciarlo, agregarle disparadores, estilos, crearlo a partir de un archivo de configuración o para lo que se nos ocurra que podemos aplicarle JavaScript. Para esto, usamos la sección `<script>`
 La sección `<style>` es para lo mismo. Definir un estilo en particular para un componente en particular. El siguiente es un ejemplo de fragmento de código con toda su funcionalidad.
-```
+```html
 <style>
   #foot {
   border-top: 1px solid lightgray;
@@ -281,7 +281,7 @@ Vamos a borrar la línea 30 y a borrar el contenido de la etiqueta `style`.
 Ahora está lista nuestra completamente nueva página. El siguiente paso es colocar un texto centrado en nuestra pantalla que diga "¡Hola mundo!".
 Podríamos haber dejado el código anterior ya que este mostraba un texto centrado en la pantalla, pero no iba a servir para nuestros propósitos ya que vamos a utilizar un componente prehecho que centra los textos dentro de una etiqueta HTML.
 Para hacer esto vamos a preparar nuestra aplicación para que utilice la pantalla completa como espacio para un componente. El siguiente estilo hará que se use toda la pantalla aun cuando no haya contenido. Además, queremos que los diferentes componentes se coloquen uno encima del otro como una pila. Por eso usamos la dirección `column`
-``` css
+```html
 #application {
   display: flex;
   flex-direction: column;
@@ -289,13 +289,13 @@ Para hacer esto vamos a preparar nuestra aplicación para que utilice la pantall
 }
 ```
 Una vez que está preparado el espacio para la aplicación vamos a agregar dentro de sección de la apliación la siguiente línea:
-```
+```html
 <section id="helloWord" template="text/centered/index.html"></section>
 ```
 Esta línea indica que hay que agregar una sección que utilice el template `text/centered/index.html` en ese lugar. Ahora podemos colocar en la entrada de URL de nuestro navegador `http://playground/test.html` y ver el texto centrado.
 Vemos un texto centrado pero no es el texto que queremos. Necesitamos colocar nuestro propio texto en ese lugar. Para esto tenemos que configurar el componente para colocar el texto que vamos a usar. Por lo general los componentes tienen un archivo de configuración, este tiene el mismo nombre que el archivo HTML del componente pero con extensión `json`. En ese archivo podemos ver las opciones de configuración de nuestro componente. Vamos a buscar el archivo para nuestro texto centrado. Si abrimos el archivo vemos que tiene muchas propiedades. La que nos interesa es la propiedad llamada `text`. Esa propiedad define el texto que se va a mostrar en pantalla. Vamos a definir entonces esa propieada para nuestro componente. No vamos a cambiarla ahí porque estaríamos cambiando el valor por defecto para todas las aplicaciones que usen ese componente. En lugar de eso vamos a agregar la propiedad en el archivo de configuración de nuestra página `test.html`.
 A todas las páginas principales se les puede colocar un archivo con propiedades para los componentes que está utilizando. En el caso de nuestra página `test.html` el archivo de configuración se va a llamar `test.json`. Vamos a crear este archivo y vamos a escribir la configuración para nuestro componente.
-``` json
+```json
 {
   "helloWord": {
     "text": "¡Hola mundo!"
@@ -305,7 +305,7 @@ A todas las páginas principales se les puede colocar un archivo con propiedades
 Cada etiqueta `section` que hace referencia a un componente tiene un id. Este id sirve, no solamente para hacer referencia al componente en la página, también es utilizado para indicar que configuración corresponde a que componente dentro del archivo de configuración de nuestra página principal. En este caso el id de nuestro componente es `helloWord`, por lo tanto vamos a agregar una propiedad con ese nombre para colocar la configuración que le corresponde a ese componente como un objeto valor.
 Solo vamos a colocar las propiedades que nos interesan cambiar. En este caso, solo el texto. Pero podemos jugar con los otros valores para experimentar un poco.
 Esto parece muy simple. Podríamos hablerlo escrito en 5 minutos y sin tanto problema. Pero imaginemos algo mas complicado. Imaginemos que tenemos que colocar varios textos centrados en una misma página. Imaginemos ahora algo mas complejo como un menú o un acceso a usuarios registrados. Utilizando esta idea, para agregar un acceso a usuarios a nuestro sitio solo debemos cambiar la propiedad template de la linea a la cual apunta nuestro componente y poner la siguiente línea.
-```
+```html
 <section id="login" template="logins/basic-login/login"></section>
 ```
 Si. Un login completo, totalmente funcional, que permite a una persona registrarse en el sistema, que valida en tiempo real si el correo está bien formado o si el nombre de dominio es válido. Todo sin hacer absolutamente nada mas.
