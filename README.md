@@ -281,7 +281,7 @@ Vamos a borrar la línea 30 y a borrar el contenido de la etiqueta `style`.
 Ahora está lista nuestra completamente nueva página. El siguiente paso es colocar un texto centrado en nuestra pantalla que diga "¡Hola mundo!".
 Podríamos haber dejado el código anterior ya que este mostraba un texto centrado en la pantalla, pero no iba a servir para nuestros propósitos ya que vamos a utilizar un componente prehecho que centra los textos dentro de una etiqueta HTML.
 Para hacer esto vamos a preparar nuestra aplicación para que utilice la pantalla completa como espacio para un componente. El siguiente estilo hará que se use toda la pantalla aun cuando no haya contenido. Además, queremos que los diferentes componentes se coloquen uno encima del otro como una pila. Por eso usamos la dirección `column`
-```
+``` css
 #application {
   display: flex;
   flex-direction: column;
@@ -295,7 +295,7 @@ Una vez que está preparado el espacio para la aplicación vamos a agregar dentr
 Esta línea indica que hay que agregar una sección que utilice el template `text/centered/index.html` en ese lugar. Ahora podemos colocar en la entrada de URL de nuestro navegador `http://playground/test.html` y ver el texto centrado.
 Vemos un texto centrado pero no es el texto que queremos. Necesitamos colocar nuestro propio texto en ese lugar. Para esto tenemos que configurar el componente para colocar el texto que vamos a usar. Por lo general los componentes tienen un archivo de configuración, este tiene el mismo nombre que el archivo HTML del componente pero con extensión `json`. En ese archivo podemos ver las opciones de configuración de nuestro componente. Vamos a buscar el archivo para nuestro texto centrado. Si abrimos el archivo vemos que tiene muchas propiedades. La que nos interesa es la propiedad llamada `text`. Esa propiedad define el texto que se va a mostrar en pantalla. Vamos a definir entonces esa propieada para nuestro componente. No vamos a cambiarla ahí porque estaríamos cambiando el valor por defecto para todas las aplicaciones que usen ese componente. En lugar de eso vamos a agregar la propiedad en el archivo de configuración de nuestra página `test.html`.
 A todas las páginas principales se les puede colocar un archivo con propiedades para los componentes que está utilizando. En el caso de nuestra página `test.html` el archivo de configuración se va a llamar `test.json`. Vamos a crear este archivo y vamos a escribir la configuración para nuestro componente.
-```
+``` json
 {
   "helloWord": {
     "text": "¡Hola mundo!"
