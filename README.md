@@ -217,8 +217,10 @@ Para acelerar el proceso de desarrollo y hacer mas rápido el ambiente de produc
 Si bien hay algunas diferencias entre una página principal de Sofía y una pagina HTML, estas son mínimas. Se trató de introducir la menor cantidad de conceptos nuevos posibles para evitar tener que considerar mas cosas de las que se consideran cuando se programa únicamente HTML5.
 La primer diferencia con una página HTML es el atributo `profiles` en la etiqueta `<html>`. Este atributo define que perfiles pueden acceder a la página. En el caso del patio de juegos, e inclusive de esta página, este atributo tiene el valor `all`. Esto quiere decir que todos los perfiles pueden acceder a la página, inclusive cuando no existe perfil como cuando no hay ningún usuario registrado en el sistema. En este caso tampoco hay un perfil asociado.
 La segunda diferencia no es una diferencia. Es algo que debemos hacer para que todo funcione correctamente. Supongamos que tenemos una página llamada `test.html` en el directorio raíz de nuestra aplicación. En ese caso estamos obligados a colocar estas líneas en la página principal:
-```<link rel="stylesheet" type="text/css" href="/css/test.css">
-<script src="/js/test.js"></script>```
+```
+<link rel="stylesheet" type="text/css" href="/css/test.css">
+<script src="/js/test.js"></script>
+```
 Estas líneas incluyen los archivos de estilos y de JavaScript necesarios para funcionar. Deben tener el mismo nombre que el archivo HTML que se está escribiendo. Si el archivo HTML está en una ruta en particular hay que incluir la ruta para que pueda encontrar los archivos generados.
 Otra diferencia con un archivo de HTML5 es que podemos colocar dentro de la etiqueta `<head>` una línea como la siguiente:
 ```<style file="documentation.css"></style>```
@@ -227,18 +229,24 @@ Otra diferencia son dos atributos en la etiqueta `<section>`. Esta etiqueta ahor
 Si le colocamos el atributo `file` el contenido de la etiqueta será sustituido por el contenido del fichero especificado. De esta forma incluimos fragmentos de archivos HTML que se encuentran en la estructura de directorios de nuestros fuentes, dentro de nuestro código.
 Si especificamos el atributo `template` el contenido de la etiqueta será sustituido por una plantilla de componente que se encuentre dentro de las librerías. Esta es la forma que tiene el sistema de reutilizar componentes que ya hechos.
 Si se agrega contenido a la etiqueta o se escribe en varias líneas o se agrega otro atributo la etiqueta será tratada como una etiqueta normal. El siguiente código muestra ejemplos de uso de la etiqueta.
-```<section file="login/loginForm.html"></section>
-<section template="logins/basic-login/login.html"></section>```
+```
+<section file="login/loginForm.html"></section>
+<section template="logins/basic-login/login.html"></section>
+```
 La primer línea lee un archivo, la segunda carga un componente.
 Por otro lado los siguientes ejemplos se van a comportar como si fueran código HTML normal.
-```<section id="menu"></section>
+```
+<section id="menu"></section>
 <section>Este es un ejemplo de sección HTML</section>
-<section class="listaDeNombres"></section>```
+<section class="listaDeNombres"></section>
+```
 ### Estructura de un fragmento de página
 Un fragmento es mucho más simple que una página HTML. Es apenas un poco mas del código que quedaría si tomaramos el contenido de una etiqueta HTML y lo colcaramos en un archivo. El siguiente es un ejemplo muy simple de fragmento.
-```<div id="foot">
-<div class="copy">© 2019 Cabezudo. All rights reserved.v/div>
-</div>```
+```
+<div id="foot">
+  <div class="copy">© 2019 Cabezudo. All rights reserved.v/div>
+</div>
+```
 Es exactamente el contenido de una etiqueta cualquiera. La diferencia es que podemos colocar dos etiquetas mas dentro del archivo.
 Para organizar el código de HTML5 en Sofía tratamos de agrupar todo el código que tiene relación entre si en un solo lugar. Es por eso que un fragmento puede tener dos etiquetas de una página HTML normal. Estas son `<script>` y `<style>.`. Estas deben de ir solas en una línea. La de apertura y la de cierre. Todo lo que se encuentre dentro de estas etiquetas serán movidos a sus respectivos archivos de estilos y JavaScript.
 El uso de la etiqueta de JavaScript es el mas fácil de explicar. Tenemos un componente, queremos iniciarlo, agregarle disparadores, estilos, crearlo a partir de un archivo de configuración o para lo que se nos ocurra que podemos aplicarle JavaScript. Para esto, usamos la sección `<script>`
