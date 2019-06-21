@@ -19,40 +19,22 @@
         <section id="introducingSofia" class="documentation">
           <span class="title">Presentación</span>
           <h1>¿Quien es Sofía?</h1>
-          <p>Sofía es un marco de trabajo utilizado para crear aplicaciones Web.</p>
-          <p>La filosofía atrás de Sofía se basa en la idea de que una gran parte de una aplicación Web es común a muchas
-            otras aplicaciones Web y se busca facilitar la reutilización de ese código en común.</p>
-          <p>Al diseñar el marco de trabajo se tuvo presente la idea crear la menor cantidad de conceptos nuevos posibles.
-            El marco de trabajo permite la reutilización de código Java y HTML5 utilizando muy pocas ideas básicas</p>
-          <p>Se trató de reducir al máximo los nuevos conceptos para evitar ampliar la distancia entre las tecnologías
-            existentes y la metodología de trabajo.</p>
-          <p>Sofía es un servidor web, un marco de trabajo, un conjunto de librerías y una API que permite crear
-            aplicaciones Web utilizando componentes ya existentes que trabajan apoyándose en una API que ofrece una gran
-            cantidad de servicios.</p>
-          <p>La forma de trabajo de Sofía se basa en la reutilización de código. Cuando creamos nuestras páginas podemos
-            reutilizar plantillas de páginas ya existentes, componentes ya existentes, reutilizar fragmentos de código
-            HTML y crear plantillas o componentes propios.</p>
-          <p>El Core en el cliente Web se comunica con servicios ya existentes en el backend y permite crear servicios
-            propios o extender la funcionalidad con nuevas características.</p>
+          <p>Sofía es un servidor con soporte para crear rápidamente aplicaciones web. marco de trabajo utilizado para crear aplicaciones Web.</p>
+          <p>La filosofía atrás de Sofía se basa en la idea de que una gran parte de una aplicación Web es común a muchas otras aplicaciones Web y se busca facilitar la reutilización de ese código en común.</p>
+          <p>Al diseñar el marco de trabajo se tuvo presente la idea crear la menor cantidad de conceptos nuevos posibles. El marco de trabajo permite la reutilización de código Java y HTML5 utilizando muy pocas ideas básicas</p>
+          <p>Se trató de reducir al máximo los nuevos conceptos para evitar ampliar la distancia entre las tecnologías existentes y la metodología de trabajo.</p>
+          <p>Sofía es un servidor web, un marco de trabajo, un conjunto de librerías y una API que permite crear aplicaciones Web utilizando componentes ya existentes que trabajan apoyándose en una API que ofrece una gran cantidad de servicios.</p>
+          <p>La forma de trabajo de Sofía se basa en la reutilización de código. Cuando creamos nuestras páginas podemos reutilizar plantillas de páginas ya existentes, componentes ya existentes, reutilizar fragmentos de código HTML y crear plantillas o componentes propios.</p>
+          <p>El Core en el cliente Web se comunica con servicios ya existentes en el backend y permite crear servicios propios o extender la funcionalidad con nuevas características.</p>
           <h2>Prerequisitos</h2>
           <p>Para utilizar Sofía necesitamos tener instalado Java versión 8 o superior, mySQL 8 o MariaDB 10.</p>
           <h1>Instalación</h1>
           <h2>Instalar localmente</h2>
-          <p>Descargue el archivo ZIP del sistema y descomprímalo en la ubicación que desee. El archivo ZIP contiene un
-            JAR para ejecutar el servidor y un directorio de datos de la aplicación.</p>
+          <p>Descargue el archivo ZIP del sistema y descomprímalo en la ubicación que desee. El archivo ZIP contiene un JAR para ejecutar el servidor y un directorio de datos de la aplicación.</p>
           <h1>Configuración</h1>
-          <p>Antes de que el servidor funcione debemos de configurarlo. Sofía utiliza solo un archivo de configuración
-            llamado <span class="code">sofia.configuration.properties</span> que debemos de crear en una ubicación
-            específica. El servidor primero busca el archivo de configuración en el directorio donde se está ejecutando y
-            luego lo busca en el home del usuario que se está ejecutando. Si encuentra un archivo con ese nombre en alguna
-            de estas ubicaciones lo toma. Si no lo encuentra muestra un mensaje de error. Las ubicaciones donde busca del
-            archivo de configurarión se muestra en el log al ejecutar el jar.</p>
-          <p>El archivo de configuración está pensado para contener la mínima configuración necesaria para ejecutar el
-            servidor. La siguiente es un ejemplo de la mínima configuración que se debe de tener. La forma mas directa de
-            configurar el servidor es tomando el siguiente código y copiarlo en un archivo de nombre <span
-              class="code">sofia.configuration.properties</span> en una de las rutas mostradas al arrancar el servidor y
-            luego cambiar los valores a los que se desee. Vamos a explicar brevemente de que se trata cada uno de los
-            valores.</p>
+          <p>Antes de que el servidor funcione debemos de configurarlo. Sofía utiliza solo un archivo de configuración llamado <span class="code">sofia.configuration.properties</span> que debemos de crear en una ubicación específica. El servidor primero busca el archivo de configuración en el directorio donde se está ejecutando y luego lo busca en el home del usuario que se está ejecutando. Si encuentra un archivo con ese nombre en alguna de estas ubicaciones lo toma. Si no lo encuentra muestra un mensaje de error. Las ubicaciones donde busca del archivo de configurarión se muestra en el log al ejecutar el jar.</p>
+          <p>El archivo de configuración está pensado para contener la mínima configuración necesaria para ejecutar el servidor. La siguiente es un ejemplo de la mínima configuración que se debe de tener. La forma mas directa de configurar el servidor es tomando el siguiente código y copiarlo en un archivo de nombre <span
+              class="code">sofia.configuration.properties</span> en una de las rutas mostradas al arrancar el servidor y luego cambiar los valores a los que se desee. Vamos a explicar brevemente de que se trata cada uno de los valores.</p>
           <pre>
 environment=local
 server.port=8080
