@@ -116,8 +116,6 @@ public class WebServer {
     ServletHolder jsHolder = new ServletHolder("JS", JSServlet.class);
     context.addServlet(jsHolder, "/js/*");
 
-////    ServletHolder logoutServlet = new ServletHolder("logout", LogoutServlet.class);
-////    context.addServlet(logoutServlet, "/logout");
     ServletHolder defaultServlet = new ServletHolder("static", DefaultServlet.class);
     context.addServlet(defaultServlet, "/*");
     context.setErrorHandler(new SofiaErrorHandler());
@@ -138,11 +136,6 @@ public class WebServer {
     String[] virtualHosts = new String[1];
     virtualHosts[0] = "api." + site.getBaseHost().getName();
     context.setVirtualHosts(virtualHosts);
-//    HashSessionIdManager idManager = new HashSessionIdManager();
-//    server.setSessionIdManager(idManager);
-//    HashSessionManager manager = new HashSessionManager();
-//    SessionHandler sessions = new SessionHandler(manager);
-//    sessions.setHandler(context);
     ServletHolder apiHolder = new ServletHolder("webServices", WebServices.class);
     context.addServlet(apiHolder, "/*");
 
@@ -152,13 +145,6 @@ public class WebServer {
   }
 
   private WebServer() throws Exception {
-
-//    QueuedThreadPool threadPool = new QueuedThreadPool();
-//    threadPool.setMaxThreads(100);
-////    // Setup server
-//    server = new Server(threadPool);
-//    server.manage(threadPool);
-//
     server = new Server(Configuration.getInstance().getServerPort());
     HandlerCollection handler = new HandlerCollection();
 
@@ -179,47 +165,6 @@ public class WebServer {
       }
     }
     server.join();
-
-//    QueuedThreadPool threadPool = new QueuedThreadPool();
-//    threadPool.setMaxThreads(100);
-//    // Setup server
-//    server = new Server(threadPool);
-//    server.manage(threadPool);
-//    HandlerList handlers = new HandlerList();
-//    ResourceHandler resourceHandler = new ResourceHandler();
-//
-//    ServletContextHandler context = new ServletContextHandler();
-//    context.setContextPath("/");
-    Site site = SiteManager.getInstance().getById(1);
-    String sitePath = site.getVersionPath().toString();
-//    context.setResourceBase(sitePath);
-//    handlers.setHandlers(new Handler[]{resourceHandler, new DefaultHandler()});
-//    server.setHandler(handlers);
-//    server.start();
-//    server.join();
-
-//    server = new Server(8080);
-//
-//    // Create the ResourceHandler. It is the object that will actually handle the request for a given file. It is
-//    // a Jetty Handler object so it is suitable for chaining with other handlers as you will see in other examples.
-//    ResourceHandler resource_handler = new ResourceHandler();
-//
-//    // Configure the ResourceHandler. Setting the resource base indicates where the files should be served out of.
-//    // In this example it is the current directory but it can be configured to anything that the jvm has access to.
-//    resource_handler.setDirectoriesListed(true);
-//    resource_handler.setWelcomeFiles(new String[]{"index.html"});
-//    System.out.println(sitePath);
-//    resource_handler.setResourceBase(sitePath);
-//
-//    // Add the ResourceHandler to the server.
-//    HandlerList handlers = new HandlerList();
-//    handlers.setHandlers(new Handler[]{resource_handler, new DefaultHandler()});
-//    server.setHandler(handlers);
-//
-//    // Start things up! By using the server.join() the server thread will join with the current thread.
-//    // See "http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html#join()" for more details.
-//    server.start();
-//    server.join();
   }
 
   public void start() throws Exception {

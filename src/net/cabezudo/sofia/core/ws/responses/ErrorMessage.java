@@ -11,5 +11,4 @@ public class ErrorMessage extends AbstractMessage {
   public ErrorMessage(String message, Object... os) {
     super(ERROR, message, os);
   }
-
 }
