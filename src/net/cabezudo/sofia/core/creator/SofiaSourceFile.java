@@ -2,6 +2,7 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -58,7 +59,7 @@ public class SofiaSourceFile {
     Path jsonSourceFilePath = basePath.resolve(jsonPartialPath);
     if (Files.isRegularFile(jsonSourceFilePath)) {
       Logger.debug("FOUND configuration file %s for %s.", jsonSourceFilePath, htmlPartialPath);
-      String jsonCode = new String(Files.readAllBytes(jsonSourceFilePath));
+      String jsonCode = new String(Files.readAllBytes(jsonSourceFilePath), Charset.forName("UTF-8"));
       try {
         jsonCode = templateLiterals.apply(jsonCode);
       } catch (UndefinedLiteralException e) {

@@ -129,7 +129,11 @@ public class SiteManager {
       Site site = new Site(id, name, DEFAULT_VERSION);
 
       for (int i = 0; i < domainNames.length; i++) {
-        DomainName domainName = DomainNameManager.getInstance().add(connection, id, domainNames[i]);
+        String domainNameString = domainNames[i];
+        if (domainNameString.isEmpty()) {
+          continue;
+        }
+        DomainName domainName = DomainNameManager.getInstance().add(connection, id, domainNameString);
         if (i == 0) {
           site.setBaseHost(domainName);
         }
