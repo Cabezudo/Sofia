@@ -1,5 +1,7 @@
 package net.cabezudo.sofia.domains;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -89,5 +91,34 @@ public class DomainNameManager {
       return domainName;
     }
     return null;
+  }
+
+  public void validate(String domainName) throws DomainMaxSizeException, EmptyDomainNameException, InvalidCharacterException, MissingDotException, DomainNameNotExistsException {
+    if (domainName.isEmpty()) {
+      throw new EmptyDomainNameException();
+    }
+    if (domainName.length() > DomainName.NAME_MAX_LENGTH) {
+      throw new DomainMaxSizeException(domainName.length());
+    }
+
+    int dotCounter = 0;
+    for (int i = 0; i < domainName.length(); i++) {
+      Character c = domainName.charAt(i);
+      if (!Character.isLetterOrDigit(c) && c != '.' && c != '-' && c != '_') {
+        throw new InvalidCharacterException(c);
+      }
+      if (c == '.') {
+        dotCounter++;
+      }
+    }
+    if (dotCounter == 0) {
+      throw new MissingDotException();
+    }
+
+    try {
+      InetAddress.getByName(domainName);
+    } catch (UnknownHostException e) {
+      throw new DomainNameNotExistsException();
+    }
   }
 }
