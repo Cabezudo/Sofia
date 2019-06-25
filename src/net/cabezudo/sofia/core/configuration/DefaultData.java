@@ -91,11 +91,17 @@ public class DefaultData {
     if (System.console() != null) {
       String baseDomainName;
       System.out.println("Crear sitio para el servidor.");
-      System.out.println("Coloque el nombre del host con el cual desea administrar el sitio en la red. Debe ser un nombre de dominio válido.");
+      System.out.println(
+              "Coloque el nombre del host con el cual desea administrar el sitio en la red. Debe ser un nombre de dominio válido. "
+              + "Si solo va a trabajar de forma local puede dejarlo en blanco y utilizar localhost para acceder a la configuración. "
+              + "Pero si necesita acceder al sitio de forma remota debera colocar un nombre de dominio válido");
       System.out.print("Dominio base: ");
       boolean validDomain = false;
       do {
         baseDomainName = System.console().readLine();
+        if (baseDomainName.isEmpty()) {
+          break;
+        }
         try {
           DomainNameManager.getInstance().validate(baseDomainName);
           validDomain = true;
