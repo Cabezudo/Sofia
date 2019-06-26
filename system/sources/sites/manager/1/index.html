@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html profiles="all">
   <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina principal</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
@@ -16,11 +16,15 @@
       Core.addOnloadFunction(createGUI);
     </script>
     <style>
+      @import url('https://fonts.googleapis.com/css?family=Lato&display=swap');
+      html, body {
+        font-family: Lato;
+      }
     </style>
   </head>
   <body>
     <span id="userId"></span>
     <section id="menu" template="headers/top/menu"></section>
-    <div>Título</div>
+    <div><p>Título</p></div>
   </body>
 </html>
