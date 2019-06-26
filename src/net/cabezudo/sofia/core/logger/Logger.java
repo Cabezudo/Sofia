@@ -62,6 +62,10 @@ public class Logger {
     log(Level.SEVERE, e.getMessage());
   }
 
+  public static void severe(String message) {
+    log(Level.SEVERE, message);
+  }
+
   public static void setLevel(Level level) {
     Logger.level = level;
   }
