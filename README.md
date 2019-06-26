@@ -311,7 +311,10 @@ Si. Un login completo, totalmente funcional, que permite a una persona registrar
 ### Estilos
 ### Javascript
 ### Core
-### Variables de plantillas
-### Variables para todo el sitio
+### Variables en común para todo el sitio
 Las variables colocadas en el archivo `commons.json` pueden ser utilizadas en los archivos de configuración de fragmentos y componentes.
+### Variables de plantillas
+### Orden de asignación de variables
+Las variables de plantillas pueden ser colocadas en el archivo `commons.json`, en el archivo de configuración por defecto del componente dentro de las librearías o en el archivo de configuración para el componente el el fuente del sitio. Si definimos una variable de configuración para un componente en el archivo `commons.json`, esta, es sobrescrita por la variable en el archivo de configuración por defecto. Es por esto que no podemos definir una variable de plantilla en `commons.json`. Debemos definirla en un archivo para la página que contiene el componente. Primero se leen las variables de plantilla de `commons.json`, luego se leen las variables de plantilla por defecto del componente y luego las variables de plantilla definidas para ese componente en el archivo de configuración de la página. Cada una de estas definiciones sobrescribe la definición anterior.
+### Páginas
 ### Componentes
