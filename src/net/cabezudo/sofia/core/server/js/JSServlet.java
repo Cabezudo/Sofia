@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.server.js;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -46,6 +47,13 @@ public class JSServlet extends HttpServlet {
       } else {
         sb.append("  lastPage: '").append(lastPage).append("',\n");
       }
+      String comebackPage = (String) request.getSession().getAttribute("comebackPage");
+      if (comebackPage == null) {
+        sb.append("  comebackPage: null,\n");
+      } else {
+        sb.append("  comebackPage: '").append(comebackPage).append("',\n");
+      }
+      request.getSession().setAttribute("", requestURI);
       sb.append("  user: ");
       if (user == null) {
         sb.append("null\n");
@@ -71,7 +79,7 @@ public class JSServlet extends HttpServlet {
       }
       sb.append("};\n");
       sb.append("\n");
-      out.write(sb.toString().getBytes());
+      out.write(sb.toString().getBytes(StandardCharsets.UTF_8));
 
       byte[] buffer = new byte[1024];
       int count;

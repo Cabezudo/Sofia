@@ -9,19 +9,18 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.core.passwords.Password;
+import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.users.autentication.Authenticator;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.ws.responses.AbstractMessage;
 import net.cabezudo.sofia.core.ws.responses.InvalidMessage;
 import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
 import net.cabezudo.sofia.core.ws.responses.ValidMessage;
+import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.domains.DomainMaxSizeException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
-import net.cabezudo.sofia.core.passwords.Password;
-import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
-import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -79,6 +78,7 @@ public class LoginService extends Service {
         getClientData().setUser(user);
         AbstractMessage message = new ValidMessage("user.logged");
         messages.add(message);
+        request.getSession().removeAttribute("comebackPage");
         sendResponse(new MultipleMessageResponse("LOGIN", messages));
       }
     } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainMaxSizeException e) {

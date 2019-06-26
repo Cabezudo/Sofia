@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,7 +69,7 @@ public class CascadingStyleSheetsCode extends SofiaSourceContainer {
       Path jsFileSitePath = site.getCSSPath().resolve(filename + ".css");
       Files.createDirectories(jsFileSitePath.getParent());
       Logger.debug("Creating the file %s.", jsFileSitePath);
-      Files.write(jsFileSitePath, code.getBytes());
+      Files.write(jsFileSitePath, code.getBytes(StandardCharsets.UTF_8));
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e.getMessage(), e, filename + ".css", e.getLine(), e.getColumn());
     }
