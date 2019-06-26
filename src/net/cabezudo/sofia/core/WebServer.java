@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core;
 
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -67,6 +68,16 @@ public class WebServer {
       Logger.severe(e);
       System.exit(1);
     }
+    int port = Configuration.getInstance().getServerPort();
+
+    try {
+      ServerSocket ss = new ServerSocket(port);
+      ss.close();
+    } catch (IOException e) {
+      Logger.severe("Can't open the port " + port + ". " + e.getMessage());
+      System.exit(1);
+    }
+
     try {
       DefaultData.create(startOptions);
       WebServer.getInstance().start();
