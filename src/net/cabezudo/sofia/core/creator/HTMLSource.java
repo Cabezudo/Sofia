@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -51,7 +52,7 @@ public class HTMLSource extends SofiaSourceContainer {
       Path jsFileSitePath = site.getVersionPath().resolve(fileName + ".html");
       Files.createDirectories(jsFileSitePath.getParent());
       Logger.debug("Creating the file %s.", jsFileSitePath);
-      Files.write(jsFileSitePath, code.getBytes());
+      Files.write(jsFileSitePath, code.getBytes(StandardCharsets.UTF_8));
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e);
     }

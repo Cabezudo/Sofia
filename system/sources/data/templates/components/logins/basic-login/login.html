@@ -148,7 +148,7 @@
           const data = event.detail;
           if (data.type === 'LOGIN' && data.messages.length === 1) {
             if (data.messages[0].status === 'VALID') {
-              if (variables.lastPage === null) {
+              if (variables.comebackPage === null) {
                 location.assign('#{afterLoginSucessfullPage}');
               } else {
                 location.assign(variables.lastPage);

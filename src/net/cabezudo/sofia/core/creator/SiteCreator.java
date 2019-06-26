@@ -2,6 +2,7 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -91,7 +92,7 @@ public class SiteCreator {
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e);
     }
-    Files.write(fileContentPath, html.getBytes());
+    Files.write(fileContentPath, html.getBytes(StandardCharsets.UTF_8));
 
     JavaScriptCode js = new JavaScriptCode(templateLiterals);
     String templateLiteralsString = "const templateLiterals = " + templateLiterals.toJSON() + ";\n";

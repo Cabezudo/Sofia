@@ -290,6 +290,6 @@ public final class Configuration {
   }
 
   public String getLoginURL() {
-    return "login.html";
+    return "/login.html";
   }
 }
