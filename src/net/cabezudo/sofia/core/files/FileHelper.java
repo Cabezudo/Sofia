@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.logger.Logger;
 
 /**
@@ -15,7 +16,9 @@ import net.cabezudo.sofia.core.logger.Logger;
 public class FileHelper {
 
   public static void copyDirectory(Path src, Path dest) throws IOException {
-    Logger.debug("Coping from %s to %s", src, dest);
+    Path systemPath = Configuration.getInstance().getSystemPath();
+    Logger.debug("Copy resources from %s to %s.", systemPath.relativize(src).toString(), systemPath.relativize(dest));
+
     if (src == null) {
       throw new IllegalArgumentException("src parameter is null.");
     }

@@ -29,29 +29,28 @@ import net.cabezudo.sofia.core.sites.Site;
 public class SofiaSourceFile {
 
   private final Set<Path> filePaths = new TreeSet<>();
+  private final Set<Resource> resources = new TreeSet<>();
   private String profiles;
   private final SofiaSourceContainer html;
   private final SofiaSourceContainer css;
   private final SofiaSourceContainer js;
   private SofiaSourceContainer actual;
+  private final Site site;
   private final TemplateLiterals templateLiterals;
   private int deep = 0;
 
-  SofiaSourceFile(TemplateLiterals templateLiterals) {
+  SofiaSourceFile(Site site, TemplateLiterals templateLiterals, String voidPartialPath) throws IOException, SQLException, FileNotFoundException, JSONParseException, NoSuchFileException, SiteCreationException {
+    this.site = site;
     this.templateLiterals = templateLiterals;
-    html = new HTMLSource(templateLiterals);
-    css = new CascadingStyleSheetsCode(templateLiterals);
-    js = new JavaScriptCode(templateLiterals);
-    actual = html;
-  }
-
-  // Get the base path from site an run load
-  public void load(String id, Site site, String voidPartialPath) throws IOException, SQLException, FileNotFoundException, JSONParseException, NoSuchFileException, SiteCreationException {
-    load(id, site.getSourcesPath(), voidPartialPath);
+    this.html = new HTMLSource(templateLiterals);
+    this.css = new CascadingStyleSheetsCode(templateLiterals);
+    this.js = new JavaScriptCode(templateLiterals);
+    this.actual = html;
+    load(null, site.getSourcesPath(), voidPartialPath);
   }
 
   // Use the base path and file name to load a file into html, css and js. Create a list of read files in filePaths
-  public void load(String id, Path basePath, String voidPartialPath) throws IOException, FileNotFoundException, JSONParseException, NoSuchFileException, SiteCreationException {
+  public final void load(String id, Path basePath, String voidPartialPath) throws IOException, FileNotFoundException, JSONParseException, NoSuchFileException, SiteCreationException {
     deep++;
     String jsonPartialPath = voidPartialPath + ".json";
     String htmlPartialPath = voidPartialPath + ".html";
@@ -70,10 +69,16 @@ public class SofiaSourceFile {
       if (templateName == null) {
         loadHTML(basePath, htmlPartialPath, id);
       } else {
+        // Read template from template files
         Path htmlSourceFilePath = Configuration.getInstance().getCommonsComponentsTemplatesPath().resolve(htmlPartialPath);
         Logger.debug("Using %s template.", htmlSourceFilePath);
         jsonObject.remove("template");
+        if (id == null) {
+          // TODO Ver de donde sacamos el id para estos casos. En el correr de las pruebas aparecerá.
+          throw new RuntimeException("The id is null");
+        }
         loadHTML(Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName, id);
+        // TODO read images from template
       }
       if (id != null) {
         JSONObject idJSONObject = new JSONObject();
@@ -214,6 +219,7 @@ public class SofiaSourceFile {
         }
         try {
           load(tag.getId(), Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName);
+          addImagesResources(Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName);
         } catch (NoSuchFileException e) {
           throw new NoSuchFileException("No such template file: " + templateName);
         }
@@ -224,6 +230,17 @@ public class SofiaSourceFile {
     sb.append(fullLine);
     sb.append('\n');
     return sb.toString();
+  }
+
+  private void addImagesResources(Path commonsComponentsTemplatesPath, String templateName) {
+    Path origin = commonsComponentsTemplatesPath.resolve(templateName).getParent().resolve("images");
+    Path target = site.getImagesPath().resolve(templateName).getParent();
+    Resource resource = new Resource(origin, target);
+    resources.add(resource);
+  }
+
+  Set<Resource> getResources() {
+    return resources;
   }
 
   String getProfiles() {
