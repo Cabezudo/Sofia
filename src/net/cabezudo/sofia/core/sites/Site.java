@@ -88,6 +88,10 @@ public class Site implements Comparable<Integer> {
     return Configuration.getInstance().getSitesSourcesPath().resolve(getBaseHost().getName()).resolve(Integer.toString(version));
   }
 
+  public Path getSourcesImagesPath() {
+    return getSourcesPath().resolve("images");
+  }
+
   public Path getThemePath() {
     return Configuration.getInstance().getCommonsThemesPath().resolve(getBaseHost().getName());
   }

@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.SQLException;
+import java.util.Set;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
@@ -54,19 +55,20 @@ public class SiteCreator {
     Files.createDirectories(site.getVersionPath());
     Files.createDirectories(site.getJSPath());
     Files.createDirectories(site.getCSSPath());
+    Files.createDirectories(site.getImagesPath());
 
     TemplateLiterals templateLiterals = new TemplateLiterals();
     templateLiterals.add(site.getSourcesPath(), "commons.json");
 
     try {
-      FileHelper.copyDirectory(site.getSourcesPath().resolve("images"), site.getImagesPath());
+      FileHelper.copyDirectory(site.getSourcesImagesPath(), site.getImagesPath());
     } catch (FileNotFoundException e) {
       Logger.warning(e);
     }
 
-    SofiaSourceFile sofiaSourceFile = new SofiaSourceFile(templateLiterals);
+    SofiaSourceFile sofiaSourceFile;
     try {
-      sofiaSourceFile.load(null, site, voidPartialPath);
+      sofiaSourceFile = new SofiaSourceFile(site, templateLiterals, voidPartialPath);
     } catch (NoSuchFileException e) {
       throw new SiteCreationException(e);
     }
@@ -119,5 +121,19 @@ public class SiteCreator {
     css.load(site.getThemePath());
     css.append(sofiaSourceFile.getCascadingStyleSheetsCode());
     css.save(site, voidPartialPath);
+
+    Set<Resource> resources = sofiaSourceFile.getResources();
+    for (Resource resource : resources) {
+      Path origin = resource.getOrigin();
+      if (Files.exists(origin)) {
+        Path target = resource.getTarget();
+        if (Files.isDirectory(origin)) {
+          Files.createDirectories(target);
+          FileHelper.copyDirectory(origin, target);
+        }
+      } else {
+        Logger.warning("Resource doesn't exist: %s", Configuration.getInstance().getSourcesPath().relativize(origin).toString());
+      }
+    }
   }
 }
