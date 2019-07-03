@@ -1,0 +1,6 @@
+{
+  "login": {
+    "afterLoginSucessfullPage": "manager/index.html",
+    "recoverPasswordPage": "recoverPassword.html"
+  }
+}

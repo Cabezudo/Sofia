@@ -1,4 +1,5 @@
 {
   "title": "Iniciar sesión",
-  "afterLoginSucessfullPage": "home.html"
+  "afterLoginSucessfullPage": "home.html",
+  "recoverPasswordPage": "recoverPassword.html"
 }
