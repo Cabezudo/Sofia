@@ -70,8 +70,17 @@ public class SofiaSourceFile {
         loadHTML(basePath, htmlPartialPath, id);
       } else {
         // Read template from template files
-        Path htmlSourceFilePath = Configuration.getInstance().getCommonsComponentsTemplatesPath().resolve(htmlPartialPath);
-        Logger.debug("Using %s template.", htmlSourceFilePath);
+        Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+        System.out.println(templateName);
+        System.out.println(commonsComponentsTemplatePath);
+        System.out.println(basePath);
+        System.out.println(voidPartialPath);
+
+        String htmlTemplateName = templateName + ".html";
+        Path htmlSourceFilePath = commonsComponentsTemplatePath.resolve(basePath).resolve(htmlTemplateName);
+        System.out.println(htmlSourceFilePath);
+
+        Logger.debug("Load template %s from file %s.", htmlSourceFilePath.relativize(commonsComponentsTemplatePath), jsonPartialPath);
         jsonObject.remove("template");
         if (id == null) {
           // TODO Ver de donde sacamos el id para estos casos. En el correr de las pruebas aparecerá.
