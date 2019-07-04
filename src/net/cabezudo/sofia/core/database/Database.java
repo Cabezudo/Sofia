@@ -67,8 +67,12 @@ public class Database {
     Logger.info("Create database.");
     try (Connection connection = getConnection()) {
       Statement statement = connection.createStatement();
+
       String query = "CREATE DATABASE IF NOT EXISTS " + Configuration.getInstance().getDatabaseName();
       statement.executeUpdate(query);
+
+      query = "SET @@global.time_zone='+00:00'";
+      statement.execute(query);
     }
 
     try (Connection connection = getConnection(Configuration.getInstance().getDatabaseName())) {

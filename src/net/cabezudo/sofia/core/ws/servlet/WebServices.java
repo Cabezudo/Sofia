@@ -53,7 +53,7 @@ public class WebServices extends HttpServlet {
     }
 
     // GET /api/v1/users/{email}/password/recover
-    if (tokens.match("/api/v1/users/password/{email}/password/recover")) {
+    if (tokens.match("/api/v1/users/{email}/password/recover")) {
       new RecoverPasswordService(request, response, tokens).execute();
       return;
     }
