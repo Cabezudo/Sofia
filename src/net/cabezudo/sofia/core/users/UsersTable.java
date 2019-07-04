@@ -21,7 +21,7 @@ public class UsersTable extends Table {
           + "`creationDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP , "
           + "`activated` BOOLEAN NOT NULL DEFAULT FALSE, "
           + "`passwordRecoveryUUID` VARCHAR(72) DEFAULT NULL, "
-          + "`passwordRecoveryDate` DATETIME DEFAULT NULL, "
+          + "`passwordRecoveryDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
           + "PRIMARY KEY (`id`), "
           + "UNIQUE INDEX `iSiteEMailPassword` (`site`, `eMail`, `password`), "
           + "UNIQUE INDEX `iPasswordRecoveryUUID` (`passwordRecoveryUUID`), "

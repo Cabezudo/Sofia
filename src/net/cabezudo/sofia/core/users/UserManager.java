@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.Date;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
@@ -199,11 +200,11 @@ public class UserManager {
     String query
             = "UPDATE " + UsersTable.NAME + " "
             + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
-            + "WHERE eMailId = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
+            + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, hash.toString());
-    long timestamp = new Date().getTime() / 1000;
-    ps.setLong(2, timestamp);
+    Timestamp timestamp = new Timestamp(new Date().getTime());
+    ps.setTimestamp(2, timestamp);
     ps.setString(3, address);
     Logger.fine(ps);
     ps.executeUpdate();

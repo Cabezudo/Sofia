@@ -71,22 +71,18 @@ public class SofiaSourceFile {
       } else {
         // Read template from template files
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        System.out.println(templateName);
         System.out.println(commonsComponentsTemplatePath);
         System.out.println(basePath);
-        System.out.println(voidPartialPath);
+        System.out.println(templateName);
+//        System.out.println(voidPartialPath);
 
         String htmlTemplateName = templateName + ".html";
-        Path htmlSourceFilePath = commonsComponentsTemplatePath.resolve(basePath).resolve(htmlTemplateName);
-        System.out.println(htmlSourceFilePath);
+        Path htmlSourceFilePath = commonsComponentsTemplatePath.resolve(htmlTemplateName);
+        System.out.println("htmlSourceFilePath: " + htmlSourceFilePath);
 
         Logger.debug("Load template %s from file %s.", htmlSourceFilePath.relativize(commonsComponentsTemplatePath), jsonPartialPath);
         jsonObject.remove("template");
-        if (id == null) {
-          // TODO Ver de donde sacamos el id para estos casos. En el correr de las pruebas aparecerá.
-          throw new RuntimeException("The id is null");
-        }
-        loadHTML(Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName, id);
+        loadHTML(Configuration.getInstance().getCommonsComponentsTemplatesPath(), htmlTemplateName, id);
         // TODO read images from template
       }
       if (id != null) {
