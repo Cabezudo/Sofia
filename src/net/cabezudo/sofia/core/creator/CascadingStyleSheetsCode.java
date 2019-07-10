@@ -58,7 +58,7 @@ public class CascadingStyleSheetsCode extends SofiaSourceContainer {
       String voidFileName = htmlFileName.substring(0, htmlFileName.length() - 4);
       String cssFileName = voidFileName + "css";
       Path cssFilePath = Paths.get(cssFileName);
-      load(cssFilePath);
+      append(cssFilePath);
     }
   }
 
@@ -71,7 +71,8 @@ public class CascadingStyleSheetsCode extends SofiaSourceContainer {
       Logger.debug("Creating the file %s.", jsFileSitePath);
       Files.write(jsFileSitePath, code.getBytes(StandardCharsets.UTF_8));
     } catch (UndefinedLiteralException e) {
-      throw new SiteCreationException(e.getMessage(), e, filename + ".css", e.getLine(), e.getColumn());
+      // TODO Cuando se generen el archivo parseando hay que poner el archivo de donde se lee el código que no existe.
+      throw new SiteCreationException("The property " + e.getUndefinedLiteral() + " in " + filename + " doesn't exist.", e, filename + ".css", e.getLine(), e.getColumn());
     }
   }
 }

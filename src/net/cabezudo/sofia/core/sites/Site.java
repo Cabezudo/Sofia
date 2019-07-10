@@ -92,10 +92,6 @@ public class Site implements Comparable<Integer> {
     return getSourcesPath().resolve("images");
   }
 
-  public Path getThemePath() {
-    return Configuration.getInstance().getCommonsThemesPath().resolve(getBaseHost().getName());
-  }
-
   @Override
   public int compareTo(Integer anotherInteger) {
     return compare(this.id, anotherInteger);

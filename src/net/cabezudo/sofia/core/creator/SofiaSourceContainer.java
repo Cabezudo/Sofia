@@ -60,7 +60,8 @@ public abstract class SofiaSourceContainer {
 
   public abstract Type getType();
 
-  void load(Path path) throws IOException {
+  void append(Path path) throws IOException {
+    Logger.debug("Load %s file", path);
     if (Files.isRegularFile(path)) {
       if (Files.exists(path)) {
         processLine("/* File: " + Configuration.getInstance().getSitesDataPath().relativize(path) + " */");
@@ -77,7 +78,7 @@ public abstract class SofiaSourceContainer {
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
           if (file.toString().endsWith("." + getType().getExtension())) {
             Logger.debug("Loading the file %s.", file);
-            load(file);
+            append(file);
           }
           return FileVisitResult.CONTINUE;
         }

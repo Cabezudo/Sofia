@@ -61,7 +61,7 @@ public class TemplateLiterals {
       try {
         value = jsonObject.digString(name);
       } catch (PropertyNotExistException e) {
-        throw new UndefinedLiteralException("The property " + name + " doesn't exist in any json template literal.", e, 0, 0);
+        throw new UndefinedLiteralException(name, e, 0, 0);
       }
       sb.append(value);
     }
@@ -71,5 +71,9 @@ public class TemplateLiterals {
 
   void add(JSONObject jsonData) {
     jsonObject.merge(jsonData);
+  }
+
+  public String get(String themeName) {
+    return jsonObject.getNullString("themeName");
   }
 }

@@ -32,7 +32,7 @@ public class JavaScriptCode extends SofiaSourceContainer {
       String voidFileName = htmlFileName.substring(0, htmlFileName.length() - 4);
       String jsFileName = voidFileName + "js";
       Path jsFilePath = Paths.get(jsFileName);
-      load(jsFilePath);
+      append(jsFilePath);
     }
   }
 

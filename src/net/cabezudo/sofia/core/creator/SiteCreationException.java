@@ -7,7 +7,7 @@ package net.cabezudo.sofia.core.creator;
 public class SiteCreationException extends Exception {
 
   SiteCreationException(String message, Throwable cause, String filename, int line, int column) {
-    super(message + " " + filename + (line == 0 ? "" : ":" + line) + (column == 0 ? "" : ":" + column), cause);
+    super(message, cause);
   }
 
   SiteCreationException(String message) {

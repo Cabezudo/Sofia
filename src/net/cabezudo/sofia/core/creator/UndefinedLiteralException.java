@@ -6,11 +6,13 @@ package net.cabezudo.sofia.core.creator;
  */
 public class UndefinedLiteralException extends Exception {
 
+  private final String literal;
   private final int line;
   private final int column;
 
-  public UndefinedLiteralException(String message, Throwable cause, int line, int column) {
-    super(message, cause);
+  public UndefinedLiteralException(String literal, Throwable cause, int line, int column) {
+    super("Undefined literal: " + literal, cause);
+    this.literal = literal;
     this.line = line;
     this.column = column;
   }
@@ -21,5 +23,9 @@ public class UndefinedLiteralException extends Exception {
 
   public int getColumn() {
     return column;
+  }
+
+  public String getUndefinedLiteral() {
+    return literal;
   }
 }
