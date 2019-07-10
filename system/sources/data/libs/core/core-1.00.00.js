@@ -11,8 +11,41 @@ const Core = {
   onloadFunctions: [],
   messagesContainer: null,
   EVENT_TIME_DELAY: 300,
+  screenBlockerDiv: null,
   addOnloadFunction: (func) => {
     Core.onloadFunctions.push(func);
+  },
+  screenBlocker: {
+    create: () => {
+      if (!Core.screenBlockerDiv) {
+        Core.screenBlockerDiv = document.getElementById('screenBlocker');
+        if (!Core.screenBlockerDiv) {
+          Core.screenBlockerDiv = document.createElement("div");
+          Core.screenBlockerDiv.id = 'screenBlocker';
+          Core.screenBlockerDiv.style.position = "absolute";
+          Core.screenBlockerDiv.style.top = "0px";
+          Core.screenBlockerDiv.style.width = "100vw";
+          Core.screenBlockerDiv.style.height = "100vh";
+          Core.screenBlockerDiv.style.background = "gray";
+          Core.screenBlockerDiv.style.opacity = ".7";
+          Core.screenBlockerDiv.focus();
+          document.body.appendChild(Core.screenBlockerDiv);
+        }
+      } else {
+        Core.screenBlockerDiv.style.display = "block";
+      }
+    },
+    block: () => {
+      Core.screenBlocker.create();
+      Core.screenBlockerDiv.style.display = "block";
+    },
+    unblock: (options) => {
+      Core.screenBlocker.create();
+      Core.screenBlockerDiv.style.display = "none";
+      if (options && options.focus) {
+        options.focus.focus();
+      }
+    }
   },
   hide: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
@@ -31,6 +64,9 @@ const Core = {
     }
   },
   sendGet: (url, origin, messageId) => {
+    if (!origin) {
+      throw new Error(`Invalid origin for sendGet: ${origin}`);
+    }
     fetch(url)
             .then(function (response) {
               response.json().then(jsonData => {

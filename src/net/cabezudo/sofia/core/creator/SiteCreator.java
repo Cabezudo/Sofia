@@ -59,6 +59,17 @@ public class SiteCreator {
 
     TemplateLiterals templateLiterals = new TemplateLiterals();
     templateLiterals.add(site.getSourcesPath(), "commons.json");
+    String themeName = templateLiterals.get("themeName");
+    if (themeName == null) {
+      throw new SiteCreationException("Can't find the theme for the site in the commons.json file.");
+    }
+
+    Path themeBasePath = Configuration.getInstance().getCommonsThemesPath().resolve(themeName);
+    templateLiterals.add(themeBasePath, "values.json");
+
+    Path styleFilePath = themeBasePath.resolve("style.css");
+    CascadingStyleSheetsCode css = new CascadingStyleSheetsCode(templateLiterals);
+    css.append(styleFilePath);
 
     try {
       FileHelper.copyDirectory(site.getSourcesImagesPath(), site.getImagesPath());
@@ -106,7 +117,7 @@ public class SiteCreator {
       public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
         if (file.toString().endsWith(".js")) {
           Logger.debug("Loading the file %s.", file);
-          js.load(file);
+          js.append(file);
         }
         return FileVisitResult.CONTINUE;
       }
@@ -115,10 +126,7 @@ public class SiteCreator {
     js.append(sofiaSourceFile.getJavaScriptCode());
     js.save(site, voidPartialPath);
 
-    CascadingStyleSheetsCode css = new CascadingStyleSheetsCode(templateLiterals);
-
-    css.load(Configuration.getInstance().getCommonsLibsPath());
-    css.load(site.getThemePath());
+    css.append(Configuration.getInstance().getCommonsLibsPath());
     css.append(sofiaSourceFile.getCascadingStyleSheetsCode());
     css.save(site, voidPartialPath);
 

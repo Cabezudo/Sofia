@@ -50,7 +50,7 @@ public class SofiaSourceFile {
   }
 
   // Use the base path and file name to load a file into html, css and js. Create a list of read files in filePaths
-  public final void load(String id, Path basePath, String voidPartialPath) throws IOException, FileNotFoundException, JSONParseException, NoSuchFileException, SiteCreationException {
+  public final void load(String id, Path basePath, String voidPartialPath) throws IOException, FileNotFoundException, NoSuchFileException, SiteCreationException {
     deep++;
     String jsonPartialPath = voidPartialPath + ".json";
     String htmlPartialPath = voidPartialPath + ".html";
@@ -62,9 +62,15 @@ public class SofiaSourceFile {
       try {
         jsonCode = templateLiterals.apply(jsonCode);
       } catch (UndefinedLiteralException e) {
-        throw new SiteCreationException(e.getMessage(), e, jsonSourceFilePath.toString(), 0, 0);
+        Path safePath = Configuration.getInstance().getCommonsTemplatesPath().relativize(jsonSourceFilePath);
+        throw new SiteCreationException("Undefined literal " + e.getUndefinedLiteral() + " in " + safePath + ".");
       }
-      JSONObject jsonObject = JSON.parse(jsonCode).toJSONObject();
+      JSONObject jsonObject;
+      try {
+        jsonObject = JSON.parse(jsonCode).toJSONObject();
+      } catch (JSONParseException e) {
+        throw new SiteCreationException("Cant parse " + jsonSourceFilePath + ". " + e.getMessage());
+      }
       String templateName = jsonObject.getNullString("template");
       if (templateName == null) {
         loadHTML(basePath, htmlPartialPath, id);
@@ -98,7 +104,7 @@ public class SofiaSourceFile {
     deep--;
   }
 
-  private void loadHTML(Path basePath, String htmlFilename, String id) throws IOException, NoSuchFileException, FileNotFoundException, JSONParseException, SiteCreationException {
+  private void loadHTML(Path basePath, String htmlFilename, String id) throws IOException, NoSuchFileException, FileNotFoundException, SiteCreationException {
     Path sourceFilePath = getSourceFilePath(basePath, htmlFilename);
     Logger.debug("Load the HTML file source %s.", sourceFilePath);
     filePaths.add(sourceFilePath);
@@ -139,7 +145,7 @@ public class SofiaSourceFile {
     return sb.toString();
   }
 
-  private void process(Path basePath, String fullLine, String id) throws IOException, NoSuchFileException, FileNotFoundException, JSONParseException, InvalidFragmentTag, SiteCreationException {
+  private void process(Path basePath, String fullLine, String id) throws IOException, NoSuchFileException, FileNotFoundException, InvalidFragmentTag, SiteCreationException {
 
     String changedLine;
     if (id != null) {
@@ -158,7 +164,7 @@ public class SofiaSourceFile {
       if (!Files.exists(fullPath)) {
         throw new FileNotFoundException("File not found: " + fileName);
       }
-      css.load(fullPath);
+      css.append(fullPath);
       return;
     }
     if (line.startsWith("<html")) {
@@ -203,7 +209,7 @@ public class SofiaSourceFile {
     }
   }
 
-  private String getProcessedLine(Path basePath, String fullLine, String line) throws NoSuchFileException, IOException, FileNotFoundException, JSONParseException, InvalidFragmentTag, SiteCreationException {
+  private String getProcessedLine(Path basePath, String fullLine, String line) throws NoSuchFileException, IOException, FileNotFoundException, InvalidFragmentTag, SiteCreationException {
     StringBuilder sb = new StringBuilder();
 
     Tag tag = HTMLTagFactory.get(line);

@@ -31,7 +31,7 @@ public class HTMLSource extends SofiaSourceContainer {
   }
 
   @Override
-  void load(Path filePath) throws IOException {
+  void append(Path filePath) throws IOException {
     if (Files.exists(filePath)) {
       try (Stream<String> stream = Files.lines(filePath)) {
         stream.forEach(this::processLine);
