@@ -49,3 +49,17 @@
   border: 1px solid lightgray;
 }
 
+@media all and ( min-width: 480px ) {
+  .button_1_00_00 {
+    display: inline-block;
+    padding: 10px 40px;
+  }
+}
+@media all and ( min-width: 750px ) {
+}
+@media all and ( min-width: 1024px ) {
+}
+@media all and ( min-width: 1250px ) {
+}
+@media all and ( min-width: 1800px ) {
+}

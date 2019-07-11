@@ -53,6 +53,30 @@
           }
         }
       }
+    },
+    "button": {
+      "red": {
+        "color": "white",
+        "backgroundColor": "#D11250"
+      },
+      "orange": {
+        "red": {
+          "color": "white",
+          "backgroundColor": "#DB5800"
+        }
+      },
+      "blue": {
+        "red": {
+          "color": "white",
+          "backgroundColor": "#006899"
+        }
+      },
+      "green": {
+        "red": {
+          "color": "white",
+          "backgroundColor": "#008F68"
+        }
+      }
     }
   }
 }
