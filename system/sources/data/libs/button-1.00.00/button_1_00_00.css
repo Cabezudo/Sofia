@@ -25,8 +25,8 @@
 }
 
 .redButton_1_00_00 {
-  color: white;
-  background-color: #D11250;
+  color: #{theme.button.red.color};
+  background-color: #{theme.button.red.backgroundColor};
 }
 .orangeButton_1_00_00 {
   color: white;

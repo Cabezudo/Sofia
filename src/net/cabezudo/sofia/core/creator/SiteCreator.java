@@ -64,6 +64,7 @@ public class SiteCreator {
       throw new SiteCreationException("Can't find the theme for the site in the commons.json file.");
     }
 
+    // TODO Read all the theme style sheets after the entire site
     Path themeBasePath = Configuration.getInstance().getCommonsThemesPath().resolve(themeName);
     templateLiterals.add(themeBasePath, "values.json");
 
