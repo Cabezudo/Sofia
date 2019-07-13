@@ -68,95 +68,95 @@
 </style>
 <script>
   const loginForm = (() => {
-    let loginEMailElement;
-    let loginPasswordElement;
-    let loginAcceptButton;
-    let validEMail = false;
-    let passwordValid = false;
+  let loginEMailElement;
+  let loginPasswordElement;
+  let loginButton;
+  let validEMail = false;
+  let passwordValid = false;
 
-    const changeAcceptButton = () => {
-      if (validEMail && passwordValid) {
-        Core.trigger(loginAcceptButton, 'enabled');
-        Core.cleanMessagesContainer();
-      } else {
-        Core.trigger(loginAcceptButton, 'disabled');
-      }
-    };
+  const changeAcceptButton = () => {
+  if (validEMail && passwordValid) {
+  Core.trigger(loginButton, 'enabled');
+  Core.cleanMessagesContainer();
+  } else {
+  Core.trigger(loginButton, 'disabled');
+  }
+  };
 
-    const createGUI = () => {
-      loginEMailElement = Core.validateById('loginEMail');
-      loginPasswordElement = Core.validateById('loginPassword');
-      loginAcceptButton = Core.validateById('loginAcceptButton');
+  const createGUI = () => {
+  loginEMailElement = Core.validateById('loginEMail');
+  loginPasswordElement = Core.validateById('loginPassword');
+  loginButton = Core.validateById('loginButton');
 
-      inputEMailValidator_1_00_00({
-        element: loginEMailElement,
-        onValid: () => {
-          validEMail = true;
-          changeAcceptButton();
-        },
-        onNotValid: () => {
-          validEMail = false;
-          changeAcceptButton();
-        },
-        onKeyPress: event => {
-          if (Core.isEnter(event)) {
-            sendLoginInformation();
-          }
-        }
-      });
+  inputEMailValidator_1_00_00({
+  element: loginEMailElement,
+  onValid: () => {
+  validEMail = true;
+  changeAcceptButton();
+  },
+  onNotValid: () => {
+  validEMail = false;
+  changeAcceptButton();
+  },
+  onKeyPress: event => {
+  if (Core.isEnter(event)) {
+  sendLoginInformation();
+  }
+  }
+  });
 
-      inputPasswordValidator_1_00_00({
-        element: loginPasswordElement,
-        onValid: () => {
-          passwordValid = true;
-          changeAcceptButton();
-        },
-        onNotValid: () => {
-          passwordValid = false;
-          changeAcceptButton();
-        },
-        onKeyPress: event => {
-          if (Core.isEnter(event)) {
-            sendLoginInformation();
-          }
-        }
-      });
+  inputPasswordValidator_1_00_00({
+  element: loginPasswordElement,
+  onValid: () => {
+  passwordValid = true;
+  changeAcceptButton();
+  },
+  onNotValid: () => {
+  passwordValid = false;
+  changeAcceptButton();
+  },
+  onKeyPress: event => {
+  if (Core.isEnter(event)) {
+  sendLoginInformation();
+  }
+  }
+  });
 
-      greenButton_1_00_00({
-        id: 'loginAcceptButton',
-        enabled: false,
-        onClick: () => {
-          sendLoginInformation();
-        },
-        onResponse: event => {
-          const data = event.detail;
-          if (data.type === 'LOGIN' && data.messages.length === 1) {
-            if (data.messages[0].status === 'VALID') {
-              if (variables.comebackPage === null) {
-                location.assign('#{afterLoginSucessfullPage}');
-              } else {
-                location.assign(variables.lastPage);
-              }
-            } else {
-              Core.cleanMessagesContainer();
-              Core.addMessage(data.messages[0]);
-            }
-          }
-        }
-      });
-      messages_1_00_00({
-        id: 'loginMessages'
-      });
-      const sendLoginInformation = () => {
-        const formObject = {
-          email: loginEMailElement.value,
-          password: btoa(loginPasswordElement.value)
-        };
-        Core.sendPost(`/api/v1/users/login`, loginAcceptButton, 0, formObject);
-      };
-      loginEMailElement.focus();
-    };
-    Core.addOnloadFunction(createGUI);
+  greenButton_1_00_00({
+  id: 'loginButton',
+  enabled: false,
+  onClick: () => {
+  sendLoginInformation(); 
+  },
+  onResponse: event => {
+  const data = event.detail;
+  if (data.type === 'LOGIN' && data.messages.length === 1) {
+  if (data.messages[0].status === 'VALID') {
+  if (variables.comebackPage === null) {
+  location.assign('#{afterLoginSucessfullPage}');
+  } else {
+  location.assign(variables.lastPage);
+  }
+  } else {
+  Core.cleanMessagesContainer();
+  Core.addMessage(data.messages[0]);
+  }
+  }
+  }
+  });
+  messages_1_00_00({
+  id: 'loginMessages'
+  });
+  const sendLoginInformation = () => {
+  const formObject = {
+  email: loginEMailElement.value,
+  password: btoa(loginPasswordElement.value)
+  };
+  Core.sendPost(`/api/v1/users/login`, loginButton, 0, formObject);
+  };
+  loginEMailElement.focus();
+  };
+  Core.addOnloadFunction(createGUI);
   })();
 
 </script>
