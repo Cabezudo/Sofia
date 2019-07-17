@@ -125,6 +125,9 @@ public final class Configuration {
 
   public String get(String name) {
     String value = getDatabaseValue(name);
+    if (value == null) {
+      throw new RuntimeException("The value from the database property " + name + " is null");
+    }
     Logger.debug("%s: %s", name, value);
     return value;
   }
@@ -235,28 +238,12 @@ public final class Configuration {
     switch (name) {
       case "database.backup.file.name":
         return "/home/esteban/NetBeansProjects/core.cabezudo.net/system/data/cabezudo.sql";
-      case "site.name":
-        return "Menu CDMX";
-      case "site.domain.name":
-        return "localhost";
-      case "site.uri":
-        return "http://" + getDatabaseValue("site.domain.name");
-      case "password.change.uri":
-        return getDatabaseValue("site.uri") + "/setPassword.jsp";
-      case "password.change.hash.time":
-        return "120";
-      case "password.recover.page.url":
-        return getDatabaseValue("site.uri") + "/passwordRecover.jsp";
       case "mail.smtp.host":
         return "in.mailjet.com";
       case "mail.server.mailJet.api.key":
         return "c1a2afcc6be16031275520db9ec5e79b";
       case "mail.server.mailJet.secret.key":
         return "f30eb6ff628984df69a6ce3000a8d912";
-      case "no.reply.name":
-        return get("site.name");
-      case "no.reply.email":
-        return "esteban@cabezudo.net";
       default:
         throw new ConfigurationException("Configuration value not found: " + name);
     }
