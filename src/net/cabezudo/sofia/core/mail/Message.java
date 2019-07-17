@@ -1,11 +1,11 @@
 package net.cabezudo.sofia.core.mail;
 
-import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.JSONable;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.emails.EMail;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -22,6 +22,15 @@ public class Message implements JSONable {
   private final String html;
 
   public Message(String fromName, EMail from, String toName, EMail to, String subject, String text, String html) {
+    if (from == null) {
+      throw new RuntimeException();
+    }
+    System.out.println(toName);
+    System.out.println(to);
+    System.out.println(subject);
+    System.out.println(text);
+    System.out.println(html);
+
     this.fromName = fromName;
     this.from = from;
     this.toName = toName;

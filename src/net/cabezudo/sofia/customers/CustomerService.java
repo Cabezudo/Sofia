@@ -20,6 +20,9 @@ public class CustomerService {
     Hash hash = new Hash();
 
     Message message = UserManager.getInstance().getRecoveryEMailData(site, address, hash);
+    System.out.println(message);
+    System.out.println(message.toJSON());
+    System.out.println(message);
     Messages messages = new Messages(message);
     MailServer.getInstance().send(messages);
 

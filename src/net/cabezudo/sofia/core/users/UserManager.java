@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.users;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -177,16 +178,21 @@ public class UserManager {
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordRecoveryTemplate(person.getLocale());
 
       emailRecoveryTemplate.set("name", person.getName());
-      emailRecoveryTemplate.set("site.name", Configuration.getInstance().get("site.name"));
-      emailRecoveryTemplate.set("password.change.uri", Configuration.getInstance().get("password.change.uri") + "?" + hash);
-      emailRecoveryTemplate.set("password.change.hash.time", Configuration.getInstance().get("password.change.hash.time"));
-      emailRecoveryTemplate.set("site.uri", Configuration.getInstance().get("site.uri"));
+      emailRecoveryTemplate.set("site.name", site.getName());
+      try {
+        emailRecoveryTemplate.set("password.change.uri", site.getPasswordChangeURI() + "?" + hash);
+      } catch (URISyntaxException e) {
+        throw new RuntimeException(e);
+      }
+      // TODO Set the hash time on the site configuration
+      emailRecoveryTemplate.set("password.change.hash.time", "120");
+      emailRecoveryTemplate.set("site.uri", site.getURL().toString());
 
-      EMail from = EMailManager.getInstance().get(connection, Configuration.getInstance().get("no.reply.email"));
+      EMail from = site.getNoReplyEMail();
       EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-              Configuration.getInstance().get("no.reply.name"),
+              site.getNoReplyName(),
               from,
               person.getName() + ' ' + person.getLastName(),
               to,

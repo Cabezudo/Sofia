@@ -1,11 +1,14 @@
 package net.cabezudo.sofia.core.sites;
 
 import static java.lang.Integer.compare;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.domains.DomainName;
 import net.cabezudo.sofia.domains.DomainNameList;
+import net.cabezudo.sofia.emails.EMail;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -95,5 +98,29 @@ public class Site implements Comparable<Integer> {
   @Override
   public int compareTo(Integer anotherInteger) {
     return compare(this.id, anotherInteger);
+  }
+
+  public URI getURL() {
+    try {
+      URI uri = new URI(this.getBaseHost().getName());
+      return uri;
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  // TODO Get this value from a site configuration file
+  public URI getPasswordChangeURI() throws URISyntaxException {
+    return new URI("https://" + this.getBaseHost().getName() + "/changePassword.html");
+  }
+
+  public String getNoReplyName() {
+    // TODO Get this from de site configuration
+    return "No reply";
+  }
+
+  public EMail getNoReplyEMail() {
+//    return new EMail(0, 0, "no-reply@" + this.getBaseHost().getName());
+    return new EMail(0, 0, "esteban@cabezudo.net");
   }
 }
