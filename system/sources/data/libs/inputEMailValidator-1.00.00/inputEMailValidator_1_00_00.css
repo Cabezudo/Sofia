@@ -2,8 +2,3 @@
  * Created on: 30/10/2018
  * Author:     Esteban Cabezudo
  */
-
-input.error {
-  border: 1px solid #FFB9A5 !important;
-  background: rgba(255, 0, 0, .05) !important;
-}

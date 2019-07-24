@@ -23,7 +23,7 @@ public class Message implements JSONable {
 
   public Message(String fromName, EMail from, String toName, EMail to, String subject, String text, String html) {
     if (from == null) {
-      throw new RuntimeException();
+      throw new RuntimeException("No se encontró la dirección de envío.");
     }
     System.out.println(toName);
     System.out.println(to);

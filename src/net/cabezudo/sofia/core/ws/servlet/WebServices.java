@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.clients.DetailClientsService;
 import net.cabezudo.sofia.clients.ListClientsService;
 import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.core.passwords.PasswordPairValidatorService;
 import net.cabezudo.sofia.core.passwords.PasswordValidatorService;
 import net.cabezudo.sofia.core.passwords.RecoverPasswordService;
 import net.cabezudo.sofia.core.passwords.SetPasswordService;
@@ -126,6 +127,12 @@ public class WebServices extends HttpServlet {
     // Validate the format for a String with a password. GET /api/v1/password/validate/
     if (tokens.match("/api/v1/password/validate")) {
       new PasswordValidatorService(request, response).execute();
+      return;
+    }
+
+    // Validate the format for a pair of String with a password. GET /api/v1/password/pair/validate/
+    if (tokens.match("/api/v1/password/pair/validate")) {
+      new PasswordPairValidatorService(request, response).execute();
       return;
     }
 
