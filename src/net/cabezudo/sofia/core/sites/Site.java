@@ -120,7 +120,13 @@ public class Site implements Comparable<Integer> {
   }
 
   public EMail getNoReplyEMail() {
+    // TODO Get this from de site configuration
 //    return new EMail(0, 0, "no-reply@" + this.getBaseHost().getName());
     return new EMail(0, 0, "esteban@cabezudo.net");
+  }
+
+  public long getPasswordChangeHashExpireTime() {
+    // TODO Get this from de site configuration
+    return 7200; // Dos horas
   }
 }

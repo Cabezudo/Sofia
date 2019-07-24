@@ -37,8 +37,14 @@ public class TextManager {
         return "Debe especificar una contraseña.";
       case "password.short":
         return "La contraseña es muy corta.";
+      case "password.pair.do.not.match":
+        return "La contraseña y su verificación no son iguales.";
+      case "password.pair.empty":
+        return "Debe especificar una verificación para la contraseña.";
       case "password.recovery.mail.sent":
         return "El correo para recuperar su contraseña ha sido enviado";
+      case "password.change.ok":
+        return "La contraseña ha sido cambiada.";
       case "login.fail":
         return "El usuario o la contraseña son incorrectos.";
       case "user.logged":

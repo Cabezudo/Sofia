@@ -48,6 +48,11 @@ input::-ms-input-placeholder { /* Microsoft Edge */
   color: #CCD2CB;
 }
 
+input.error {
+  border: 1px solid #FFB9A5 !important;
+  background: rgba(255, 0, 0, .05) !important;
+}
+
 @media all and ( min-width: 480px ) {
 }
 

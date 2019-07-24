@@ -15,14 +15,12 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.ChangePasswordException;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
+import net.cabezudo.sofia.core.ws.responses.Message;
 import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
-import net.cabezudo.sofia.emails.EMailNotExistException;
-import net.cabezudo.sofia.core.passwords.Hash;
-import net.cabezudo.sofia.core.passwords.Password;
-import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
-import net.cabezudo.sofia.core.passwords.PasswordValidator;
+import net.cabezudo.sofia.core.ws.responses.SingleMessageResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.emails.EMailNotExistException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -71,7 +69,7 @@ public class SetPasswordService extends Service {
 
       Site site = super.getSite();
       UserManager.getInstance().changePassword(site, hash, password);
-
+      super.sendResponse(new SingleMessageResponse(new Message("password.change.ok")));
     } catch (PasswordMaxSizeException e) {
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (ChangePasswordException | EMailNotExistException e) {

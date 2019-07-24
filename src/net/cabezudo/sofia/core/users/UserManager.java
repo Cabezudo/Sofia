@@ -223,14 +223,14 @@ public class UserManager {
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordChangedTemplate(person.getLocale());
 
       emailRecoveryTemplate.set("name", person.getName());
-      emailRecoveryTemplate.set("site.name", Configuration.getInstance().get("site.name"));
-      emailRecoveryTemplate.set("site.uri", Configuration.getInstance().get("site.uri"));
+      emailRecoveryTemplate.set("site.name", site.getName());
+      emailRecoveryTemplate.set("site.uri", site.getURL().toString());
 
-      EMail from = EMailManager.getInstance().get(connection, Configuration.getInstance().get("no.reply.email"));
-      EMail to = EMailManager.getInstance().get(connection, Configuration.getInstance().get("no.reply.email"));
+      EMail from = site.getNoReplyEMail();
+      EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-              Configuration.getInstance().get("no.reply.name"),
+              site.getNoReplyName(),
               from,
               person.getName() + ' ' + person.getLastName(),
               to,
@@ -343,9 +343,9 @@ public class UserManager {
 
   public User getByHash(Connection connection, Hash hash) throws SQLException {
     String query
-            = "SELECT `eMailId`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate`, `personId` "
+            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
             + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMailId = e.id "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
             + "WHERE passwordRecoveryUUID = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, hash.toString());
@@ -377,7 +377,7 @@ public class UserManager {
         throw new ChangePasswordException("change.password.hash.null");
       }
       long now = new Date().getTime() / 1000;
-      long mailMaxAge = Configuration.getInstance().getInteger("password.change.hash.time");
+      long mailMaxAge = site.getPasswordChangeHashExpireTime();
       long hashAge = user.getPasswordRecoveryDate().getTime();
       long mailAge = now - hashAge;
       if (mailAge > mailMaxAge) {

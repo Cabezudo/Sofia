@@ -12,90 +12,20 @@ const Core = {
   messagesContainer: null,
   EVENT_TIME_DELAY: 300,
   screenBlockerDiv: null,
+  messageId: 0,
+  addMessage: message => {
+    if (Core.messagesContainer) {
+      Core.trigger(Core.messagesContainer, 'add', message);
+    }
+  },
   addOnloadFunction: (func) => {
     Core.onloadFunctions.push(func);
   },
-  screenBlocker: {
-    create: () => {
-      if (!Core.screenBlockerDiv) {
-        Core.screenBlockerDiv = document.getElementById('screenBlocker');
-        if (!Core.screenBlockerDiv) {
-          Core.screenBlockerDiv = document.createElement("div");
-          Core.screenBlockerDiv.id = 'screenBlocker';
-          Core.screenBlockerDiv.style.position = "absolute";
-          Core.screenBlockerDiv.style.top = "0px";
-          Core.screenBlockerDiv.style.width = "100vw";
-          Core.screenBlockerDiv.style.height = "100vh";
-          Core.screenBlockerDiv.style.background = "gray";
-          Core.screenBlockerDiv.style.opacity = ".7";
-          Core.screenBlockerDiv.focus();
-          document.body.appendChild(Core.screenBlockerDiv);
-        }
-      } else {
-        Core.screenBlockerDiv.style.display = "block";
-      }
-    },
-    block: () => {
-      Core.screenBlocker.create();
-      Core.screenBlockerDiv.style.display = "block";
-    },
-    unblock: (options) => {
-      Core.screenBlocker.create();
-      Core.screenBlockerDiv.style.display = "none";
-      if (options && options.focus) {
-        options.focus.focus();
-      }
-    }
+  cleanMessagesContainer: () => {
+    Core.removeChilds(Core.messagesContainer);
   },
-  hide: (id) => {
-    const element = typeof id === 'string' ? document.getElementById(id) : id;
-    if (!element.style.display) {
-      element.setAttribute('lastDisplay', element.style.display);
-    }
-    element.style.display = 'none';
-  },
-  show: (id) => {
-    const element = typeof id === 'string' ? document.getElementById(id) : id;
-    const display = element.getAttribute('lastDisplay');
-    if (display) {
-      element.style.display = display;
-    } else {
-      element.style.display = '';
-    }
-  },
-  sendGet: (url, origin, messageId) => {
-    if (!origin) {
-      throw new Error(`Invalid origin for sendGet: ${origin}`);
-    }
-    fetch(url)
-            .then(function (response) {
-              response.json().then(jsonData => {
-                jsonData.messageId = messageId;
-                Core.trigger(origin, 'response', jsonData);
-              });
-            })
-            ;
-  },
-  sendPost: (url, origin, messageId, formObject) => {
-    fetch(url, {
-      method: "POST",
-      mode: "no-cors",
-      cache: "no-cache",
-      credentials: "same-origin",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      redirect: "follow",
-      referrer: "no-referrer",
-      body: JSON.stringify(formObject)
-    })
-            .then(function (response) {
-              response.json().then(jsonData => {
-                jsonData.messageId = messageId;
-                Core.trigger(origin, 'response', jsonData);
-              });
-            })
-            ;
+  getNextMessageId: () => {
+    return ++Core.messageId;
   },
   getURLParameterByName: (name, url) => {
     if (!url) {
@@ -112,51 +42,18 @@ const Core = {
     }
     return decodeURIComponent(results[2].replace(/\+/g, ' '));
   },
-  trigger: (target, eventName, message) => {
-    const event = new CustomEvent(eventName, {detail: message});
-    target.dispatchEvent(event);
-  },
-  validateById: (id) => {
-    if (id === null) {
-      throw new Error('You must specify a valid id.');
+  hide: (id) => {
+    const element = typeof id === 'string' ? document.getElementById(id) : id;
+    if (!element.style.display) {
+      element.setAttribute('lastDisplay', element.style.display);
     }
-    const element = document.getElementById(id);
-    if (element === null) {
-      throw new Error(`Can't find the element with the id ${id}.`);
-    }
-    return element;
-  },
-  validateElement: (element) => {
-    if (element === null) {
-      throw new Error('You must specify an element.');
-    }
-    if (element === null) {
-      throw new Error(`The element parameter is null.`);
-    }
-    if (!element.tagName) {
-      throw new Error(`The node is not an element.`);
-    }
-    return element;
-  },
-  validateIdOrElement: (id, element) => {
-    if (id === null && element === null) {
-      throw new Error(`You must specify an id or element.`);
-    }
-    if (id !== null && element !== null && element.id !== id) {
-      throw new Error(`The element and the id don't belong to the same element.`);
-    }
-    if (id !== null) {
-      return Core.validateById(id);
-    }
-    if (element !== null) {
-      return Core.validateElement(element);
-    }
-  },
-  isFunction: v => {
-    return Object.prototype.toString.call(v) === '[object Function]';
+    element.style.display = 'none';
   },
   isEnter: event => {
     return event.key === 'Enter';
+  },
+  isFunction: v => {
+    return Object.prototype.toString.call(v) === '[object Function]';
   },
   isModifierKey: event => {
     const key = event.key;
@@ -209,20 +106,127 @@ const Core = {
   isTouchStart: event => {
     return true;
   },
-  setMessagesContainer: target => {
-    Core.messagesContainer = typeof target === 'string' ? document.getElementById(target) : target;
-  },
-  cleanMessagesContainer: () => {
-    Core.removeChilds(Core.messagesContainer);
-  },
-  addMessage: message => {
-    if (Core.messagesContainer) {
-      Core.trigger(Core.messagesContainer, 'add', message);
-    }
-  },
   removeChilds: element => {
     while (element.firstChild) {
       element.removeChild(element.firstChild);
+    }
+  },
+  screenBlocker: {
+    create: () => {
+      if (!Core.screenBlockerDiv) {
+        Core.screenBlockerDiv = document.getElementById('screenBlocker');
+        if (!Core.screenBlockerDiv) {
+          Core.screenBlockerDiv = document.createElement("div");
+          Core.screenBlockerDiv.id = 'screenBlocker';
+          Core.screenBlockerDiv.style.position = "absolute";
+          Core.screenBlockerDiv.style.top = "0px";
+          Core.screenBlockerDiv.style.width = "100vw";
+          Core.screenBlockerDiv.style.height = "100vh";
+          Core.screenBlockerDiv.style.background = "gray";
+          Core.screenBlockerDiv.style.opacity = ".7";
+          Core.screenBlockerDiv.focus();
+          document.body.appendChild(Core.screenBlockerDiv);
+        }
+      } else {
+        Core.screenBlockerDiv.style.display = "block";
+      }
+    },
+    block: () => {
+      Core.screenBlocker.create();
+      Core.screenBlockerDiv.style.display = "block";
+    },
+    unblock: (options) => {
+      Core.screenBlocker.create();
+      Core.screenBlockerDiv.style.display = "none";
+      if (options && options.focus) {
+        options.focus.focus();
+      }
+    }
+  },
+  sendGet: (url, origin, messageId) => {
+    if (!origin) {
+      throw new Error(`Invalid origin for sendGet: ${origin}`);
+    }
+    fetch(url)
+            .then(function (response) {
+              response.json().then(jsonData => {
+                jsonData.messageId = messageId;
+                Core.trigger(origin, 'response', jsonData);
+              });
+            })
+            ;
+  },
+  sendPost: (url, origin, messageId, formObject) => {
+    fetch(url, {
+      method: "POST",
+      mode: "no-cors",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      redirect: "follow",
+      referrer: "no-referrer",
+      body: JSON.stringify(formObject)
+    })
+            .then(function (response) {
+              response.json().then(jsonData => {
+                jsonData.messageId = messageId;
+                Core.trigger(origin, 'response', jsonData);
+              });
+            })
+            ;
+  },
+  setMessagesContainer: target => {
+    Core.messagesContainer = typeof target === 'string' ? document.getElementById(target) : target;
+  },
+  show: (id) => {
+    const element = typeof id === 'string' ? document.getElementById(id) : id;
+    const display = element.getAttribute('lastDisplay');
+    if (display) {
+      element.style.display = display;
+    } else {
+      element.style.display = '';
+    }
+  },
+  trigger: (target, eventName, message) => {
+    const event = new CustomEvent(eventName, {detail: message});
+    target.dispatchEvent(event);
+  },
+  validateById: (id) => {
+    if (id === null) {
+      throw new Error('You must specify a valid id.');
+    }
+    const element = document.getElementById(id);
+    if (element === null) {
+      throw new Error(`Can't find the element with the id ${id}.`);
+    }
+    return element;
+  },
+  validateElement: (element) => {
+    if (element === null) {
+      throw new Error('You must specify an element.');
+    }
+    if (element === null) {
+      throw new Error(`The element parameter is null.`);
+    }
+    if (!element.tagName) {
+      throw new Error(`The node is not an element.`);
+    }
+    return element;
+  },
+  validateIdOrElement: (id, element) => {
+    if (id === null && element === null) {
+      throw new Error(`You must specify an id or element.`);
+    }
+    if (id !== null && element !== null && element.id !== id) {
+      throw new Error(`The element and the id don't belong to the same element.`);
+    }
+    if (id !== null) {
+      return Core.validateById(id);
+    }
+    if (element !== null) {
+      return Core.validateElement(element);
     }
   }
 };

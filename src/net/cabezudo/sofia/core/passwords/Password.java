@@ -73,4 +73,8 @@ public class Password {
   public int length() {
     return plainPassword.length();
   }
+
+  public boolean equals(Password p) {
+    return this.plainPassword.equals(p.plainPassword);
+  }
 }
