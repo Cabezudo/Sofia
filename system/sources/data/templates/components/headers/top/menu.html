@@ -2,9 +2,11 @@
   .headerContainer {
     height: 42px;
     display: flex;
+    background-color: #{application.color.main};
   }
   .headerContainer > .header {
-    width: #{width};
+    color: white;
+    width: #{application.container.width.default};
     margin: auto;
     display: flex;
     align-items: center;
@@ -19,9 +21,72 @@
   .headerContainer > .header > .menu > .item {
     margin: 0 10px;
   }
+  .headerContainer > .header > .menu > .item:hover {
+    cursor: pointer;
+  }
+  @media all and ( min-width: 480px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.480};
+    }
+  }
+
+  @media all and ( min-width: 750px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.750};
+    }}
+
+  @media all and ( min-width: 1024px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.1024};
+    }
+  }
+
+  @media all and ( min-width: 1250px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.1250};
+    }
+  }
+
+  @media all and ( min-width: 1800px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.1800};
+    }
+  }
 </style>
+<script>
+  const createGUI = () => {
+    if (Core.isLogged()) {
+      Core.hide('menuLoginItem');
+    } else {
+      Core.hide('menuLogoutItem');
+    }
+    linkTo_1_00_00({
+      onClick: '/docs/',
+      id: 'menuDocumentationItem'
+    });
+    linkTo_1_00_00({
+      onClick: 'contact.html',
+      id: 'menuContactItem'
+    });
+    linkTo_1_00_00({
+      onClick: 'login.html',
+      id: 'menuLoginItem'
+    });
+    linkTo_1_00_00({
+      onClick: 'logout',
+      id: 'menuLogoutItem'
+    });
+  };
+  Core.addOnloadFunction(createGUI);
+</script>
 <div class="headerContainer">
   <div class="header">
-    <div class="name">Sofia</div><div class="menu"><div class="item"></div><div class="item">documentación</div><div class="item">contacto</div><div class="item">login</div></div>
+    <div class="name">Sofia</div>
+    <div class="menu">
+      <div class="item"></div>
+      <div class="item" id="menuDocumentationItem">documentación</div>
+      <div class="item" id="menuContactItem">contacto</div>
+      <div class="item" id="menuLoginItem">login</div>
+      <div class="item" id="menuLogoutItem">logout</div></div>
   </div>
 </div>

@@ -1,3 +1,6 @@
 {
-  "template": "pages/login"
+  "template": "pages/login",
+  "login": {
+    "afterLoginSucessfullPage": "index.html"
+  }
 }

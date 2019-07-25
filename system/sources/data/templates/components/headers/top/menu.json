@@ -1,3 +1,17 @@
 {
-  "width": "#{application.container.width}"
+  "application": {
+    "container": {
+      "width": {
+        "default": "#{theme.application.container.width.default}",
+        "480": "#{theme.application.container.width.480}",
+        "750": "#{theme.application.container.width.750}",
+        "1024": "#{theme.application.container.width.1024}",
+        "1250": "#{theme.application.container.width.1250}",
+        "1800": "#{theme.application.container.width.1800}"
+      }
+    },
+    "color": {
+      "main": "#{theme.application.color.main}"
+    }
+  }
 }

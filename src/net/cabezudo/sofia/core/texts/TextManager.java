@@ -45,6 +45,8 @@ public class TextManager {
         return "El correo para recuperar su contraseña ha sido enviado";
       case "password.change.ok":
         return "La contraseña ha sido cambiada.";
+      case "change.password.user.not.found.by.hash":
+        return "El enlace utilizado ya no es válido.";
       case "login.fail":
         return "El usuario o la contraseña son incorrectos.";
       case "user.logged":
