@@ -17,7 +17,7 @@ public abstract class AbstractMessage {
   private final Object[] os;
 
   protected enum Type {
-    OK, VALID, ERROR, INVALID, WARNING, NO_LOGGED;
+    OK, VALID, ERROR, INVALID, WARNING, NO_LOGGED, SERVICE_UNAVAILABLE, INTERNAL_SERVER_ERROR;
   }
 
   protected AbstractMessage(Type type, String message, Object... os) {

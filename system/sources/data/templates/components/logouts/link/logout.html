@@ -4,7 +4,7 @@
   const logout = (() => {
     const createGUI = () => {
       const logoutElement = Core.validateById('logoutLink');
-      if (variables.user !== null) {
+      if (Core.isLogged()) {
         const element = document.createElement('A');
         element.setAttribute('href', '/logout');
         element.textContent = 'salir';

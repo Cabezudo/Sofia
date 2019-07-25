@@ -367,21 +367,21 @@ public class UserManager {
     return null;
   }
 
-  public void changePassword(Site site, Hash hash, Password password) throws SQLException, ChangePasswordException, MailServerException, IOException, EMailNotExistException {
+  public void changePassword(Site site, Hash hash, Password password) throws SQLException, MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       User user = UserManager.getInstance().getByHash(connection, hash);
       if (user == null) {
-        throw new ChangePasswordException("change.password.user.not.found.by.hash");
+        throw new UserNotFoundByHashException("change.password.user.not.found.by.hash");
       }
       if (user.getPasswordRecoveryHash() == null) {
-        throw new ChangePasswordException("change.password.hash.null");
+        throw new NullHashException("change.password.hash.null");
       }
       long now = new Date().getTime() / 1000;
       long mailMaxAge = site.getPasswordChangeHashExpireTime();
       long hashAge = user.getPasswordRecoveryDate().getTime();
       long mailAge = now - hashAge;
       if (mailAge > mailMaxAge) {
-        throw new ChangePasswordException("change.password.hash.old");
+        throw new HashTooOldException("change.password.hash.old");
       }
 
       String query = "UPDATE " + UsersTable.NAME + " SET passwordRecoveryUUID = ?, password = ? WHERE site = ? AND passwordRecoveryUUID = ?";

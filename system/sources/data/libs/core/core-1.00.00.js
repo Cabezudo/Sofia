@@ -12,7 +12,6 @@ const Core = {
   messagesContainer: null,
   EVENT_TIME_DELAY: 300,
   screenBlockerDiv: null,
-  messageId: 0,
   addMessage: message => {
     if (Core.messagesContainer) {
       Core.trigger(Core.messagesContainer, 'add', message);
@@ -23,9 +22,6 @@ const Core = {
   },
   cleanMessagesContainer: () => {
     Core.removeChilds(Core.messagesContainer);
-  },
-  getNextMessageId: () => {
-    return ++Core.messageId;
   },
   getURLParameterByName: (name, url) => {
     if (!url) {
@@ -54,6 +50,9 @@ const Core = {
   },
   isFunction: v => {
     return Object.prototype.toString.call(v) === '[object Function]';
+  },
+  isLogged: () => {
+    return !Core.isNotLogged();
   },
   isModifierKey: event => {
     const key = event.key;
@@ -96,6 +95,10 @@ const Core = {
       default:
         return false;
     }
+  },
+  isNotLogged: () => {
+    console.log(`variables.user: ${variables.user}`);
+    return variables.user === null;
   },
   isRightLeft: event => {
     return (typeof event === 'object' && event.button === 0);

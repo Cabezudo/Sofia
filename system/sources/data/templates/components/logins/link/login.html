@@ -4,7 +4,7 @@
   const login = (() => {
     const createGUI = () => {
       const logoutElement = Core.validateById('loginLink');
-      if (variables.user === null) {
+      if (Core.isNotLogged()) {
         const element = document.createElement('A');
         element.setAttribute('href', '/login.html');
         element.textContent = 'login';

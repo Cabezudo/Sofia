@@ -1,5 +1,20 @@
 {
   "theme": {
+    "application": {
+      "container": {
+        "width": {
+          "default": "100vw",
+          "480": "480px",
+          "750": "750px",
+          "1024": "1024px",
+          "1250": "1250px",
+          "1800": "1800px"
+        }
+      },
+      "color": {
+        "main": "#70122C"
+      }
+    },
     "text": {
       "font": {
         "family": "Roboto Condensed",

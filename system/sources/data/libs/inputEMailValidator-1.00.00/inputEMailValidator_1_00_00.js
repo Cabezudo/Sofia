@@ -7,6 +7,11 @@
 
 const inputEMailValidator_1_00_00 = ({ element = null, onValid = null, onNotValid = null, onKeyPress = null } = {}) => {
   let verificationTimer;
+  let messageId = 0;
+
+  const getNextMessageId = () => {
+    return ++messageId;
+  };
 
   const validateOptions = () => {
     if (element === null) {
@@ -60,7 +65,7 @@ const inputEMailValidator_1_00_00 = ({ element = null, onValid = null, onNotVali
     });
   };
   const sendVerificationRequest = () => {
-    const messageId = Core.getNextMessageId();
+    messageId = getNextMessageId();
     Core.sendGet(`/api/v1/mail/validate/${element.value}`, element, messageId);
   };
 
