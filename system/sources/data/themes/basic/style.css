@@ -1,8 +1,6 @@
-#application {
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+body, html {
+  margin: 0;
+  padding: 0;
   font-family: '#{theme.caption.title.font.family}', sans-serif;
 }
 

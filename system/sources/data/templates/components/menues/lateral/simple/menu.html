@@ -1,0 +1,122 @@
+<style>
+  #content {
+    flex-grow: 1;
+  }
+</style>
+
+<style>
+  #menu {
+    width: 250px;
+    position: relative;
+    left: 0px;
+    height: 100vh;
+    flex-shrink: 0;
+    background-color: #460057;
+    color: white;
+  }
+
+  #menu>.header>.title {
+    font-size: 28px;
+    font-weight: 700;
+    padding: 0px 20px;
+  }
+
+  #menu>.content {
+    padding: 10px;
+  }
+
+  #userOnMenu {
+    padding: 10px 0 15px 20px;
+    font-size: 16px;
+    font-weight: 300;
+  }
+
+  #menu>.content>.itemTitle {
+    padding: 10px 0 0 20px;
+    font-size: 24px;
+    font-weight: 700;
+  }
+
+  #menu>.content>.item {
+    padding: 10px 0 5px 40px;
+    font-size: 24px;
+  }
+
+  @media all and (max-width: 450px) {
+    #menu {
+      width: 100vw;
+      position: absolute;
+      left: calc(48px - 100vw);
+      transition: .5s;
+    }
+
+    #menu>.header {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #menu>.header>#hamburgerIcon {
+      display: block;
+      background-image: url(/images/menues/lateral/simple/hamburgerMenu.png);
+      background-size: contain;
+      background-position: center;
+      width: 48px;
+      height: 48px;
+    }
+
+    #menu>.header>#closeIcon {
+      display: none;
+      background-image: url(/images/menues/lateral/simple/close.png);
+      background-size: contain;
+      background-position: center;
+      width: 48px;
+      height: 48px;
+    }
+  }
+</style>
+<script>
+  {
+    let previousLeftValue;
+    const createGUI = () => {
+      const menu = document.getElementById('menu');
+      const hamburgerIcon = document.getElementById('hamburgerIcon');
+      const closeIcon = document.getElementById('closeIcon');
+      hamburgerIcon.addEventListener("click", event => {
+        previousLeftValue = menu.style.left;
+        menu.style.left = '0px';
+        hamburgerIcon.style.display = "none";
+        closeIcon.style.display = "block";
+      });
+      closeIcon.addEventListener("click", event => {
+        menu.style.left = previousLeftValue;
+        hamburgerIcon.style.display = "block";
+        closeIcon.style.display = "none";
+      });
+      const userOnMenu = Core.validateById('userOnMenu');
+      userOnMenu.innerHTML = variables.user.email;
+    };
+    Core.addOnloadFunction(createGUI);
+  }
+</script>
+
+<div id="application">
+  <div id="menu">
+    <div class="header">
+      <div></div>
+      <div id="hamburgerIcon"></div>
+      <div id="closeIcon"></div>
+    </div>
+    <div class="content">
+      <div id="userOnMenu"></div>
+      <div class="itemTitle">Usuarios</div>
+      <div class="item">Listar</div>
+      <div class="item">Agregar</div>
+      <div class="itemTitle">Permisos</div>
+      <div class="itemTitle">Sitios</div>
+    </div>
+  </div>
+  <div id="content">
+  </div>
+</div>

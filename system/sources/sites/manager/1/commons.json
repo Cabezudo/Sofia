@@ -1,7 +1,7 @@
 {
-  "sitio": {
-    "nombre": "Manager de Sofía",
-    "nombreCorto": "Manager"
+  "site": {
+    "name": "Manager de Sofía",
+    "shortName": "Manager"
   },
   "themeName": "basic"
 }

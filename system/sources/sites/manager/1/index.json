@@ -1,0 +1,36 @@
+{
+  "header": {
+    "menu": {
+      "items": [
+        {
+          "name": {
+            "es": "documentación"
+          },
+          "url": "/docs/",
+          "logged": null
+        },
+        {
+          "name": {
+            "es": "contacto"
+          },
+          "url": "contact.html",
+          "logged": false
+        },
+        {
+          "name": {
+            "es": "acceder"
+          },
+          "url": "login.html",
+          "logged": false
+        },
+        {
+          "name": {
+            "es": "salir"
+          },
+          "url": "logout",
+          "logged": true
+        }
+      ]
+    }
+  }
+}

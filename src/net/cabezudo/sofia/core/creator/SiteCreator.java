@@ -68,8 +68,10 @@ public class SiteCreator {
     Path themeBasePath = Configuration.getInstance().getCommonsThemesPath().resolve(themeName);
     templateLiterals.add(themeBasePath, "values.json");
 
-    Path styleFilePath = themeBasePath.resolve("style.css");
     CascadingStyleSheetsCode css = new CascadingStyleSheetsCode(templateLiterals);
+    Path fontsStyleFilePath = site.getSourcesPath().resolve("fonts.css");
+    css.append(fontsStyleFilePath);
+    Path styleFilePath = themeBasePath.resolve("style.css");
     css.append(styleFilePath);
 
     try {
