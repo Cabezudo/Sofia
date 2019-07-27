@@ -13,5 +13,23 @@
     "color": {
       "main": "#{theme.application.color.main}"
     }
+  },
+  "menu": {
+    "items": [
+      {
+        "name": {
+          "es": "nombre"
+        },
+        "url": "url",
+        "logged": null
+      },
+      {
+        "name": {
+          "es": "nombre"
+        },
+        "url": "url",
+        "logged": null
+      }
+    ]
   }
 }

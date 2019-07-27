@@ -16,6 +16,7 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
+import net.cabezudo.sofia.emails.EMailNotExistException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -59,7 +60,8 @@ public class JSServlet extends HttpServlet {
         sb.append("null\n");
       } else {
         sb.append("{\n");
-        sb.append("    id: '").append(user.getId()).append("',\n");
+        sb.append("  id: '").append(user.getId()).append("',\n");
+        sb.append("  email: '").append(user.getMail().getAddress()).append("',\n");
         sb.append("    profiles: [\n");
         Profiles profiles = UserManager.getInstance().getProfiles(user);
         boolean first = true;
@@ -87,7 +89,7 @@ public class JSServlet extends HttpServlet {
         out.write(buffer, 0, count);
       }
       out.flush();
-    } catch (SQLException e) {
+    } catch (SQLException | EMailNotExistException e) {
       SystemMonitor.log(e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }

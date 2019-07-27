@@ -1,6 +1,6 @@
 {
   "template": "pages/login",
   "login": {
-    "afterLoginSucessfullPage": "index.html"
+    "afterLoginSucessfullPage": "/manager/index.html"
   }
 }

@@ -4,37 +4,16 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina principal</title>
-    <link rel="stylesheet" type="text/css" href="css/home.css">
-    <script src="js/home.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/manager/index.css">
+    <script src="/js/manager/index.js"></script>
     <script>
     </script>
     <style>
-      html {
-        font-family: 'Roboto condensed';
-        font-weight: 700;
-      }
-      #application {
-        display: flex;
-      }
-      #menu {
-        height: 100vh;
-        width: 250px;
-        background-color: #460057;
-      }
-      #content {
-        width: 100%;
-      }
-      #content > .title {
-        font-size: 34px;
-        width: 100%;
-        text-align: center;
-        margin: 10px 0;
-      }
     </style>
   </head>
   <body>
-    <div id="application">
-      <section file="menu"></section>
+    <div class="fullScreen">
+      <section id="menu" template="menues/lateral/simple/menu"></section>
       <div id="content">
       </div>
     </div>

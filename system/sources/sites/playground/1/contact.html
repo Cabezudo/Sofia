@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html profiles="all">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina principal</title>
+    <link rel="stylesheet" type="text/css" href="css/contact.css">
+    <script src="js/contact.js"></script>
+    <script>
+      {
+        const createGUI = () => {
+        };
+        Core.addOnloadFunction(createGUI);
+      }
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+
+    <div class="title">Solicita más Información</div>
+    <p>¿Cómo te podemos ayudar?</p>
+    <div>
+      <div>
+        <div>
+          <input name="nombre" type="text" placeholder="Nombre y Apellidos">
+        </div>
+      </div>
+      <div>
+        <div>
+          <input name="telefono" type="text" placeholder="Núm. de Teléfono">
+        </div>
+      </div>
+      <div>
+        <div>
+          <input name="email" type="email" placeholder="Correo Electrónico">
+        </div>
+      </div>
+      <div>
+        <textarea name="mensaje" maxlength="150" placeholder="Déjanos tus dudas"></textarea>
+      </div>
+      <div >
+        <input type="checkbox" name="check_privacy">He leído y acepto la <a href="politica.html">Política de Privacidad </a></div>
+      <div>
+        <input value="Agendar tu cita">
+      </div>
+    </div>
+  </body>
+</html>

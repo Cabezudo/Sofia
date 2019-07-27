@@ -12,8 +12,8 @@ html {
 }
 
 #container {
-  width: #{theme.application.container.width.default};
   margin: auto;
+  padding: 20px;
 }
 
 .documentation .title {
