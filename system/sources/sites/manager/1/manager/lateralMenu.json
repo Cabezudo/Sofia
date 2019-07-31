@@ -1,0 +1,30 @@
+{
+  "menu": {
+    "items": [
+      {
+        "name": {
+          "es": "sitios"
+        },
+        "url": "/manager/sites.html"
+      },
+      {
+        "name": {
+          "es": "usuarios"
+        },
+        "url": "contact.html"
+      },
+      {
+        "name": {
+          "es": "permisos"
+        },
+        "url": "login.html"
+      },
+      {
+        "name": {
+          "es": "salir"
+        },
+        "url": "/logout"
+      }
+    ]
+  }
+}

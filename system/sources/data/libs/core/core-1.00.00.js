@@ -40,10 +40,11 @@ const Core = {
   },
   hide: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
-    if (!element.style.display) {
-      element.setAttribute('lastDisplay', element.style.display);
-    }
-    element.style.display = 'none';
+    element.hidden = true;
+//    if (!element.style.display) {
+//      element.setAttribute('lastDisplay', element.style.display);
+//    }
+//    element.style.display = 'none';
   },
   isEnter: event => {
     return event.key === 'Enter';
@@ -108,6 +109,9 @@ const Core = {
   },
   isTouchStart: event => {
     return true;
+  },
+  isVisible: element => {
+    return !element.hidden;
   },
   removeChilds: element => {
     while (element.firstChild) {
@@ -185,12 +189,13 @@ const Core = {
   },
   show: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
-    const display = element.getAttribute('lastDisplay');
-    if (display) {
-      element.style.display = display;
-    } else {
-      element.style.display = '';
-    }
+    element.hidden = false;
+//    const display = element.getAttribute('lastDisplay');
+//    if (display) {
+//      element.style.display = display;
+//    } else {
+//      element.style.display = '';
+//    }
   },
   trigger: (target, eventName, message) => {
     const event = new CustomEvent(eventName, {detail: message});

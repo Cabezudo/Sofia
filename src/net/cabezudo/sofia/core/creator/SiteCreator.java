@@ -106,7 +106,7 @@ public class SiteCreator {
     try {
       html = templateLiterals.apply(html);
     } catch (UndefinedLiteralException e) {
-      throw new SiteCreationException(e);
+      throw new SiteCreationException("Component: " + voidPartialPath + ": " + e.getMessage());
     }
     Files.write(fileContentPath, html.getBytes(StandardCharsets.UTF_8));
 
