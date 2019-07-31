@@ -1,17 +1,11 @@
 <style>
-  #content {
-    flex-grow: 1;
-  }
-</style>
-
-<style>
   #menu {
     width: 250px;
     position: relative;
     left: 0px;
     height: 100vh;
     flex-shrink: 0;
-    background-color: #460057;
+    background-color: #{application.color.main};
     color: white;
   }
 
@@ -21,7 +15,7 @@
     padding: 0px 20px;
   }
 
-  #menu>.content {
+  #items {
     padding: 10px;
   }
 
@@ -31,15 +25,20 @@
     font-weight: 300;
   }
 
-  #menu>.content>.itemTitle {
-    padding: 10px 0 0 20px;
+  #items .item {
     font-size: 24px;
-    font-weight: 700;
   }
 
-  #menu>.content>.item {
-    padding: 10px 0 5px 40px;
-    font-size: 24px;
+  #items>.first, #menu>.content>.title {
+    padding: 10px 0 10px 20px;
+  }
+
+  #items>div>.second {
+    padding: 10px 0 10px 40px;
+  }
+
+  #items>.title {
+    font-weight: 700;
   }
 
   @media all and (max-width: 450px) {
@@ -80,22 +79,62 @@
   {
     let previousLeftValue;
     const createGUI = () => {
-      const menu = document.getElementById('menu');
+      const menuElement = document.getElementById('menu');
+      const itemsElement = document.getElementById('items');
       const hamburgerIcon = document.getElementById('hamburgerIcon');
       const closeIcon = document.getElementById('closeIcon');
       hamburgerIcon.addEventListener("click", event => {
-        previousLeftValue = menu.style.left;
-        menu.style.left = '0px';
+        previousLeftValue = menuElement.style.left;
+        menuElement.style.left = '0px';
         hamburgerIcon.style.display = "none";
         closeIcon.style.display = "block";
       });
       closeIcon.addEventListener("click", event => {
-        menu.style.left = previousLeftValue;
+        menuElement.style.left = previousLeftValue;
         hamburgerIcon.style.display = "block";
         closeIcon.style.display = "none";
       });
       const userOnMenu = Core.validateById('userOnMenu');
       userOnMenu.innerHTML = variables.user.email;
+      const items = #{menu}.items;
+      items.forEach(item => {
+        const itemElement = document.createElement('div');
+        itemsElement.appendChild(itemElement);
+        itemElement.innerHTML = item.name.es;
+        if (item.items) {
+          itemElement.className = 'item first title';
+          const items = item.items;
+          const subItems = document.createElement('div');
+          itemsElement.appendChild(subItems);
+          items.forEach(item => {
+            const subItem = document.createElement('div');
+            subItems.appendChild(subItem);
+            Core.hide(subItems);
+            subItem.innerHTML = item.name.es;
+            subItem.className = 'item second';
+            linkTo_1_00_00({
+              onClick: item.url,
+              element: subItem
+            });
+          });
+          linkTo_1_00_00({
+            onClick: () => {
+              if (Core.isVisible(subItems)) {
+                Core.hide(subItems);
+              } else {
+                Core.show(subItems);
+              }
+            },
+            element: itemElement
+          });
+        } else {
+          itemElement.className = 'item first';
+          linkTo_1_00_00({
+            onClick: item.url,
+            element: itemElement
+          });
+        }
+      });
     };
     Core.addOnloadFunction(createGUI);
   }
@@ -108,13 +147,8 @@
       <div id="hamburgerIcon"></div>
       <div id="closeIcon"></div>
     </div>
-    <div class="content">
+    <div id="items">
       <div id="userOnMenu"></div>
-      <div class="itemTitle">Usuarios</div>
-      <div class="item">Listar</div>
-      <div class="item">Agregar</div>
-      <div class="itemTitle">Permisos</div>
-      <div class="itemTitle">Sitios</div>
     </div>
   </div>
   <div id="content">

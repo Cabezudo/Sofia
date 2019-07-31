@@ -230,6 +230,7 @@ public class SofiaSourceFile {
         }
         try {
           load(tag.getId(), Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName);
+          readJSONFileForId(basePath, tag.getId());
           addImagesResources(Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName);
         } catch (NoSuchFileException e) {
           throw new NoSuchFileException("No such template file: " + templateName);
@@ -241,6 +242,29 @@ public class SofiaSourceFile {
     sb.append(fullLine);
     sb.append('\n');
     return sb.toString();
+  }
+
+  private void readJSONFileForId(Path basePath, String jsonFileName) throws IOException, SiteCreationException {
+    Path jsonSourceFilePath = basePath.resolve(jsonFileName + ".json");
+    if (Files.isRegularFile(jsonSourceFilePath)) {
+      Logger.debug("FOUND configuration file %s for %s.", jsonSourceFilePath, jsonFileName);
+      String jsonCode = new String(Files.readAllBytes(jsonSourceFilePath), Charset.forName("UTF-8"));
+      try {
+        jsonCode = templateLiterals.apply(jsonCode);
+        try {
+          JSONObject jsonObject = JSON.parse(jsonCode).toJSONObject();
+          JSONPair jsonPair = new JSONPair(jsonFileName, jsonObject);
+          JSONObject jsonTemplateObject = new JSONObject();
+          jsonTemplateObject.add(jsonPair);
+          templateLiterals.add(jsonTemplateObject);
+        } catch (JSONParseException e) {
+          throw new SiteCreationException("Cant parse " + jsonSourceFilePath + ". " + e.getMessage());
+        }
+      } catch (UndefinedLiteralException e) {
+        Path safePath = Configuration.getInstance().getCommonsTemplatesPath().relativize(jsonSourceFilePath);
+        throw new SiteCreationException("Undefined literal " + e.getUndefinedLiteral() + " in " + safePath + ".");
+      }
+    }
   }
 
   private void addImagesResources(Path commonsComponentsTemplatesPath, String templateName) {
