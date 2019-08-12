@@ -10,33 +10,30 @@ import net.cabezudo.json.JSONable;
  */
 public abstract class EntityList<T> implements JSONable, Iterable<T> {
 
-  public static final long MAX = 200;
+  public static final int MAX = 200;
 
-  private long total;
-  private long offset;
-  private long pageSize;
+  private int total;
+  private final int offset;
+  private final int pageSize;
 
-  public void setTotal(long total) {
-    this.total = total;
-  }
-
-  public long getTotal() {
-    return total;
-  }
-
-  public void setOffset(long offset) {
+  public EntityList(int offset, int pageSize) {
     this.offset = offset;
-  }
-
-  public long getOffset() {
-    return offset;
-  }
-
-  public void setPageSize(long pageSize) {
     this.pageSize = pageSize;
   }
 
-  public long getPageSize() {
+  public void setTotal(int total) {
+    this.total = total;
+  }
+
+  public int getTotal() {
+    return total;
+  }
+
+  public int getOffset() {
+    return offset;
+  }
+
+  public int getPageSize() {
     return pageSize;
   }
 

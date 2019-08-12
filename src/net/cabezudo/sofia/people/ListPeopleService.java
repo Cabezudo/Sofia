@@ -4,8 +4,6 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.cabezudo.sofia.people.PeopleList;
-import net.cabezudo.sofia.people.PeopleManager;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -24,6 +22,10 @@ public class ListPeopleService extends Service {
   public void execute() throws ServletException {
     try {
       User owner = super.getUser();
+      if (owner == null) {
+        sendError(HttpServletResponse.SC_FORBIDDEN, "Not logged");
+        return;
+      }
       PeopleList list = PeopleManager.getInstance().list(owner);
       out.print(list.toJSON());
     } catch (SQLException e) {

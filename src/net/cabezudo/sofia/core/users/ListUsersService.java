@@ -4,11 +4,8 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.cabezudo.sofia.people.PeopleList;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.users.UserManager;
-import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.people.PeopleList;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

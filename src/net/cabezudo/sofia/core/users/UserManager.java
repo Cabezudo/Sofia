@@ -33,7 +33,6 @@ import net.cabezudo.sofia.emails.EMailManager;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.emails.EMailValidator;
-import net.cabezudo.sofia.emails.EMails;
 import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.people.PeopleList;
 import net.cabezudo.sofia.people.PeopleManager;
@@ -120,6 +119,10 @@ public class UserManager {
         throw new RuntimeException(e);
       }
     }
+  }
+
+  public User getAdministrator() throws SQLException {
+    return this.getById(1);
   }
 
   private Person addPerson(Connection connection, String name, String lastName, int ownerId) throws SQLException {
@@ -399,48 +402,7 @@ public class UserManager {
   }
 
   public PeopleList list(User owner) throws SQLException, UserNotExistException {
-    Logger.fine("Users list");
-
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      String query = "SELECT count(p.id) AS total "
-              + "FROM " + PeopleTable.NAME + " AS p "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = personId "
-              + "LEFT JOIN " + UsersTable.NAME + " AS u ON e.id = eMailId "
-              + "WHERE password IS NOT NULL AND p.owner = ?";
-      PreparedStatement ps = connection.prepareStatement(query);
-      ps.setInt(1, owner.getId());
-      Logger.fine(ps);
-      ResultSet rs = ps.executeQuery();
-
-      while (!rs.next()) {
-        throw new RuntimeException("The select to count the number of users fail.");
-      }
-
-      long total = rs.getInt("total");
-
-      query = "SELECT p.id AS personId, name, lastName, p.owner, e.id AS eMailId, address "
-              + "FROM " + PeopleTable.NAME + " AS p "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = personId "
-              + "LEFT JOIN " + UsersTable.NAME + " AS u ON e.id = eMailId "
-              + "WHERE password IS NOT NULL";
-      ps = connection.prepareStatement(query);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
-      PeopleList list = new PeopleList();
-      while (rs.next()) {
-        int personId = rs.getInt("personId");
-        String name = rs.getString("name");
-        String lastName = rs.getString("lastName");
-        int eMailId = rs.getInt("eMailId");
-        String address = rs.getString("address");
-        EMail eMail = new EMail(eMailId, personId, address);
-        EMails eMails = new EMails(eMail);
-        Person person = new Person(personId, name, lastName, eMails, owner);
-        list.add(person);
-      }
-      return list;
-    }
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   public Message getRegistrationRetryAlertEMailData(Site site, String address) throws SQLException, IOException {

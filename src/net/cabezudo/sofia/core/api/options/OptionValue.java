@@ -14,6 +14,9 @@ public abstract class OptionValue {
   }
 
   OptionValue(String v) {
+    if (v.isEmpty()) {
+      throw new RuntimeException("The value is empty");
+    }
     char c = v.charAt(0);
 
     switch (c) {

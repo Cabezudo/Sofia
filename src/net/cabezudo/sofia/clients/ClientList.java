@@ -11,9 +11,9 @@ import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
 import net.cabezudo.sofia.core.EntityList;
+import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMails;
-import net.cabezudo.sofia.core.users.UserNotExistException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -23,6 +23,10 @@ public class ClientList extends EntityList<Client> {
 
   List<Client> list = new ArrayList<>();
   Map<Integer, Client> map = new HashMap<>();
+
+  public ClientList(int offset, int pageSize) {
+    super(offset, pageSize);
+  }
 
   @Override
   public Iterator<Client> iterator() {

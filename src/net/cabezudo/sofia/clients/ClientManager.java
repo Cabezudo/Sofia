@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import net.cabezudo.sofia.core.QueryHelper;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.api.options.list.Filters;
 import net.cabezudo.sofia.core.api.options.list.Limit;
@@ -155,7 +156,7 @@ public class ClientManager {
         sqlLimitValue = limit.getValue();
       }
 
-      String sqlSort = " ORDER BY lastName, name";
+      String sqlSort = QueryHelper.getOrderString(sort, "lastName, name", new String[]{"personId", "name", "lastName", "address"});
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
@@ -182,7 +183,7 @@ public class ClientManager {
       Logger.fine(ps);
       ResultSet rs = ps.executeQuery();
 
-      ClientList list = new ClientList();
+      ClientList list = new ClientList(offset == null ? 0 : offset.getValue(), limit == null ? ClientList.MAX : limit.getValue());
       while (rs.next()) {
         int personId = rs.getInt("personId");
         String name = rs.getString("name");
@@ -211,8 +212,6 @@ public class ClientManager {
       int total = rs.getInt("total");
 
       list.setTotal(total);
-      list.setOffset(sqlOffsetValue);
-      list.setPageSize(sqlLimitValue);
 
       return list;
     }
