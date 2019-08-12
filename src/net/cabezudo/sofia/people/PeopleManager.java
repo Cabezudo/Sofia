@@ -7,16 +7,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.emails.EMail;
-import net.cabezudo.sofia.emails.EMailManager;
-import net.cabezudo.sofia.emails.EMails;
-import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
-import net.cabezudo.sofia.core.users.UsersTable;
+import net.cabezudo.sofia.emails.EMail;
+import net.cabezudo.sofia.emails.EMailManager;
+import net.cabezudo.sofia.emails.EMails;
+import net.cabezudo.sofia.emails.EMailsTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -153,46 +152,6 @@ public class PeopleManager {
 
   public PeopleList list(User owner) throws SQLException, UserNotExistException {
     Logger.fine("Users list");
-
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      String query = "SELECT count(p.id) AS total "
-              + "FROM " + PeopleTable.NAME + " AS p "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = personId "
-              + "LEFT JOIN " + UsersTable.NAME + " AS u ON e.id = eMailId";
-      PreparedStatement ps = connection.prepareStatement(query);
-      Logger.fine(ps);
-      ResultSet rs = ps.executeQuery();
-
-      while (!rs.next()) {
-        throw new RuntimeException("The select to count the number of people fail.");
-      }
-
-      long total = rs.getInt("total");
-
-      query = "SELECT p.id AS personId, name, lastName, e.id AS eMailId, address "
-              + "FROM " + PeopleTable.NAME + " AS p "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = personId "
-              + "LEFT JOIN " + UsersTable.NAME + " AS u ON e.id = eMailId";
-      ps = connection.prepareStatement(query);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
-      PeopleList list = new PeopleList();
-      while (rs.next()) {
-        int personId = rs.getInt("personId");
-        String name = rs.getString("name");
-        String lastName = rs.getString("lastName");
-        int eMailId = rs.getInt("eMailId");
-        EMails eMails = new EMails();
-        if (eMailId > 0) {
-          String address = rs.getString("address");
-          EMail eMail = new EMail(eMailId, personId, address);
-          eMails.add(eMail);
-        }
-        Person person = new Person(personId, name, lastName, eMails, owner);
-        list.add(person);
-      }
-      return list;
-    }
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

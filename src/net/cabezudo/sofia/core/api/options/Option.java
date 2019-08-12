@@ -40,7 +40,7 @@ public abstract class Option {
     if (originalValue == null || originalValue.isEmpty()) {
       return;
     }
-    String[] vs = originalValue.replaceAll("\\s", ",").split(",");
+    String[] vs = originalValue.replaceAll("\\s", "").split(",");
     for (String v : vs) {
       OptionValue optionValue = createOptionValue(v);
       values.add(optionValue);
@@ -59,7 +59,7 @@ public abstract class Option {
     return sb.toString();
   }
 
-  public long getValue() {
+  public int getValue() {
     return value;
   }
 

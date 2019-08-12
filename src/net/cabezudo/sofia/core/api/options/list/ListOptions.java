@@ -1,8 +1,8 @@
 package net.cabezudo.sofia.core.api.options.list;
 
-import net.cabezudo.sofia.core.api.options.Options;
-import net.cabezudo.sofia.core.api.options.Option;
 import javax.servlet.http.HttpServletRequest;
+import net.cabezudo.sofia.core.api.options.Option;
+import net.cabezudo.sofia.core.api.options.Options;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

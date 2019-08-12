@@ -159,7 +159,7 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
     HandlerCollection handler = new HandlerCollection();
 
-    SiteList siteList = SiteManager.getInstance().getAll();
+    SiteList siteList = SiteManager.getInstance().list();
 
     for (Site site : siteList) {
       handler.addHandler(setServer(site));

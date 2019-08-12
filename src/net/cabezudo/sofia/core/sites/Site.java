@@ -37,6 +37,10 @@ public class Site implements Comparable<Integer> {
     return name;
   }
 
+  public int getVersion() {
+    return version;
+  }
+
   public void addHost(int hostId, String hostName) {
     DomainName domainName = new DomainName(hostId, hostName);
     this.add(domainName);

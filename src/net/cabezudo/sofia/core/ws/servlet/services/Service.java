@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
@@ -22,13 +23,14 @@ public abstract class Service {
 
   protected final HttpServletRequest request;
   protected final HttpServletResponse response;
+  private final HttpSession session;
   protected final PrintWriter out;
 
   protected Service(HttpServletRequest request, HttpServletResponse response) throws ServletException {
     this.request = request;
     this.response = response;
+    this.session = request.getSession();
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-
     try {
       out = response.getWriter();
     } catch (IOException e) {
@@ -85,12 +87,16 @@ public abstract class Service {
     }
   }
 
+  public final HttpSession getSession() {
+    return session;
+  }
+
   protected Site getSite() {
     Site site = (Site) request.getAttribute("site");
     return site;
   }
 
   protected User getUser() {
-    return (User) request.getSession().getAttribute("user");
+    return (User) request.getAttribute("user");
   }
 }

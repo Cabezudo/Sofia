@@ -13,4 +13,8 @@ public class Utils {
     Arrays.fill(array, c);
     return new String(array);
   }
+
+  public static String chop(String string, int i) {
+    return string.substring(0, string.length() - i);
+  }
 }

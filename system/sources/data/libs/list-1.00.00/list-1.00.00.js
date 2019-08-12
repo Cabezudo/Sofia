@@ -1,9 +1,10 @@
+/* global Core, fetch */
+
 /*
  * Created on: 14/05/2019
  * Author:     Esteban Cabezudo
+ *
  */
-
-/* global Core, fetch */
 
 const list_1_00_00 = async ({ id = null, source = null, filterInputElement = null, cellMaker = null, onClick = null, notLoggedURL = '/' } = {}) => {
   const LIST_CLASS_NAME = "list-1_00_00";
@@ -203,7 +204,7 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
                 return;
               }
 
-              if (data.status === 'NO_LOGGED') {
+              if (data.status === 'NOT_LOGGED_IN') {
                 document.location.replace(notLoggedURL);
               }
 

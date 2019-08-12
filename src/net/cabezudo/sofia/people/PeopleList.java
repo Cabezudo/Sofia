@@ -11,9 +11,9 @@ import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
 import net.cabezudo.sofia.core.EntityList;
+import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMails;
-import net.cabezudo.sofia.core.users.UserNotExistException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -23,6 +23,10 @@ public class PeopleList extends EntityList<Person> {
 
   List<Person> list = new ArrayList<>();
   Map<Integer, Person> map = new HashMap<>();
+
+  public PeopleList(int offset, int pageSize) {
+    super(offset, pageSize);
+  }
 
   @Override
   public Iterator<Person> iterator() {
@@ -52,7 +56,7 @@ public class PeopleList extends EntityList<Person> {
   public JSONValue toJSONTree() {
     JSONObject listObject = new JSONObject();
     JSONArray jsonRecords = new JSONArray();
-    JSONPair jsonRecordsPair = new JSONPair("records", jsonRecords);
+    JSONPair jsonRecordsPair = new JSONPair("list", jsonRecords);
     listObject.add(jsonRecordsPair);
     for (Person person : list) {
       JSONObject jsonPerson = new JSONObject();

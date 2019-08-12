@@ -4,15 +4,9 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.api.options.list.Filters;
-import net.cabezudo.sofia.core.api.options.list.Limit;
-import net.cabezudo.sofia.core.api.options.list.ListOptions;
-import net.cabezudo.sofia.core.api.options.list.Offset;
-import net.cabezudo.sofia.core.api.options.list.Sort;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
@@ -20,50 +14,16 @@ import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
 import net.cabezudo.sofia.core.ws.responses.NotAuthenticatedMessage;
 import net.cabezudo.sofia.core.ws.responses.NotAuthenticatedResponse;
-import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.03.13
  */
-public class ListClientsService extends Service {
-
-  private final ListOptions listOptions;
-  private final HttpSession session;
-
-  private Filters filters;
-  private Sort sort;
-  private final Offset offset; // Is final because not persist and only matter the request value
-  private Limit limit;
+public class ListClientsService extends ListService {
 
   public ListClientsService(HttpServletRequest request, HttpServletResponse response) throws ServletException {
     super(request, response);
-    session = request.getSession();
-
-    // List the clients. GET /api/v1/clients?sort=+name,-lastName&fields=name,lastName&offset=10&limit=50
-    listOptions = new ListOptions(request);
-
-    // Filters must be persist in the session
-    filters = listOptions.getFilters();
-    if (filters == null) {
-      filters = (Filters) session.getAttribute("clientListFilters");
-    }
-    // Sort must be persist in the session
-    sort = listOptions.getSort();
-    if (sort == null) {
-      sort = (Sort) session.getAttribute("clientListSort");
-    }
-    limit = listOptions.getLimit();
-    if (limit == null) {
-      limit = (Limit) session.getAttribute("clientListLimit");
-    }
-
-    // Offset must not persist in session because the empty option is uset to the headers list
-    offset = listOptions.getOffset();
-
-    if (filters != null) {
-      session.setAttribute("clientListFilters", filters);
-    }
   }
 
   @Override
@@ -82,12 +42,12 @@ public class ListClientsService extends Service {
       User owner = clientData.getUser();
       AuthorizationManager.getInstance().hasAuthorization(ListClientsService.class, owner);
 
-      ClientList list = ClientManager.getInstance().list(filters, sort, offset, limit, owner);
+      ClientList list = ClientManager.getInstance().list(getFilters(), getSort(), getOffset(), getLimit(), owner);
 
-      if (offset == null) {
+      if (getOffset() == null) {
         JSONObject jsonObject = new JSONObject();
         JSONArray jsonArray = new JSONArray();
-        jsonObject.add(new JSONPair("filters", filters == null ? "" : filters.getOriginalValue()));
+        jsonObject.add(new JSONPair("filters", getFilters() == null ? "" : getFilters().getOriginalValue()));
         jsonObject.add(new JSONPair("headers", jsonArray));
         jsonObject.add(new JSONPair("totalRecords", list.getTotal()));
         jsonObject.add(new JSONPair("pageSize", list.getPageSize()));

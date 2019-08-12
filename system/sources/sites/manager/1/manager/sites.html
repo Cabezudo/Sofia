@@ -7,6 +7,20 @@
     <link rel="stylesheet" type="text/css" href="/css/manager/sites.css">
     <script src="/js/manager/sites.js"></script>
     <script>
+      {
+        const createGUI = () => {
+          list_1_00_00({
+            id = 'siteList',
+            source = '/',
+            filterInputElement = null,
+            cellMaker = null,
+            onClick = null,
+            notLoggedURL = '/'
+          });
+        };
+        Core.addOnloadFunction(createGUI);
+      }
+
     </script>
     <style>
     </style>
@@ -15,6 +29,7 @@
     <div class="fullScreen">
       <section id="lateralMenu" template="menues/lateral/simple/menu"></section>
       <div id="content">
+        <div id="siteList"></div>
       </div>
     </div>
   </body>
