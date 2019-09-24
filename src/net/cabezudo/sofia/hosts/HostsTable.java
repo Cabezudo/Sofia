@@ -7,7 +7,7 @@ import net.cabezudo.sofia.core.sites.SitesTable;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.28
  */
-public class HostTable extends Table {
+public class HostsTable extends Table {
 
   public static final String NAME = "hosts";
   public static final String CREATION_QUERY

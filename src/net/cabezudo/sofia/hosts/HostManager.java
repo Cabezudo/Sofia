@@ -34,7 +34,7 @@ public class HostManager {
   }
 
   public HostList get(Connection connection, Site site) throws SQLException {
-    String query = "SELECT id, name FROM " + HostTable.NAME + " WHERE siteId = ?";
+    String query = "SELECT id, name FROM " + HostsTable.NAME + " WHERE siteId = ?";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, site.getId());
@@ -54,7 +54,7 @@ public class HostManager {
 
   public Host add(Connection connection, int siteId, String domainName) throws SQLException {
 
-    String query = "INSERT INTO " + HostTable.NAME + " (siteId, name) VALUES (?, ?)";
+    String query = "INSERT INTO " + HostsTable.NAME + " (siteId, name) VALUES (?, ?)";
     PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     ps.setInt(1, siteId);
     ps.setString(2, domainName);
@@ -77,7 +77,7 @@ public class HostManager {
   }
 
   public Host get(Connection connection, int hostId) throws SQLException {
-    String query = "SELECT id, name FROM " + HostTable.NAME + " WHERE id = ?";
+    String query = "SELECT id, name FROM " + HostsTable.NAME + " WHERE id = ?";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, hostId);
