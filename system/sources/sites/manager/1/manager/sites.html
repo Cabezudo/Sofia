@@ -3,33 +3,67 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina principal</title>
+    <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/css/manager/sites.css">
     <script src="/js/manager/sites.js"></script>
     <script>
       {
         const createGUI = () => {
+          Core.hide('detail');
+          const detailDiv = Core.validateById('detail');
+          detailDiv.addEventListener('response', event => {
+            const data = event.detail;
+            console.log(data);
+            Core.validateById('name').value = data.name;
+            Core.validateById('version').value = data.version;
+            const hosts = data.hosts;
+            hosts.forEach(item => {
+              console.log(item);
+            });
+            Core.show('detail');
+            Core.hide('sites');
+            Core.screenBlocker.unblock();
+          });
           list_1_00_00({
-            id = 'siteList',
-            source = '/',
-            filterInputElement = null,
-            cellMaker = null,
-            onClick = null,
-            notLoggedURL = '/'
+            id: 'siteList',
+            source: '/api/v1/sites',
+            filterInputElement: null,
+            cellMaker: row => {
+              if (row) {
+                return `<td>${row.name} (v${row.version})</td>`;
+              }
+            },
+            onClick: event => {
+              const siteId = event.detail;
+              Core.screenBlocker.block();
+              Core.sendGet(`/api/v1/sites/${siteId}`, detailDiv);
+            },
+            notLoggedURL: '/'
           });
         };
         Core.addOnloadFunction(createGUI);
       }
-
     </script>
     <style>
     </style>
   </head>
   <body>
     <div class="fullScreen">
-      <section id="lateralMenu" template="menues/lateral/simple/menu"></section>
-      <div id="content">
-        <div id="siteList"></div>
+      <div id="application">
+        <section id="lateralMenu" template="menues/lateral/simple/menu"></section>
+        <div id="content">
+          <div id="sites">
+            <div class="title">Sitios</div>
+            <div id="siteList"></div>
+          </div>
+          <div id="detail">
+            <div class="title">Detalle de sitio</div>
+            <div><input id="name"></div>
+            <div><input id="version"></div>
+            <div>Hosts</div>
+            <div id="hosts"></div>
+          </div>
+        </div>
       </div>
     </div>
   </body>

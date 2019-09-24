@@ -1,6 +1,6 @@
 package net.cabezudo.domains;
 
-import net.cabezudo.sofia.domains.DomainValidator;
+import net.cabezudo.sofia.hosts.DomainNameValidator;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -12,6 +12,6 @@ public class DomainValidatorTest {
 
   @Test
   public void testValidate() throws Exception {
-    Assert.assertNotNull(new DomainValidator());
+    Assert.assertNotNull(new DomainNameValidator());
   }
 }

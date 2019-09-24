@@ -1,7 +1,7 @@
 package net.cabezudo.sofia.core.passwords;
 
+import java.util.Base64;
 import java.util.UUID;
-import javax.xml.bind.DatatypeConverter;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,7 +13,7 @@ public class Hash {
 
   public Hash() {
     UUID uuid = UUID.randomUUID();
-    hash = DatatypeConverter.printBase64Binary(uuid.toString().getBytes());
+    hash = Base64.getEncoder().encodeToString(uuid.toString().getBytes());
   }
 
   public Hash(String hash) {

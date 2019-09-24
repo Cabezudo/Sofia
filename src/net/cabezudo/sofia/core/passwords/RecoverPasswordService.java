@@ -15,7 +15,7 @@ import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
 import net.cabezudo.sofia.core.ws.responses.SingleMessageResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.domains.DomainMaxSizeException;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailValidator;
 
@@ -45,7 +45,7 @@ public class RecoverPasswordService extends Service {
         CustomerService.sendPasswordRecoveryEMail(site, address);
         super.sendResponse(new SingleMessageResponse(new Message("password.recovery.mail.sent")));
       }
-    } catch (EMailMaxSizeException | DomainMaxSizeException e) {
+    } catch (EMailMaxSizeException | HostMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (SQLException | MailServerException e) {

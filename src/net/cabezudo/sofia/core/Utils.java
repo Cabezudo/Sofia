@@ -17,4 +17,10 @@ public class Utils {
   public static String chop(String string, int i) {
     return string.substring(0, string.length() - i);
   }
+
+  public static StringBuilder chop(StringBuilder sb, int i) {
+    String s = sb.substring(0, sb.length() - i);
+    StringBuilder newStringBuilder = new StringBuilder(s);
+    return newStringBuilder;
+  }
 }

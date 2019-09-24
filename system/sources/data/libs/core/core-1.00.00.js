@@ -203,7 +203,7 @@ const Core = {
   },
   validateById: (id) => {
     if (id === null) {
-      throw new Error('You must specify a valid id.');
+      throw new Error(`You must specify a valid id: ${id}`);
     }
     const element = document.getElementById(id);
     if (element === null) {
@@ -213,10 +213,7 @@ const Core = {
   },
   validateElement: (element) => {
     if (element === null) {
-      throw new Error('You must specify an element.');
-    }
-    if (element === null) {
-      throw new Error(`The element parameter is null.`);
+      throw new Error(`The parameter element is null.`);
     }
     if (!element.tagName) {
       throw new Error(`The node is not an element.`);

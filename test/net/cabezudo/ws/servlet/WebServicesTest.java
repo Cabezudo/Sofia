@@ -15,7 +15,7 @@ import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
-import net.cabezudo.sofia.domains.DomainName;
+import net.cabezudo.sofia.hosts.Host;
 import net.cabezudo.sofia.emails.EMail;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
@@ -181,7 +181,7 @@ public class WebServicesTest {
 
   @Test
   public void testDomainNameForMailTooLong() throws Exception {
-    String longDomainName = Utils.repeat('e', DomainName.NAME_MAX_LENGTH + 1) + ".net";
+    String longDomainName = Utils.repeat('e', Host.NAME_MAX_LENGTH + 1) + ".net";
     String eMail = "esteban@" + longDomainName;
 
     expectedException.expect(HttpResponseException.class);

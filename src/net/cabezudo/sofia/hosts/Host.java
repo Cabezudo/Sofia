@@ -1,16 +1,16 @@
-package net.cabezudo.sofia.domains;
+package net.cabezudo.sofia.hosts;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.08.05
  */
-public class DomainName {
+public class Host {
 
   public static final int NAME_MAX_LENGTH = 100;
   private final Integer id;
   private final String name;
 
-  public DomainName(int id, String name) {
+  public Host(int id, String name) {
     this.id = id;
     this.name = name;
   }
@@ -38,5 +38,17 @@ public class DomainName {
   @Override
   public String toString() {
     return "[ id = " + id + ", name = " + name + " ]";
+  }
+
+  String toJSON() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("{");
+    sb.append("\"id\": ");
+    sb.append(id);
+    sb.append(", ");
+    sb.append("\"name\": \"");
+    sb.append(name);
+    sb.append("\"}");
+    return sb.toString();
   }
 }
