@@ -6,9 +6,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.domains.DomainName;
-import net.cabezudo.sofia.domains.DomainNameList;
 import net.cabezudo.sofia.emails.EMail;
+import net.cabezudo.sofia.hosts.Host;
+import net.cabezudo.sofia.hosts.HostList;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -19,13 +19,13 @@ public class Site implements Comparable<Integer> {
   public final static int NAME_MAX_LENGTH = 80;
   private final Integer id;
   private final String name;
-  private final DomainNameList hosts;
+  private final HostList hosts;
   private final int version;
 
   Site(int id, String name, int version) {
     this.id = id;
     this.name = name;
-    this.hosts = new DomainNameList();
+    this.hosts = new HostList();
     this.version = version;
   }
 
@@ -42,27 +42,27 @@ public class Site implements Comparable<Integer> {
   }
 
   public void addHost(int hostId, String hostName) {
-    DomainName domainName = new DomainName(hostId, hostName);
-    this.add(domainName);
+    Host host = new Host(hostId, hostName);
+    this.add(host);
   }
 
-  public void add(DomainName domainName) {
-    hosts.add(domainName);
+  public void add(Host host) {
+    hosts.add(host);
   }
 
-  public void setBaseHost(DomainName domainName) {
-    hosts.setBaseHost(domainName);
+  public void setBaseHost(Host host) {
+    hosts.setBaseHost(host);
   }
 
   public void setBaseHost(int baseHostId) {
     hosts.setBaseHost(baseHostId);
   }
 
-  public DomainNameList getHosts() throws SQLException {
+  public HostList getHosts() throws SQLException {
     return hosts;
   }
 
-  public DomainName getBaseHost() {
+  public Host getBaseHost() {
     return hosts.getBaseHost();
   }
 
@@ -132,5 +132,23 @@ public class Site implements Comparable<Integer> {
   public long getPasswordChangeHashExpireTime() {
     // TODO Get this from de site configuration
     return 7200; // Dos horas
+  }
+
+  public String toJSON() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("{");
+    sb.append("\"id\": ");
+    sb.append(id);
+    sb.append(", ");
+    sb.append("\"name\": \"");
+    sb.append(name);
+    sb.append("\", ");
+    sb.append("\"hosts\": ");
+    sb.append(hosts.toJSON());
+    sb.append(", ");
+    sb.append("\"version\": ");
+    sb.append(version);
+    sb.append("}");
+    return sb.toString();
   }
 }

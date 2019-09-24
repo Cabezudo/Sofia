@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.domains.DomainMaxSizeException;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -29,7 +29,7 @@ public class EMailValidatorService extends Service {
     try {
       Messages messages = EMailValidator.validate(address);
       sendResponse(new MultipleMessageResponse("EMAIL_VALIDATION", messages));
-    } catch (EMailMaxSizeException | DomainMaxSizeException e) {
+    } catch (EMailMaxSizeException | HostMaxSizeException e) {
       Logger.warning(e);
       super.sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     }

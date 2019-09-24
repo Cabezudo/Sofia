@@ -30,7 +30,7 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
   let fetchTimer;
   let listElement;
   let tableContainer;
-  let filterInput;
+  let filterInput = null;
   let table;
   let tableBody;
   let totalRecords;
@@ -89,9 +89,10 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
               data.list.forEach(elementData => {
                 const rowId = getRowId(elementData.row);
                 const tableRow = document.getElementById(rowId);
-                tableRow.setAttribute("record", elementData.fields[0]);
-                addTableData(tableRow, elementData.fields);
+                tableRow.setAttribute("record", elementData.id);
+                addTableData(tableRow, elementData);
                 if (Core.isFunction(onClick)) {
+                  tableRow.className = 'clickable';
                   tableRow.onclick = event => {
                     onClick(event);
                   };
@@ -132,24 +133,26 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
       removeChilds(tableRow);
       const tableData = document.createElement("TD");
       tableRow.appendChild(tableData);
-      const textNode = document.createTextNode(`$nbsp;`);
+      const textNode = document.createTextNode('\u00A0');
       tableData.appendChild(textNode);
     }
     tableBody.appendChild(tableRow);
   };
-  const addTableData = (tableRow, fields) => {
+  const addTableData = (tableRow, row) => {
     if (Core.isFunction(cellMaker)) {
-      const innerHTML = cellMaker(fields);
+      const innerHTML = cellMaker(row);
       tableRow.innerHTML = innerHTML;
     } else {
       removeChilds(tableRow);
-      for (let i = 0; i < fields.length; i++) {
+      Object.keys(row).forEach(field => {
+        if (field === 'row' || field === 'id') {
+          return;
+        }
         const tableData = document.createElement("TD");
         tableRow.appendChild(tableData);
-        let field = fields[i];
-        const textNode = document.createTextNode(`${field}`);
+        const textNode = document.createTextNode(`${row[field]}`);
         tableData.appendChild(textNode);
-      }
+      });
     }
   };
   const getRowId = rowId => {
@@ -162,9 +165,11 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
   };
   const validateOptions = () => {
     listElement = Core.validateById(id);
-    filterInput = Core.validateElement(filterInputElement);
-    if (filterInput.tagName !== 'INPUT') {
-      throw new Error(`Can't use a ${filterInput.tagName} as filter input.`);
+    if (filterInputElement !== null) {
+      filterInput = Core.validateElement(filterInputElement);
+      if (filterInput.tagName !== 'INPUT') {
+        throw new Error(`Can't use a ${filterInput.tagName} as filter input.`);
+      }
     }
   };
   const createGUI = async() => {
@@ -184,7 +189,7 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
   };
   const loadTable = () => {
     let url = source;
-    if (filterInput.value !== lastFilterInputValue) {
+    if (filterInput !== null && filterInput.value !== lastFilterInputValue) {
       lastFilterInputValue = filterInput.value;
       url += `?filters=${encodeURIComponent(filterInput.value)}`;
     }
@@ -210,7 +215,7 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
 
               totalRecords = data.totalRecords;
               const filters = data.filters;
-              if (filterInput) {
+              if (filterInput !== null) {
                 filterInput.value = filters;
                 lastFilterInputValue = filters;
               }
@@ -243,20 +248,22 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
             });
   };
   const assignTriggers = () => {
-    filterInput.addEventListener('setFilter', event => {
-      const data = event.detail;
-      filterInput.value = data;
-      loadTable();
-    });
-    filterInput.addEventListener("keyup", event => {
-      if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
-        return;
-      }
-      if (reloadTimer) {
-        clearTimeout(reloadTimer);
-      }
-      reloadTimer = setTimeout(loadTable, RELOAD_LIST_EVENT_TIME_DELAY);
-    });
+    if (filterInput !== null) {
+      filterInput.addEventListener('setFilter', event => {
+        const data = event.detail;
+        filterInput.value = data;
+        loadTable();
+      });
+      filterInput.addEventListener("keyup", event => {
+        if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
+          return;
+        }
+        if (reloadTimer) {
+          clearTimeout(reloadTimer);
+        }
+        reloadTimer = setTimeout(loadTable, RELOAD_LIST_EVENT_TIME_DELAY);
+      });
+    }
   };
   validateOptions();
   assignTriggers();

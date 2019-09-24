@@ -19,7 +19,7 @@ import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
 import net.cabezudo.sofia.core.ws.responses.ValidMessage;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.domains.DomainMaxSizeException;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 
 /**
@@ -81,7 +81,7 @@ public class LoginService extends Service {
         request.getSession().removeAttribute("comebackPage");
         sendResponse(new MultipleMessageResponse("LOGIN", messages));
       }
-    } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainMaxSizeException e) {
+    } catch (EMailMaxSizeException | PasswordMaxSizeException | HostMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request.");
     } catch (SQLException sqle) {

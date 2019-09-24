@@ -23,7 +23,7 @@ import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
 import net.cabezudo.sofia.core.ws.responses.SingleMessageResponse;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.domains.DomainMaxSizeException;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailValidator;
@@ -88,7 +88,7 @@ public class AddUserService extends Service {
           sendResponse(new MultipleMessageResponse("EMAIL_VALIDATION", messages));
           return;
         }
-      } catch (EMailMaxSizeException | DomainMaxSizeException e) {
+      } catch (EMailMaxSizeException | HostMaxSizeException e) {
         Logger.warning(e);
         sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
         return;

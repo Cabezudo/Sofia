@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.domains;
+package net.cabezudo.sofia.hosts;
 
 import net.cabezudo.sofia.core.WarningSystemException;
 
@@ -6,9 +6,9 @@ import net.cabezudo.sofia.core.WarningSystemException;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.15
  */
-public class DomainMaxSizeException extends WarningSystemException {
+public class HostMaxSizeException extends WarningSystemException {
 
-  public DomainMaxSizeException(int length) {
+  public HostMaxSizeException(int length) {
     super("Domain name too long: " + length);
   }
 }

@@ -77,11 +77,6 @@ public class SofiaSourceFile {
       } else {
         // Read template from template files
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        System.out.println(commonsComponentsTemplatePath);
-        System.out.println(basePath);
-        System.out.println(templateName);
-//        System.out.println(voidPartialPath);
-
         String htmlTemplateName = templateName + ".html";
         Path htmlSourceFilePath = commonsComponentsTemplatePath.resolve(htmlTemplateName);
         System.out.println("htmlSourceFilePath: " + htmlSourceFilePath);
@@ -110,7 +105,7 @@ public class SofiaSourceFile {
     filePaths.add(sourceFilePath);
 
     int lineNumber = 0;
-    try (Stream<String> lines = Files.lines(sourceFilePath, StandardCharsets.UTF_8)) {
+    try ( Stream<String> lines = Files.lines(sourceFilePath, StandardCharsets.UTF_8)) {
       for (String line : (Iterable<String>) lines::iterator) {
         lineNumber++;
         if (lineNumber == 1) {

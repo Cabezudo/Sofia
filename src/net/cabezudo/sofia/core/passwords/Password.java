@@ -3,7 +3,7 @@ package net.cabezudo.sofia.core.passwords;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 import net.cabezudo.sofia.core.configuration.Configuration;
 
 /**
@@ -34,9 +34,9 @@ public class Password {
   private Password(String password, Type type) {
     if (type == Type.PLAIN) {
       this.plainPassword = password;
-      this.base64Password = DatatypeConverter.printBase64Binary(password.getBytes());
+      this.base64Password = Base64.getEncoder().encodeToString(password.getBytes());
     } else {
-      byte[] decodedValue = DatatypeConverter.parseBase64Binary(password);
+      byte[] decodedValue = Base64.getDecoder().decode(password);
       this.plainPassword = new String(decodedValue, StandardCharsets.UTF_8);
       this.base64Password = password;
     }

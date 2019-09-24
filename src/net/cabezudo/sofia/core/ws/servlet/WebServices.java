@@ -12,7 +12,9 @@ import net.cabezudo.sofia.core.passwords.PasswordPairValidatorService;
 import net.cabezudo.sofia.core.passwords.PasswordValidatorService;
 import net.cabezudo.sofia.core.passwords.RecoverPasswordService;
 import net.cabezudo.sofia.core.passwords.SetPasswordService;
+import net.cabezudo.sofia.core.sites.SiteHostListService;
 import net.cabezudo.sofia.core.sites.SiteListService;
+import net.cabezudo.sofia.core.sites.SiteService;
 import net.cabezudo.sofia.core.users.AddUserService;
 import net.cabezudo.sofia.core.users.ListUsersService;
 import net.cabezudo.sofia.core.users.autentication.AuthenticatedService;
@@ -45,6 +47,16 @@ public class WebServices extends HttpServlet {
 
     if (tokens.match("/api/v1/sites")) {
       new SiteListService(request, response, tokens).execute();
+      return;
+    }
+
+    if (tokens.match("/api/v1/sites/{siteId}")) {
+      new SiteService(request, response, tokens).execute();
+      return;
+    }
+
+    if (tokens.match("/api/v1/sites/{siteId}/hosts")) {
+      new SiteHostListService(request, response, tokens).execute();
       return;
     }
 

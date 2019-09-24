@@ -26,7 +26,7 @@ import net.cabezudo.sofia.core.users.profiles.Profiles;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.domains.DomainMaxSizeException;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailManager;
@@ -81,7 +81,7 @@ public class UserManager {
           } else {
             validAddress = true;
           }
-        } catch (EMailMaxSizeException | DomainMaxSizeException e) {
+        } catch (EMailMaxSizeException | HostMaxSizeException e) {
           System.out.println(e.getMessage());
           validAddress = false;
         }

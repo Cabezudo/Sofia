@@ -4,8 +4,8 @@ import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.ws.responses.ErrorMessage;
 import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.core.ws.responses.ValidMessage;
-import net.cabezudo.sofia.domains.DomainMaxSizeException;
-import net.cabezudo.sofia.domains.DomainValidator;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
+import net.cabezudo.sofia.hosts.DomainNameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,7 +13,7 @@ import net.cabezudo.sofia.domains.DomainValidator;
  */
 public class EMailValidator {
 
-  public static Messages validate(String address) throws EMailMaxSizeException, DomainMaxSizeException {
+  public static Messages validate(String address) throws EMailMaxSizeException, HostMaxSizeException {
     Logger.finest("Validate address %s for email.", address);
     Messages messages = new Messages();
     if (address.isEmpty()) {
@@ -41,7 +41,7 @@ public class EMailValidator {
     }
 
     String domainName = eMailParts.getDomain();
-    Messages domainMessages = DomainValidator.validate(domainName);
+    Messages domainMessages = DomainNameValidator.validate(domainName);
     if (domainMessages.hasErrors()) {
       return domainMessages;
     }
