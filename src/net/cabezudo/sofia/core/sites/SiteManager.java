@@ -18,7 +18,7 @@ import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.hosts.Host;
 import net.cabezudo.sofia.hosts.HostManager;
-import net.cabezudo.sofia.hosts.HostTable;
+import net.cabezudo.sofia.hosts.HostsTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -47,7 +47,7 @@ public class SiteManager {
     String query
         = "SELECT s.name AS name, s.host AS baseHost, d.id AS hostId, d.name AS hostname, version "
         + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + HostTable.NAME + " AS d ON s.id = d.siteId "
+        + "LEFT JOIN " + HostsTable.NAME + " AS d ON s.id = d.siteId "
         + "WHERE s.id = ? ORDER BY hostId";
 
     PreparedStatement ps = connection.prepareStatement(query);
@@ -84,8 +84,8 @@ public class SiteManager {
     String query
         = "SELECT s.id AS siteId, s.name, s.host AS baseHost, o.id as hostId, o.name AS hostname, version "
         + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + HostTable.NAME + " AS d ON s.id = d.siteId "
-        + "LEFT JOIN " + HostTable.NAME + " AS o ON s.id = o.siteId "
+        + "LEFT JOIN " + HostsTable.NAME + " AS d ON s.id = d.siteId "
+        + "LEFT JOIN " + HostsTable.NAME + " AS o ON s.id = o.siteId "
         + "WHERE d.name = ? ORDER BY hostId";
 
     PreparedStatement ps = connection.prepareStatement(query);
@@ -177,7 +177,7 @@ public class SiteManager {
     String query
         = "SELECT s.id AS siteId, s.name AS name, s.host AS baseHost, d.id AS hostId, d.name AS hostname, version "
         + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + HostTable.NAME + " AS d ON s.id = d.siteId;";
+        + "LEFT JOIN " + HostsTable.NAME + " AS d ON s.id = d.siteId;";
 
     PreparedStatement ps = connection.prepareStatement(query);
     Logger.fine(ps);
@@ -212,11 +212,11 @@ public class SiteManager {
     return list;
   }
 
-  SiteList list(Filters filter, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  SiteList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      String where = getSiteWhere(filter);
+      String where = getSiteWhere(filters);
 
       long sqlOffsetValue = 0;
       if (offset != null) {
@@ -233,7 +233,7 @@ public class SiteManager {
 
       String query = "SELECT id, name, version FROM " + SitesTable.NAME + where + sqlSort + sqlLimit;
       PreparedStatement ps = connection.prepareStatement(query);
-      setSiteFilters(filter, ps);
+      setSiteFilters(filters, ps);
 
       Logger.fine(ps);
       ResultSet rs = ps.executeQuery();
@@ -343,7 +343,7 @@ public class SiteManager {
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-      String query = "SELECT count(*) AS total FROM " + HostTable.NAME + where + sqlSort + sqlLimit;
+      String query = "SELECT count(*) AS total FROM " + HostsTable.NAME + where + sqlSort + sqlLimit;
       PreparedStatement ps = connection.prepareStatement(query);
 
       ps.setInt(1, site.getId());
@@ -387,7 +387,55 @@ public class SiteManager {
     }
   }
 
-  HostList listHosts(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  HostList listHosts(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+    Logger.fine("Site list");
+
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      String where = getHostWhere(filters);
+
+      long sqlOffsetValue = 0;
+      if (offset != null) {
+        sqlOffsetValue = offset.getValue();
+      }
+      long sqlLimitValue = SiteList.MAX;
+      if (limit != null) {
+        sqlLimitValue = limit.getValue();
+      }
+
+      String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
+
+      String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
+
+      String query = "SELECT id, name FROM " + HostsTable.NAME + where + sqlSort + sqlLimit;
+      PreparedStatement ps = connection.prepareStatement(query);
+      ps.setInt(1, site.getId());
+      setHostFilters(filters, ps);
+
+      Logger.fine(ps);
+      ResultSet rs = ps.executeQuery();
+
+      HostList list = new HostList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        String name = rs.getString("name");
+
+        Host host = new Host(id, name);
+
+        list.add(host);
+      }
+
+      query = "SELECT FOUND_ROWS() AS total";
+      ps = connection.prepareStatement(query);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
+      if (!rs.next()) {
+        throw new RuntimeException("The select to count the number of sites fail.");
+      }
+      int total = rs.getInt("total");
+
+      list.setTotal(total);
+
+      return list;
+    }
   }
 }
