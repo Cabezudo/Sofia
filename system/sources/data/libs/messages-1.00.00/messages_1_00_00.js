@@ -18,16 +18,14 @@ const messages_1_00_00 = ({ id = null, element = null } = {}) => {
 
   const assignTriggers = () => {
     element.addEventListener('add', event => {
-      const message = event.detail;
+      const payload = event.detail;
       const messageContainer = document.createElement('div');
-      messageContainer.innerText = message.message;
-      switch (message.status) {
+      messageContainer.innerText = payload.message;
+      switch (payload.status) {
         case 'OK':
-        case 'VALID':
           messageContainer.className = 'green';
           break;
         case 'ERROR':
-        case 'INVALID':
           messageContainer.className = 'red';
           break;
       }

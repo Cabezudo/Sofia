@@ -42,8 +42,8 @@
   cursor: pointer;
 }
 
-.list-1_00_00 > div > table > td, .list-1_00_00 > div > table > td > div {
-  pointer-events:none;
+.list-1_00_00 > div > table > tr > td, .list-1_00_00 > div > table > td > div {
+  pointer-events: none;
 }
 
 .list-1_00_00 > div > table > td > div {

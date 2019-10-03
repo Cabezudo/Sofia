@@ -7,11 +7,7 @@
 
 const inputEMailValidator_1_00_00 = ({ element = null, onValid = null, onNotValid = null, onKeyPress = null } = {}) => {
   let verificationTimer;
-  let messageId = 0;
-
-  const getNextMessageId = () => {
-    return ++messageId;
-  };
+  let requestId = 0;
 
   const validateOptions = () => {
     if (element === null) {
@@ -21,32 +17,32 @@ const inputEMailValidator_1_00_00 = ({ element = null, onValid = null, onNotVali
   const createGUI = () => {
     element.className = 'inputEMailValidator_1_00_00';
     if (element.value && element.value.length > 0) {
-      sendVerificationRequest();
+      sendValidationRequest(element);
     }
   };
   const assignTriggers = () => {
     element.addEventListener('response', event => {
       const data = event.detail;
 
-      if (data.messageId === messageId) {
+      const element = event.srcElement;
+      if (requestId === data.requestId) {
         Core.cleanMessagesContainer();
-        const messages = event.detail.messages;
-        element.classList.remove('error');
-        messages.forEach(message => {
-          Core.addMessage(message);
-          if (message.status === 'ERROR') {
-            element.classList.add('error');
+        const payload = event.detail;
+        if (payload.status === 'ERROR') {
+          element.classList.add('error');
+          Core.addMessage({status: 'ERROR', message: payload.message});
+        }
+        if (payload.status === 'OK') {
+          element.classList.remove('error');
+          Core.addMessage({status: 'OK', message: payload.message});
+          if (Core.isFunction(onValid)) {
+            onValid();
           }
-          if (message.status === 'VALID') {
-            if (Core.isFunction(onValid)) {
-              onValid();
-            }
-          } else {
-            if (Core.isFunction(onNotValid)) {
-              onNotValid();
-            }
+        } else {
+          if (Core.isFunction(onNotValid)) {
+            onNotValid();
           }
-        });
+        }
       }
     });
     element.addEventListener("keypress", event => {
@@ -61,12 +57,12 @@ const inputEMailValidator_1_00_00 = ({ element = null, onValid = null, onNotVali
       if (verificationTimer) {
         clearTimeout(verificationTimer);
       }
-      verificationTimer = setTimeout(sendVerificationRequest, Core.EVENT_TIME_DELAY);
+      verificationTimer = setTimeout(sendValidationRequest(element), Core.EVENT_TIME_DELAY);
     });
   };
-  const sendVerificationRequest = () => {
-    messageId = getNextMessageId();
-    Core.sendGet(`/api/v1/mail/validate/${element.value}`, element, messageId);
+  const sendValidationRequest = element => {
+    const response = Core.sendGet(`/api/v1/mail/validate/${element.value}`, element);
+    requestId = response.requestId;
   };
 
   validateOptions();

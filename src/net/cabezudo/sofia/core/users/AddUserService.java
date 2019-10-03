@@ -14,25 +14,21 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.mail.MailServerException;
-import net.cabezudo.sofia.core.sites.Site;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.users.UserManager;
-import net.cabezudo.sofia.core.ws.responses.ErrorMessage;
-import net.cabezudo.sofia.core.ws.responses.Message;
-import net.cabezudo.sofia.core.ws.responses.Messages;
-import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
-import net.cabezudo.sofia.core.ws.responses.SingleMessageResponse;
-import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
-import net.cabezudo.sofia.emails.EMailAddressNotExistException;
-import net.cabezudo.sofia.emails.EMailMaxSizeException;
-import net.cabezudo.sofia.emails.EMailValidator;
-import net.cabezudo.sofia.names.LastNameManager;
-import net.cabezudo.sofia.names.NameManager;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
+import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.passwords.PasswordValidator;
+import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.customers.CustomerService;
+import net.cabezudo.sofia.emails.EMailAddressNotExistException;
+import net.cabezudo.sofia.emails.EMailAddressValidationException;
+import net.cabezudo.sofia.emails.EMailMaxSizeException;
+import net.cabezudo.sofia.emails.EMailValidator;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
+import net.cabezudo.sofia.names.LastNameManager;
+import net.cabezudo.sofia.names.NameManager;
 import net.cabezudo.sofia.people.PeopleManager;
 import net.cabezudo.sofia.people.Person;
 
@@ -59,11 +55,7 @@ public class AddUserService extends Service {
       String name;
       try {
         name = jsonPayload.getString("name");
-        Messages messages = NameManager.getInstance().validate(name);
-        if (messages.hasErrors()) {
-          sendResponse(new MultipleMessageResponse("NAME_VALIDATION", messages));
-          return;
-        }
+        NameManager.getInstance().validate(name);
       } catch (PropertyNotExistException e) {
         super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing name property");
         return;
@@ -71,11 +63,7 @@ public class AddUserService extends Service {
       String lastName;
       try {
         lastName = jsonPayload.getString("lastName");
-        Messages messages = LastNameManager.getInstance().validate(lastName);
-        if (messages.hasErrors()) {
-          sendResponse(new MultipleMessageResponse("LAST_NAME_VALIDATION", messages));
-          return;
-        }
+        LastNameManager.getInstance().validate(lastName);
       } catch (PropertyNotExistException e) {
         super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lastName property");
         return;
@@ -83,17 +71,16 @@ public class AddUserService extends Service {
       String address;
       try {
         address = jsonPayload.getString("email");
-        Messages messages = EMailValidator.validate(address);
-        if (messages.hasErrors()) {
-          sendResponse(new MultipleMessageResponse("EMAIL_VALIDATION", messages));
-          return;
-        }
+        EMailValidator.validate(address);
       } catch (EMailMaxSizeException | HostMaxSizeException e) {
         Logger.warning(e);
         sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
         return;
       } catch (PropertyNotExistException e) {
         super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property");
+        return;
+      } catch (EMailAddressValidationException e) {
+        sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
         return;
       }
       String base64Password;
@@ -106,13 +93,12 @@ public class AddUserService extends Service {
       Password password;
       try {
         password = Password.createFromBase64(base64Password);
-        Messages messages = PasswordValidator.validate(password);
-        if (messages.hasErrors()) {
-          sendResponse(new MultipleMessageResponse("PASSWORD_VALIDATION", messages));
-          return;
-        }
+        PasswordValidator.validate(password);
       } catch (PasswordMaxSizeException e) {
         super.sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
+        return;
+      } catch (PasswordValidationException e) {
+        super.sendResponse(new Response("ERROR", e.getMessage()));
         return;
       }
 
@@ -125,14 +111,13 @@ public class AddUserService extends Service {
           CustomerService.sendRegistrationRetryAlert(site, address);
         } catch (MailServerException | IOException su) {
           sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, su.getMessage());
+          return;
         }
-        ErrorMessage message = new ErrorMessage("user.already.added");
-        sendResponse(new SingleMessageResponse(message));
+        sendResponse(new Response("ERROR", "user.already.added"));
         return;
       }
       UserManager.getInstance().set(site, address, password);
-      Message message = new Message("user.added");
-      sendResponse(new SingleMessageResponse(message));
+      sendResponse(new Response("OK", "user.added"));
     } catch (EMailAddressNotExistException e) {
       super.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e);
     } catch (SQLException e) {

@@ -62,7 +62,12 @@ public class HTMLAuthorizationFilter implements Filter {
           }
         } catch (NotLoggedException e) {
           if (requestURI.endsWith("html")) {
-            request.getSession().setAttribute("comebackPage", requestURI);
+            String comebackPage = requestURI;
+            if (request.getQueryString() != null) {
+              comebackPage += "?" + request.getQueryString();
+            }
+            System.out.println(comebackPage);
+            request.getSession().setAttribute("comebackPage", comebackPage);
           }
           response.sendRedirect(Configuration.getInstance().getLoginURL());
           return;

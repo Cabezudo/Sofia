@@ -5,8 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
-import net.cabezudo.sofia.core.ws.responses.Messages;
-import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.hosts.HostMaxSizeException;
 
@@ -27,11 +26,13 @@ public class EMailValidatorService extends Service {
   public void execute() throws ServletException {
     String address = tokens.getValue("email").toString();
     try {
-      Messages messages = EMailValidator.validate(address);
-      sendResponse(new MultipleMessageResponse("EMAIL_VALIDATION", messages));
+      String messageKey = EMailValidator.validate(address);
+      sendResponse(new Response("OK", messageKey));
     } catch (EMailMaxSizeException | HostMaxSizeException e) {
       Logger.warning(e);
       super.sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
+    } catch (EMailAddressValidationException e) {
+      sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
     }
   }
 }

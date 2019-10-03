@@ -51,7 +51,11 @@ public class HTMLFilter implements Filter {
       if (requestURI.endsWith("html")) {
 
         String lastPage = (String) request.getSession().getAttribute("thisPage");
-        request.getSession().setAttribute("thisPage", requestURI);
+        String thisPage = requestURI;
+        if (request.getQueryString() != null) {
+          thisPage += "?" + request.getQueryString();
+        }
+        request.getSession().setAttribute("thisPage", thisPage);
         if (lastPage == null || !lastPage.equals(requestURI)) {
           request.getSession().setAttribute("lastPage", lastPage);
         }

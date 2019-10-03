@@ -56,7 +56,7 @@ public class WebServer {
     }
 
     if (startOptions.hasIDE() || startOptions.hasDebug()) {
-      Logger.setLevel(Level.FINEST);
+      Logger.setLevel(Level.DEBUG);
     } else {
       Logger.setLevel(Level.INFO);
     }

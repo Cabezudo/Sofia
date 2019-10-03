@@ -9,21 +9,6 @@
     <script>
       {
         const createGUI = () => {
-          Core.hide('detail');
-          const detailDiv = Core.validateById('detail');
-          detailDiv.addEventListener('response', event => {
-            const data = event.detail;
-            console.log(data);
-            Core.validateById('name').value = data.name;
-            Core.validateById('version').value = data.version;
-            const hosts = data.hosts;
-            hosts.forEach(item => {
-              console.log(item);
-            });
-            Core.show('detail');
-            Core.hide('sites');
-            Core.screenBlocker.unblock();
-          });
           list_1_00_00({
             id: 'siteList',
             source: '/api/v1/sites',
@@ -33,10 +18,8 @@
                 return `<td>${row.name} (v${row.version})</td>`;
               }
             },
-            onClick: event => {
-              const siteId = event.detail;
-              Core.screenBlocker.block();
-              Core.sendGet(`/api/v1/sites/${siteId}`, detailDiv);
+            onClick: (event, data) => {
+              location.href = `/manager/sites/site.html?id=${data.id}`;
             },
             notLoggedURL: '/'
           });
@@ -55,13 +38,6 @@
           <div id="sites">
             <div class="title">Sitios</div>
             <div id="siteList"></div>
-          </div>
-          <div id="detail">
-            <div class="title">Detalle de sitio</div>
-            <div><input id="name"></div>
-            <div><input id="version"></div>
-            <div>Hosts</div>
-            <div id="hosts"></div>
           </div>
         </div>
       </div>

@@ -7,8 +7,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.ws.responses.Messages;
-import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -28,12 +27,14 @@ public class PasswordValidatorService extends Service {
       JSONObject jsonPayload = JSON.parse(payload).toJSONObject();
       String base64Password = jsonPayload.getString("password");
       Password password = Password.createFromBase64(base64Password);
-      Messages messages = PasswordValidator.validate(password);
-      sendResponse(new MultipleMessageResponse("PASSWORD_VALIDATION", messages));
+      String messageKey = PasswordValidator.validate(password);
+      sendResponse(new Response("OK", messageKey));
     } catch (PasswordMaxSizeException e) {
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (JSONParseException | PropertyNotExistException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e);
+    } catch (PasswordValidationException e) {
+      sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
     }
   }
 
