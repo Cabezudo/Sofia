@@ -129,18 +129,16 @@
           sendLoginInformation();
         },
         onResponse: event => {
-          const data = event.detail;
-          if (data.type === 'LOGIN' && data.messages.length === 1) {
-            if (data.messages[0].status === 'VALID') {
-              if (variables.comebackPage === null) {
-                location.assign('#{afterLoginSucessfullPage}');
-              } else {
-                location.assign(variables.lastPage);
-              }
+          const payload = event.detail;
+          if (payload.status === 'LOGGED') {
+            if (variables.comebackPage === null) {
+              location.assign('#{afterLoginSucessfullPage}');
             } else {
-              Core.cleanMessagesContainer();
-              Core.addMessage(data.messages[0]);
+              location.assign(variables.comebackPage);
             }
+          } else {
+            Core.cleanMessagesContainer();
+            Core.addMessage({status: 'ERROR', message: payload.message});
           }
         }
       });
@@ -152,7 +150,7 @@
           email: loginEMailElement.value,
           password: btoa(loginPasswordElement.value)
         };
-        Core.sendPost(`/api/v1/users/login`, loginButton, 0, formObject);
+        Core.sendPost(`/api/v1/users/login`, loginButton, formObject);
       };
       loginEMailElement.focus();
     };

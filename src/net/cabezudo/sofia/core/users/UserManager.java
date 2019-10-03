@@ -24,16 +24,16 @@ import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.ProfileManager;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
-import net.cabezudo.sofia.core.ws.responses.Messages;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
+import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailManager;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.emails.EMailValidator;
 import net.cabezudo.sofia.emails.EMailsTable;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.people.PeopleList;
 import net.cabezudo.sofia.people.PeopleManager;
 import net.cabezudo.sofia.people.PeopleTable;
@@ -74,17 +74,13 @@ public class UserManager {
         System.out.print("e-Mail: ");
         address = System.console().readLine();
         try {
-          Messages messages = EMailValidator.validate(address);
-          if (messages.hasErrors()) {
-            System.out.println("Invalid e-mail: " + address);
-            validAddress = false;
-          } else {
-            validAddress = true;
-          }
-        } catch (EMailMaxSizeException | HostMaxSizeException e) {
-          System.out.println(e.getMessage());
+          EMailValidator.validate(address);
+          validAddress = true;
+        } catch (EMailMaxSizeException | HostMaxSizeException | EMailAddressValidationException e) {
+          // TODO mandar el warning a algún lado
           validAddress = false;
         }
+
       } while (!validAddress);
 
       boolean match;
@@ -147,10 +143,10 @@ public class UserManager {
   public User login(Site site, String address, Password password) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       String query
-              = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-              + "FROM " + UsersTable.NAME + " AS u "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-              + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
+          = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+          + "FROM " + UsersTable.NAME + " AS u "
+          + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+          + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
       PreparedStatement ps = connection.prepareStatement(query);
       ps.setString(1, address);
       ps.setInt(2, site.getId());
@@ -195,21 +191,21 @@ public class UserManager {
       EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-              site.getNoReplyName(),
-              from,
-              person.getName() + ' ' + person.getLastName(),
-              to,
-              emailRecoveryTemplate.getSubject(),
-              emailRecoveryTemplate.getPlainText(),
-              emailRecoveryTemplate.getHtmlText());
+          site.getNoReplyName(),
+          from,
+          person.getName() + ' ' + person.getLastName(),
+          to,
+          emailRecoveryTemplate.getSubject(),
+          emailRecoveryTemplate.getPlainText(),
+          emailRecoveryTemplate.getHtmlText());
     }
   }
 
   private void updateHash(Connection connection, String address, Hash hash) throws SQLException {
     String query
-            = "UPDATE " + UsersTable.NAME + " "
-            + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
-            + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
+        = "UPDATE " + UsersTable.NAME + " "
+        + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
+        + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, hash.toString());
     Timestamp timestamp = new Timestamp(new Date().getTime());
@@ -233,13 +229,13 @@ public class UserManager {
       EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-              site.getNoReplyName(),
-              from,
-              person.getName() + ' ' + person.getLastName(),
-              to,
-              emailRecoveryTemplate.getSubject(),
-              emailRecoveryTemplate.getPlainText(),
-              emailRecoveryTemplate.getHtmlText());
+          site.getNoReplyName(),
+          from,
+          person.getName() + ' ' + person.getLastName(),
+          to,
+          emailRecoveryTemplate.getSubject(),
+          emailRecoveryTemplate.getPlainText(),
+          emailRecoveryTemplate.getHtmlText());
     }
   }
 
@@ -286,10 +282,10 @@ public class UserManager {
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       String query
-              = "SELECT `id`, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-              + "FROM " + UsersTable.NAME + " AS u "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-              + "WHERE address = ? AND site = ?";
+          = "SELECT `id`, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+          + "FROM " + UsersTable.NAME + " AS u "
+          + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+          + "WHERE address = ? AND site = ?";
       PreparedStatement ps = connection.prepareStatement(query);
       ps.setString(1, address);
       ps.setInt(2, site.getId());
@@ -320,10 +316,10 @@ public class UserManager {
 
   public User getById(Connection connection, int personId) throws SQLException {
     String query
-            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "WHERE personId = ?";
+        = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+        + "FROM " + UsersTable.NAME + " AS u "
+        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+        + "WHERE personId = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, personId);
     Logger.fine(ps);
@@ -346,10 +342,10 @@ public class UserManager {
 
   public User getByHash(Connection connection, Hash hash) throws SQLException {
     String query
-            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "WHERE passwordRecoveryUUID = ?";
+        = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+        + "FROM " + UsersTable.NAME + " AS u "
+        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+        + "WHERE passwordRecoveryUUID = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, hash.toString());
     Logger.fine(ps);
@@ -421,13 +417,13 @@ public class UserManager {
       EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-              Configuration.getInstance().get("no.reply.name"),
-              from,
-              person.getName() + ' ' + person.getLastName(),
-              to,
-              emailRegistrationRetryAlertTemplate.getSubject(),
-              emailRegistrationRetryAlertTemplate.getPlainText(),
-              emailRegistrationRetryAlertTemplate.getHtmlText());
+          Configuration.getInstance().get("no.reply.name"),
+          from,
+          person.getName() + ' ' + person.getLastName(),
+          to,
+          emailRegistrationRetryAlertTemplate.getSubject(),
+          emailRegistrationRetryAlertTemplate.getPlainText(),
+          emailRegistrationRetryAlertTemplate.getHtmlText());
     }
   }
 

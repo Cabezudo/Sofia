@@ -14,6 +14,7 @@ import net.cabezudo.sofia.core.passwords.RecoverPasswordService;
 import net.cabezudo.sofia.core.passwords.SetPasswordService;
 import net.cabezudo.sofia.core.sites.SiteHostListService;
 import net.cabezudo.sofia.core.sites.SiteListService;
+import net.cabezudo.sofia.core.sites.SiteModifyHostService;
 import net.cabezudo.sofia.core.sites.SiteService;
 import net.cabezudo.sofia.core.users.AddUserService;
 import net.cabezudo.sofia.core.users.ListUsersService;
@@ -218,6 +219,12 @@ public class WebServices extends HttpServlet {
   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String uri = request.getRequestURI();
     Tokens tokens = URLPathTokenizer.tokenize(uri);
+
+    // Update a host for a site. PUT /api/v1/person/{personId}
+    if (tokens.match("/api/v1/sites/{siteId}/hosts/{hostId}")) {
+      new SiteModifyHostService(request, response, tokens).execute();
+      return;
+    }
 
     // Update the data for a person. PUT /api/v1/person/{personId}
     if (tokens.match("/api/v1/person/{personId}")) {

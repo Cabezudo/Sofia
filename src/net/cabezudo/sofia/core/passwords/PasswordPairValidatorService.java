@@ -7,9 +7,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.ws.responses.ErrorMessage;
-import net.cabezudo.sofia.core.ws.responses.Messages;
-import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -34,17 +32,25 @@ public class PasswordPairValidatorService extends Service {
       String base64RepetitionPassword = jsonPayload.getString("repetitionPassword");
       Password repetitionPassword = Password.createFromBase64(base64RepetitionPassword);
 
-      Messages messages = PasswordValidator.validate(password);
+      String messageKey;
+      try {
+        messageKey = PasswordValidator.validate(password);
+      } catch (PasswordValidationException e) {
+        sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+        return;
+      }
 
       if (repetitionPassword.isEmpty()) {
-        messages.add(new ErrorMessage("password.pair.empty"));
+        sendResponse(new Response("ERROR", "password.pair.empty"));
+        return;
       }
 
       if (!password.equals(repetitionPassword) && !repetitionPassword.isEmpty()) {
-        messages.add(new ErrorMessage("password.pair.do.not.match"));
+        sendResponse(new Response("ERROR", "password.pair.do.not.match"));
+        return;
       }
 
-      sendResponse(new MultipleMessageResponse("PASSWORD_VALIDATION", messages));
+      sendResponse(new Response("OK", messageKey));
     } catch (PasswordMaxSizeException e) {
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (JSONParseException | PropertyNotExistException e) {

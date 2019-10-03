@@ -5,23 +5,39 @@
 
 /* global fetch */
 /* global postData */
+/* global variables */
 
 'use strict';
 const Core = {
-  onloadFunctions: [],
   messagesContainer: null,
-  EVENT_TIME_DELAY: 300,
+  requestId: 0,
+  onloadFunctions: [],
   screenBlockerDiv: null,
+  pageParameters: new URLSearchParams(location.search),
+  lastSection: null,
   addMessage: message => {
     if (Core.messagesContainer) {
       Core.trigger(Core.messagesContainer, 'add', message);
     }
-  },
+  }
+  ,
   addOnloadFunction: (func) => {
     Core.onloadFunctions.push(func);
   },
+  changeSection: section => {
+    if (Core.lastSection !== null) {
+      Core.hide(Core.lastSection);
+      Core.show(section);
+    }
+  },
   cleanMessagesContainer: () => {
     Core.removeChilds(Core.messagesContainer);
+  },
+  getNextRequestId: () => {
+    return Core.requestId++;
+  },
+  getRequestId: () => {
+    return Core.requestId;
   },
   getURLParameterByName: (name, url) => {
     if (!url) {
@@ -41,6 +57,7 @@ const Core = {
   hide: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
     element.hidden = true;
+    Core.trigger(element, 'hide');
 //    if (!element.style.display) {
 //      element.setAttribute('lastDisplay', element.style.display);
 //    }
@@ -150,39 +167,81 @@ const Core = {
       }
     }
   },
-  sendGet: (url, origin, messageId) => {
+  sendGet: (url, origin) => {
     if (!origin) {
       throw new Error(`Invalid origin for sendGet: ${origin}`);
     }
-    fetch(url)
+    const requestId = Core.getNextRequestId();
+    fetch(url, {
+      headers: {
+        "Content-Type": "application/json",
+        "RequestId": requestId
+      }
+    })
             .then(function (response) {
+              const headers = response.headers;
+              const requestId = parseInt(headers.get('RequestId'));
               response.json().then(jsonData => {
-                jsonData.messageId = messageId;
+                jsonData.requestId = requestId;
                 Core.trigger(origin, 'response', jsonData);
               });
             })
             ;
+    return {requestId};
   },
-  sendPost: (url, origin, messageId, formObject) => {
+  sendPost: (url, origin, formObject) => {
+    if (!origin) {
+      throw new Error(`Invalid origin for sendGet: ${origin}`);
+    }
+    const requestId = Core.getNextRequestId();
     fetch(url, {
       method: "POST",
-      mode: "no-cors",
       cache: "no-cache",
       credentials: "same-origin",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
+        "RequestId": requestId
       },
       redirect: "follow",
-      referrer: "no-referrer",
       body: JSON.stringify(formObject)
     })
             .then(function (response) {
+              const headers = response.headers;
+              const requestId = parseInt(headers.get('RequestId'));
               response.json().then(jsonData => {
-                jsonData.messageId = messageId;
+                jsonData.requestId = requestId;
                 Core.trigger(origin, 'response', jsonData);
               });
             })
             ;
+    return {requestId};
+  },
+  sendPut: (url, origin, formObject) => {
+    if (!origin) {
+      throw new Error(`Invalid origin for sendGet: ${origin}`);
+    }
+    const requestId = Core.getNextRequestId();
+    fetch(url, {
+      method: "PUT",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "RequestId": requestId
+      },
+      redirect: "follow",
+      body: JSON.stringify(formObject)
+    })
+            .then(function (response) {
+              const headers = response.headers;
+              const requestId = parseInt(headers.get('RequestId'));
+              response.json().then(jsonData => {
+                jsonData.requestId = requestId;
+                Core.trigger(origin, 'response', jsonData);
+              });
+            })
+            ;
+    return {requestId};
   },
   setMessagesContainer: target => {
     Core.messagesContainer = typeof target === 'string' ? document.getElementById(target) : target;
@@ -190,6 +249,7 @@ const Core = {
   show: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
     element.hidden = false;
+    Core.trigger(element, 'show');
 //    const display = element.getAttribute('lastDisplay');
 //    if (display) {
 //      element.style.display = display;
@@ -197,8 +257,8 @@ const Core = {
 //      element.style.display = '';
 //    }
   },
-  trigger: (target, eventName, message) => {
-    const event = new CustomEvent(eventName, {detail: message});
+  trigger: (target, eventName, detail) => {
+    const event = new CustomEvent(eventName, {detail});
     target.dispatchEvent(event);
   },
   validateById: (id) => {
@@ -237,7 +297,11 @@ const Core = {
 };
 
 window.onload = () => {
+  console.log(Core.pageParameters);
   Core.onloadFunctions.forEach(func => {
     func();
   });
+  if (Core.pageParameters.has('section')) {
+    Core.changeSection(Core.pageParameters.get('section'));
+  }
 };

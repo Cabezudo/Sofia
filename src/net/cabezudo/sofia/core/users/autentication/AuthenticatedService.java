@@ -5,10 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.core.ws.responses.AbstractMessage;
-import net.cabezudo.sofia.core.ws.responses.ErrorMessage;
-import net.cabezudo.sofia.core.ws.responses.Message;
-import net.cabezudo.sofia.core.ws.responses.SingleMessageResponse;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -26,11 +23,9 @@ public class AuthenticatedService extends Service {
     try {
       Logger.fine("Call the web service to return if the user is logged");
       if (getClientData().isLogged()) {
-        Message message = new Message("login.logged");
-        sendResponse(new SingleMessageResponse(message));
+        sendResponse(new Response("OK", "login.logged"));
       } else {
-        AbstractMessage message = new ErrorMessage("login.notLogged");
-        sendResponse(new SingleMessageResponse(message));
+        sendResponse(new Response("ERROR", "login.notLogged"));
       }
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);

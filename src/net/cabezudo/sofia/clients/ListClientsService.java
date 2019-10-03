@@ -12,8 +12,7 @@ import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
 import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
-import net.cabezudo.sofia.core.ws.responses.NotAuthenticatedMessage;
-import net.cabezudo.sofia.core.ws.responses.NotAuthenticatedResponse;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 
 /**
@@ -104,7 +103,7 @@ public class ListClientsService extends ListService {
     } catch (UserNotExistException e) {
       sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
     } catch (NotLoggedException e) {
-      sendResponse(new NotAuthenticatedResponse(new NotAuthenticatedMessage("user.notLogged")));
+      sendResponse(new Response("NOT_LOGGED", "user.notLogged"));
     }
   }
 }

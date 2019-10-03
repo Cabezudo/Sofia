@@ -1,11 +1,9 @@
 package net.cabezudo.sofia.emails;
 
 import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.core.ws.responses.ErrorMessage;
-import net.cabezudo.sofia.core.ws.responses.Messages;
-import net.cabezudo.sofia.core.ws.responses.ValidMessage;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
+import net.cabezudo.sofia.hosts.DomainNameValidationException;
 import net.cabezudo.sofia.hosts.DomainNameValidator;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,12 +11,10 @@ import net.cabezudo.sofia.hosts.DomainNameValidator;
  */
 public class EMailValidator {
 
-  public static Messages validate(String address) throws EMailMaxSizeException, HostMaxSizeException {
+  public static String validate(String address) throws EMailMaxSizeException, HostMaxSizeException, EMailAddressValidationException {
     Logger.finest("Validate address %s for email.", address);
-    Messages messages = new Messages();
     if (address.isEmpty()) {
-      messages.add(new ErrorMessage("email.isEmpty"));
-      return messages;
+      throw new EMailAddressValidationException("email.isEmpty", "");
     }
     if (address.length() > EMail.MAX_LENGTH) {
       throw new EMailMaxSizeException(address.length());
@@ -30,22 +26,20 @@ public class EMailValidator {
     for (int j = 0; j < localPart.length(); j++) {
       char c = localPart.charAt(j);
       if (!Character.isLetterOrDigit(c) && c != '.' && c != '_') {
-        messages.add(new ErrorMessage("email.invalidLocalPart", address, c));
-        return messages;
+        throw new EMailAddressValidationException("email.invalidLocalPart", address);
       }
     }
 
     if (!eMailParts.hasArroba()) {
-      messages.add(new ErrorMessage("email.arrobaMissing"));
-      return messages;
+      throw new EMailAddressValidationException("email.arrobaMissing", address);
     }
 
     String domainName = eMailParts.getDomain();
-    Messages domainMessages = DomainNameValidator.validate(domainName);
-    if (domainMessages.hasErrors()) {
-      return domainMessages;
+    try {
+      DomainNameValidator.validate(domainName);
+    } catch (DomainNameValidationException e) {
+      throw new EMailAddressValidationException(e.getMessage(), e.getParameters());
     }
-    messages.add(new ValidMessage("email.ok"));
-    return messages;
+    return "email.ok";
   }
 }

@@ -328,3 +328,7 @@ Los valores para los estilos se definen inicialmente en el archivo de valores pa
 Una variable de plantilla definida en `commons.json` puede ser utilizada en un template para definir un valor de la misma forma en que se usa en un archivo HTML.
 Para encontrar el lugar donde se lanzó un error de literal no definido (undefined literal) tenemos que buscar primero en el componente indicado por el error. Si no hay una llamada a ese literal en el componente debemos ver el nombre hasta el primer punto. Este es el id del componente llamado. Si buscamos dentro de ese componente vamos a encontrar la llamada al literal o repetimos. Buscamos un componente con el identificador de la cadena hasta el siguiente punto y repetimos la búsqueda.
 También podemos definir variables de plantilla usando el id del template que vamos a agregar a la página. De esta forma, si varias páginas van a utilizar un mismo componente se puede compartir la configuración. Un ejemplo común es un menú. Podemos utilizar un componente para el menú y colocar el mismo id para ese menú en todas las páginas en donde se quiere compartir la configuración. Este id se utiliza para nombrar el archivo de configuración del menú que se comparte entre todos. El archivo de variables de plantilla para la página sobrescribe las variables definidas en el archivo de variables de plantillas para el id.
+
+
+
+// TODO Que se pueda definir la ubicación de la variable de plantilla en la sección

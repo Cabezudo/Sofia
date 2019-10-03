@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html profiles="administrator, assistant">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página principal</title>
+    <link rel="stylesheet" type="text/css" href="/css/manager/sites/site.css">
+    <script src="/js/manager/sites/site.js"></script>
+    <script>
+      {
+        const createGUI = () => {
+          const detailDiv = Core.validateById('detail');
+          detailDiv.addEventListener('response', event => {
+            const data = event.detail;
+            editableElement_1_00({
+              id: 'name',
+              uri: `/api/v1/sites/${data.id}`,
+              field: 'name',
+              value: data.name
+            });
+            editableElement_1_00({
+              id: 'version',
+              uri: `/api/v1/sites/${data.id}`,
+              field: 'version',
+              value: data.version
+            });
+            const hosts = data.hosts;
+            const hostElement = document.getElementById('hosts');
+            hosts.forEach(item => {
+              const hostInput = (() => {
+                const element = document.createElement('div');
+                editableElement_1_00({
+                  element,
+                  uri: `/api/v1/sites/${data.id}/hosts/${item.id}`,
+                  field: 'name',
+                  value: item.name
+                });
+                return element;
+              })();
+              hostElement.appendChild(hostInput);
+            });
+            Core.screenBlocker.unblock();
+          });
+          Core.screenBlocker.block();
+          Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
+        };
+        Core.addOnloadFunction(createGUI);
+      }
+    </script>
+    <style>
+    </style>
+  </head>
+  <body>
+    <div class="fullScreen">
+      <div id="application">
+        <section id="lateralMenu" template="menues/lateral/simple/menu" configurationFile="../lateralMenu.json"></section>
+        <div id="content">
+          <div id="detail">
+            <div class="title">Detalle de sitio</div>
+            <div><div id="name"></div></div>
+            <div><div id="version"></div></div>
+            <div class="subtitle">Hosts</div>
+            <div id="hosts" class="list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

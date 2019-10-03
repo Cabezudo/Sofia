@@ -6,12 +6,8 @@
 /* global Core */
 
 const inputPasswordValidator_1_00_00 = ({ element = null, onValid = null, onNotValid = null, onKeyPress = null } = {}) => {
-  let messageId = 0;
+  let requestId = 0;
   let verificationTimer;
-
-  const getNextMessageId = () => {
-    return ++messageId;
-  };
 
   const validateOptions = () => {
     if (element === null) {
@@ -25,25 +21,25 @@ const inputPasswordValidator_1_00_00 = ({ element = null, onValid = null, onNotV
     element.addEventListener('response', event => {
       const data = event.detail;
 
-      if (data.messageId === messageId) {
+      const element = event.srcElement;
+      if (requestId === data.requestId) {
         Core.cleanMessagesContainer();
-        const messages = event.detail.messages;
-        element.classList.remove('error');
-        messages.forEach(message => {
-          Core.addMessage(message);
-          if (message.type === 'ERROR') {
-            element.classList.add('error');
+        const payload = event.detail;
+        if (payload.status === 'ERROR') {
+          Core.addMessage({status: 'ERROR', message: payload.message});
+          element.classList.add('error');
+        }
+        if (payload.status === 'OK') {
+          element.classList.remove('error');
+          Core.addMessage({status: 'OK', message: payload.message});
+          if (Core.isFunction(onValid)) {
+            onValid();
           }
-          if (message.status === 'VALID') {
-            if (Core.isFunction(onValid)) {
-              onValid();
-            }
-          } else {
-            if (Core.isFunction(onNotValid)) {
-              onNotValid();
-            }
+        } else {
+          if (Core.isFunction(onNotValid)) {
+            onNotValid();
           }
-        });
+        }
       }
     });
     element.addEventListener("keypress", event => {
@@ -55,15 +51,15 @@ const inputPasswordValidator_1_00_00 = ({ element = null, onValid = null, onNotV
       if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
         return;
       }
-      const messageId = getNextMessageId();
       if (verificationTimer) {
         clearTimeout(verificationTimer);
       }
-      verificationTimer = setTimeout(sendVerificationRequest, Core.EVENT_TIME_DELAY);
+      verificationTimer = setTimeout(sendVerificationRequest, 300);
     });
   };
   const sendVerificationRequest = () => {
-    Core.sendPost(`/api/v1/password/validate`, element, messageId, {password: btoa(element.value)});
+    const response = Core.sendPost(`/api/v1/password/validate`, element, {password: btoa(element.value)});
+    requestId = response.requestId;
   };
   validateOptions();
   createGUI();

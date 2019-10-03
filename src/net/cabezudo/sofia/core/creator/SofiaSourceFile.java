@@ -105,7 +105,7 @@ public class SofiaSourceFile {
     filePaths.add(sourceFilePath);
 
     int lineNumber = 0;
-    try ( Stream<String> lines = Files.lines(sourceFilePath, StandardCharsets.UTF_8)) {
+    try (Stream<String> lines = Files.lines(sourceFilePath, StandardCharsets.UTF_8)) {
       for (String line : (Iterable<String>) lines::iterator) {
         lineNumber++;
         if (lineNumber == 1) {
@@ -225,7 +225,16 @@ public class SofiaSourceFile {
         }
         try {
           load(tag.getId(), Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName);
-          readJSONFileForId(basePath, tag.getId());
+          String configurationFile = tag.getValue("configurationFile");
+
+          Path jsonSourceFilePath;
+          if (configurationFile == null) {
+            jsonSourceFilePath = basePath.resolve(tag.getId() + ".json");
+          } else {
+            jsonSourceFilePath = basePath.resolve(configurationFile);
+          }
+          readJSONFileForId(jsonSourceFilePath, tag.getId());
+
           addImagesResources(Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName);
         } catch (NoSuchFileException e) {
           throw new NoSuchFileException("No such template file: " + templateName);
@@ -239,16 +248,15 @@ public class SofiaSourceFile {
     return sb.toString();
   }
 
-  private void readJSONFileForId(Path basePath, String jsonFileName) throws IOException, SiteCreationException {
-    Path jsonSourceFilePath = basePath.resolve(jsonFileName + ".json");
+  private void readJSONFileForId(Path jsonSourceFilePath, String id) throws IOException, SiteCreationException {
     if (Files.isRegularFile(jsonSourceFilePath)) {
-      Logger.debug("FOUND configuration file %s for %s.", jsonSourceFilePath, jsonFileName);
+      Logger.debug("FOUND configuration file %s for %s.", jsonSourceFilePath, id);
       String jsonCode = new String(Files.readAllBytes(jsonSourceFilePath), Charset.forName("UTF-8"));
       try {
         jsonCode = templateLiterals.apply(jsonCode);
         try {
           JSONObject jsonObject = JSON.parse(jsonCode).toJSONObject();
-          JSONPair jsonPair = new JSONPair(jsonFileName, jsonObject);
+          JSONPair jsonPair = new JSONPair(id, jsonObject);
           JSONObject jsonTemplateObject = new JSONObject();
           jsonTemplateObject.add(jsonPair);
           templateLiterals.add(jsonTemplateObject);

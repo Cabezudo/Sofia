@@ -16,7 +16,7 @@ public class Logger {
   private static Level level = Level.INFO;
 
   public static void log(Level level, String message, Object... parameters) {
-    if (Logger.level.compareTo(level) > 0) {
+    if (Logger.level.compareTo(level) < 0) {
       return;
     }
     Date date = new Date();

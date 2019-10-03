@@ -13,7 +13,7 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
-import net.cabezudo.sofia.core.ws.responses.AbstractResponse;
+import net.cabezudo.sofia.core.ws.responses.Response;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -36,11 +36,13 @@ public abstract class Service {
     } catch (IOException e) {
       throw new ServletException(e);
     }
+    String requestId = request.getHeader("RequestId");
+    response.setHeader("RequestId", requestId);
   }
 
   public abstract void execute() throws ServletException;
 
-  protected void sendResponse(AbstractResponse response) throws ServletException {
+  protected void sendResponse(Response response) throws ServletException {
     try {
       out.print(response.toJSON(getSite(), getClientData().getLocale()));
     } catch (SQLException e) {

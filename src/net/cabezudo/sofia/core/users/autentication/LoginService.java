@@ -11,16 +11,14 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
+import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.ws.responses.AbstractMessage;
-import net.cabezudo.sofia.core.ws.responses.InvalidMessage;
-import net.cabezudo.sofia.core.ws.responses.Messages;
-import net.cabezudo.sofia.core.ws.responses.MultipleMessageResponse;
-import net.cabezudo.sofia.core.ws.responses.ValidMessage;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
+import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
+import net.cabezudo.sofia.hosts.HostMaxSizeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -59,8 +57,13 @@ public class LoginService extends Service {
 
       Authenticator authenticator = new Authenticator();
 
-      User user = authenticator.authorize(super.getSite(), email, password);
-      Messages messages = new Messages();
+      User user;
+      try {
+        user = authenticator.authorize(super.getSite(), email, password);
+      } catch (EMailAddressValidationException | PasswordValidationException e) {
+        sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+        return;
+      }
       if (user == null) {
         long loginResponseTime = getClientData().getFailLoginResponseTime();
         try {
@@ -70,16 +73,12 @@ public class LoginService extends Service {
           return;
         }
         WebUserDataManager.getInstance().incrementFailLoginResponseTime(getClientData());
-        AbstractMessage message = new InvalidMessage("login.fail");
-        messages.add(message);
-        sendResponse(new MultipleMessageResponse("LOGIN", messages));
+        sendResponse(new Response("FAIL", "login.fail"));
       } else {
         setClientData(WebUserDataManager.getInstance().resetFailLoginResponseTime(getClientData()));
         getClientData().setUser(user);
-        AbstractMessage message = new ValidMessage("user.logged");
-        messages.add(message);
         request.getSession().removeAttribute("comebackPage");
-        sendResponse(new MultipleMessageResponse("LOGIN", messages));
+        sendResponse(new Response("LOGGED", "user.logged"));
       }
     } catch (EMailMaxSizeException | PasswordMaxSizeException | HostMaxSizeException e) {
       Logger.warning(e);
