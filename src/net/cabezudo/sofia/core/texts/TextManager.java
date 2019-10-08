@@ -23,11 +23,11 @@ public class TextManager {
         return "El dominio de la dirección de correo es correcto.";
       case "host.ok":
         return "El nombre de host '" + parameters[0] + "' es correcto.";
-      case "host.empty":
+      case "hostname.empty":
         return "El nombre de host no puede estar vacío.";
-      case "host.invalidCharacter":
+      case "hostname.invalidCharacter":
         return "El caracter '" + parameters[0] + "' en el nombre de host '" + parameters[1] + "' no es válido.";
-      case "host.notExists":
+      case "hostname.notExists":
         return "El nombre de host '" + parameters[0] + "' no existe.";
       case "domain.ok":
         return "El nombre de dominio es correcto.";
