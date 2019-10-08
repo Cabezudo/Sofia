@@ -148,8 +148,11 @@ public class Site implements Comparable<Integer> {
     sb.append("\"name\": \"");
     sb.append(name);
     sb.append("\", ");
-    sb.append("\"hosts\": ");
-    sb.append(domainNames.toJSON());
+    sb.append("\"domains\": ");
+    DomainNameList list = new DomainNameList();
+    list.add(this.baseDomainName);
+    list.add(domainNames);
+    sb.append(list.toJSON());
     sb.append(", ");
     sb.append("\"version\": ");
     sb.append(version);

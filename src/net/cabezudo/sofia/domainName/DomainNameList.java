@@ -73,4 +73,10 @@ public class DomainNameList implements Iterable<DomainName> {
   public void setTotal(int total) {
     this.total = total;
   }
+
+  public void add(DomainNameList domainNames) {
+    for (DomainName domainName : domainNames) {
+      add(domainName);
+    }
+  }
 }

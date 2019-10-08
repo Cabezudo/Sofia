@@ -24,10 +24,10 @@
               field: 'version',
               value: data.version
             });
-            const hosts = data.hosts;
-            const hostElement = document.getElementById('hosts');
-            hosts.forEach(item => {
-              const hostInput = (() => {
+            const domains = data.domains;
+            const domainsElement = document.getElementById('domains');
+            domains.forEach(item => {
+              const domainsInput = (() => {
                 const element = document.createElement('div');
                 editableElement_1_00({
                   element,
@@ -37,7 +37,7 @@
                 });
                 return element;
               })();
-              hostElement.appendChild(hostInput);
+              domainsElement.appendChild(domainsInput);
             });
             Core.screenBlocker.unblock();
           });
@@ -61,8 +61,8 @@
             <div class="title">Detalle de sitio</div>
             <div><div id="name"></div></div>
             <div><div id="version"></div></div>
-            <div class="subtitle">Hosts</div>
-            <div id="hosts" class="list"></div>
+            <div class="subtitle">Domains</div>
+            <div id="domains" class="list"></div>
           </div>
           <div id="messages"></div>
         </div>

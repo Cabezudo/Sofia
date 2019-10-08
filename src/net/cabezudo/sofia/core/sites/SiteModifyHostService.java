@@ -14,9 +14,9 @@ import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
-import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
-import net.cabezudo.sofia.domainName.DomainNameValidationException;
-import net.cabezudo.sofia.domainName.DomainNameValidator;
+import net.cabezudo.sofia.hostname.HostnameMaxSizeException;
+import net.cabezudo.sofia.hostname.HostnameValidationException;
+import net.cabezudo.sofia.hostname.HostnameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -46,15 +46,15 @@ public class SiteModifyHostService extends ListService {
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();
       String hostName = jsonData.getString("value");
-      String messageKey = DomainNameValidator.validate(hostName);
+      String messageKey = HostnameValidator.validate(hostName);
 
       sendResponse(new Response("OK", messageKey, hostName));
-    } catch (JSONParseException | PropertyNotExistException | DomainNameMaxSizeException e) {
+    } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
-    } catch (DomainNameValidationException e) {
+    } catch (HostnameValidationException e) {
       sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
     }
   }
