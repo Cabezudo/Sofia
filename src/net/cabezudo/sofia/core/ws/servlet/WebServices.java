@@ -14,7 +14,8 @@ import net.cabezudo.sofia.core.passwords.RecoverPasswordService;
 import net.cabezudo.sofia.core.passwords.SetPasswordService;
 import net.cabezudo.sofia.core.sites.SiteDomainNameListService;
 import net.cabezudo.sofia.core.sites.SiteListService;
-import net.cabezudo.sofia.core.sites.SiteModifyHostService;
+import net.cabezudo.sofia.core.sites.SiteModifyDomainNameService;
+import net.cabezudo.sofia.core.sites.SiteModifyService;
 import net.cabezudo.sofia.core.sites.SiteService;
 import net.cabezudo.sofia.core.users.AddUserService;
 import net.cabezudo.sofia.core.users.ListUsersService;
@@ -56,7 +57,7 @@ public class WebServices extends HttpServlet {
       return;
     }
 
-    if (tokens.match("/api/v1/sites/{siteId}/hosts")) {
+    if (tokens.match("/api/v1/sites/{siteId}/domains")) {
       new SiteDomainNameListService(request, response, tokens).execute();
       return;
     }
@@ -220,9 +221,15 @@ public class WebServices extends HttpServlet {
     String uri = request.getRequestURI();
     Tokens tokens = URLPathTokenizer.tokenize(uri);
 
-    // Update a host for a site. PUT /api/v1/person/{personId}
-    if (tokens.match("/api/v1/sites/{siteId}/hosts/{hostId}")) {
-      new SiteModifyHostService(request, response, tokens).execute();
+    // Update data for a site. PUT /api/v1/sites/{siteId}
+    if (tokens.match("/api/v1/sites/{siteId}")) {
+      new SiteModifyService(request, response, tokens).execute();
+      return;
+    }
+
+    // Update a domain for a site. PUT /api/v1/sites/{siteId}/domains/{domainNameId}
+    if (tokens.match("/api/v1/sites/{siteId}/domains/{domainNameId}")) {
+      new SiteModifyDomainNameService(request, response, tokens).execute();
       return;
     }
 

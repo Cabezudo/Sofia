@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.domainName;
+package net.cabezudo.sofia.domainname;
 
 import java.util.ArrayList;
 import java.util.Iterator;

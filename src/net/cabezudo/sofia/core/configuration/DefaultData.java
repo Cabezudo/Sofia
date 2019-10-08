@@ -21,11 +21,12 @@ import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.countries.Country;
 import net.cabezudo.sofia.countries.CountryManager;
-import net.cabezudo.sofia.domainName.DomainNameManager;
-import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
-import net.cabezudo.sofia.domainName.DomainNameNotExistsException;
-import net.cabezudo.sofia.domainName.EmptyDomainNameException;
-import net.cabezudo.sofia.domainName.MissingDotException;
+import net.cabezudo.sofia.domainname.DomainNameManager;
+import net.cabezudo.sofia.domainname.DomainNameMaxSizeException;
+import net.cabezudo.sofia.domainname.DomainNameNotExistsException;
+import net.cabezudo.sofia.domainname.EmptyDomainNameException;
+import net.cabezudo.sofia.domainname.InvalidCharacterException;
+import net.cabezudo.sofia.domainname.MissingDotException;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.municipalities.Municipality;
 import net.cabezudo.sofia.municipalities.MunicipalityManager;
@@ -106,7 +107,7 @@ public class DefaultData {
           validDomain = true;
         } catch (EmptyDomainNameException e) {
           System.out.println("The domain name is empty.");
-        } catch (net.cabezudo.sofia.domainName.InvalidCharacterException e) {
+        } catch (InvalidCharacterException e) {
           System.out.println("Invalid character '" + e.getChar() + "' in domain name");
         } catch (DomainNameNotExistsException e) {
           System.out.println("The domain name doesn't exist. Don't hava a DNS entry.");

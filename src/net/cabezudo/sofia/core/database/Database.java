@@ -23,7 +23,7 @@ import net.cabezudo.sofia.core.users.profiles.ProfilesTable;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.core.webusers.WebUserDataTable;
 import net.cabezudo.sofia.countries.CountriesTable;
-import net.cabezudo.sofia.domainName.DomainNamesTable;
+import net.cabezudo.sofia.domainname.DomainNamesTable;
 import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.languages.LanguagesTable;
 import net.cabezudo.sofia.municipalities.MunicipalitiesTable;

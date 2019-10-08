@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.domainName;
+package net.cabezudo.sofia.domainname;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -156,5 +156,21 @@ public class DomainNameManager {
       return domainName;
     }
     return null;
+  }
+
+  public DomainName update(DomainName domainName, User owner) throws SQLException {
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      return update(connection, domainName, owner);
+    }
+  }
+
+  public DomainName update(Connection connection, DomainName domainName, User owner) throws SQLException {
+    String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
+    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    ps.setString(1, domainName.getName());
+    ps.setInt(2, domainName.getId());
+    Logger.fine(ps);
+    ps.executeUpdate();
+    return domainName;
   }
 }
