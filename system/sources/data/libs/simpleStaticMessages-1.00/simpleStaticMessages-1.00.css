@@ -3,20 +3,20 @@
  * Author:     Esteban Cabezudo
  */
 
-.messages_1_00_00 > div {
+.simpleStaticMessages_1_00 > div {
   text-align: center;
   border-radius: 4px;
   padding: 10px;
   margin: 10px 0;
 }
 
-.messages_1_00_00 > div.red {
+.simpleStaticMessages_1_00 > div.red {
   background-color: #D11250;
   color: white;
   font-weight: bold;
 }
 
-.messages_1_00_00 > div.green {
+.simpleStaticMessages_1_00 > div.green {
   background-color: #008F68;
   color: white;
   font-weight: bold;

@@ -23,7 +23,7 @@ import net.cabezudo.sofia.core.users.profiles.ProfilesTable;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.core.webusers.WebUserDataTable;
 import net.cabezudo.sofia.countries.CountriesTable;
-import net.cabezudo.sofia.hosts.HostsTable;
+import net.cabezudo.sofia.domainName.DomainNamesTable;
 import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.languages.LanguagesTable;
 import net.cabezudo.sofia.municipalities.MunicipalitiesTable;
@@ -130,7 +130,7 @@ public class Database {
   private static void createTables(Connection connection) throws SQLException {
     Logger.info("Create database tables.");
     createTable(connection, SitesTable.CREATION_QUERY);
-    createTable(connection, HostsTable.CREATION_QUERY);
+    createTable(connection, DomainNamesTable.CREATION_QUERY);
     createTable(connection, PeopleTable.CREATION_QUERY);
     createTable(connection, EMailsTable.CREATION_QUERY);
     createTable(connection, UsersTable.CREATION_QUERY);

@@ -101,12 +101,12 @@ public class WebServer {
   }
 
   private Handler setServer(Site site) throws SQLException {
-    Logger.debug("Create handler for host %s", site.getBaseHost().getName());
+    Logger.debug("Create handler for host %s", site.getBaseDomainName().getName());
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
     String sitePath = site.getVersionPath().toString();
     context.setResourceBase(sitePath);
-    String[] virtualHosts = site.getHosts().toStringArray();
+    String[] virtualHosts = site.getDomainNames().toStringArray();
     context.setVirtualHosts(virtualHosts);
 
     context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -139,13 +139,13 @@ public class WebServer {
   }
 
   private Handler setAPI(Site site) throws SQLException {
-    Logger.debug("Create API handler for host %s", site.getBaseHost().getName());
+    Logger.debug("Create API handler for host %s", site.getBaseDomainName().getName());
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
     String sitePath = site.getVersionPath().toString();
     context.setResourceBase(sitePath);
     String[] virtualHosts = new String[1];
-    virtualHosts[0] = "api." + site.getBaseHost().getName();
+    virtualHosts[0] = "api." + site.getBaseDomainName().getName();
     context.setVirtualHosts(virtualHosts);
     ServletHolder apiHolder = new ServletHolder("webServices", WebServices.class);
     context.addServlet(apiHolder, "/*");

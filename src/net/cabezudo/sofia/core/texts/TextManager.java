@@ -21,6 +21,14 @@ public class TextManager {
         return "Las direcciones de correo deben tener un arroba.";
       case "email.domain.ok":
         return "El dominio de la dirección de correo es correcto.";
+      case "host.ok":
+        return "El nombre de host '" + parameters[0] + "' es correcto.";
+      case "host.empty":
+        return "El nombre de host no puede estar vacío.";
+      case "host.invalidCharacter":
+        return "El caracter '" + parameters[0] + "' en el nombre de host '" + parameters[1] + "' no es válido.";
+      case "host.notExists":
+        return "El nombre de host '" + parameters[0] + "' no existe.";
       case "domain.ok":
         return "El nombre de dominio es correcto.";
       case "domain.empty":

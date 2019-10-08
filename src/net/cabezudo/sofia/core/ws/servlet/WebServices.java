@@ -12,7 +12,7 @@ import net.cabezudo.sofia.core.passwords.PasswordPairValidatorService;
 import net.cabezudo.sofia.core.passwords.PasswordValidatorService;
 import net.cabezudo.sofia.core.passwords.RecoverPasswordService;
 import net.cabezudo.sofia.core.passwords.SetPasswordService;
-import net.cabezudo.sofia.core.sites.SiteHostListService;
+import net.cabezudo.sofia.core.sites.SiteDomainNameListService;
 import net.cabezudo.sofia.core.sites.SiteListService;
 import net.cabezudo.sofia.core.sites.SiteModifyHostService;
 import net.cabezudo.sofia.core.sites.SiteService;
@@ -57,7 +57,7 @@ public class WebServices extends HttpServlet {
     }
 
     if (tokens.match("/api/v1/sites/{siteId}/hosts")) {
-      new SiteHostListService(request, response, tokens).execute();
+      new SiteDomainNameListService(request, response, tokens).execute();
       return;
     }
 

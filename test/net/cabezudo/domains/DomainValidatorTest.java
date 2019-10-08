@@ -1,6 +1,6 @@
 package net.cabezudo.domains;
 
-import net.cabezudo.sofia.hosts.DomainNameValidator;
+import net.cabezudo.sofia.domainName.DomainNameValidator;
 import org.junit.Assert;
 import org.junit.Test;
 

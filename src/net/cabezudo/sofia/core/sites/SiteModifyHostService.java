@@ -5,7 +5,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSON;
-import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
@@ -15,9 +14,9 @@ import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
-import net.cabezudo.sofia.hosts.DomainNameValidationException;
-import net.cabezudo.sofia.hosts.DomainNameValidator;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
+import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
+import net.cabezudo.sofia.domainName.DomainNameValidationException;
+import net.cabezudo.sofia.domainName.DomainNameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -47,12 +46,10 @@ public class SiteModifyHostService extends ListService {
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();
       String hostName = jsonData.getString("value");
-
       String messageKey = DomainNameValidator.validate(hostName);
-      JSONObject jsonObject = new JSONObject();
-      jsonObject.add(new JSONPair("name", hostName));
-      sendResponse(new Response("OK", jsonObject));
-    } catch (JSONParseException | PropertyNotExistException | HostMaxSizeException e) {
+
+      sendResponse(new Response("OK", messageKey, hostName));
+    } catch (JSONParseException | PropertyNotExistException | DomainNameMaxSizeException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (SQLException e) {
       SystemMonitor.log(e);

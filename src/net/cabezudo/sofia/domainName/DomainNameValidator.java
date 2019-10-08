@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.hosts;
+package net.cabezudo.sofia.domainName;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -6,16 +6,16 @@ package net.cabezudo.sofia.hosts;
  */
 public class DomainNameValidator {
 
-  public static String validate(String domainName) throws HostMaxSizeException, DomainNameValidationException {
+  public static String validate(String domainName) throws DomainNameMaxSizeException, DomainNameValidationException {
     try {
-      HostManager.getInstance().validate(domainName);
-    } catch (EmptyHostException e) {
+      DomainNameManager.getInstance().validate(domainName);
+    } catch (EmptyDomainNameException e) {
       throw new DomainNameValidationException("domain.empty", domainName);
     } catch (InvalidCharacterException e) {
-      throw new DomainNameValidationException("domain.invalidCharacter", domainName);
+      throw new DomainNameValidationException("domain.invalidCharacter", e.getChar(), domainName);
     } catch (MissingDotException e) {
       throw new DomainNameValidationException("domain.missingDot", domainName);
-    } catch (HostNotExistsException e) {
+    } catch (DomainNameNotExistsException e) {
       throw new DomainNameValidationException("domain.notExists", domainName);
     }
     return "domain.ok";

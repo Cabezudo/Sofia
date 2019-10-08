@@ -25,6 +25,7 @@ import net.cabezudo.sofia.core.users.profiles.ProfileManager;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.customers.CustomerService;
+import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
@@ -33,7 +34,6 @@ import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.emails.EMailValidator;
 import net.cabezudo.sofia.emails.EMailsTable;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.people.PeopleList;
 import net.cabezudo.sofia.people.PeopleManager;
 import net.cabezudo.sofia.people.PeopleTable;
@@ -76,7 +76,7 @@ public class UserManager {
         try {
           EMailValidator.validate(address);
           validAddress = true;
-        } catch (EMailMaxSizeException | HostMaxSizeException | EMailAddressValidationException e) {
+        } catch (EMailMaxSizeException | DomainNameMaxSizeException | EMailAddressValidationException e) {
           // TODO mandar el warning a algún lado
           validAddress = false;
         }

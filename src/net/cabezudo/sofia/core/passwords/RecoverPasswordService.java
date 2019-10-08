@@ -12,10 +12,10 @@ import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.customers.CustomerService;
+import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailValidator;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -39,7 +39,7 @@ public class RecoverPasswordService extends Service {
       Site site = super.getSite();
       CustomerService.sendPasswordRecoveryEMail(site, address);
       sendResponse(new Response("OK", "password.recovery.mail.sent"));
-    } catch (EMailMaxSizeException | HostMaxSizeException e) {
+    } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (SQLException | MailServerException e) {

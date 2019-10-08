@@ -6,9 +6,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.domainName.DomainName;
+import net.cabezudo.sofia.domainName.DomainNameList;
 import net.cabezudo.sofia.emails.EMail;
-import net.cabezudo.sofia.hosts.Host;
-import net.cabezudo.sofia.hosts.HostList;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -19,14 +19,22 @@ public class Site implements Comparable<Integer> {
   public final static int NAME_MAX_LENGTH = 80;
   private final Integer id;
   private final String name;
-  private final HostList hosts;
+  private final DomainName baseDomainName;
+  private final DomainNameList domainNames;
   private final int version;
 
-  Site(int id, String name, int version) {
+  Site(int id, String name, DomainName baseDomainName, DomainNameList domainNameList, int version) {
     this.id = id;
     this.name = name;
-    this.hosts = new HostList();
+    this.domainNames = domainNameList;
+    this.baseDomainName = baseDomainName;
     this.version = version;
+    if (baseDomainName == null) {
+      throw new RuntimeException("The base domain name is null");
+    }
+    if (domainNames == null) {
+      throw new RuntimeException("The domain name list is null");
+    }
   }
 
   public Integer getId() {
@@ -37,42 +45,39 @@ public class Site implements Comparable<Integer> {
     return name;
   }
 
+  public DomainName getBaseDomainName() {
+    return baseDomainName;
+  }
+
   public int getVersion() {
     return version;
   }
 
-  public void addHost(int hostId, String hostName) {
-    Host host = new Host(hostId, hostName);
-    this.add(host);
+  public void _addDomainName(int domainNameId, String domainNameName) {
+    if (domainNameId == baseDomainName.getId()) {
+      this.add(baseDomainName);
+    } else {
+      DomainName newDomainName = new DomainName(domainNameId, id, domainNameName);
+      this.add(newDomainName);
+    }
   }
 
-  public void add(Host host) {
-    hosts.add(host);
+  private void add(DomainName domainName) {
+    domainNames.add(domainName);
   }
 
-  public void setBaseHost(Host host) {
-    hosts.setBaseHost(host);
-  }
-
-  public void setBaseHost(int baseHostId) {
-    hosts.setBaseHost(baseHostId);
-  }
-
-  public HostList getHosts() throws SQLException {
-    return hosts;
-  }
-
-  public Host getBaseHost() {
-    return hosts.getBaseHost();
+  public DomainNameList getDomainNames() throws SQLException {
+    return domainNames;
   }
 
   @Override
   public String toString() {
-    return "[id: " + id + ", name: " + name + ", hosts: " + hosts + ", version: " + version + " ]";
+    return "[id: " + id + ", name: " + name + ", domainName: " + baseDomainName + ", version: " + version + " ]";
   }
 
   public Path getBasePath() {
-    return Configuration.getInstance().getSitesPath().resolve(getBaseHost().getName());
+    System.out.println(baseDomainName);
+    return Configuration.getInstance().getSitesPath().resolve(baseDomainName.getName());
   }
 
   public Path getVersionPath() {
@@ -92,7 +97,7 @@ public class Site implements Comparable<Integer> {
   }
 
   public Path getSourcesPath() {
-    return Configuration.getInstance().getSitesSourcesPath().resolve(getBaseHost().getName()).resolve(Integer.toString(version));
+    return Configuration.getInstance().getSitesSourcesPath().resolve(baseDomainName.getName()).resolve(Integer.toString(version));
   }
 
   public Path getSourcesImagesPath() {
@@ -106,7 +111,7 @@ public class Site implements Comparable<Integer> {
 
   public URI getURL() {
     try {
-      URI uri = new URI(this.getBaseHost().getName());
+      URI uri = new URI(baseDomainName.getName());
       return uri;
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
@@ -115,7 +120,7 @@ public class Site implements Comparable<Integer> {
 
   // TODO Get this value from a site configuration file
   public URI getPasswordChangeURI() throws URISyntaxException {
-    return new URI("https://" + this.getBaseHost().getName() + "/changePassword.html");
+    return new URI("https://" + baseDomainName.getName() + "/changePassword.html");
   }
 
   public String getNoReplyName() {
@@ -144,7 +149,7 @@ public class Site implements Comparable<Integer> {
     sb.append(name);
     sb.append("\", ");
     sb.append("\"hosts\": ");
-    sb.append(hosts.toJSON());
+    sb.append(domainNames.toJSON());
     sb.append(", ");
     sb.append("\"version\": ");
     sb.append(version);

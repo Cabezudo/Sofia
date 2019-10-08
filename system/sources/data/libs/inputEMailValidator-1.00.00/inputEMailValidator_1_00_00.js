@@ -27,14 +27,14 @@ const inputEMailValidator_1_00_00 = ({ element = null, onValid = null, onNotVali
       const element = event.srcElement;
       if (requestId === data.requestId) {
         Core.cleanMessagesContainer();
-        const payload = event.detail;
-        if (payload.status === 'ERROR') {
+        const data = event.detail;
+        data.elementId = element.id;
+        Core.addMessage(data);
+        if (data.status === 'ERROR') {
           element.classList.add('error');
-          Core.addMessage({status: 'ERROR', message: payload.message});
         }
-        if (payload.status === 'OK') {
+        if (data.status === 'OK') {
           element.classList.remove('error');
-          Core.addMessage({status: 'OK', message: payload.message});
           if (Core.isFunction(onValid)) {
             onValid();
           }

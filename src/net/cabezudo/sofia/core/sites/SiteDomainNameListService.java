@@ -12,17 +12,21 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
+import net.cabezudo.sofia.domainName.DomainNameList;
+import net.cabezudo.sofia.domainName.DomainNameManager;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.24.10
  *
  */
-public class SiteHostListService extends ListService {
+public class SiteDomainNameListService extends ListService {
+
+  private final int MAX_ITEMS = 200;
 
   private final int siteId;
 
-  public SiteHostListService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public SiteDomainNameListService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response);
     Token token = tokens.getValue("siteId");
     siteId = token.toInteger();
@@ -45,7 +49,7 @@ public class SiteHostListService extends ListService {
         jsonObject.add(new JSONPair("filters", getFilters() == null ? "" : getFilters().getOriginalValue()));
         jsonObject.add(new JSONPair("headers", jsonArray));
         jsonObject.add(new JSONPair("totalRecords", total));
-        jsonObject.add(new JSONPair("pageSize", super.getLimit() == null ? HostList.MAX : super.getLimit().getValue()));
+        jsonObject.add(new JSONPair("pageSize", super.getLimit() == null ? MAX_ITEMS : super.getLimit().getValue()));
 
         JSONObject jsonTitleObject;
 
@@ -59,7 +63,7 @@ public class SiteHostListService extends ListService {
 
         out.print(jsonObject.toJSON());
       } else {
-        HostList list = SiteManager.getInstance().listHosts(site, super.getFilters(), super.getSort(), super.getOffset(), super.getLimit(), owner);
+        DomainNameList list = DomainNameManager.getInstance().listDomainNames(site, super.getFilters(), super.getSort(), super.getOffset(), super.getLimit(), owner);
         out.print(list.toJSON());
       }
     } catch (SQLException e) {

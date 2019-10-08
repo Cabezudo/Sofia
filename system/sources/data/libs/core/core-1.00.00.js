@@ -31,7 +31,9 @@ const Core = {
     }
   },
   cleanMessagesContainer: () => {
-    Core.removeChilds(Core.messagesContainer);
+    if (Core.messagesContainer) {
+      Core.trigger(Core.messagesContainer, 'clearMessages');
+    }
   },
   getNextRequestId: () => {
     return Core.requestId++;
@@ -115,7 +117,6 @@ const Core = {
     }
   },
   isNotLogged: () => {
-    console.log(`variables.user: ${variables.user}`);
     return variables.user === null;
   },
   isRightLeft: event => {
@@ -297,7 +298,6 @@ const Core = {
 };
 
 window.onload = () => {
-  console.log(Core.pageParameters);
   Core.onloadFunctions.forEach(func => {
     func();
   });

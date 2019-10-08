@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.hosts;
+package net.cabezudo.sofia.domainName;
 
 import net.cabezudo.sofia.emails.ParametrizedException;
 

@@ -24,14 +24,14 @@ const inputPasswordValidator_1_00_00 = ({ element = null, onValid = null, onNotV
       const element = event.srcElement;
       if (requestId === data.requestId) {
         Core.cleanMessagesContainer();
-        const payload = event.detail;
-        if (payload.status === 'ERROR') {
-          Core.addMessage({status: 'ERROR', message: payload.message});
+        data.elementId = element.id;
+        if (data.status === 'ERROR') {
+          Core.addMessage(data);
           element.classList.add('error');
         }
-        if (payload.status === 'OK') {
+        if (data.status === 'OK') {
           element.classList.remove('error');
-          Core.addMessage({status: 'OK', message: payload.message});
+          Core.addMessage(data);
           if (Core.isFunction(onValid)) {
             onValid();
           }
