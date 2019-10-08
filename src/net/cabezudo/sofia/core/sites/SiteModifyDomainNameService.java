@@ -10,10 +10,11 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
-import net.cabezudo.sofia.core.ws.servlet.services.ListService;
+import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.domainname.DomainName;
+import net.cabezudo.sofia.domainname.DomainNameManager;
 import net.cabezudo.sofia.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.hostname.HostnameValidationException;
 import net.cabezudo.sofia.hostname.HostnameValidator;
@@ -23,14 +24,16 @@ import net.cabezudo.sofia.hostname.HostnameValidator;
  * @version 0.01.00, 2019.24.10
  *
  */
-public class SiteModifyHostService extends ListService {
+public class SiteModifyDomainNameService extends Service {
 
   private final int siteId;
+  private final int domainNameId;
 
-  public SiteModifyHostService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public SiteModifyDomainNameService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response);
-    Token token = tokens.getValue("siteId");
-    siteId = token.toInteger();
+
+    siteId = tokens.getValue("siteId").toInteger();
+    domainNameId = tokens.getValue("domainNameId").toInteger();
   }
 
   @Override
@@ -45,10 +48,14 @@ public class SiteModifyHostService extends ListService {
 
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();
-      String hostName = jsonData.getString("value");
-      String messageKey = HostnameValidator.validate(hostName);
+      String domainNameName = jsonData.getString("value");
+      String messageKey = HostnameValidator.validate(domainNameName);
 
-      sendResponse(new Response("OK", messageKey, hostName));
+      DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
+
+      DomainNameManager.getInstance().update(domainName, owner);
+
+      sendResponse(new Response("OK", messageKey, domainNameName));
     } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (SQLException e) {

@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.domainName;
+package net.cabezudo.sofia.domainname;
 
 import net.cabezudo.sofia.core.database.Table;
 import net.cabezudo.sofia.core.sites.SitesTable;

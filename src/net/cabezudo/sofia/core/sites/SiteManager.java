@@ -20,10 +20,10 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.domainName.DomainName;
-import net.cabezudo.sofia.domainName.DomainNameList;
-import net.cabezudo.sofia.domainName.DomainNameManager;
-import net.cabezudo.sofia.domainName.DomainNamesTable;
+import net.cabezudo.sofia.domainname.DomainName;
+import net.cabezudo.sofia.domainname.DomainNameList;
+import net.cabezudo.sofia.domainname.DomainNameManager;
+import net.cabezudo.sofia.domainname.DomainNamesTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -238,6 +238,10 @@ public class SiteManager {
 
       return list;
     }
+  }
+
+  void update(Site site, User owner) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   private static class SiteHelper {

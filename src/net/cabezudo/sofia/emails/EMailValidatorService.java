@@ -7,7 +7,7 @@ import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
+import net.cabezudo.sofia.domainname.DomainNameMaxSizeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

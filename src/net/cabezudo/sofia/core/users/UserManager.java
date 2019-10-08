@@ -25,7 +25,7 @@ import net.cabezudo.sofia.core.users.profiles.ProfileManager;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
+import net.cabezudo.sofia.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;

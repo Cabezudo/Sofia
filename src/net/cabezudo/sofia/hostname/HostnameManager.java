@@ -2,7 +2,7 @@ package net.cabezudo.sofia.hostname;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import net.cabezudo.sofia.domainName.DomainName;
+import net.cabezudo.sofia.domainname.DomainName;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
