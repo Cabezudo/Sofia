@@ -1,11 +1,15 @@
 package net.cabezudo.sofia.core.sites;
 
+import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import net.cabezudo.sofia.core.QueryHelper;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.api.options.list.Filters;
@@ -16,9 +20,10 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.hosts.Host;
-import net.cabezudo.sofia.hosts.HostManager;
-import net.cabezudo.sofia.hosts.HostsTable;
+import net.cabezudo.sofia.domainName.DomainName;
+import net.cabezudo.sofia.domainName.DomainNameList;
+import net.cabezudo.sofia.domainName.DomainNameManager;
+import net.cabezudo.sofia.domainName.DomainNamesTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -45,83 +50,72 @@ public class SiteManager {
 
   public Site getById(Connection connection, int id) throws SQLException {
     String query
-        = "SELECT s.name AS name, s.host AS baseHost, d.id AS hostId, d.name AS hostname, version "
+        = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
         + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + HostsTable.NAME + " AS d ON s.id = d.siteId "
-        + "WHERE s.id = ? ORDER BY hostId";
+        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+        + "WHERE s.id = ? ORDER BY domainName";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, id);
     Logger.fine(ps);
     ResultSet rs = ps.executeQuery();
 
-    if (rs.next()) {
-      String name = rs.getString("name");
-      int baseHost = rs.getInt("baseHost");
-      int hostId = rs.getInt("hostId");
-      String hostName = rs.getString("hostname");
-      int version = rs.getInt("version");
-      Site site = new Site(id, name, version);
-      site.setBaseHost(baseHost);
-      site.addHost(hostId, hostName);
-      while (rs.next()) {
-        hostId = rs.getInt("hostId");
-        hostName = rs.getString("hostname");
-        site.addHost(hostId, hostName);
+    String name = null;
+    int baseDomainNameId = 0;
+    int version = 0;
+    DomainName baseDomainName = null;
+    DomainNameList domainNameList = new DomainNameList();
+
+    while (rs.next()) {
+      if (name == null) {
+        name = rs.getString("name");
+        baseDomainNameId = rs.getInt("baseDomainNameId");
+        version = rs.getInt("version");
       }
-      return site;
-    }
-    return null;
-  }
 
-  public Site getByHostName(String hostName) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      return getByHostName(connection, hostName);
-    }
-  }
-
-  public Site getByHostName(Connection connection, String requestHostName) throws SQLException {
-    String query
-        = "SELECT s.id AS siteId, s.name, s.host AS baseHost, o.id as hostId, o.name AS hostname, version "
-        + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + HostsTable.NAME + " AS d ON s.id = d.siteId "
-        + "LEFT JOIN " + HostsTable.NAME + " AS o ON s.id = o.siteId "
-        + "WHERE d.name = ? ORDER BY hostId";
-
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setString(1, requestHostName);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-
-    if (rs.next()) {
-      int id = rs.getInt("siteId");
-      String name = rs.getString("name");
-      int baseHost = rs.getInt("baseHost");
-      int hostId = rs.getInt("hostId");
-      String hostName = rs.getString("hostname");
-      int version = rs.getInt("version");
-      Site site = new Site(id, name, version);
-      site.setBaseHost(baseHost);
-      site.addHost(hostId, hostName);
-      while (rs.next()) {
-        hostId = rs.getInt("hostId");
-        hostName = rs.getString("hostname");
-        site.addHost(hostId, hostName);
+      int domainNameId = rs.getInt("domainNameId");
+      String domainNameName = rs.getString("domainName");
+      DomainName domainName = new DomainName(domainNameId, id, domainNameName);
+      if (domainNameId == baseDomainNameId) {
+        baseDomainName = domainName;
+      } else {
+        domainNameList.add(domainName);
       }
-      return site;
     }
-    return null;
+    Site site = new Site(id, name, baseDomainName, domainNameList, version);
+    System.out.println("2: " + site);
+    return site;
   }
 
-  public Site create(String name, String... hosts) throws SQLException {
+  public Site getByHostName(String domainName) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      Site site = add(connection, name, hosts);
+      return getByDomainNameName(connection, domainName);
+    }
+  }
+
+  public Site getByDomainNameName(Connection connection, String requestDomainNameName) throws SQLException {
+    DomainName domainName = DomainNameManager.getInstance().getByDomainNameName(requestDomainNameName);
+    if (domainName == null) {
+      return null;
+    }
+    return getById(connection, domainName.getSiteId());
+  }
+
+  public Site create(String name, String... domainNames) throws SQLException {
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      Site site = add(connection, name, domainNames);
       return site;
     }
   }
 
-  public Site add(Connection connection, String name, String... hosts) throws SQLException {
+  public Site add(Connection connection, String name, String... domainNameNames) throws SQLException {
     connection.setAutoCommit(false);
+    if (name == null || name.isEmpty()) {
+      throw new InvalidParameterException("Invalid parameter name: " + name);
+    }
+    if (domainNameNames == null) {
+      throw new InvalidParameterException("Invalid null parameter for domain names");
+    }
     // TODO revisar que haya dominios que agregar
 
     String query = "INSERT INTO " + SitesTable.NAME + " (name) VALUES (?)";
@@ -134,19 +128,23 @@ public class SiteManager {
     if (rs.next()) {
       int id = rs.getInt(1);
 
-      Site site = new Site(id, name, DEFAULT_VERSION);
-
-      for (int i = 0; i < hosts.length; i++) {
-        String domainNameString = hosts[i];
-        if (domainNameString.isEmpty()) {
-          continue;
+      DomainName baseDomainName = null;
+      DomainNameList domainNames = new DomainNameList();
+      for (int i = 0; i < domainNameNames.length; i++) {
+        String domainNameName = domainNameNames[i];
+        if (domainNameName == null || domainNameName.isEmpty()) {
+          throw new InvalidParameterException("Invalid domain name: " + domainNameName);
         }
-        Host host = HostManager.getInstance().add(connection, id, domainNameString);
-        if (i == 0) {
-          site.setBaseHost(host);
+        DomainName domainName = DomainNameManager.getInstance().add(connection, id, domainNameName);
+        if (baseDomainName == null) {
+          baseDomainName = domainName;
+        } else {
+          domainNames.add(domainName);
         }
-        site.add(host);
       }
+
+      Site site = new Site(id, name, baseDomainName, domainNames, DEFAULT_VERSION);
+      System.out.println("4: " + site);
 
       SiteManager.getInstance().update(connection, site);
 
@@ -157,10 +155,10 @@ public class SiteManager {
   }
 
   public Site update(Connection connection, Site site) throws SQLException {
-    String query = "UPDATE " + SitesTable.NAME + " SET name = ?, host = ? WHERE id = ?";
+    String query = "UPDATE " + SitesTable.NAME + " SET name = ?, domainName = ? WHERE id = ?";
     PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     ps.setString(1, site.getName());
-    ps.setInt(2, site.getBaseHost().getId());
+    ps.setInt(2, site.getBaseDomainName().getId());
     ps.setInt(3, site.getId());
     Logger.fine(ps);
     ps.executeUpdate();
@@ -168,48 +166,7 @@ public class SiteManager {
   }
 
   public SiteList list() throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      return list(connection);
-    }
-  }
-
-  public SiteList list(Connection connection) throws SQLException {
-    String query
-        = "SELECT s.id AS siteId, s.name AS name, s.host AS baseHost, d.id AS hostId, d.name AS hostname, version "
-        + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + HostsTable.NAME + " AS d ON s.id = d.siteId;";
-
-    PreparedStatement ps = connection.prepareStatement(query);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-    SiteList list = new SiteList(0, 0);
-
-    int lastId = 0;
-    Site site = null;
-
-    while (rs.next()) {
-      int id = rs.getInt("siteId");
-      String name = rs.getString("name");
-      int baseHost = rs.getInt("baseHost");
-      int hostId = rs.getInt("hostId");
-      String hostName = rs.getString("hostname");
-      int version = rs.getInt("version");
-      if (lastId != id) {
-        lastId = id;
-        site = new Site(id, name, version);
-        list.add(site);
-        site.setBaseHost(baseHost);
-        site.addHost(hostId, hostName);
-      } else {
-        hostId = rs.getInt("hostId");
-        hostName = rs.getString("hostname");
-        if (site == null) {
-          throw new NullPointerException("site is null");
-        }
-        site.addHost(hostId, hostName);
-      }
-    }
-    return list;
+    return list(null, null, null, null, null);
   }
 
   SiteList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
@@ -231,7 +188,12 @@ public class SiteManager {
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-      String query = "SELECT id, name, version FROM " + SitesTable.NAME + where + sqlSort + sqlLimit;
+      String query
+          = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
+          + "FROM " + SitesTable.NAME + " AS s "
+          + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
+          + where + sqlSort + sqlLimit;
+
       PreparedStatement ps = connection.prepareStatement(query);
       setSiteFilters(filters, ps);
 
@@ -239,13 +201,27 @@ public class SiteManager {
       ResultSet rs = ps.executeQuery();
 
       SiteList list = new SiteList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
+      Map<Integer, SiteHelper> map = new HashMap<>();
+
       while (rs.next()) {
-        int id = rs.getInt("id");
+        int id = rs.getInt("siteId");
         String name = rs.getString("name");
+        int baseDomainNameId = rs.getInt("baseDomainNameId");
         int version = rs.getInt("version");
 
-        Site site = new Site(id, name, version);
+        SiteHelper siteHelper = map.get(id);
+        if (siteHelper == null) {
+          siteHelper = new SiteHelper(id, name, baseDomainNameId, version);
+          map.put(id, siteHelper);
+        }
+        int domainNameId = rs.getInt("domainNameId");
+        String domainNameName = rs.getString("baseDomainNameName");
 
+        siteHelper.add(domainNameId, domainNameName);
+      }
+      for (Entry<Integer, SiteHelper> entry : map.entrySet()) {
+        SiteHelper siteHelper = entry.getValue();
+        Site site = siteHelper.getSite();
         list.add(site);
       }
 
@@ -261,6 +237,38 @@ public class SiteManager {
       list.setTotal(total);
 
       return list;
+    }
+  }
+
+  private static class SiteHelper {
+
+    private final int id;
+    private final String name;
+    private final int baseDomainNameId;
+    private DomainName baseDomainName;
+    private final DomainNameList domainNameList = new DomainNameList();
+    private final int version;
+
+    private SiteHelper(int id, String name, int baseDomainNameId, int version) {
+      this.id = id;
+      this.name = name;
+      this.baseDomainNameId = baseDomainNameId;
+      this.version = version;
+    }
+
+    private void add(int domainNameId, String domainNameName) {
+      DomainName domainName = new DomainName(domainNameId, id, domainNameName);
+      if (domainNameId == baseDomainNameId) {
+        baseDomainName = domainName;
+      } else {
+        domainNameList.add(domainName);
+      }
+    }
+
+    private Site getSite() {
+      Site site = new Site(id, name, baseDomainName, domainNameList, version);
+      System.out.println("1: " + site);
+      return site;
     }
   }
 
@@ -343,7 +351,7 @@ public class SiteManager {
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-      String query = "SELECT count(*) AS total FROM " + HostsTable.NAME + where + sqlSort + sqlLimit;
+      String query = "SELECT count(*) AS total FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
       PreparedStatement ps = connection.prepareStatement(query);
 
       ps.setInt(1, site.getId());
@@ -387,7 +395,7 @@ public class SiteManager {
     }
   }
 
-  HostList listHosts(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  DomainNameList listDomainName(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
@@ -406,7 +414,7 @@ public class SiteManager {
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-      String query = "SELECT id, name FROM " + HostsTable.NAME + where + sqlSort + sqlLimit;
+      String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
       PreparedStatement ps = connection.prepareStatement(query);
       ps.setInt(1, site.getId());
       setHostFilters(filters, ps);
@@ -414,14 +422,15 @@ public class SiteManager {
       Logger.fine(ps);
       ResultSet rs = ps.executeQuery();
 
-      HostList list = new HostList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
+      DomainNameList list = new DomainNameList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
       while (rs.next()) {
         int id = rs.getInt("id");
+        int siteId = rs.getInt("siteId");
         String name = rs.getString("name");
 
-        Host host = new Host(id, name);
+        DomainName domainName = new DomainName(id, siteId, name);
 
-        list.add(host);
+        list.add(domainName);
       }
 
       query = "SELECT FOUND_ROWS() AS total";

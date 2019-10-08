@@ -142,7 +142,7 @@
           }
         }
       });
-      messages_1_00_00({
+      simpleStaticMessages_1_00({
         id: 'loginMessages'
       });
       const sendLoginInformation = () => {
@@ -164,7 +164,7 @@
       <div class="title">#{title}</div>
       <div class="otherOption">o&nbsp;<a href="register.html">crear una cuenta</a></div>
     </div>
-    <input id="loginEMail" type="email" name="username" placeholder="correo electrónico">
+    <input id="loginEMail" type="email" name="username" placeholder="correo electrónico" autocomplete="off">
     <input id="loginPassword" type="password" name="password" placeholder="contraseña">
     <div id="loginMessages"></div>
     <div id="loginButton">Acceder</div>

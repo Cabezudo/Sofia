@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.emails;
 
 import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.hosts.DomainNameValidationException;
-import net.cabezudo.sofia.hosts.DomainNameValidator;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
+import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
+import net.cabezudo.sofia.domainName.DomainNameValidationException;
+import net.cabezudo.sofia.domainName.DomainNameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -11,7 +11,7 @@ import net.cabezudo.sofia.hosts.HostMaxSizeException;
  */
 public class EMailValidator {
 
-  public static String validate(String address) throws EMailMaxSizeException, HostMaxSizeException, EMailAddressValidationException {
+  public static String validate(String address) throws EMailMaxSizeException, DomainNameMaxSizeException, EMailAddressValidationException {
     Logger.finest("Validate address %s for email.", address);
     if (address.isEmpty()) {
       throw new EMailAddressValidationException("email.isEmpty", "");

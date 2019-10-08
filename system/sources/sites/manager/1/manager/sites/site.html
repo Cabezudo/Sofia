@@ -43,6 +43,8 @@
           });
           Core.screenBlocker.block();
           Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
+
+          bottomMessages_1_00({id: 'messages'});
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -62,6 +64,7 @@
             <div class="subtitle">Hosts</div>
             <div id="hosts" class="list"></div>
           </div>
+          <div id="messages"></div>
         </div>
       </div>
     </div>

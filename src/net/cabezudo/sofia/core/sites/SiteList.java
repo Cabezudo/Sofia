@@ -37,7 +37,7 @@ public class SiteList extends EntityList<Site> {
       list.add(s);
       map.put(id, s);
     } else {
-      site = new Site(id, site.getName(), site.getVersion());
+      site = new Site(id, site.getName(), site.getBaseDomainName(), site.getDomainNames(), site.getVersion());
       map.put(id, site);
     }
   }

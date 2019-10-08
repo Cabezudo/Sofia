@@ -21,12 +21,11 @@ import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.countries.Country;
 import net.cabezudo.sofia.countries.CountryManager;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
-import net.cabezudo.sofia.hosts.HostManager;
-import net.cabezudo.sofia.hosts.HostNotExistsException;
-import net.cabezudo.sofia.hosts.EmptyHostException;
-import net.cabezudo.sofia.hosts.InvalidCharacterException;
-import net.cabezudo.sofia.hosts.MissingDotException;
+import net.cabezudo.sofia.domainName.DomainNameManager;
+import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
+import net.cabezudo.sofia.domainName.DomainNameNotExistsException;
+import net.cabezudo.sofia.domainName.EmptyDomainNameException;
+import net.cabezudo.sofia.domainName.MissingDotException;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.municipalities.Municipality;
 import net.cabezudo.sofia.municipalities.MunicipalityManager;
@@ -46,7 +45,7 @@ import net.cabezudo.sofia.zones.ZoneManager;
  */
 public class DefaultData {
 
-  public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException, HostMaxSizeException {
+  public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException {
     try {
       Logger.info("Load the JDBC driver %s.", Configuration.getInstance().getDatabaseDriver());
       Class.forName(Configuration.getInstance().getDatabaseDriver()).newInstance();
@@ -86,15 +85,15 @@ public class DefaultData {
     createPostalCodes(country, owner);
   }
 
-  private static void createSites() throws SQLException, HostMaxSizeException {
+  private static void createSites() throws SQLException {
     Logger.info("Create sites.");
     if (System.console() != null) {
       String baseDomainName;
       System.out.println("Crear sitio para el servidor.");
       System.out.println(
-              "Coloque el nombre del host con el cual desea administrar el sitio en la red. Debe ser un nombre de dominio válido. "
-              + "Si solo va a trabajar de forma local puede dejarlo en blanco y utilizar localhost para acceder a la configuración. "
-              + "Pero si necesita acceder al sitio de forma remota debera colocar un nombre de dominio válido");
+          "Coloque el nombre del host con el cual desea administrar el sitio en la red. Debe ser un nombre de dominio válido. "
+          + "Si solo va a trabajar de forma local puede dejarlo en blanco y utilizar localhost para acceder a la configuración. "
+          + "Pero si necesita acceder al sitio de forma remota debera colocar un nombre de dominio válido");
       System.out.print("Dominio base: ");
       boolean validDomain = false;
       do {
@@ -103,16 +102,18 @@ public class DefaultData {
           break;
         }
         try {
-          HostManager.getInstance().validate(baseDomainName);
+          DomainNameManager.getInstance().validate(baseDomainName);
           validDomain = true;
-        } catch (EmptyHostException e) {
+        } catch (EmptyDomainNameException e) {
           System.out.println("The domain name is empty.");
-        } catch (InvalidCharacterException e) {
+        } catch (net.cabezudo.sofia.domainName.InvalidCharacterException e) {
           System.out.println("Invalid character '" + e.getChar() + "' in domain name");
-        } catch (MissingDotException e) {
-          System.out.println("A domain name MUST have, at least, a dot.");
-        } catch (HostNotExistsException e) {
+        } catch (DomainNameNotExistsException e) {
           System.out.println("The domain name doesn't exist. Don't hava a DNS entry.");
+        } catch (DomainNameMaxSizeException e) {
+          System.out.println("The domain name is too large.");
+        } catch (MissingDotException e) {
+          System.out.println("A domain name must have a dot in it.");
         }
       } while (!validDomain);
       SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
@@ -165,15 +166,10 @@ public class DefaultData {
           }
 
           try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-
             SettlementType settlementType = SettlementTypeManager.getInstance().add(connection, settlementTypeName);
-
             Municipality municipality = MunicipalityManager.getInstance().add(connection, state, municipalityName, owner);
-
             Zone zone = ZoneManager.getInstance().add(connection, zoneName);
-
             Settlement settlement = SettlementManager.getInstance().add(connection, settlementType, city, municipality, zone, settlementName, owner);
-
             PostalCodeManager.getInstance().add(connection, settlement, Integer.parseInt(postalCodeNumber), owner);
           }
         }

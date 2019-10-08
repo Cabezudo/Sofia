@@ -89,7 +89,6 @@ const list_1_00_00 = async ({ id = null, source = null, filterInputElement = nul
               data.list.forEach(elementData => {
                 const rowId = getRowId(elementData.row);
                 const tableRow = document.getElementById(rowId);
-                console.log(tableRow);
                 addTableData(tableRow, elementData);
                 if (Core.isFunction(onClick)) {
                   tableRow.className = 'clickable';

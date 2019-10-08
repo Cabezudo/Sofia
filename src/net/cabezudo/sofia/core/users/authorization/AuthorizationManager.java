@@ -47,7 +47,7 @@ public class AuthorizationManager {
   }
 
   public boolean hasAuthorization(String requestURI, User user, PermissionType permissionType, Site site) throws NotLoggedException, SQLException {
-    Logger.debug("Looking for authorization for uri %s, user %s, permissionType %s and site %s", requestURI, user, permissionType.getName(), site.getBaseHost().getName());
+    Logger.debug("Looking for authorization for uri %s, user %s, permissionType %s and site %s", requestURI, user, permissionType.getName(), site.getBaseDomainName().getName());
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       Profiles profiles;
       if (user == null) {

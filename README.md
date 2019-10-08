@@ -164,11 +164,11 @@ Por último, si queremos ver lo que el servidor está registrando podemos utiliz
 $ sudo tail -f /var/log/syslog
 ```
 ## El servidor
-Sofía es un servidor de aplicaciones a la cual se le puede agregar cualquier cantidad de sitios, en el contexto del servidor los llamamos sitios. Cada sitio puede responder a uno o mas nombres de dominios o subdominios. El servidor está pensado para correr muchos aplicaciones en dominios diferentes de forma rápida y haciendo economía de recursos. Cuando se instala el servidor automáticamente se crean dos espacios de trabajo. El primero es la administración del servidor. Podemos ver la administración escribiendo en la URL de un navegador lo siguiente:
+Sofía es un servidor de aplicaciones a la cual se le puede agregar sitios web, en el contexto del servidor los llamamos sitios. Cada sitio puede responder a uno o mas nombres de dominios o subdominios. El servidor está pensado para correr muchos aplicaciones en dominios diferentes de forma rápida y haciendo economía de recursos. Cuando se instala el servidor automáticamente se crean dos espacios de trabajo. El primero es la administración del servidor. Podemos ver la administración escribiendo en la URL de un navegador lo siguiente:
 ```
 http://localhost:8080/
 ```
-Por defecto tambien se asocia el administrador del servidor como `manager`. Esto quiere decir que si asignamos `manager` a localhost en el archivo de hosts podemos entrar a la consola de administración usando:
+Por defecto tambien se asocia el administrador del servidor como `manager`. Esto quiere decir que si asignamos `manager` a 127.0.0.1 en el archivo de `hosts` podemos entrar a la consola de administración usando:
 ```
 http://manager:8080/
 ```
@@ -196,13 +196,13 @@ Sobre macOS podemos modificar el archivo `/private/etc/hosts`. Debería de queda
 ::1 localhost
 127.0.0.1 manager
 ```
-Ya que modificamos el archivo de host podríamos agregar también `playground` ya que cuando el servidor crea los datos básicos para funcionar también crea un sitio Playground. Este es utilizado para hacer pruebas y es el que vamos a utilizar para todos los ejemplos.
+Ya que modificamos el archivo de host podríamos agregar también `playground` ya que cuando el servidor crea los datos básicos para funcionar también crea un sitio llamado Playground. Este es utilizado para hacer pruebas y es el que vamos a utilizar para todos los ejemplos.
 ## Crear aplicaciones
 ### Espacios de trabajo y directorios
 Cada sitio tiene su propio espacio de trabajo y es en este espacio donde vamos a crear nuestras aplicaciones. El sistema tiene un directorio que configuramos en nuestro archivo de configuración con el nombre de `system.home`. Dentro de ese directorio se encuentra un directorio `system` donde se encuentra un directorio `sources` donde están todos los fuentes de todos los sitios y las librerías. El directorio donde se encuentran los fuentes de los sitios se llama `sites` y dentro de este se encuentran todos los directorios de los sitios existentes en el servidor. Si el sitio es totalmente nuevo solo vamos a tener `manager` y `playground`. Pero cuando creemos nuevos sitios van a comenzar a aparecer otros directorios con el nombre del host principal de nuestro sitio. Mas adelante vamos ver de que se trata esto al crear nuevos sitios.
 ### Versionamiento
 Vamos a notar que dentro de cada directorio hay un directorio con un número uno. Ese número uno es la versión del sitio. Cada versión para un sitio se encuentra en un directorio. Para crear una nueva versión solo tenemos que copiar el directorio anterior y agregar lo que queramos. La versión del sitio que se va a correr se puede especificar en la configuración del sitio.
-Dentro del directorio de versión encontramos los fuentes para esa versión y es donde vamos a comenzar a desarrollar nuestra apliacación.
+Dentro del directorio de versión encontramos los fuentes para esa versión y es donde vamos a comenzar a desarrollar nuestra aplicación.
 ### Construyendo una página
 Para crear una página Sofía toma todos los elementos involucrados en la página y genera, sin contar imágenes, videos y fuentes, tres archivos. Uno para HTML, uno para JavaScript y otro para los estilos. De esta forma solo son tres los archivos que se transfieren reduciendo el tiempo de carga de la página.
 Los archivos creados son almacenados en una ubicación específica que podemos consultar para depurar nuestras aplicaciones. En el mismo directorio donde se encuentran el directorio `sources` existe un directorio llamado `sites`. En este directorio se crean los directorios que contienen los sitios creados. Cada sitio tiene un direcotrio con el nombre del host principal del sitio. Dentro de este se encuentra otro directorio que se llama con el numero de versión. Dentro de este los archivos generados
@@ -211,11 +211,11 @@ Vamos a crear una página para comenzar nuestro sitio. En el patio de juegos ya 
 Cuando Sofía crea un sitio utiliza páginas principales y fragmentos. La forma de distinguir una página principal de un framento es mediante la primer línea. Si la primera línea comienza con `<!DOCTYPE html>` estamos frente a una página principal.
 Solamente se van a crear páginas que tengan esa línea al inicio y se van a convertir en páginas del sitio que se pueden referir como un recurso de la apliación. Esto quiere decir que si marcamos una página `test.html` como principal vamos a poder acceder a ella utilizando `http://playground/test.html`, de otra forma va a ser un fragmento y no vamos a poder acceder a ella desde el navegador.
 Los fragmentos entonces, son utilizados cuando hay código HTML que se repite en varias de nuestras páginas. El encabezado, el pie de página o inclusive componentes pueden ser creados como fragmentos. La diferencia entre un componente y un fragmento es que los componentes son mas genéricos y pueden ser insertados varias veces en una página con diferentes configuraciones. Un fragmento pertenece al sitio donde se encuentra y a nadie mas, en cambio un componente puede ser utilizado por cualquier sitio dentro del servidor.
-Para acelerar el proceso de desarrollo y hacer mas rápido el ambiente de producción, el servidor, cuando es local, siempre crea a partir de los archivos el archivo solicitado en el navegador cada vez que se solicita. En producción no, los archivos solamente son creados cuando se fuerza una creación, o cuando el sitio es creado.
+Para acelerar el proceso de desarrollo, cuando el servidor es local, siempre se crean los archivos al recibir una solicitud del navegador. Cuando el ambiente es de producción, esto no sucede, lo que permite que el ambiente sea mas rápido. En producción solo son creados cuando se fuerza una creación, o cuando el sitio es creado.
 ### Estructura de una página principal
 Si bien hay algunas diferencias entre una página principal de Sofía y una pagina HTML, estas son mínimas. Se trató de introducir la menor cantidad de conceptos nuevos posibles para evitar tener que considerar mas cosas de las que se consideran cuando se programa únicamente HTML5.
 La primer diferencia con una página HTML es el atributo `profiles` en la etiqueta `<html>`. Este atributo define que perfiles pueden acceder a la página. En el caso del patio de juegos, e inclusive de esta página, este atributo tiene el valor `all`. Esto quiere decir que todos los perfiles pueden acceder a la página, inclusive cuando no existe perfil como cuando no hay ningún usuario registrado en el sistema. En este caso tampoco hay un perfil asociado.
-La segunda diferencia no es una diferencia. Es algo que debemos hacer para que todo funcione correctamente. Supongamos que tenemos una página llamada `test.html` en el directorio raíz de nuestra aplicación. En ese caso estamos obligados a colocar estas líneas en la página principal:
+La segunda diferencia no es exactamente una diferencia. Es algo que debemos hacer de forma obligatoria para que todo funcione correctamente. Supongamos que tenemos una página llamada `test.html` en el directorio raíz de nuestra aplicación. En ese caso estamos obligados a colocar estas líneas en la página principal:
 ```html
 <link rel="stylesheet" type="text/css" href="/css/test.css">
 <script src="/js/test.js"></script>
@@ -223,10 +223,11 @@ La segunda diferencia no es una diferencia. Es algo que debemos hacer para que t
 Estas líneas incluyen los archivos de estilos y de JavaScript necesarios para funcionar. Deben tener el mismo nombre que el archivo HTML que se está escribiendo. Si el archivo HTML está en una ruta en particular hay que incluir la ruta para que pueda encontrar los archivos generados.
 Otra diferencia con un archivo de HTML5 es que podemos colocar dentro de la etiqueta `<head>` una línea como la siguiente:
 ```<style file="documentation.css"></style>```
-No importan si tiene espacios en blanco adelante y atrás, lo único a tener en cuenta es que debe ser lo único escrito en esa línea. Esta línea permite especificar un archivo de estilos a ser agregado a el archivo de estilos generado. No es posible agregar de manera indiscriminada archivos de estilos porque solo serán generados los archivos anteriormente mencionados y cualquier otro archivos que se intente colocar será ignorado en el momento de creación.
-Otra diferencia son dos atributos en la etiqueta `<section>`. Esta etiqueta ahora admite dos atributos: `file` y `template`.
+No importan si tiene espacios en blanco adelante y atrás de la línea, lo único a tener en cuenta es que debe ser lo único escrito en esa línea. Esta línea permite especificar un archivo de estilos que será agregado a el archivo de estilos generado. No es posible agregar de manera indiscriminada archivos de estilos como si fuera HTML normal, si se agregan solo serán generados los archivos anteriormente mencionados y cualquier otro archivos que se intente colocar será ignorado en el momento de creación.
+Otra diferencia son dos atributos en la etiqueta `<section>`. Esta etiqueta ahora admite tres atributos: `file`, `template` y `configurationFile`.
 Si le colocamos el atributo `file` el contenido de la etiqueta será sustituido por el contenido del fichero especificado. De esta forma incluimos fragmentos de archivos HTML que se encuentran en la estructura de directorios de nuestros fuentes, dentro de nuestro código.
 Si especificamos el atributo `template` el contenido de la etiqueta será sustituido por una plantilla de componente que se encuentre dentro de las librerías. Esta es la forma que tiene el sistema de reutilizar componentes que ya hechos.
+El atributo `configurationFile` se utiliza solo dentro de la etiqueta `section` y es utilizado para evitar que se intente utilizar el archivo de variables de plantilla por defecto y especificar la ubicación de un archivo de  variables de plantilla en particular. Esto puede ser utilizado para evitar repetir archivos de variables de plantillas.
 Si se agrega contenido a la etiqueta o se escribe en varias líneas o se agrega otro atributo la etiqueta será tratada como una etiqueta normal. El siguiente código muestra ejemplos de uso de la etiqueta.
 ```html
 <section file="login/loginForm.html"></section>
@@ -314,10 +315,15 @@ Si. Un login completo, totalmente funcional, que permite a una persona registrar
 ### Variables en común para todo el sitio
 Las variables colocadas en el archivo `commons.json` pueden ser utilizadas en los archivos de configuración de fragmentos y componentes.
 ### Variables de plantillas
+Las variables de plantilla son variables que indican valores que se le van a aplicar a las plantillas. Simplemente son archivos JSON con valores colocados de cierta forma.
+// TODO continuar con esta sección
 ### Orden de asignación de variables
 Las variables de plantillas pueden ser colocadas en el archivo `commons.json`, en el archivo de configuración por defecto del componente dentro de las librearías o en el archivo de configuración para el componente el el fuente del sitio. Si definimos una variable de configuración para un componente en el archivo `commons.json`, esta, es sobrescrita por la variable en el archivo de configuración por defecto. Es por esto que no podemos definir una variable de plantilla en `commons.json`. Debemos definirla en un archivo para la página que contiene el componente. Primero se leen las variables de plantilla de `commons.json`, luego se leen las variables de plantilla por defecto del componente y luego las variables de plantilla definidas para ese componente en el archivo de configuración de la página. Cada una de estas definiciones sobrescribe la definición anterior.
 ### Páginas
 ### Componentes
+### Javascript
+Variables del sistema
+URLSearchParams
 ### Estilos
 Las fuentes de todo el sitio se definen en el archivo de estilos fonts.
 Hay varios niveles con los cuales se definen los estilos del sitio. La forma mas simple es definir el estilo en el archivo que lo utiliza. Si hacemos una buena elección de nombres no deberíamos de tener conflictos.
@@ -328,7 +334,38 @@ Los valores para los estilos se definen inicialmente en el archivo de valores pa
 Una variable de plantilla definida en `commons.json` puede ser utilizada en un template para definir un valor de la misma forma en que se usa en un archivo HTML.
 Para encontrar el lugar donde se lanzó un error de literal no definido (undefined literal) tenemos que buscar primero en el componente indicado por el error. Si no hay una llamada a ese literal en el componente debemos ver el nombre hasta el primer punto. Este es el id del componente llamado. Si buscamos dentro de ese componente vamos a encontrar la llamada al literal o repetimos. Buscamos un componente con el identificador de la cadena hasta el siguiente punto y repetimos la búsqueda.
 También podemos definir variables de plantilla usando el id del template que vamos a agregar a la página. De esta forma, si varias páginas van a utilizar un mismo componente se puede compartir la configuración. Un ejemplo común es un menú. Podemos utilizar un componente para el menú y colocar el mismo id para ese menú en todas las páginas en donde se quiere compartir la configuración. Este id se utiliza para nombrar el archivo de configuración del menú que se comparte entre todos. El archivo de variables de plantilla para la página sobrescribe las variables definidas en el archivo de variables de plantillas para el id.
-
-
-
-// TODO Que se pueda definir la ubicación de la variable de plantilla en la sección
+## Core
+### Funciones
+#### addMessage: message
+#### addOnloadFunction: func
+#### changeSection: section
+#### cleanMessagesContainer
+#### getNextRequestId
+#### getRequestId
+#### getURLParameterByName: (name, url)
+#### hide: id
+#### isEnter: event
+#### isFunction: v
+#### isLogged
+#### isModifierKey: event
+#### isNavigationKey: event
+#### isNotLogged
+#### isRightLeft: event
+#### isRightClick: event
+#### isTouchStart: event
+#### isVisible: element
+#### removeChilds: element
+#### screenBlocker
+##### create
+##### block
+##### unblock: options
+#### sendGet: (url, origin)
+#### sendPost: (url, origin, formObject)
+#### sendPut: (url, origin, formObject)
+#### setMessagesContainer: target
+#### show: id
+#### trigger: (target, eventName, detail)
+#### validateById: id
+#### validateElement: element
+#### validateIdOrElement: (id, element)
+### window.onload

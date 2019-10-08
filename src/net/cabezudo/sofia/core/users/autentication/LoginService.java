@@ -16,9 +16,9 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -80,7 +80,7 @@ public class LoginService extends Service {
         request.getSession().removeAttribute("comebackPage");
         sendResponse(new Response("LOGGED", "user.logged"));
       }
-    } catch (EMailMaxSizeException | PasswordMaxSizeException | HostMaxSizeException e) {
+    } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request.");
     } catch (SQLException sqle) {

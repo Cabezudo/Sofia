@@ -6,7 +6,7 @@
 /* global Core */
 
 const editableElement_1_00 = ({ element = null, id = null, uri = null, field = null, value = null, onValid = null, onNotValid = null } = {}) => {
-  let inputElement, lastValue, validationTimer;
+  let inputElement, lastValue, validationTimer, requestId = 0;
 
   const validateOptions = () => {
     if (element === null && id === null) {
@@ -33,28 +33,24 @@ const editableElement_1_00 = ({ element = null, id = null, uri = null, field = n
     inputElement.data = {uri, field};
   };
   const assignTriggers = () => {
-    element.addEventListener('response', event => {
+    inputElement.addEventListener('response', event => {
       const data = event.detail;
-
-      if (data.messageId === Core.getRequestId()) {
+      if (requestId === data.requestId) {
         Core.cleanMessagesContainer();
-        const messages = event.detail.messages;
         element.classList.remove('error');
-        messages.forEach(message => {
-          Core.addMessage(message);
-          if (message.status === 'ERROR') {
-            element.classList.add('error');
+        Core.addMessage(data);
+        if (data.status === 'ERROR') {
+          element.classList.add('error');
+        }
+        if (data.status === 'VALID') {
+          if (Core.isFunction(onValid)) {
+            onValid();
           }
-          if (message.status === 'VALID') {
-            if (Core.isFunction(onValid)) {
-              onValid();
-            }
-          } else {
-            if (Core.isFunction(onNotValid)) {
-              onNotValid();
-            }
+        } else {
+          if (Core.isFunction(onNotValid)) {
+            onNotValid();
           }
-        });
+        }
       }
     });
     const update = event => {
@@ -72,7 +68,8 @@ const editableElement_1_00 = ({ element = null, id = null, uri = null, field = n
             field: inputElement.data.field,
             value: inputElement.value
           };
-          Core.sendPut(uri, inputElement, data);
+          const response = Core.sendPut(uri, inputElement, data);
+          requestId = response.requestId;
         };
         validationTimer = setTimeout(sendValidationRequest(event), Core.EVENT_TIME_DELAY);
       }
@@ -80,7 +77,6 @@ const editableElement_1_00 = ({ element = null, id = null, uri = null, field = n
     sendData = event => {
       const source = event.srcElement;
       const data = source.data;
-      console.log(data);
     };
     element.addEventListener("keyup", event => {
       update(event);

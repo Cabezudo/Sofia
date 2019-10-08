@@ -22,11 +22,11 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.customers.CustomerService;
+import net.cabezudo.sofia.domainName.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailValidator;
-import net.cabezudo.sofia.hosts.HostMaxSizeException;
 import net.cabezudo.sofia.names.LastNameManager;
 import net.cabezudo.sofia.names.NameManager;
 import net.cabezudo.sofia.people.PeopleManager;
@@ -72,7 +72,7 @@ public class AddUserService extends Service {
       try {
         address = jsonPayload.getString("email");
         EMailValidator.validate(address);
-      } catch (EMailMaxSizeException | HostMaxSizeException e) {
+      } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {
         Logger.warning(e);
         sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
         return;
