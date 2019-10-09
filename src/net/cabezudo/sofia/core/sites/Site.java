@@ -6,8 +6,8 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.domainname.DomainName;
-import net.cabezudo.sofia.domainname.DomainNameList;
+import net.cabezudo.sofia.core.sites.domainname.DomainName;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.emails.EMail;
 
 /**

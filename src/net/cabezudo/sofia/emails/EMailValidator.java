@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.emails;
 
 import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.domainname.DomainNameMaxSizeException;
-import net.cabezudo.sofia.domainname.DomainNameValidationException;
-import net.cabezudo.sofia.domainname.DomainNameValidator;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameValidationException;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

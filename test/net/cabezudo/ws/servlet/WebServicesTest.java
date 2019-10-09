@@ -15,7 +15,7 @@ import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
-import net.cabezudo.sofia.domainname.DomainName;
+import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.emails.EMail;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;

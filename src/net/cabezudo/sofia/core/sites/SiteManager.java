@@ -20,10 +20,10 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.domainname.DomainName;
-import net.cabezudo.sofia.domainname.DomainNameList;
-import net.cabezudo.sofia.domainname.DomainNameManager;
-import net.cabezudo.sofia.domainname.DomainNamesTable;
+import net.cabezudo.sofia.core.sites.domainname.DomainName;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
+import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
