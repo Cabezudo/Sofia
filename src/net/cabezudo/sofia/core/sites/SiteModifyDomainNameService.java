@@ -8,13 +8,13 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.sites.domainname.DomainName;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.domainname.DomainName;
-import net.cabezudo.sofia.domainname.DomainNameManager;
 import net.cabezudo.sofia.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.hostname.HostnameValidationException;
 import net.cabezudo.sofia.hostname.HostnameValidator;
@@ -53,7 +53,7 @@ public class SiteModifyDomainNameService extends Service {
 
       DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
 
-      DomainNameManager.getInstance().update(domainName, owner);
+      DomainNameManager.getInstance().update(site, domainName, owner);
 
       sendResponse(new Response("OK", messageKey, domainNameName));
     } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {

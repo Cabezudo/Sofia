@@ -12,8 +12,8 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
-import net.cabezudo.sofia.domainname.DomainNameList;
-import net.cabezudo.sofia.domainname.DomainNameManager;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
