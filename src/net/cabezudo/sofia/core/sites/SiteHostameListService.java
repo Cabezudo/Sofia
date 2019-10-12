@@ -7,40 +7,49 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.24.10
  *
  */
-public class SiteDomainNameListService extends ListService {
+public class SiteHostameListService extends ListService {
 
   private final int MAX_ITEMS = 200;
+  private final Tokens tokens;
 
-  private final int siteId;
-
-  public SiteDomainNameListService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public SiteHostameListService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response);
-    Token token = tokens.getValue("siteId");
-    siteId = token.toInteger();
+    this.tokens = tokens;
   }
 
   @Override
   public void execute() throws ServletException {
+    int siteId;
+    User owner = super.getUser();
+
+    Token token = tokens.getValue("siteId");
     try {
-      Site site = SiteManager.getInstance().getById(siteId);
+      siteId = token.toInteger();
+    } catch (InvalidPathParameterException e) {
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+      return;
+    }
+
+    try {
+      Site site = SiteManager.getInstance().getById(siteId, owner);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;
       }
-      User owner = super.getUser();
       if (getOffset() == null) {
         int total = SiteManager.getInstance().getHostsTotal(site, super.getFilters(), super.getSort(), super.getOffset(), super.getLimit(), owner);
 

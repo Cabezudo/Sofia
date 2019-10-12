@@ -27,9 +27,4 @@ public class StringToken extends Token {
   public Long toLong() {
     return Long.parseLong(value);
   }
-
-  @Override
-  public String getValue() {
-    return value;
-  }
 }

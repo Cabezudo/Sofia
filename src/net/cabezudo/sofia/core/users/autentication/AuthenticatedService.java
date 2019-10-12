@@ -23,9 +23,9 @@ public class AuthenticatedService extends Service {
     try {
       Logger.fine("Call the web service to return if the user is logged");
       if (getClientData().isLogged()) {
-        sendResponse(new Response("OK", "login.logged"));
+        sendResponse(new Response("OK", Response.Type.ACTION, "login.logged"));
       } else {
-        sendResponse(new Response("ERROR", "login.notLogged"));
+        sendResponse(new Response("ERROR", Response.Type.ACTION, "login.notLogged"));
       }
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);

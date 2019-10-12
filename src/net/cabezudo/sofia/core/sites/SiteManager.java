@@ -19,11 +19,11 @@ import net.cabezudo.sofia.core.api.options.list.Sort;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
+import net.cabezudo.sofia.core.users.User;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -42,13 +42,14 @@ public class SiteManager {
     return INSTANCE;
   }
 
-  public Site getById(int id) throws SQLException {
+  public Site getById(int id, User owner) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      return getById(connection, id);
+      return getById(connection, id, owner);
     }
   }
 
-  public Site getById(Connection connection, int id) throws SQLException {
+  public Site getById(Connection connection, int id, User owner) throws SQLException {
+    // TODO autorizacion
     String query
         = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
         + "FROM " + SitesTable.NAME + " AS s "
@@ -83,22 +84,21 @@ public class SiteManager {
       }
     }
     Site site = new Site(id, name, baseDomainName, domainNameList, version);
-    System.out.println("2: " + site);
     return site;
   }
 
-  public Site getByHostName(String domainName) throws SQLException {
+  public Site getByHostame(String domainName, User owner) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      return getByDomainNameName(connection, domainName);
+      return getByHostame(connection, domainName, owner);
     }
   }
 
-  public Site getByDomainNameName(Connection connection, String requestDomainNameName) throws SQLException {
+  public Site getByHostame(Connection connection, String requestDomainNameName, User owner) throws SQLException {
     DomainName domainName = DomainNameManager.getInstance().getByDomainNameName(requestDomainNameName);
     if (domainName == null) {
       return null;
     }
-    return getById(connection, domainName.getSiteId());
+    return getById(connection, domainName.getSiteId(), owner);
   }
 
   public Site create(String name, String... domainNames) throws SQLException {
@@ -144,7 +144,6 @@ public class SiteManager {
       }
 
       Site site = new Site(id, name, baseDomainName, domainNames, DEFAULT_VERSION);
-      System.out.println("4: " + site);
 
       SiteManager.getInstance().update(connection, site);
 
@@ -244,6 +243,50 @@ public class SiteManager {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
+  Site getByName(String name) throws SQLException {
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      return getByName(connection, name);
+    }
+  }
+
+  public Site getByName(Connection connection, String name) throws SQLException {
+    String query
+        = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+        + "FROM " + SitesTable.NAME + " AS s "
+        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+        + "WHERE s.name = ? ORDER BY domainName";
+
+    PreparedStatement ps = connection.prepareStatement(query);
+    ps.setString(1, name);
+    Logger.fine(ps);
+    ResultSet rs = ps.executeQuery();
+
+    int id = 0;
+    int baseDomainNameId = 0;
+    int version = 0;
+    DomainName baseDomainName = null;
+    DomainNameList domainNameList = new DomainNameList();
+
+    while (rs.next()) {
+      if (id == 0) {
+        id = rs.getInt("id");
+        baseDomainNameId = rs.getInt("baseDomainNameId");
+        version = rs.getInt("version");
+      }
+
+      int domainNameId = rs.getInt("domainNameId");
+      String domainNameName = rs.getString("domainName");
+      DomainName domainName = new DomainName(domainNameId, id, domainNameName);
+      if (domainNameId == baseDomainNameId) {
+        baseDomainName = domainName;
+      } else {
+        domainNameList.add(domainName);
+      }
+    }
+    Site site = new Site(id, name, baseDomainName, domainNameList, version);
+    return site;
+  }
+
   private static class SiteHelper {
 
     private final int id;
@@ -271,7 +314,6 @@ public class SiteManager {
 
     private Site getSite() {
       Site site = new Site(id, name, baseDomainName, domainNameList, version);
-      System.out.println("1: " + site);
       return site;
     }
   }

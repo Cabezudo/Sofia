@@ -4,10 +4,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -27,12 +27,12 @@ public class EMailValidatorService extends Service {
     String address = tokens.getValue("email").toString();
     try {
       String messageKey = EMailValidator.validate(address);
-      sendResponse(new Response("OK", messageKey));
+      sendResponse(new Response("OK", Response.Type.VALIDATION, messageKey));
     } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       super.sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (EMailAddressValidationException e) {
-      sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+      sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
     }
   }
 }

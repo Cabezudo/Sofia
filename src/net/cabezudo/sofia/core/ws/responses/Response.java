@@ -12,13 +12,19 @@ import net.cabezudo.sofia.core.texts.TextManager;
  */
 public class Response {
 
+  public enum Type {
+    ACTION, CREATE, DATA, READ, SET, UPDATE, VALIDATION
+  }
+
   private JSONObject jsonObject;
   private String id;
+  private Type messageType;
   private String message;
   private Object[] os;
 
-  public Response(String id, String message, Object... os) {
+  public Response(String id, Type messageType, String message, Object... os) {
     this.id = id;
+    this.messageType = messageType;
     this.message = message;
     this.os = os;
   }

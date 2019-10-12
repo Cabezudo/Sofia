@@ -1,19 +1,19 @@
 package net.cabezudo.sofia.core.ws.parser.tokens;
 
+import net.cabezudo.sofia.core.InvalidPathParameterException;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.15
  */
 public abstract class Token {
 
-  public abstract Integer toInteger();
-
-  public abstract Long toLong();
-
   @Override
   public abstract String toString();
 
-  public abstract String getValue();
+  public abstract Integer toInteger() throws InvalidPathParameterException;
+
+  public abstract Long toLong() throws InvalidPathParameterException;
 
   public boolean isPathSeparator() {
     return false;
@@ -32,6 +32,6 @@ public abstract class Token {
   }
 
   public boolean match(Token t) {
-    return this.isVariable() || t.isVariable() || this.getValue().equals(t.getValue());
+    return this.isVariable() || t.isVariable() || this.toString().equals(t.toString());
   }
 }

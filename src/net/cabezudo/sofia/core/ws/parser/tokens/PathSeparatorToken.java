@@ -25,9 +25,4 @@ public class PathSeparatorToken extends Token {
   public Long toLong() {
     throw new ClassCastException("Can't convert a separator to long");
   }
-
-  @Override
-  public String getValue() {
-    return toString();
-  }
 }

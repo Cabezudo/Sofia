@@ -1,5 +1,7 @@
 package net.cabezudo.sofia.core.ws.parser.tokens;
 
+import net.cabezudo.sofia.core.InvalidPathParameterException;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.15
@@ -19,17 +21,16 @@ public class VariableToken extends Token {
 
   @Override
   public String toString() {
-    return "{" + value + "}";
-  }
-
-  @Override
-  public String getValue() {
     return value;
   }
 
   @Override
-  public Integer toInteger() {
-    throw new ClassCastException("Can't convert a variable to integer");
+  public Integer toInteger() throws InvalidPathParameterException {
+    try {
+      return Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      throw new InvalidPathParameterException(e);
+    }
   }
 
   @Override

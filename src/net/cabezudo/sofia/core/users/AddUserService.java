@@ -19,10 +19,10 @@ import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.passwords.PasswordValidator;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
@@ -80,7 +80,7 @@ public class AddUserService extends Service {
         super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property");
         return;
       } catch (EMailAddressValidationException e) {
-        sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+        sendResponse(new Response("ERROR", Response.Type.CREATE, e.getMessage(), e.getParameters()));
         return;
       }
       String base64Password;
@@ -98,7 +98,7 @@ public class AddUserService extends Service {
         super.sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
         return;
       } catch (PasswordValidationException e) {
-        super.sendResponse(new Response("ERROR", e.getMessage()));
+        super.sendResponse(new Response("ERROR", Response.Type.CREATE, e.getMessage()));
         return;
       }
 
@@ -113,11 +113,11 @@ public class AddUserService extends Service {
           sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, su.getMessage());
           return;
         }
-        sendResponse(new Response("ERROR", "user.already.added"));
+        sendResponse(new Response("ERROR", Response.Type.CREATE, "user.already.added"));
         return;
       }
       UserManager.getInstance().set(site, address, password);
-      sendResponse(new Response("OK", "user.added"));
+      sendResponse(new Response("OK", Response.Type.CREATE, "user.added"));
     } catch (EMailAddressNotExistException e) {
       super.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e);
     } catch (SQLException e) {

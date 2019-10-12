@@ -43,9 +43,9 @@ public class User {
     return siteId;
   }
 
-  public Site getSite() throws SQLException, SiteNotExistException {
+  public Site getSite(User owner) throws SQLException, SiteNotExistException {
     if (site == null) {
-      site = SiteManager.getInstance().getById(siteId);
+      site = SiteManager.getInstance().getById(siteId, owner);
       if (site == null) {
         throw new SiteNotExistException("Can't find the site with the id " + siteId, id);
       }

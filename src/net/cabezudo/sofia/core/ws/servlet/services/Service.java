@@ -81,7 +81,7 @@ public abstract class Service {
     sendError(error, cause.getMessage());
   }
 
-  protected void sendError(int error, String message) throws ServletException {
+  protected final void sendError(int error, String message) throws ServletException {
     try {
       response.sendError(error, message);
     } catch (IOException e) {

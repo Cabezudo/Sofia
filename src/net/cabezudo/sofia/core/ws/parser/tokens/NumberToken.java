@@ -2,10 +2,12 @@ package net.cabezudo.sofia.core.ws.parser.tokens;
 
 public class NumberToken extends Token {
 
-  private final int value;
+  private final String stringValue;
+  private final int intValue;
 
   public NumberToken(String value) {
-    this.value = Integer.parseInt(value);
+    this.stringValue = value;
+    this.intValue = Integer.parseInt(value);
   }
 
   @Override
@@ -15,21 +17,16 @@ public class NumberToken extends Token {
 
   @Override
   public String toString() {
-    return Integer.toString(value);
+    return stringValue;
   }
 
   @Override
   public Integer toInteger() {
-    return value;
+    return intValue;
   }
 
   @Override
   public Long toLong() {
-    return Long.valueOf(value);
-  }
-
-  @Override
-  public String getValue() {
-    return toString();
+    return Long.valueOf(intValue);
   }
 }

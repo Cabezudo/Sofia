@@ -18,6 +18,7 @@ import net.cabezudo.sofia.core.passwords.Hash;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.templates.EMailTemplate;
 import net.cabezudo.sofia.core.templates.TemplatesManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
@@ -25,7 +26,6 @@ import net.cabezudo.sofia.core.users.profiles.ProfileManager;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
@@ -103,7 +103,7 @@ public class UserManager {
 
   public void createAdministrator(String name, String lastName, String address, Password password) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      Site site = SiteManager.getInstance().getById(1);
+      Site site = SiteManager.getInstance().getById(1, null);
       Person person = addPerson(connection, name, lastName, 1);
       EMail eMail = EMailManager.getInstance().create(connection, person.getId(), address);
       PeopleManager.getInstance().setPrimaryEMail(connection, person, eMail);

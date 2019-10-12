@@ -1,6 +1,8 @@
 package net.cabezudo.sofia.core.ws.servlet;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -12,11 +14,14 @@ import net.cabezudo.sofia.core.passwords.PasswordPairValidatorService;
 import net.cabezudo.sofia.core.passwords.PasswordValidatorService;
 import net.cabezudo.sofia.core.passwords.RecoverPasswordService;
 import net.cabezudo.sofia.core.passwords.SetPasswordService;
-import net.cabezudo.sofia.core.sites.SiteDomainNameListService;
+import net.cabezudo.sofia.core.sites.SiteHostameListService;
+import net.cabezudo.sofia.core.sites.SiteHostnameNameValidationService;
 import net.cabezudo.sofia.core.sites.SiteListService;
 import net.cabezudo.sofia.core.sites.SiteModifyDomainNameService;
 import net.cabezudo.sofia.core.sites.SiteModifyService;
+import net.cabezudo.sofia.core.sites.SiteNameValidationService;
 import net.cabezudo.sofia.core.sites.SiteService;
+import net.cabezudo.sofia.core.sites.SiteVersionService;
 import net.cabezudo.sofia.core.users.AddUserService;
 import net.cabezudo.sofia.core.users.ListUsersService;
 import net.cabezudo.sofia.core.users.autentication.AuthenticatedService;
@@ -37,7 +42,7 @@ public class WebServices extends HttpServlet {
 
     response.setHeader("Content-Type", "application/json; charset=utf-8");
 
-    String uri = request.getRequestURI();
+    String uri = URLDecoder.decode(request.getRequestURI(), StandardCharsets.UTF_8);
 
     String serverName = request.getServerName();
     if (serverName.startsWith("api.")) {
@@ -57,12 +62,27 @@ public class WebServices extends HttpServlet {
       return;
     }
 
-    if (tokens.match("/api/v1/sites/{siteId}/domains")) {
-      new SiteDomainNameListService(request, response, tokens).execute();
+    if (tokens.match("/api/v1/sites/{siteId}/names/{name}/validate")) {
+      new SiteNameValidationService(request, response, tokens).execute();
       return;
     }
 
-    if (tokens.match("/api/v1/mail/validate/{email}")) {
+    if (tokens.match("/api/v1/sites/{siteId}/versions/{version}/validate")) {
+      new SiteVersionService(request, response, tokens).execute();
+      return;
+    }
+
+    if (tokens.match("/api/v1/sites/{siteId}/hosts")) {
+      new SiteHostameListService(request, response, tokens).execute();
+      return;
+    }
+
+    if (tokens.match("/api/v1/sites/{siteId}/hosts/{hostname}/names/{name}/validate")) {
+      new SiteHostnameNameValidationService(request, response, tokens).execute();
+      return;
+    }
+
+    if (tokens.match("/api/v1/mails/{email}/validate")) {
       new EMailValidatorService(request, response, tokens).execute();
       return;
     }

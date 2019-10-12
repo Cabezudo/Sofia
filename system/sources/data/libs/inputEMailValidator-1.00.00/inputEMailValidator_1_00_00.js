@@ -61,7 +61,7 @@ const inputEMailValidator_1_00_00 = ({ element = null, onValid = null, onNotVali
     });
   };
   const sendValidationRequest = element => {
-    const response = Core.sendGet(`/api/v1/mail/validate/${element.value}`, element);
+    const response = Core.sendGet(`/api/v1/mails/${element.value}/validate`, element);
     requestId = response.requestId;
   };
 

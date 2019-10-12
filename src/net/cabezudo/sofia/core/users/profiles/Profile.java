@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.users.profiles;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.users.User;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -40,9 +41,9 @@ public class Profile {
     return siteId;
   }
 
-  public Site getSite() throws SQLException {
+  public Site getSite(User owner) throws SQLException {
     if (site == null) {
-      site = SiteManager.getInstance().getById(siteId);
+      site = SiteManager.getInstance().getById(siteId, owner);
     }
     return site;
   }

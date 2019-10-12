@@ -36,21 +36,21 @@ public class PasswordPairValidatorService extends Service {
       try {
         messageKey = PasswordValidator.validate(password);
       } catch (PasswordValidationException e) {
-        sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+        sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
         return;
       }
 
       if (repetitionPassword.isEmpty()) {
-        sendResponse(new Response("ERROR", "password.pair.empty"));
+        sendResponse(new Response("ERROR", Response.Type.VALIDATION, "password.pair.empty"));
         return;
       }
 
       if (!password.equals(repetitionPassword) && !repetitionPassword.isEmpty()) {
-        sendResponse(new Response("ERROR", "password.pair.do.not.match"));
+        sendResponse(new Response("ERROR", Response.Type.VALIDATION, "password.pair.do.not.match"));
         return;
       }
 
-      sendResponse(new Response("OK", messageKey));
+      sendResponse(new Response("OK", Response.Type.VALIDATION, messageKey));
     } catch (PasswordMaxSizeException e) {
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (JSONParseException | PropertyNotExistException e) {
