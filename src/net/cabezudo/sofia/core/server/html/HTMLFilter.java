@@ -17,6 +17,8 @@ import net.cabezudo.sofia.core.creator.SiteCreationException;
 import net.cabezudo.sofia.core.creator.SiteCreator;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.users.UserManager;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -38,7 +40,8 @@ public class HTMLFilter implements Filter {
       String serverName = request.getServerName();
       Site site;
       try {
-        site = SiteManager.getInstance().getByHostName(serverName);
+        User owner = UserManager.getInstance().getAdministrator();
+        site = SiteManager.getInstance().getByHostame(serverName, owner);
       } catch (SQLException e) {
         throw new ServletException(e);
       }

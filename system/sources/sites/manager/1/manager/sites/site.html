@@ -8,45 +8,48 @@
     <script src="/js/manager/sites/site.js"></script>
     <script>
       {
-      const createGUI = () => {
-      const detailDiv = Core.validateById('detail');
-      detailDiv.addEventListener('response', event => {
-      const data = event.detail;
-      editableElement_1_00({
-      id: 'name',
-      uri: `/api/v1/sites/${data.id}`,
-      field: 'name',
-      value: data.name
-      });
-      editableElement_1_00({
-      id: 'version',
-      uri: `/api/v1/sites/${data.id}`, 
-      field: 'version',
-      value: data.version
-      });
-      const domains = data.domains;
-      const domainsElement = document.getElementById('domains');
-      domains.forEach(item => {
-      const domainsInput = (() => {
-      const element = document.createElement('div');
-      editableElement_1_00({
-      element,
-      uri: `/api/v1/sites/${data.id}/domains/${item.id}`,
-      field: 'name',
-      value: item.name
-      });
-      return element;
-      })();
-      domainsElement.appendChild(domainsInput);
-      });
-      Core.screenBlocker.unblock();
-      });
-      Core.screenBlocker.block();
-      Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
+        const createGUI = () => {
+          const detailDiv = Core.validateById('detail');
+          detailDiv.addEventListener('response', event => {
+            const site = event.detail;
+            editableField_1_00({
+              id: 'siteName',
+              validationURI: `/api/v1/sites/${site.id}/names/{value}/validate`,
+              storeURI: `/api/v1/sites/${site.id}`,
+              field: 'name',
+              defaultValue: site.name
+            });
+            editableField_1_00({
+              id: 'siteVersion',
+              validationURI: `/api/v1/sites/${site.id}/versions/{value}/validate`,
+              storeURI: `/api/v1/sites/${site.id}`,
+              field: 'version',
+              defaultValue: site.version
+            });
+            const domains = site.domains;
+            const domainsElement = document.getElementById('domains');
+            domains.forEach(host => {
+              const domainsInput = (() => {
+                const element = document.createElement('div');
+                editableField_1_00({
+                  element,
+                  validationURI: `/api/v1/sites/${site.id}/hosts/${host.id}/names/{value}/validate`,
+                  storeURI: `/api/v1/sites/${site.id}/hosts/${host.id}`,
+                  field: 'name',
+                  defaultValue: host.name
+                });
+                return element;
+              })();
+              domainsElement.appendChild(domainsInput);
+            });
+            Core.screenBlocker.unblock();
+          });
+          Core.screenBlocker.block();
+          Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
 
-      bottomMessages_1_00({id: 'messages'});
-      };
-      Core.addOnloadFunction(createGUI);
+          bottomMessages_1_00({id: 'messages'});
+        };
+        Core.addOnloadFunction(createGUI);
       }
     </script>
     <style>
@@ -59,8 +62,8 @@
         <div id="content">
           <div id="detail">
             <div class="title">Detalle de sitio</div>
-            <div><div id="name"></div></div>
-            <div><div id="version"></div></div>
+            <div><div id="siteName"></div></div>
+            <div><div id="siteVersion"></div></div>
             <div class="subtitle">Domains</div>
             <div id="domains" class="list"></div>
           </div>

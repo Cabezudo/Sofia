@@ -103,7 +103,7 @@ public class ListClientsService extends ListService {
     } catch (UserNotExistException e) {
       sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
     } catch (NotLoggedException e) {
-      sendResponse(new Response("NOT_LOGGED", "user.notLogged"));
+      sendResponse(new Response("NOT_LOGGED", Response.Type.DATA, "user.notLogged"));
     }
   }
 }

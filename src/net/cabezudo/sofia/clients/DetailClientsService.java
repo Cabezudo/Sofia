@@ -4,8 +4,8 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.cabezudo.sofia.clients.Client;
-import net.cabezudo.sofia.clients.ClientManager;
+import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -24,14 +24,17 @@ public class DetailClientsService extends Service {
 
   @Override
   public void execute() throws ServletException {
-    int id = tokens.getValue("clientId").toInteger();
+    Token token = tokens.getValue("clientId");
+
     try {
+      int id = token.toInteger();
       Client client = ClientManager.getInstance().get(id);
       out.print(client.toJSON());
 
     } catch (SQLException e) {
-      e.printStackTrace();
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
+    } catch (InvalidPathParameterException e) {
+      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     }
   }
 }

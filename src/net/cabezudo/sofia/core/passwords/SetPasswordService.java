@@ -63,15 +63,15 @@ public class SetPasswordService extends Service {
       password = Password.createFromBase64(base64Password);
       PasswordValidator.validate(password);
       UserManager.getInstance().changePassword(site, hash, password);
-      super.sendResponse(new Response("OK", "password.change.ok"));
+      super.sendResponse(new Response("OK", Response.Type.SET, "password.change.ok"));
     } catch (PasswordMaxSizeException e) {
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (UserNotFoundByHashException | HashTooOldException | EMailNotExistException | MailServerException | IOException e) {
-      super.sendResponse(new Response("ERROR", e.getMessage()));
+      super.sendResponse(new Response("ERROR", Response.Type.SET, e.getMessage()));
     } catch (SQLException | NullHashException e) {
       sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     } catch (PasswordValidationException e) {
-      super.sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+      super.sendResponse(new Response("ERROR", Response.Type.SET, e.getMessage(), e.getParameters()));
     }
   }
 }

@@ -4,10 +4,6 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.cabezudo.json.JSON;
-import net.cabezudo.json.exceptions.JSONParseException;
-import net.cabezudo.json.exceptions.PropertyNotExistException;
-import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
@@ -20,28 +16,33 @@ import net.cabezudo.sofia.hostname.HostnameValidationException;
 import net.cabezudo.sofia.hostname.HostnameValidator;
 
 /**
- *
- * @author estebancabezudo
+ * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
+ * @version 0.01.00, 2019.10.09
  */
-public class SiteModifyService extends Service {
+public class SiteHostnameNameValidationService extends Service {
 
   private final Tokens tokens;
 
-  public SiteModifyService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public SiteHostnameNameValidationService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response);
     this.tokens = tokens;
   }
 
   @Override
   public void execute() throws ServletException {
+    int siteId;
+    String name;
+    Token token;
+
     User owner = super.getUser();
 
-    Token token = tokens.getValue("siteId");
-    int siteId;
+    token = tokens.getValue("siteId");
+
     try {
       siteId = token.toInteger();
+      name = tokens.getValue("name").toString();
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter: " + token.toString());
       return;
     }
 
@@ -51,23 +52,26 @@ public class SiteModifyService extends Service {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;
       }
+      Site siteWithHostname = SiteManager.getInstance().getByHostame(name, owner);
+      if (siteWithHostname != null && siteWithHostname.getId() != siteId) {
+        sendResponse(new Response("ERROR", Response.Type.VALIDATION, "site.hostname.exist.for.other.site", name, siteWithHostname.getName()));
+        return;
+      }
 
-      String payload = getPayload();
-      JSONObject jsonData = JSON.parse(payload).toJSONObject();
-      String domainNameName = jsonData.getString("value");
-      String messageKey = HostnameValidator.validate(domainNameName);
+      try {
+        HostnameValidator.validate(name);
+      } catch (HostnameMaxSizeException e) {
+        sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage()));
+        return;
+      } catch (HostnameValidationException e) {
+        sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
+        return;
+      }
 
-      SiteManager.getInstance().update(site, owner);
-
-      sendResponse(new Response("OK", Response.Type.UPDATE, messageKey, domainNameName));
-    } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+      sendResponse(new Response("OK", Response.Type.VALIDATION, "site.name.ok"));
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
-    } catch (HostnameValidationException e) {
-      sendResponse(new Response("ERROR", Response.Type.UPDATE, e.getMessage(), e.getParameters()));
     }
   }
-
 }

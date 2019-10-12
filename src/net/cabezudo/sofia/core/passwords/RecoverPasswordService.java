@@ -8,11 +8,11 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.customers.CustomerService;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailValidator;
@@ -38,7 +38,7 @@ public class RecoverPasswordService extends Service {
       EMailValidator.validate(address);
       Site site = super.getSite();
       CustomerService.sendPasswordRecoveryEMail(site, address);
-      sendResponse(new Response("OK", "password.recovery.mail.sent"));
+      sendResponse(new Response("OK", Response.Type.ACTION, "password.recovery.mail.sent"));
     } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
@@ -47,7 +47,7 @@ public class RecoverPasswordService extends Service {
     } catch (IOException e) {
       sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
     } catch (EMailAddressValidationException e) {
-      sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+      sendResponse(new Response("ERROR", Response.Type.ACTION, e.getMessage(), e.getParameters()));
     }
   }
 }

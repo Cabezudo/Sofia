@@ -40,7 +40,7 @@ public class Tokens extends AbstractList<Token> {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     for (Token t : list) {
-      sb.append(t.toString());
+      sb.append(t.getClass().getSimpleName()).append(" ").append(t.toString()).append('\n');
     }
     return sb.toString();
   }
@@ -61,7 +61,7 @@ public class Tokens extends AbstractList<Token> {
         return false;
       }
       if (patternToken.isVariable()) {
-        map.put(patternToken.getValue(), pathToken);
+        map.put(patternToken.toString(), pathToken);
       }
     }
     return true;

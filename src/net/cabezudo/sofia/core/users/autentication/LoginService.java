@@ -12,11 +12,11 @@ import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.passwords.PasswordValidationException;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 
@@ -61,7 +61,7 @@ public class LoginService extends Service {
       try {
         user = authenticator.authorize(super.getSite(), email, password);
       } catch (EMailAddressValidationException | PasswordValidationException e) {
-        sendResponse(new Response("ERROR", e.getMessage(), e.getParameters()));
+        sendResponse(new Response("ERROR", Response.Type.ACTION, e.getMessage(), e.getParameters()));
         return;
       }
       if (user == null) {
@@ -73,12 +73,12 @@ public class LoginService extends Service {
           return;
         }
         WebUserDataManager.getInstance().incrementFailLoginResponseTime(getClientData());
-        sendResponse(new Response("FAIL", "login.fail"));
+        sendResponse(new Response("FAIL", Response.Type.ACTION, "login.fail"));
       } else {
         setClientData(WebUserDataManager.getInstance().resetFailLoginResponseTime(getClientData()));
         getClientData().setUser(user);
         request.getSession().removeAttribute("comebackPage");
-        sendResponse(new Response("LOGGED", "user.logged"));
+        sendResponse(new Response("LOGGED", Response.Type.ACTION, "user.logged"));
       }
     } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
