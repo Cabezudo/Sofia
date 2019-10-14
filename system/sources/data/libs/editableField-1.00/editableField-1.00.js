@@ -57,6 +57,7 @@ const editableField_1_00 = ({ element = null, id = null, validationURI = null, s
   const assignTriggers = () => {
     inputElement.addEventListener('response', event => {
       const data = event.detail;
+      console.log(data);
       if (requestId === data.requestId) {
         Core.cleanMessagesContainer();
         element.classList.remove('error');

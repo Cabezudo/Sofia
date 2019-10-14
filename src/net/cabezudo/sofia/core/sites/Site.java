@@ -76,7 +76,6 @@ public class Site implements Comparable<Integer> {
   }
 
   public Path getBasePath() {
-    System.out.println(baseDomainName);
     return Configuration.getInstance().getSitesPath().resolve(baseDomainName.getName());
   }
 
