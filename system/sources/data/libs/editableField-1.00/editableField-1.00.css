@@ -27,15 +27,17 @@
   cursor: pointer;
 }
 .editableField-1_00 > div {
+  font-size: 10px;
+  font-weight: bold;
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 4px;
+  right: 4px;
   background-color: #FB9636;
   display: flex;
   color: white;
-  opacity: 0;
+  opacity: 1;
   transition: opacity .3s ease-in-out;
   border-radius: 3px;
-  padding: 5px 10px;
+  padding: 2px 4px;
   align-items: center;
 }

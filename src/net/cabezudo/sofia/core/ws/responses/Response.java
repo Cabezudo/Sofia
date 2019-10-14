@@ -17,10 +17,10 @@ public class Response {
   }
 
   private JSONObject jsonObject;
-  private String id;
-  private Type messageType;
-  private String message;
-  private Object[] os;
+  private final String id;
+  private final Type messageType;
+  private final String message;
+  private final Object[] os;
 
   public Response(String id, Type messageType, String message, Object... os) {
     this.id = id;
@@ -29,14 +29,11 @@ public class Response {
     this.os = os;
   }
 
-  public Response(String ok, JSONObject jsonObject) {
-    this.jsonObject = jsonObject;
-  }
-
   public JSONObject toJSON(Site site, Locale locale) {
     if (jsonObject == null) {
       jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("status", id));
+      jsonObject.add(new JSONPair("type", messageType.toString()));
       jsonObject.add(new JSONPair("message", TextManager.get(site, locale, message, os)));
     }
     return jsonObject;
