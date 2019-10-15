@@ -22,11 +22,11 @@ public class DomainName {
     }
   }
 
-  public Integer getId() {
+  public int getId() {
     return id;
   }
 
-  public Integer getSiteId() {
+  public int getSiteId() {
     return siteId;
   }
 

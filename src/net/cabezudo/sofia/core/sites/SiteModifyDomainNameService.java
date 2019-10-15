@@ -10,7 +10,6 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
@@ -40,11 +39,11 @@ public class SiteModifyDomainNameService extends Service {
     User owner = super.getUser();
 
     Token siteIdToken = tokens.getValue("siteId");
-    Token domainNameIdToken = tokens.getValue("domainNameId");
+    Token hostIdToken = tokens.getValue("hostId");
 
     try {
       int siteId;
-      int domainNameId;
+      int hostId;
 
       try {
         siteId = siteIdToken.toInteger();
@@ -53,7 +52,7 @@ public class SiteModifyDomainNameService extends Service {
         return;
       }
       try {
-        domainNameId = domainNameIdToken.toInteger();
+        hostId = hostIdToken.toInteger();
       } catch (InvalidPathParameterException e) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;
@@ -67,14 +66,13 @@ public class SiteModifyDomainNameService extends Service {
 
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();
-      String domainNameName = jsonData.getString("value");
-      String messageKey = HostnameValidator.validate(domainNameName);
+      String hostnameName = jsonData.getString("value");
+      String messageKey = HostnameValidator.validate(hostnameName);
 
-      DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
+      DomainName domainName = new DomainName(hostId, siteId, hostnameName);
+      SiteManager.getInstance().update(site, domainName, owner);
 
-      DomainNameManager.getInstance().update(site, domainName, owner);
-
-      sendResponse(new Response("OK", Response.Type.UPDATE, messageKey, domainNameName));
+      sendResponse(new Response("OK", Response.Type.UPDATE, messageKey, hostnameName));
     } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (SQLException e) {

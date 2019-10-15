@@ -1,5 +1,10 @@
 package net.cabezudo.sofia.core.sites;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -51,10 +56,10 @@ public class SiteManager {
   public Site getById(Connection connection, int id, User owner) throws SQLException {
     // TODO autorizacion
     String query
-        = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
-        + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
-        + "WHERE s.id = ? ORDER BY domainName";
+            = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+            + "FROM " + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "WHERE s.id = ? ORDER BY domainName";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, id);
@@ -188,10 +193,10 @@ public class SiteManager {
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query
-          = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
-          + "FROM " + SitesTable.NAME + " AS s "
-          + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
-          + where + sqlSort + sqlLimit;
+              = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
+              + "FROM " + SitesTable.NAME + " AS s "
+              + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
+              + where + sqlSort + sqlLimit;
 
       PreparedStatement ps = connection.prepareStatement(query);
       setSiteFilters(filters, ps);
@@ -251,10 +256,10 @@ public class SiteManager {
 
   public Site getByName(Connection connection, String name) throws SQLException {
     String query
-        = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
-        + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
-        + "WHERE s.name = ? ORDER BY domainName";
+            = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+            + "FROM " + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "WHERE s.name = ? ORDER BY domainName";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, name);
@@ -285,6 +290,36 @@ public class SiteManager {
     }
     Site site = new Site(id, name, baseDomainName, domainNameList, version);
     return site;
+  }
+
+  private synchronized void changeBasePath(Site site, DomainName domainName) throws IOException {
+    Path oldSourceBasePath = site.getSourcesPath().getParent();
+    Path newSourceBasePath = site.getSourcesPath(domainName).getParent();
+    Logger.debug("Moving source path from %s to %s.", oldSourceBasePath, newSourceBasePath);
+    Files.move(oldSourceBasePath, newSourceBasePath, ATOMIC_MOVE);
+    Path oldBasePath = site.getBasePath();
+    Path newBasePath = site.getBasePath(domainName);
+    Logger.debug("Moving site path from %s to %s.", oldBasePath, newBasePath);
+    try {
+      if (Files.exists(oldBasePath, LinkOption.NOFOLLOW_LINKS)) {
+        Files.move(oldBasePath, newBasePath, ATOMIC_MOVE);
+      }
+    } catch (IOException e) {
+      Files.move(newSourceBasePath, oldSourceBasePath, ATOMIC_MOVE);
+    }
+  }
+
+  public synchronized void update(Site site, DomainName domainName, User owner) throws SQLException {
+    DomainName baseDomainName = site.getBaseDomainName();
+    DomainNameManager.getInstance().update(site, domainName, owner);
+    if (baseDomainName.getId() == domainName.getId()) {
+      try {
+        SiteManager.getInstance().changeBasePath(site, domainName);
+      } catch (IOException e) {
+        Logger.severe(e);
+        DomainNameManager.getInstance().update(site, baseDomainName, owner);
+      }
+    }
   }
 
   private static class SiteHelper {

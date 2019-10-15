@@ -75,8 +75,12 @@ public class Site implements Comparable<Integer> {
     return "[id: " + id + ", name: " + name + ", domainName: " + baseDomainName + ", version: " + version + " ]";
   }
 
+  Path getBasePath(DomainName domainName) {
+    return Configuration.getInstance().getSitesPath().resolve(domainName.getName());
+  }
+
   public Path getBasePath() {
-    return Configuration.getInstance().getSitesPath().resolve(baseDomainName.getName());
+    return getBasePath(baseDomainName);
   }
 
   public Path getVersionPath() {
@@ -96,7 +100,15 @@ public class Site implements Comparable<Integer> {
   }
 
   public Path getSourcesPath() {
-    return Configuration.getInstance().getSitesSourcesPath().resolve(baseDomainName.getName()).resolve(Integer.toString(version));
+    return getSourcesPath(baseDomainName, version);
+  }
+
+  public Path getSourcesPath(DomainName domainName) {
+    return getSourcesPath(domainName, version);
+  }
+
+  public Path getSourcesPath(DomainName domainName, int version) {
+    return Configuration.getInstance().getSitesSourcesPath().resolve(domainName.getName()).resolve(Integer.toString(version));
   }
 
   public Path getSourcesImagesPath() {

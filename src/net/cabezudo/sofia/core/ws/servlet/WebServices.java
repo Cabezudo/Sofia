@@ -247,8 +247,8 @@ public class WebServices extends HttpServlet {
       return;
     }
 
-    // Update a domain for a site. PUT /api/v1/sites/{siteId}/domains/{domainNameId}
-    if (tokens.match("/api/v1/sites/{siteId}/domains/{domainNameId}")) {
+    // Update a domain for a site. PUT /api/v1/sites/{siteId}/hosts/{hostId}
+    if (tokens.match("/api/v1/sites/{siteId}/hosts/{hostId}")) {
       new SiteModifyDomainNameService(request, response, tokens).execute();
       return;
     }

@@ -5,7 +5,7 @@
 
 /* global Core */
 
-const editableField_1_00 = ({ element = null, id = null, validationURI = null, storeURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null } = {}) => {
+const editableField_1_00 = ({ element = null, id = null, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null } = {}) => {
   let inputElement, saveButton, lastValue, validationTimer, saveTimer, requestId = 0;
 
   const validateOptions = () => {
@@ -15,7 +15,7 @@ const editableField_1_00 = ({ element = null, id = null, validationURI = null, s
     if (validationURI === null) {
       throw Error('You must set a web services validationURI.');
     }
-    if (storeURI === null) {
+    if (updateURI === null) {
       throw Error('You must set a web services storeURI.');
     }
     if (field === null) {
@@ -36,7 +36,6 @@ const editableField_1_00 = ({ element = null, id = null, validationURI = null, s
     inputElement.data = {validationURI, field};
 
     saveButton = document.createElement('div');
-    saveButton.innerHTML = 'Save';
     element.appendChild(saveButton);
   };
   const sendValidationRequest = event => {
@@ -49,15 +48,30 @@ const editableField_1_00 = ({ element = null, id = null, validationURI = null, s
     const response = Core.sendGet(uri, inputElement, data);
     requestId = response.requestId;
   };
-  const sendUpdateRequest = event => {
-    saveButton.innerHTML = 'Save';
-    saveButton.style.opacity = 0;
-    console.log(event);
+  const sendUpdateRequest = () => {
+    saveButton.innerHTML = 'Saving...';
+    saveButton.className = 'saving';
+    const data = {
+      field: inputElement.data.field,
+      value: inputElement.value
+    }
+    const response = Core.sendPut(updateURI, inputElement, data);
   };
   const assignTriggers = () => {
     inputElement.addEventListener('response', event => {
       const data = event.detail;
       console.log(data);
+      if (data.status === 'OK') {
+        if (data.type === 'UPDATE') {
+          saveButton.innerHTML = 'Saved';
+          saveButton.className = 'saved';
+          saveButton.style.opacity = 0;
+          saveButton.style.pointerEvents = 'none';
+          if (Core.isFunction(onUpdate)) {
+            onUpdate();
+          }
+        }
+      }
       if (requestId === data.requestId) {
         Core.cleanMessagesContainer();
         element.classList.remove('error');
@@ -67,18 +81,15 @@ const editableField_1_00 = ({ element = null, id = null, validationURI = null, s
         }
         if (data.status === 'OK') {
           if (data.type === 'VALIDATION') {
+            saveButton.innerHTML = 'Save';
+            saveButton.className = '';
             saveButton.style.opacity = 1;
+            saveButton.style.pointerEvents = 'auto';
             saveTimer = setTimeout(event => {
               sendUpdateRequest(event);
-            }, 5000);
+            }, 8000);
             if (Core.isFunction(onValid)) {
               onValid();
-            }
-          }
-          if (data.type === 'UPDATE') {
-            saveButton.style.opacity = 0;
-            if (Core.isFunction(onUpdate)) {
-              onUpdate();
             }
           }
         } else {

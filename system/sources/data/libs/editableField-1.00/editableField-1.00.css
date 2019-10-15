@@ -35,9 +35,22 @@
   background-color: #FB9636;
   display: flex;
   color: white;
-  opacity: 1;
+  opacity: 0;
   transition: opacity .3s ease-in-out;
   border-radius: 3px;
   padding: 2px 4px;
   align-items: center;
 }
+
+.editableField-1_00 > div.saving {
+  background-color: #E49100;
+}
+
+.editableField-1_00 > div.saved {
+  background-color: #039000;
+}
+
+.editableField-1_00 > div.error {
+  background-color: #B60002;
+}
+

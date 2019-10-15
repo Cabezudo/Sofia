@@ -16,7 +16,7 @@ public class Logger {
   private static Level level = Level.INFO;
 
   public static void log(Level level, String message, Object... parameters) {
-    if (Logger.level.compareTo(level) < 0) {
+    if (Logger.level.compareTo(level) > 0) {
       return;
     }
     Date date = new Date();
@@ -25,6 +25,13 @@ public class Logger {
     } else {
       System.out.println(sdf.format(date) + " [" + level + "] " + String.format(message, parameters));
     }
+  }
+
+  public static void log(Level level, Throwable cause) {
+    if (Logger.level.compareTo(level) > 0) {
+      return;
+    }
+    cause.printStackTrace();
   }
 
   public static void finest(String message, Object... parameters) {
@@ -55,11 +62,11 @@ public class Logger {
   }
 
   public static void warning(Throwable e) {
-    log(Level.WARNING, e.getMessage());
+    log(Level.WARNING, e);
   }
 
   public static void severe(Throwable e) {
-    log(Level.SEVERE, e.getMessage());
+    log(Level.SEVERE, e);
   }
 
   public static void severe(String message) {
@@ -67,6 +74,7 @@ public class Logger {
   }
 
   public static void setLevel(Level level) {
+    info("Set level to " + level + ".");
     Logger.level = level;
   }
 
