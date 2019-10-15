@@ -15,14 +15,14 @@
             editableField_1_00({
               id: 'siteName',
               validationURI: `/api/v1/sites/${site.id}/names/{value}/validate`,
-              storeURI: `/api/v1/sites/${site.id}`,
+              updateURI: `/api/v1/sites/${site.id}`,
               field: 'name',
               defaultValue: site.name
             });
             editableField_1_00({
               id: 'siteVersion',
               validationURI: `/api/v1/sites/${site.id}/versions/{value}/validate`,
-              storeURI: `/api/v1/sites/${site.id}`,
+              updateURI: `/api/v1/sites/${site.id}`,
               field: 'version',
               defaultValue: site.version
             });
@@ -34,7 +34,7 @@
                 editableField_1_00({
                   element,
                   validationURI: `/api/v1/sites/${site.id}/hosts/${host.id}/names/{value}/validate`,
-                  storeURI: `/api/v1/sites/${site.id}/hosts/${host.id}`,
+                  updateURI: `/api/v1/sites/${site.id}/hosts/${host.id}`,
                   field: 'name',
                   defaultValue: host.name
                 });

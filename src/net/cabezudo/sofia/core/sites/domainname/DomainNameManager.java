@@ -2,7 +2,6 @@ package net.cabezudo.sofia.core.sites.domainname;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -166,16 +165,12 @@ public class DomainNameManager {
   }
 
   public DomainName update(Connection connection, Site site, DomainName domainName, User owner) throws SQLException {
-    DomainName oldDomainName = this.get(domainName.getId());
-    Path oldBasePath = site.getBasePath();
-    System.out.println(oldBasePath);
-    return oldDomainName;
-//    String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
-//    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-//    ps.setString(1, domainName.getName());
-//    ps.setInt(2, domainName.getId());
-//    Logger.fine(ps);
-//    ps.executeUpdate();
-//    return domainName;
+    String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
+    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    ps.setString(1, domainName.getName());
+    ps.setInt(2, domainName.getId());
+    Logger.fine(ps);
+    ps.executeUpdate();
+    return domainName;
   }
 }

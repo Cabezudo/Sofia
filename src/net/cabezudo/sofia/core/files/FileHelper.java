@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.files;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,23 +26,25 @@ public class FileHelper {
     if (dest == null) {
       throw new IllegalArgumentException("dest parameter is null.");
     }
-    if (!Files.isDirectory(src)) {
-      if (Files.isRegularFile(src)) {
-        throw new IllegalArgumentException("src " + src + " is not a directory.");
-      } else {
-        throw new FileNotFoundException(src + " not found.");
-      }
-    }
-
-    List<Path> list = Files.walk(src).collect(Collectors.toList());
-
-    for (Path path : list) {
-      Path destPath = dest.resolve(src.relativize(path));
-      if (!Files.exists(destPath)) {
-        if (Files.isDirectory(path)) {
-          Files.createDirectory(destPath);
+    if (Files.exists(src, LinkOption.NOFOLLOW_LINKS)) {
+      if (!Files.isDirectory(src)) {
+        if (Files.isRegularFile(src)) {
+          throw new IllegalArgumentException("src " + src + " is not a directory.");
         } else {
-          Files.copy(path, destPath);
+          throw new FileNotFoundException(src + " not found.");
+        }
+      }
+
+      List<Path> list = Files.walk(src).collect(Collectors.toList());
+
+      for (Path path : list) {
+        Path destPath = dest.resolve(src.relativize(path));
+        if (!Files.exists(destPath)) {
+          if (Files.isDirectory(path)) {
+            Files.createDirectory(destPath);
+          } else {
+            Files.copy(path, destPath);
+          }
         }
       }
     }

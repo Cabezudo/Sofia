@@ -16,6 +16,6 @@ public class HostnameValidator {
     } catch (HostnameNotExistsException e) {
       throw new HostnameValidationException("hostname.notExists", hostname);
     }
-    return "domain.ok";
+    return "hostname.ok";
   }
 }
