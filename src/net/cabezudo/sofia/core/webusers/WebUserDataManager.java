@@ -13,6 +13,7 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.users.UserManager;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -89,19 +90,36 @@ public class WebUserDataManager {
         jsonLanguageObject.add(new JSONPair("countryCode", languageCountryCode));
         jsonObject.add(new JSONPair("language", jsonLanguageObject));
         jsonObject.add(new JSONPair("logged", isLogged()));
+        try {
+          user = getUser();
+        } catch (SQLException e) {
+          Logger.warning(e);
+          user = null;
+        }
+        jsonObject.add(new JSONPair("user", user == null ? user : user.toString()));
       }
       return jsonObject.toString();
     }
 
     private ClientData setLoginResponseTime(long failLoginResponseTime) {
+      jsonObject = null;
       return new ClientData(sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
     }
 
-    public User getUser() {
+    public User getUser() throws SQLException {
+      if (userId != 0 && user == null) {
+        user = UserManager.getInstance().get(userId);
+      }
       return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(User user) throws SQLException {
+      jsonObject = null;
+      if (user == null) {
+        update("user", 0);
+      } else {
+        update("user", user.getId());
+      }
       this.user = user;
     }
   }
@@ -134,8 +152,8 @@ public class WebUserDataManager {
   public ClientData get(String sessionId) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       String query = "SELECT "
-              + "`failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
-              + "FROM " + WebUserDataTable.NAME + " WHERE sessionId = ?";
+          + "`failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
+          + "FROM " + WebUserDataTable.NAME + " WHERE sessionId = ?";
       PreparedStatement ps = connection.prepareStatement(query);
       ps.setString(1, sessionId);
       Logger.fine(ps);

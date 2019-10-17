@@ -72,7 +72,7 @@ public class TestData {
         if (CREATE_DATABASE || startOptions.hasDropDatabase()) {
           createSites();
 
-          if (!UserManager.getInstance().isAdministratorSet()) {
+          if (UserManager.getInstance().getAdministrator() == null) {
             // TODO colocarlo en un archivo de propiedades solo para desarrollo
             Logger.debug("Create root user for IDE enviroment.");
             UserManager.getInstance().createAdministrator("Esteban", "Cabezudo", "esteban@cabezudo.net", Password.createFromPlain("1234"));
@@ -80,7 +80,7 @@ public class TestData {
 
           createPeople();
 
-          User owner = UserManager.getInstance().getById(1);
+          User owner = UserManager.getInstance().getAdministrator();
           createClients(owner);
           createData(owner);
         }
@@ -96,7 +96,7 @@ public class TestData {
           Database.create();
         }
         UserManager.getInstance().createAdministrator();
-        User owner = UserManager.getInstance().getById(1);
+        User owner = UserManager.getInstance().getAdministrator();
         createData(owner);
       }
     } catch (SQLException e) {

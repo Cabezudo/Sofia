@@ -6,10 +6,10 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.JSONable;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
-import net.cabezudo.sofia.emails.EMails;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
+import net.cabezudo.sofia.emails.EMails;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -90,7 +90,7 @@ public class Person implements JSONable {
 
   public User getOwner() throws SQLException, UserNotExistException {
     if (owner == null) {
-      owner = UserManager.getInstance().getById(ownerId);
+      owner = UserManager.getInstance().get(ownerId);
       if (owner == null) {
         throw new UserNotExistException("Can't find the user with the id " + ownerId, id);
       }

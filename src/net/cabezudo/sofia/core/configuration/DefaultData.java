@@ -16,17 +16,17 @@ import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.SiteManager;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.users.UserManager;
-import net.cabezudo.sofia.core.users.UserNotExistException;
-import net.cabezudo.sofia.countries.Country;
-import net.cabezudo.sofia.countries.CountryManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameNotExistsException;
 import net.cabezudo.sofia.core.sites.domainname.EmptyDomainNameException;
 import net.cabezudo.sofia.core.sites.domainname.InvalidCharacterException;
 import net.cabezudo.sofia.core.sites.domainname.MissingDotException;
+import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.users.UserManager;
+import net.cabezudo.sofia.core.users.UserNotExistException;
+import net.cabezudo.sofia.countries.Country;
+import net.cabezudo.sofia.countries.CountryManager;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.municipalities.Municipality;
 import net.cabezudo.sofia.municipalities.MunicipalityManager;
@@ -73,7 +73,7 @@ public class DefaultData {
         Database.create();
         createSites();
         UserManager.getInstance().createAdministrator();
-        User owner = UserManager.getInstance().getById(1);
+        User owner = UserManager.getInstance().getAdministrator();
         createData(owner);
       }
     } catch (SQLException e) {
