@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.users.autentication;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -15,11 +16,16 @@ public class LogoutHolder extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    WebUserDataManager.ClientData clientData = (WebUserDataManager.ClientData) request.getSession().getAttribute("clientData");
-    if (clientData != null) {
-      clientData.setUser(null);
+    try {
+      WebUserDataManager.ClientData clientData = (WebUserDataManager.ClientData) request.getSession().getAttribute("clientData");
+      if (clientData != null) {
+        clientData.setUser(null);
+      }
+      request.removeAttribute("user");
+      response.sendRedirect("/index.html");
+    } catch (SQLException e) {
+      // TODO responder algo mejor 
+      throw new ServletException(e);
     }
-    request.removeAttribute("user");
-    response.sendRedirect("/index.html");
   }
 }

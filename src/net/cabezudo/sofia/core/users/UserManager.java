@@ -118,7 +118,7 @@ public class UserManager {
   }
 
   public User getAdministrator() throws SQLException {
-    return this.getById(1);
+    return this.get(1);
   }
 
   private Person addPerson(Connection connection, String name, String lastName, int ownerId) throws SQLException {
@@ -282,7 +282,7 @@ public class UserManager {
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       String query
-          = "SELECT `id`, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+          = "SELECT u.id AS id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
           + "FROM " + UsersTable.NAME + " AS u "
           + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
           + "WHERE address = ? AND site = ?";
@@ -295,7 +295,7 @@ public class UserManager {
       if (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("site");
-        int eMailId = rs.getInt("eMailId");
+        int eMailId = rs.getInt("eMail");
         Date creationDate = rs.getDate("creationDate");
         boolean activated = rs.getBoolean("activated");
         String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
@@ -308,13 +308,13 @@ public class UserManager {
     }
   }
 
-  public User getById(int personId) throws SQLException {
+  public User getByPersonId(int personId) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      return getById(connection, personId);
+      return getByPersonId(connection, personId);
     }
   }
 
-  public User getById(Connection connection, int personId) throws SQLException {
+  public User getByPersonId(Connection connection, int personId) throws SQLException {
     String query
         = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
         + "FROM " + UsersTable.NAME + " AS u "
@@ -327,6 +327,37 @@ public class UserManager {
 
     if (rs.next()) {
       int id = rs.getInt("id");
+      int siteId = rs.getInt("site");
+      int eMailId = rs.getInt("eMail");
+      Date creationDate = rs.getDate("creationDate");
+      boolean activated = rs.getBoolean("activated");
+      String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
+      Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
+
+      User user = new User(id, siteId, eMailId, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+      return user;
+    }
+    return null;
+  }
+
+  public User get(int id) throws SQLException {
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      return get(connection, id);
+    }
+  }
+
+  public User get(Connection connection, int id) throws SQLException {
+    String query
+        = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+        + "FROM " + UsersTable.NAME + " AS u "
+        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+        + "WHERE u.id = ?";
+    PreparedStatement ps = connection.prepareStatement(query);
+    ps.setInt(1, id);
+    Logger.fine(ps);
+    ResultSet rs = ps.executeQuery();
+
+    if (rs.next()) {
       int siteId = rs.getInt("site");
       int eMailId = rs.getInt("eMail");
       Date creationDate = rs.getDate("creationDate");
@@ -447,10 +478,6 @@ public class UserManager {
       }
       return list;
     }
-  }
-
-  public boolean isAdministratorSet() throws SQLException {
-    return getById(1) != null;
   }
 
   private void add(Connection connection, User user, Profile profile, int ownerId) throws SQLException {

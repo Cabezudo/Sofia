@@ -89,10 +89,10 @@ public class PeopleManager {
     Logger.fine("Get person using the email address'" + address + "'.");
 
     String query
-            = "SELECT p.id, name, lastName, primaryEMailId, owner "
-            + "FROM " + PeopleTable.NAME + " AS p "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
-            + "WHERE address = ?";
+        = "SELECT p.id, name, lastName, primaryEMailId, owner "
+        + "FROM " + PeopleTable.NAME + " AS p "
+        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
+        + "WHERE address = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, address);
     Logger.fine(ps);
@@ -122,10 +122,10 @@ public class PeopleManager {
     Logger.fine("Get person using the id " + id + ".");
 
     String query
-            = "SELECT p.id, name, lastName, primaryEMailId, owner "
-            + "FROM " + PeopleTable.NAME + " AS p "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
-            + "WHERE p.id = ?";
+        = "SELECT p.id, name, lastName, primaryEMailId, owner "
+        + "FROM " + PeopleTable.NAME + " AS p "
+        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
+        + "WHERE p.id = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, id);
     Logger.fine(ps);
@@ -137,7 +137,7 @@ public class PeopleManager {
       int primaryEMailId = rs.getInt("primaryEMailId");
       EMails eMails = EMailManager.getInstance().getByPersonId(id);
       eMails.setPrimaryEMailById(primaryEMailId);
-      User owner = UserManager.getInstance().getById(connection, id);
+      User owner = UserManager.getInstance().get(connection, id);
       Person person = new Person(id, name, lastName, eMails, owner);
       return person;
     }
