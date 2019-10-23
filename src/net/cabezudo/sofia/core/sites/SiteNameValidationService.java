@@ -10,13 +10,14 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
-import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
+import net.cabezudo.sofia.core.ws.servlet.services.ValidationService;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.10.09
  */
-public class SiteNameValidationService extends Service {
+public class SiteNameValidationService extends ValidationService {
 
   private final Tokens tokens;
 
@@ -51,9 +52,9 @@ public class SiteNameValidationService extends Service {
       }
       Site siteToValidate = SiteManager.getInstance().getByName(name);
       if (siteToValidate != null && siteToValidate.getId() != siteId) {
-        sendResponse(new Response("ERROR", Response.Type.VALIDATION, "site.name.exist"));
+        sendResponse(new ValidationResponse(Response.Status.ERROR, "site.name.exist"));
       }
-      sendResponse(new Response("OK", Response.Type.VALIDATION, "site.name.ok"));
+      sendResponse(new ValidationResponse(Response.Status.OK, "site.name.ok"));
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");

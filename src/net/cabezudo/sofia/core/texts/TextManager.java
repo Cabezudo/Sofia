@@ -69,6 +69,8 @@ public class TextManager {
         return "Ya existe un sitio con ese nombre";
       case "site.name.ok":
         return "El nombre de sitio está correcto";
+      case "site.name.empty":
+        return "Debe colocar un nombre para el sitio.";
       case "user.already.added":
         return "El usuario ya ha sido agregado en el sistema.";
       case "user.added":

@@ -54,21 +54,21 @@ public class SiteHostnameNameValidationService extends Service {
       }
       Site siteWithHostname = SiteManager.getInstance().getByHostame(name, owner);
       if (siteWithHostname != null && siteWithHostname.getId() != siteId) {
-        sendResponse(new Response("ERROR", Response.Type.VALIDATION, "site.hostname.exist.for.other.site", name, siteWithHostname.getName()));
+        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, "site.hostname.exist.for.other.site", name, siteWithHostname.getName()));
         return;
       }
 
       try {
         HostnameValidator.validate(name);
       } catch (HostnameMaxSizeException e) {
-        sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage()));
+        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage()));
         return;
       } catch (HostnameValidationException e) {
-        sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
+        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
         return;
       }
 
-      sendResponse(new Response("OK", Response.Type.VALIDATION, "site.name.ok"));
+      sendResponse(new Response(Response.Status.OK, Response.Type.VALIDATION, "site.name.ok"));
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");

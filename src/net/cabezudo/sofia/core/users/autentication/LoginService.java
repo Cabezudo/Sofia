@@ -61,7 +61,7 @@ public class LoginService extends Service {
       try {
         user = authenticator.authorize(super.getSite(), email, password);
       } catch (EMailAddressValidationException | PasswordValidationException e) {
-        sendResponse(new Response("ERROR", Response.Type.ACTION, e.getMessage(), e.getParameters()));
+        sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, e.getMessage(), e.getParameters()));
         return;
       }
       if (user == null) {
@@ -73,12 +73,12 @@ public class LoginService extends Service {
           return;
         }
         WebUserDataManager.getInstance().incrementFailLoginResponseTime(getClientData());
-        sendResponse(new Response("FAIL", Response.Type.ACTION, "login.fail"));
+        sendResponse(new Response(Response.Status.FAIL, Response.Type.ACTION, "login.fail"));
       } else {
         setClientData(WebUserDataManager.getInstance().resetFailLoginResponseTime(getClientData()));
         getClientData().setUser(user);
         request.getSession().removeAttribute("comebackPage");
-        sendResponse(new Response("LOGGED", Response.Type.ACTION, "user.logged"));
+        sendResponse(new Response(Response.Status.LOGGED, Response.Type.ACTION, "user.logged"));
       }
     } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);

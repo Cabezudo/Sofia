@@ -28,13 +28,13 @@ public class PasswordValidatorService extends Service {
       String base64Password = jsonPayload.getString("password");
       Password password = Password.createFromBase64(base64Password);
       String messageKey = PasswordValidator.validate(password);
-      sendResponse(new Response("OK", Response.Type.VALIDATION, messageKey));
+      sendResponse(new Response(Response.Status.OK, Response.Type.VALIDATION, messageKey));
     } catch (PasswordMaxSizeException e) {
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (JSONParseException | PropertyNotExistException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e);
     } catch (PasswordValidationException e) {
-      sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
     }
   }
 

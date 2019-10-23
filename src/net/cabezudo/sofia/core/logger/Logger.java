@@ -17,7 +17,7 @@ public class Logger {
 
   public static void log(Level level, String message, Object... parameters) {
     if (Logger.level.compareTo(level) > 0) {
-      return;
+//      return;
     }
     Date date = new Date();
     if (parameters.length == 0) {

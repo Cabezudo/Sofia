@@ -47,12 +47,11 @@ public class HTMLAuthorizationFilter implements Filter {
       HttpServletResponse response = (HttpServletResponse) res;
 
       ClientData clientData = (ClientData) request.getSession().getAttribute("clientData");
-      System.out.println("html filter 1: " + clientData);
       User user = null;
-      if (clientData != null) {
-        user = clientData.getUser();
-      }
       try {
+        if (clientData != null) {
+          user = clientData.getUser();
+        }
         if (Environment.getInstance().isLocal()) {
           QueryString queryString = new QueryString(request);
           List<String> userParameterList = queryString.get("user");
@@ -71,9 +70,7 @@ public class HTMLAuthorizationFilter implements Filter {
         return;
       }
 
-      System.out.println(request.getRequestURI() + ", user: " + user);
       request.getSession().setAttribute("user", user);
-      System.out.println("html filter 2: " + clientData);
 
       String requestURI = request.getRequestURI();
       Path path = Paths.get(requestURI);

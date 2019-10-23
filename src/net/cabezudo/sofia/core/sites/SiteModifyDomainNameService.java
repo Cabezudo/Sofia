@@ -72,14 +72,14 @@ public class SiteModifyDomainNameService extends Service {
       DomainName domainName = new DomainName(hostId, siteId, hostnameName);
       SiteManager.getInstance().update(site, domainName, owner);
 
-      sendResponse(new Response("OK", Response.Type.UPDATE, messageKey, hostnameName));
+      sendResponse(new Response(Response.Status.OK, Response.Type.UPDATE, messageKey, hostnameName));
     } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     } catch (HostnameValidationException e) {
-      sendResponse(new Response("ERROR", Response.Type.UPDATE, e.getMessage(), e.getParameters()));
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.UPDATE, e.getMessage(), e.getParameters()));
     }
   }
 }

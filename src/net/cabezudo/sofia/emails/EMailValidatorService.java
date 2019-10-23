@@ -27,12 +27,12 @@ public class EMailValidatorService extends Service {
     String address = tokens.getValue("email").toString();
     try {
       String messageKey = EMailValidator.validate(address);
-      sendResponse(new Response("OK", Response.Type.VALIDATION, messageKey));
+      sendResponse(new Response(Response.Status.OK, Response.Type.VALIDATION, messageKey));
     } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       super.sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (EMailAddressValidationException e) {
-      sendResponse(new Response("ERROR", Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
     }
   }
 }

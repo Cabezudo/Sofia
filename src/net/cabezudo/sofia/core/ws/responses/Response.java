@@ -16,14 +16,18 @@ public class Response {
     ACTION, CREATE, DATA, READ, SET, UPDATE, VALIDATION
   }
 
+  public enum Status {
+    OK, WARNING, ERROR, FAIL, NOT_LOGGED, LOGGED
+  }
+
   private JSONObject jsonObject;
-  private final String id;
+  private final Status status;
   private final Type messageType;
   private final String message;
   private final Object[] os;
 
-  public Response(String id, Type messageType, String message, Object... os) {
-    this.id = id;
+  public Response(Status status, Type messageType, String message, Object... os) {
+    this.status = status;
     this.messageType = messageType;
     this.message = message;
     this.os = os;
@@ -32,7 +36,7 @@ public class Response {
   public JSONObject toJSON(Site site, Locale locale) {
     if (jsonObject == null) {
       jsonObject = new JSONObject();
-      jsonObject.add(new JSONPair("status", id));
+      jsonObject.add(new JSONPair("status", status.toString()));
       jsonObject.add(new JSONPair("type", messageType.toString()));
       jsonObject.add(new JSONPair("message", TextManager.get(site, locale, message, os)));
     }
