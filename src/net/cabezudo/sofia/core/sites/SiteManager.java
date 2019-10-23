@@ -5,7 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
-import java.security.InvalidParameterException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.cabezudo.sofia.core.InvalidParameterException;
 import net.cabezudo.sofia.core.QueryHelper;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.api.options.list.Filters;
@@ -56,10 +56,10 @@ public class SiteManager {
   public Site getById(Connection connection, int id, User owner) throws SQLException {
     // TODO autorizacion
     String query
-            = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
-            + "FROM " + SitesTable.NAME + " AS s "
-            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
-            + "WHERE s.id = ? ORDER BY domainName";
+        = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+        + "FROM " + SitesTable.NAME + " AS s "
+        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+        + "WHERE s.id = ? ORDER BY domainName";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, id);
@@ -193,10 +193,10 @@ public class SiteManager {
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query
-              = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
-              + "FROM " + SitesTable.NAME + " AS s "
-              + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
-              + where + sqlSort + sqlLimit;
+          = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
+          + "FROM " + SitesTable.NAME + " AS s "
+          + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
+          + where + sqlSort + sqlLimit;
 
       PreparedStatement ps = connection.prepareStatement(query);
       setSiteFilters(filters, ps);
@@ -244,8 +244,50 @@ public class SiteManager {
     }
   }
 
-  void update(Site site, User owner) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public void update(int siteId, String field, String value, User owner) throws SQLException, InvalidSiteValueException {
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      update(connection, siteId, field, value, owner);
+    }
+  }
+
+  public void update(Connection connection, int siteId, String field, String value, User owner) throws InvalidSiteValueException, SQLException {
+    switch (field) {
+      case "name":
+        validateName(value);
+        break;
+      case "version":
+        validateVersion(value);
+        break;
+      default:
+        throw new InvalidParameterException("Invalid parameter value: " + field);
+    }
+    String query = "UPDATE " + SitesTable.NAME + " SET " + field + " = ? WHERE id = ?";
+    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    ps.setString(1, value);
+    ps.setInt(2, siteId);
+    Logger.fine(ps);
+    ps.executeUpdate();
+  }
+
+  public void validateName(String value) throws InvalidSiteNameException {
+    if (value == null || value.isEmpty()) {
+      throw new InvalidSiteNameException("Invalid empty name", value);
+    }
+    // TODO Max length
+  }
+
+  public void validateVersion(String value) throws InvalidSiteVersionException {
+    int intValue;
+    try {
+      intValue = Integer.parseInt(value);
+    } catch (NumberFormatException e) {
+      throw new InvalidSiteVersionException("Invalid number", value);
+    }
+    if (intValue == 0) {
+      // TODO Send diferent exception in order to show diferent messages
+      throw new InvalidSiteVersionException("Invalid number", value);
+    }
+    // TODO Max length and size
   }
 
   Site getByName(String name) throws SQLException {
@@ -256,10 +298,10 @@ public class SiteManager {
 
   public Site getByName(Connection connection, String name) throws SQLException {
     String query
-            = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
-            + "FROM " + SitesTable.NAME + " AS s "
-            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
-            + "WHERE s.name = ? ORDER BY domainName";
+        = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+        + "FROM " + SitesTable.NAME + " AS s "
+        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+        + "WHERE s.name = ? ORDER BY domainName";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, name);
@@ -272,24 +314,27 @@ public class SiteManager {
     DomainName baseDomainName = null;
     DomainNameList domainNameList = new DomainNameList();
 
-    while (rs.next()) {
-      if (id == 0) {
-        id = rs.getInt("id");
-        baseDomainNameId = rs.getInt("baseDomainNameId");
-        version = rs.getInt("version");
-      }
+    if (rs.next()) {
+      while (rs.next()) {
+        if (id == 0) {
+          id = rs.getInt("id");
+          baseDomainNameId = rs.getInt("baseDomainNameId");
+          version = rs.getInt("version");
+        }
 
-      int domainNameId = rs.getInt("domainNameId");
-      String domainNameName = rs.getString("domainName");
-      DomainName domainName = new DomainName(domainNameId, id, domainNameName);
-      if (domainNameId == baseDomainNameId) {
-        baseDomainName = domainName;
-      } else {
-        domainNameList.add(domainName);
+        int domainNameId = rs.getInt("domainNameId");
+        String domainNameName = rs.getString("domainName");
+        DomainName domainName = new DomainName(domainNameId, id, domainNameName);
+        if (domainNameId == baseDomainNameId) {
+          baseDomainName = domainName;
+        } else {
+          domainNameList.add(domainName);
+        }
       }
+      Site site = new Site(id, name, baseDomainName, domainNameList, version);
+      return site;
     }
-    Site site = new Site(id, name, baseDomainName, domainNameList, version);
-    return site;
+    return null;
   }
 
   private synchronized void changeBasePath(Site site, DomainName domainName) throws IOException {

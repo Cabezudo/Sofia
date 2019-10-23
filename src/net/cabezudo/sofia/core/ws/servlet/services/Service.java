@@ -18,8 +18,9 @@ import net.cabezudo.sofia.core.ws.responses.Response;
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.10.17
+ * @param <T>
  */
-public abstract class Service {
+public abstract class Service<T extends Response> {
 
   protected final HttpServletRequest request;
   protected final HttpServletResponse response;
@@ -42,7 +43,7 @@ public abstract class Service {
 
   public abstract void execute() throws ServletException;
 
-  protected void sendResponse(Response response) throws ServletException {
+  protected void sendResponse(T response) throws ServletException {
     try {
       out.print(response.toJSON(getSite(), getClientData().getLocale()));
     } catch (SQLException e) {

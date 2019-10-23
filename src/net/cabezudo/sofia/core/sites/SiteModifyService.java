@@ -15,9 +15,6 @@ import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.hostname.HostnameMaxSizeException;
-import net.cabezudo.sofia.hostname.HostnameValidationException;
-import net.cabezudo.sofia.hostname.HostnameValidator;
 
 /**
  *
@@ -54,19 +51,18 @@ public class SiteModifyService extends Service {
 
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();
-      String domainNameName = jsonData.getString("value");
-      String messageKey = HostnameValidator.validate(domainNameName);
+      String field = jsonData.getString("field");
+      String value = jsonData.getString("value");
+      SiteManager.getInstance().update(siteId, field, value, owner);
 
-      SiteManager.getInstance().update(site, owner);
-
-      sendResponse(new Response("OK", Response.Type.UPDATE, messageKey, domainNameName));
-    } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
+      sendResponse(new Response(Response.Status.OK, Response.Type.UPDATE, "site.updated"));
+    } catch (JSONParseException | PropertyNotExistException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
-    } catch (HostnameValidationException e) {
-      sendResponse(new Response("ERROR", Response.Type.UPDATE, e.getMessage(), e.getParameters()));
+    } catch (InvalidSiteValueException e) {
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.UPDATE, e.getMessage(), e.getParameters()));
     }
   }
 

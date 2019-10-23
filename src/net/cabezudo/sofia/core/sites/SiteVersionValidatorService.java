@@ -10,17 +10,18 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
-import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
+import net.cabezudo.sofia.core.ws.servlet.services.ValidationService;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.10.09
  */
-public class SiteVersionService extends Service {
+public class SiteVersionValidatorService extends ValidationService {
 
   private final Tokens tokens;
 
-  public SiteVersionService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public SiteVersionValidatorService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response);
     this.tokens = tokens;
   }
@@ -28,7 +29,7 @@ public class SiteVersionService extends Service {
   @Override
   public void execute() throws ServletException {
     int siteId;
-    int version;
+    String versionParameter;
     Token token;
 
     User owner = super.getUser();
@@ -36,12 +37,12 @@ public class SiteVersionService extends Service {
     token = tokens.getValue("siteId");
     try {
       siteId = token.toInteger();
+      versionParameter = tokens.getValue("version").toString();
     } catch (InvalidPathParameterException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter: " + token.toString());
       return;
     }
 
-    token = tokens.getValue("version");
     try {
       Site site = SiteManager.getInstance().getById(siteId, owner);
       if (site == null) {
@@ -49,17 +50,13 @@ public class SiteVersionService extends Service {
         return;
       }
 
-      version = token.toInteger();
-
-      site = new Site(site.getId(), site.getName(), site.getBaseDomainName(), site.getDomainNames(), version);
-      SiteManager.getInstance().update(site, owner);
-
-      sendResponse(new Response("OK", Response.Type.VALIDATION, "site.name.ok"));
-    } catch (InvalidPathParameterException e) {
-      sendResponse(new Response("ERROR", Response.Type.VALIDATION, "site.name.exist"));
+      SiteManager.getInstance().validateVersion(versionParameter);
+      sendResponse(new ValidationResponse(Response.Status.OK, "site.name.ok"));
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+    } catch (InvalidSiteVersionException e) {
+      sendResponse(new ValidationResponse(Response.Status.ERROR, e));
     }
   }
 }

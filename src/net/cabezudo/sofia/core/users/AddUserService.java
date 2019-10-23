@@ -80,7 +80,7 @@ public class AddUserService extends Service {
         super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property");
         return;
       } catch (EMailAddressValidationException e) {
-        sendResponse(new Response("ERROR", Response.Type.CREATE, e.getMessage(), e.getParameters()));
+        sendResponse(new Response(Response.Status.ERROR, Response.Type.CREATE, e.getMessage(), e.getParameters()));
         return;
       }
       String base64Password;
@@ -98,7 +98,7 @@ public class AddUserService extends Service {
         super.sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
         return;
       } catch (PasswordValidationException e) {
-        super.sendResponse(new Response("ERROR", Response.Type.CREATE, e.getMessage()));
+        super.sendResponse(new Response(Response.Status.ERROR, Response.Type.CREATE, e.getMessage()));
         return;
       }
 
@@ -113,11 +113,11 @@ public class AddUserService extends Service {
           sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, su.getMessage());
           return;
         }
-        sendResponse(new Response("ERROR", Response.Type.CREATE, "user.already.added"));
+        sendResponse(new Response(Response.Status.ERROR, Response.Type.CREATE, "user.already.added"));
         return;
       }
       UserManager.getInstance().set(site, address, password);
-      sendResponse(new Response("OK", Response.Type.CREATE, "user.added"));
+      sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, "user.added"));
     } catch (EMailAddressNotExistException e) {
       super.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e);
     } catch (SQLException e) {

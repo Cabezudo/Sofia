@@ -38,7 +38,7 @@ public class RecoverPasswordService extends Service {
       EMailValidator.validate(address);
       Site site = super.getSite();
       CustomerService.sendPasswordRecoveryEMail(site, address);
-      sendResponse(new Response("OK", Response.Type.ACTION, "password.recovery.mail.sent"));
+      sendResponse(new Response(Response.Status.OK, Response.Type.ACTION, "password.recovery.mail.sent"));
     } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
@@ -47,7 +47,7 @@ public class RecoverPasswordService extends Service {
     } catch (IOException e) {
       sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
     } catch (EMailAddressValidationException e) {
-      sendResponse(new Response("ERROR", Response.Type.ACTION, e.getMessage(), e.getParameters()));
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, e.getMessage(), e.getParameters()));
     }
   }
 }

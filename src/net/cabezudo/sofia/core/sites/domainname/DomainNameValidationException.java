@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.sites.domainname;
 
-import net.cabezudo.sofia.emails.ParametrizedException;
+import net.cabezudo.sofia.core.ParametrizedException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

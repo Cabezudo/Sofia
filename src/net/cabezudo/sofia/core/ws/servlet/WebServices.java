@@ -21,7 +21,7 @@ import net.cabezudo.sofia.core.sites.SiteModifyDomainNameService;
 import net.cabezudo.sofia.core.sites.SiteModifyService;
 import net.cabezudo.sofia.core.sites.SiteNameValidationService;
 import net.cabezudo.sofia.core.sites.SiteService;
-import net.cabezudo.sofia.core.sites.SiteVersionService;
+import net.cabezudo.sofia.core.sites.SiteVersionValidatorService;
 import net.cabezudo.sofia.core.users.AddUserService;
 import net.cabezudo.sofia.core.users.ListUsersService;
 import net.cabezudo.sofia.core.users.autentication.AuthenticatedService;
@@ -68,7 +68,7 @@ public class WebServices extends HttpServlet {
     }
 
     if (tokens.match("/api/v1/sites/{siteId}/versions/{version}/validate")) {
-      new SiteVersionService(request, response, tokens).execute();
+      new SiteVersionValidatorService(request, response, tokens).execute();
       return;
     }
 

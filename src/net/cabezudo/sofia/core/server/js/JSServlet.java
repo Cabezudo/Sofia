@@ -31,12 +31,9 @@ public class JSServlet extends HttpServlet {
 
     try {
       ClientData clientData = WebUserDataManager.getInstance().get(request);
-      System.out.println(clientData);
 
       Site site = (Site) request.getAttribute("site");
-//    User user = (User) request.getAttribute("user");
       User user = clientData.getUser();
-      System.out.println(user);
 
       String requestURI = request.getRequestURI();
 
