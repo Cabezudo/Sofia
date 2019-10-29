@@ -76,7 +76,7 @@ public abstract class Service<T extends Response> {
   }
 
   protected void sendError(int error, Throwable cause) throws ServletException {
-    if (Environment.getInstance().isLocal()) {
+    if (Environment.getInstance().isDevelopment()) {
       cause.printStackTrace();
     }
     sendError(error, cause.getMessage());

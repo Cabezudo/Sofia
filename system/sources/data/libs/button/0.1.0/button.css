@@ -1,0 +1,65 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+.button {
+  display: block;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 10px 20px;
+  border: 1px solid white;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  font-weight: 300;
+  outline: none;
+  margin: 10px 0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.button:hover {
+  cursor: pointer;
+}
+
+.redButton {
+  color: #{theme.button.red.color};
+  background-color: #{theme.button.red.backgroundColor};
+}
+.orangeButton {
+  color: white;
+  background-color: #DB5800;
+}
+
+.blueButton {
+  color: white;
+  background-color: #006899;
+}
+
+.greenButton {
+  color: white;
+  background-color: #008F68;
+}
+
+.disabledButton {
+  color: lightgray;
+  background-color: white;
+  border: 1px solid lightgray;
+}
+
+@media all and ( min-width: 480px ) {
+  .button {
+    display: inline-block;
+    padding: 10px 40px;
+  }
+}
+@media all and ( min-width: 750px ) {
+}
+@media all and ( min-width: 1024px ) {
+}
+@media all and ( min-width: 1250px ) {
+}
+@media all and ( min-width: 1800px ) {
+}

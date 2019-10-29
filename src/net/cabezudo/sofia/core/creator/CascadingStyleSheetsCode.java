@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Scanner;
-import java.util.Set;
 import static net.cabezudo.sofia.core.creator.SofiaSourceContainer.Type.CSS;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
@@ -52,16 +50,15 @@ public class CascadingStyleSheetsCode extends SofiaSourceContainer {
     return sb.toString();
   }
 
-  void load(Set<Path> fileNames) throws IOException {
-    for (Path fileNamePath : fileNames) {
-      String htmlFileName = fileNamePath.toString();
-      String voidFileName = htmlFileName.substring(0, htmlFileName.length() - 4);
-      String cssFileName = voidFileName + "css";
-      Path cssFilePath = Paths.get(cssFileName);
-      append(cssFilePath);
-    }
-  }
-
+//  void load(Set<Path> fileNames) throws IOException {
+//    for (Path fileNamePath : fileNames) {
+//      String htmlFileName = fileNamePath.toString();
+//      String voidFileName = htmlFileName.substring(0, htmlFileName.length() - 4);
+//      String cssFileName = voidFileName + "css";
+//      Path cssFilePath = Paths.get(cssFileName);
+//      append(cssFilePath);
+//    }
+//  }
   @Override
   public void save(Site site, String filename) throws IOException, SiteCreationException {
     try {
@@ -72,7 +69,7 @@ public class CascadingStyleSheetsCode extends SofiaSourceContainer {
       Files.write(jsFileSitePath, code.getBytes(StandardCharsets.UTF_8));
     } catch (UndefinedLiteralException e) {
       // TODO Cuando se generen el archivo parseando hay que poner el archivo de donde se lee el código que no existe.
-      throw new SiteCreationException("The property " + e.getUndefinedLiteral() + " in " + filename + " doesn't exist.", e, filename + ".css", e.getLine(), e.getColumn());
+      throw new SiteCreationException("The property " + e.getUndefinedLiteral() + " on " + filename + " doesn't exist.", e, filename + ".css", e.getLine(), e.getColumn());
     }
   }
 }

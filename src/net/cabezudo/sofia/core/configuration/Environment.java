@@ -6,7 +6,7 @@ package net.cabezudo.sofia.core.configuration;
  */
 public class Environment {
 
-  public static final String LOCAL = "local";
+  public static final String DEVELOPMENT = "development";
   public static final String PRODUCTION = "production";
 
   private static Environment INSTANCE;
@@ -15,7 +15,7 @@ public class Environment {
   private Environment() {
     String environmentName = Configuration.getInstance().getEnvironmentName();
     switch (environmentName) {
-      case "local":
+      case "development":
       case "production":
         this.name = environmentName;
         break;
@@ -31,8 +31,8 @@ public class Environment {
     return INSTANCE;
   }
 
-  public boolean isLocal() {
-    return LOCAL.equals(name);
+  public boolean isDevelopment() {
+    return DEVELOPMENT.equals(name);
   }
 
   public boolean isProduction() {

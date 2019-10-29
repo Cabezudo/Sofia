@@ -52,7 +52,7 @@ public class HTMLAuthorizationFilter implements Filter {
         if (clientData != null) {
           user = clientData.getUser();
         }
-        if (Environment.getInstance().isLocal()) {
+        if (Environment.getInstance().isDevelopment()) {
           QueryString queryString = new QueryString(request);
           List<String> userParameterList = queryString.get("user");
           if (userParameterList != null && userParameterList.size() > 0) {
@@ -62,6 +62,7 @@ public class HTMLAuthorizationFilter implements Filter {
               clientData = WebUserDataManager.getInstance().get(request);
             }
             clientData.setUser(user);
+            request.getSession().setAttribute("clientData", clientData);
           }
         }
       } catch (SQLException e) {

@@ -32,13 +32,13 @@ public class JavaScriptCode extends SofiaSourceContainer {
       String voidFileName = htmlFileName.substring(0, htmlFileName.length() - 4);
       String jsFileName = voidFileName + "js";
       Path jsFilePath = Paths.get(jsFileName);
-      append(jsFilePath);
+      append(jsFilePath); // JS files
     }
   }
 
   @Override
   protected void processLine(String line) {
-    if (!Environment.getInstance().isLocal() && line.trim().startsWith("/*") && line.trim().endsWith("*/")) {
+    if (!Environment.getInstance().isDevelopment() && line.trim().startsWith("/*") && line.trim().endsWith("*/")) {
       return;
     }
     super.processLine(line);

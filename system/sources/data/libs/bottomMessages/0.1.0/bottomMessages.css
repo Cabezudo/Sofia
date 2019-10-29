@@ -1,0 +1,32 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+.bottomMessages {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+}
+
+.bottomMessages > div {
+  text-align: center;
+  padding: 20px;
+  margin: 0px;
+  color: white;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+.bottomMessages > div.red {
+  background-color: #D11250;
+  color: white;
+  font-weight: bold;
+}
+
+.bottomMessages > div.green {
+  background-color: #008F68;
+  color: white;
+  font-weight: bold;
+}

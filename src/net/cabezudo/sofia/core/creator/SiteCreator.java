@@ -3,13 +3,11 @@ package net.cabezudo.sofia.core.creator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Set;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
@@ -70,9 +68,9 @@ public class SiteCreator {
 
     CascadingStyleSheetsCode css = new CascadingStyleSheetsCode(templateLiterals);
     Path fontsStyleFilePath = site.getSourcesPath().resolve("fonts.css");
-    css.append(fontsStyleFilePath);
+    css.append(fontsStyleFilePath); // CSS with fonts
     Path styleFilePath = themeBasePath.resolve("style.css");
-    css.append(styleFilePath);
+    css.append(styleFilePath); // CSS from themes
 
     try {
       FileHelper.copyDirectory(site.getSourcesImagesPath(), site.getImagesPath());
@@ -83,7 +81,7 @@ public class SiteCreator {
     SofiaSourceFile sofiaSourceFile;
     try {
       sofiaSourceFile = new SofiaSourceFile(site, templateLiterals, voidPartialPath);
-    } catch (NoSuchFileException e) {
+    } catch (NoSuchFileException | LibraryVersionException e) {
       throw new SiteCreationException(e);
     }
 
@@ -115,21 +113,22 @@ public class SiteCreator {
 
     js.append(templateLiteralsString);
 
-    Files.walkFileTree(Configuration.getInstance().getCommonsLibsPath(), new SimpleFileVisitor<Path>() {
-      @Override
-      public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        if (file.toString().endsWith(".js")) {
-          Logger.debug("Loading the file %s.", file);
-          js.append(file);
-        }
-        return FileVisitResult.CONTINUE;
+    // TODO quitar si no se usa 28/10/2019
+    // css.append(Configuration.getInstance().getCommonsLibsPath());
+    Libraries libraries = sofiaSourceFile.getLibraries();
+    for (Library library : libraries) {
+      List<Path> javaScriptPaths = library.getJavaScritpPaths();
+      for (Path javaScriptPath : javaScriptPaths) {
+        js.append(javaScriptPath); // JS from library
+      }
+      List<Path> styleSheetFilePaths = library.getStyleSheetFilePaths();
+      for (Path styleSheetFilePath : styleSheetFilePaths) {
+        css.append(styleSheetFilePath); // CSS from library
       }
     }
-    );
     js.append(sofiaSourceFile.getJavaScriptCode());
     js.save(site, voidPartialPath);
 
-    css.append(Configuration.getInstance().getCommonsLibsPath());
     css.append(sofiaSourceFile.getCascadingStyleSheetsCode());
     css.save(site, voidPartialPath);
 

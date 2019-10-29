@@ -1,0 +1,80 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+.simpleList {
+  display: flex;
+  overflow: hidden;
+}
+.simpleList > div {
+  display: flex;
+  flex-grow: 1;
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  overflow: -moz-scrollbars-none;  /* -moz- (Firefox): */
+  -ms-overflow-style: none;  /* -ms- (Internet Explorer +10): */
+}
+
+.simpleList > div::-webkit-scrollbar { /* -webkit- (Chrome, Safari, newer versions of Opera): */
+  width: 0 !important
+}
+
+.simpleList > div > table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.simpleList > div > table > tbody {
+  /*  display: block;
+    width: 100%;
+    height: 100%;*/
+}
+
+.simpleList > div > table > tr {
+}
+
+.simpleList > div > table > tr > td {
+}
+
+.simpleList > div > table > tr:hover {
+  cursor: pointer;
+}
+
+.simpleList > div > table > tr > td, .simpleList > div > table > td > div {
+  pointer-events: none;
+}
+
+.simpleList > div > table > td > div {
+  display: inline-block;
+}
+
+.simpleList > div > .messageBaseClass {
+  margin: auto;
+  text-align: center;
+  padding: 10px;
+  font-size: 20px;
+}
+
+/*
+   Appariencia. Esta puede cambiar de sitio a sitio. Es la que debería de cambiar el usuario.
+   Hay que buscar un mecanismo para que se pueda cambiar fácil. Tal vez marcarlas aquí para tomarlo automáticamente con
+   una herramienta
+*/
+
+.simpleList {
+  font-size: 22px;
+}
+
+.simpleList > div {
+  padding: 20px;
+}
+
+.simpleList > div > table > tbody > tr.clickable:hover {
+  cursor: pointer;
+}
+
+.simpleList > div > table > tbody > tr > td {
+  padding: 10px;
+}

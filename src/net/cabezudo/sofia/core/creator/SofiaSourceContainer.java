@@ -78,7 +78,7 @@ public abstract class SofiaSourceContainer {
         public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
           if (file.toString().endsWith("." + getType().getExtension())) {
             Logger.debug("Loading the file %s.", file);
-            append(file);
+            append(file); // Recursivity
           }
           return FileVisitResult.CONTINUE;
         }

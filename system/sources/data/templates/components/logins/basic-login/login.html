@@ -66,6 +66,10 @@
   @media all and ( min-width: 1800px ) {
   }
 </style>
+<script lib="inputEMailValidator:0.1.0"></script>
+<script lib="inputPasswordValidator:0.1.0"></script>
+<script lib="button:0.1.0"></script>
+<script lib="simpleStaticMessages:0.1.0"></script>
 <script>
   const loginForm = (() => {
     let loginEMailElement;
@@ -88,7 +92,7 @@
       loginPasswordElement = Core.validateById('loginPassword');
       loginButton = Core.validateById('loginButton');
 
-      inputEMailValidator_1_00_00({
+      inputEMailValidator({
         element: loginEMailElement,
         onValid: () => {
           validEMail = true;
@@ -105,7 +109,7 @@
         }
       });
 
-      inputPasswordValidator_1_00_00({
+      inputPasswordValidator({
         element: loginPasswordElement,
         onValid: () => {
           passwordValid = true;
@@ -122,7 +126,7 @@
         }
       });
 
-      greenButton_1_00_00({
+      greenButton({
         id: 'loginButton',
         enabled: false,
         onClick: () => {
@@ -142,7 +146,7 @@
           }
         }
       });
-      simpleStaticMessages_1_00({
+      simpleStaticMessages({
         id: 'loginMessages'
       });
       const sendLoginInformation = () => {
