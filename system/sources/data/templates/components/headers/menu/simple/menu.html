@@ -1,0 +1,83 @@
+<style>
+  .headerContainer {
+    display: flex;
+    color: #{application.color.main};
+  }
+  .headerContainer > .header {
+    width: #{application.container.width.default};
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .headerContainer > .header > .name {
+    font-size: 24px;
+  }
+  .headerContainer > .header > .menu {
+    display: flex;
+  }
+  .headerContainer > .header > .menu > .item {
+    margin: 40px 10px;
+  }
+  .headerContainer > .header > .menu > .item:hover {
+    cursor: pointer;
+  }
+  @media all and ( min-width: 480px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.480};
+    }
+  }
+
+  @media all and ( min-width: 750px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.750};
+    }}
+
+  @media all and ( min-width: 1024px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.1024};
+    }
+  }
+
+  @media all and ( min-width: 1250px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.1250};
+    }
+  }
+
+  @media all and ( min-width: 1800px ) {
+    .headerContainer > .header {
+      width: #{application.container.width.1800};
+    }
+  }
+</style>
+<script lib="linkTo:0.1.0"></script>
+<script>
+  {
+    const createGUI = () => {
+      const items = #{menu}.items;
+      const menu = Core.validateById('menu');
+      for (const i in items) {
+        const item = items[i];
+
+        if (item.logged === null || (Core.isLogged() && item.logged === true) || (Core.isNotLogged() && item.logged === false)) {
+          const itemElement = document.createElement('div');
+          menu.appendChild(itemElement);
+          itemElement.className = 'item';
+          itemElement.innerHTML = item.name.es;
+          linkTo({
+            onClick: item.url,
+            element: itemElement
+          });
+        }
+      }
+    };
+    Core.addOnloadFunction(createGUI);
+  }
+</script>
+<div class="headerContainer">
+  <div class="header">
+    <div class="name">#{site.name}</div>
+    <div id="menu" class="menu"></div>
+  </div>
+</div>

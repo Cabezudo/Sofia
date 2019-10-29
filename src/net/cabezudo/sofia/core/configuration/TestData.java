@@ -62,7 +62,7 @@ public class TestData {
     try {
       if (startOptions.hasIDE()) {
         if ((CREATE_DATABASE || RESTORE_DATABASE) && !startOptions.hasDropDatabase()) {
-          if (Environment.getInstance().isLocal()) {
+          if (Environment.getInstance().isDevelopment()) {
             Database.drop();
           }
         }

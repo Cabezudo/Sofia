@@ -85,7 +85,7 @@ public class WebServer {
       Logger.severe(e);
       System.exit(1);
     } catch (Exception e) {
-      if (Environment.getInstance().isLocal()) {
+      if (Environment.getInstance().isDevelopment()) {
         e.printStackTrace();
       } else {
         Logger.severe(e);

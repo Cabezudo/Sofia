@@ -6,20 +6,23 @@
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/css/manager/sites/site.css">
     <script src="/js/manager/sites/site.js"></script>
+    <script lib="core:0.1.0"></script>
+    <script lib="editableField:0.1.0"></script>
+    <script lib="bottomMessages:0.1.0"></script>
     <script>
       {
         const createGUI = () => {
           const detailDiv = Core.validateById('detail');
           detailDiv.addEventListener('response', event => {
             const site = event.detail;
-            editableField_1_00({
+            editableField({
               id: 'siteName',
               validationURI: `/api/v1/sites/${site.id}/names/{value}/validate`,
               updateURI: `/api/v1/sites/${site.id}`,
               field: 'name',
               defaultValue: site.name
             });
-            editableField_1_00({
+            editableField({
               id: 'siteVersion',
               validationURI: `/api/v1/sites/${site.id}/versions/{value}/validate`,
               updateURI: `/api/v1/sites/${site.id}`,
@@ -31,7 +34,7 @@
             domains.forEach(host => {
               const domainsInput = (() => {
                 const element = document.createElement('div');
-                editableField_1_00({
+                editableField({
                   element,
                   validationURI: `/api/v1/sites/${site.id}/hosts/${host.id}/names/{value}/validate`,
                   updateURI: `/api/v1/sites/${site.id}/hosts/${host.id}`,
@@ -47,7 +50,7 @@
           Core.screenBlocker.block();
           Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
 
-          bottomMessages_1_00({id: 'messages'});
+          bottomMessages({id: 'messages'});
         };
         Core.addOnloadFunction(createGUI);
       }

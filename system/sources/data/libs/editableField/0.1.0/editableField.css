@@ -1,0 +1,56 @@
+/*
+ * Created on: 25/09/2019
+ * Author:     Esteban Cabezudo
+ */
+
+.editableField {
+  position: relative;
+}
+
+.editableField > input {
+  padding: 0;
+  margin: 0;
+  outline: none;
+  border: 0;
+  background-color: rgba(0,0,0,0);
+}
+
+.editableField > input[focused] {
+  outline: none;
+  border: 0;
+}
+
+.editableField {
+  cursor: auto;
+}
+.editableField:hover {
+  cursor: pointer;
+}
+.editableField > div {
+  font-size: 10px;
+  font-weight: bold;
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background-color: #FB9636;
+  display: flex;
+  color: white;
+  opacity: 0;
+  transition: opacity .3s ease-in-out;
+  border-radius: 3px;
+  padding: 2px 4px;
+  align-items: center;
+}
+
+.editableField > div.saving {
+  background-color: #E49100;
+}
+
+.editableField > div.saved {
+  background-color: #039000;
+}
+
+.editableField > div.error {
+  background-color: #B60002;
+}
+

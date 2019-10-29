@@ -1,4 +1,9 @@
 {
+  "application": {
+    "color": {
+      "main": "#{theme.application.color.main}"
+    }
+  },
   "header": {
     "menu": {
       "items": [

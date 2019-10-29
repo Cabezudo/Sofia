@@ -16,7 +16,7 @@ Descargue el archivo ZIP del sistema y descomprímalo en la ubicación que desee
 Antes de que el servidor funcione debemos de configurarlo. Sofía utiliza solo un archivo de configuración llamado `sofia.configuration.properties` que debemos de crear en una ubicación específica. El servidor primero busca el archivo de configuración en el directorio donde se está ejecutando y luego lo busca en el home del usuario que se está ejecutando. Si encuentra un archivo con ese nombre en alguna de estas ubicaciones lo toma. Si no lo encuentra muestra un mensaje de error. Las ubicaciones donde busca del archivo de configurarión se muestra en el log al ejecutar el jar.
 El archivo de configuración está pensado para contener la mínima configuración necesaria para ejecutar el servidor. La siguiente es un ejemplo de la mínima configuración que se debe de tener. La forma mas directa de configurar el servidor es tomando el siguiente código y copiarlo en un archivo de nombre `sofia.configuration.properties` en una de las rutas mostradas al arrancar el servidor y luego cambiar los valores a los que se desee. Vamos a explicar brevemente de que se trata cada uno de los valores.
 ```properties
-environment=local
+environment=development
 server.port=8080
 database.driver=com.mysql.cj.jdbc.Driver
 database.hostname=127.0.0.1
@@ -26,7 +26,7 @@ database.username=juan
 database.password=tenorio2017
 system.home=/home/juan/servidor
 ```
-`environment` hace referencia al ambiente donde se está ejecutando el servidor. Puede tomar dos valores: `local` o `production`. `local` indica que se está ejecutando el servidor en un ambiente local que permite reducir ciertos aspectos que facilitan el desarrollo. Por ejemplo, se puede indicar que se ha accedido al sistema con determinado usuario desde la url para evitar registrarse para hacer pruebas con determinado usuario. También se genera código mas fácil de leer y debugear, se muestran nombres de archivos origen en el código generado y un sinnúmero de otras facilidades de las cuales hablaremos mas adelante. Cuando se configura como `production` el servidor se centra en la velocidad y elimina información innecesaria del código. `server.port` es un valor entero que indica el puerto donde se va a arrancar el servidor. Si vamos a usarlo localmente, la opción mas común es `8080` ya que no se necesitan privilegios de root para ejecutarlo y nos evitamos problemas de permisos. En producción vamos a querer correrlo en el 80 para que sirva HTTP.
+`environment` hace referencia al ambiente donde se está ejecutando el servidor. Puede tomar dos valores: `development` o `production`. `development` indica que se está ejecutando el servidor en un ambiente de desarrollo que permite acceder a ciertas características que facilitan el desarrollo. Por ejemplo, se puede indicar que se ha accedido al sistema con determinado usuario desde la url para evitar registrarse para hacer pruebas con determinado usuario. También se genera código mas fácil de leer y debugear, se muestran nombres de archivos origen en el código generado y un sinnúmero de otras facilidades de las cuales hablaremos mas adelante. Cuando se configura como `production` el servidor se centra en la velocidad y elimina información innecesaria del código. `server.port` es un valor entero que indica el puerto donde se va a arrancar el servidor. Si vamos a usarlo localmente, la opción mas común es `8080` ya que no se necesitan privilegios de root para ejecutarlo y nos evitamos problemas de permisos. En producción vamos a querer correrlo en el 80 para que sirva HTTP.
 La propiedad `database.driver` indica el driver jdbc que vamos a utilizar para acceder a la base de datos. Está ahí para que se pueda cambiar en el futuro. Actualmente se utiliza solamente mySQL para desarrollar, pero se podría usar otras bases de datos en el futuro. Por lo pronto no es necesario tocar esta propiedad.
 El host del servidor de base de datos se indica en `database.hostname`. La mayoría de las veces se puede dejar esta propiedad sin cambiar.
 `database.port` permite configurar el puerto en el cual la base de datos está corriendo. Ya que usamos únicamente mySQL o MariaDB no hay necesidad de modificarlo.
@@ -211,7 +211,7 @@ Vamos a crear una página para comenzar nuestro sitio. En el patio de juegos ya 
 Cuando Sofía crea un sitio utiliza páginas principales y fragmentos. La forma de distinguir una página principal de un framento es mediante la primer línea. Si la primera línea comienza con `<!DOCTYPE html>` estamos frente a una página principal.
 Solamente se van a crear páginas que tengan esa línea al inicio y se van a convertir en páginas del sitio que se pueden referir como un recurso de la apliación. Esto quiere decir que si marcamos una página `test.html` como principal vamos a poder acceder a ella utilizando `http://playground/test.html`, de otra forma va a ser un fragmento y no vamos a poder acceder a ella desde el navegador.
 Los fragmentos entonces, son utilizados cuando hay código HTML que se repite en varias de nuestras páginas. El encabezado, el pie de página o inclusive componentes pueden ser creados como fragmentos. La diferencia entre un componente y un fragmento es que los componentes son mas genéricos y pueden ser insertados varias veces en una página con diferentes configuraciones. Un fragmento pertenece al sitio donde se encuentra y a nadie mas, en cambio un componente puede ser utilizado por cualquier sitio dentro del servidor.
-Para acelerar el proceso de desarrollo, cuando el servidor es local, siempre se crean los archivos al recibir una solicitud del navegador. Cuando el ambiente es de producción, esto no sucede, lo que permite que el ambiente sea mas rápido. En producción solo son creados cuando se fuerza una creación, o cuando el sitio es creado.
+Para acelerar el proceso de desarrollo, cuando el servidor está funcionando en un ambiente de desarrollo, siempre se crean los archivos al recibir una solicitud del navegador. Cuando el ambiente es de producción, esto no sucede, lo que permite que el ambiente sea mas rápido. En producción solo son creados cuando se fuerza una creación, o cuando el sitio es creado.
 ### Estructura de una página principal
 Si bien hay algunas diferencias entre una página principal de Sofía y una pagina HTML, estas son mínimas. Se trató de introducir la menor cantidad de conceptos nuevos posibles para evitar tener que considerar mas cosas de las que se consideran cuando se programa únicamente HTML5.
 La primer diferencia con una página HTML es el atributo `profiles` en la etiqueta `<html>`. Este atributo define que perfiles pueden acceder a la página. En el caso del patio de juegos, e inclusive de esta página, este atributo tiene el valor `all`. Esto quiere decir que todos los perfiles pueden acceder a la página, inclusive cuando no existe perfil como cuando no hay ningún usuario registrado en el sistema. En este caso tampoco hay un perfil asociado.
@@ -320,6 +320,9 @@ Las variables de plantilla son variables que indican valores que se le van a apl
 ### Orden de asignación de variables
 Las variables de plantillas pueden ser colocadas en el archivo `commons.json`, en el archivo de configuración por defecto del componente dentro de las librearías o en el archivo de configuración para el componente el el fuente del sitio. Si definimos una variable de configuración para un componente en el archivo `commons.json`, esta, es sobrescrita por la variable en el archivo de configuración por defecto. Es por esto que no podemos definir una variable de plantilla en `commons.json`. Debemos definirla en un archivo para la página que contiene el componente. Primero se leen las variables de plantilla de `commons.json`, luego se leen las variables de plantilla por defecto del componente y luego las variables de plantilla definidas para ese componente en el archivo de configuración de la página. Cada una de estas definiciones sobrescribe la definición anterior.
 ### Páginas
+### Librerías
+Las librerías contienen funciones de JavaScript. Estas pueden ser cargadas en la página y reutilizadas en cualquier lugar.
+No se puede especificar la misma librería con dos versiones diferentes en una misma pagina. Actualmente las dependencias de los componentes y las librerías definen la versión a utilizar.
 ### Componentes
 ### Javascript
 Variables del sistema
@@ -369,3 +372,12 @@ También podemos definir variables de plantilla usando el id del template que va
 #### validateElement: element
 #### validateIdOrElement: (id, element)
 ### window.onload
+
+Usuarios y privilegios de acceso
+Si el servidor está trabajando en un ambiente de desarrollo se puede colocar en la url un parámetro ``user`` con la dirección de correo de un usuario válido. Automáticamente el sitema accede con ese usuario y sus privilegios. Esto permite que se prueben características que solo pueden ser probadas con un usuario registrado en el sistema sin necesidad de realizar el proceso de acceso al sitema cada vez que se realiza la prueba.
+
+# El servidor
+## Administración
+## Usuarios
+## Perfiles
+## Permisos

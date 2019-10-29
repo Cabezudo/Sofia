@@ -75,6 +75,7 @@
     }
   }
 </style>
+<script lib="linkTo:0.1.0"></script>
 <script>
   {
     let previousLeftValue;
@@ -112,12 +113,12 @@
             Core.hide(subItems);
             subItem.innerHTML = item.name.es;
             subItem.className = 'item second';
-            linkTo_1_00_00({
+            linkTo({
               onClick: item.url,
               element: subItem
             });
           });
-          linkTo_1_00_00({
+          linkTo({
             onClick: () => {
               if (Core.isVisible(subItems)) {
                 Core.hide(subItems);
@@ -129,7 +130,7 @@
           });
         } else {
           itemElement.className = 'item first';
-          linkTo_1_00_00({
+          linkTo({
             onClick: item.url,
             element: itemElement
           });

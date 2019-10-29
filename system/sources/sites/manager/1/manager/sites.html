@@ -6,10 +6,12 @@
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/css/manager/sites.css">
     <script src="/js/manager/sites.js"></script>
+    <script lib="core:0.1.0"></script>
+    <script lib="simpleList:0.1.0"></script>
     <script>
       {
         const createGUI = () => {
-          list_1_00_00({
+          simpleList({
             id: 'siteList',
             source: '/api/v1/sites',
             filterInputElement: null,
@@ -33,13 +35,9 @@
   <body>
     <div class="fullScreen">
       <div id="application">
-        <section id="lateralMenu" template="menues/lateral/simple/menu"></section>
-        <div id="content">
-          <div id="sites">
-            <div class="title">Sitios</div>
-            <div id="siteList"></div>
-          </div>
-        </div>
+        <section id="lateralMenu" template="headers/menu/simple/menu"></section>
+        <section id="title" template="messages/section/messages"></section>
+        <div id="siteList"></div>
       </div>
     </div>
   </body>

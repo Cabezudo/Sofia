@@ -38,8 +38,9 @@ public class SofiaSourceFile {
   private final Site site;
   private final TemplateLiterals templateLiterals;
   private int deep = 0;
+  private final Libraries libraries = new Libraries();
 
-  SofiaSourceFile(Site site, TemplateLiterals templateLiterals, String voidPartialPath) throws IOException, SQLException, FileNotFoundException, JSONParseException, NoSuchFileException, SiteCreationException {
+  SofiaSourceFile(Site site, TemplateLiterals templateLiterals, String voidPartialPath) throws IOException, SQLException, FileNotFoundException, JSONParseException, NoSuchFileException, SiteCreationException, LibraryVersionException {
     this.site = site;
     this.templateLiterals = templateLiterals;
     this.html = new HTMLSource(templateLiterals);
@@ -50,7 +51,7 @@ public class SofiaSourceFile {
   }
 
   // Use the base path and file name to load a file into html, css and js. Create a list of read files in filePaths
-  public final void load(String id, Path basePath, String voidPartialPath) throws IOException, FileNotFoundException, NoSuchFileException, SiteCreationException {
+  public final void load(String id, Path basePath, String voidPartialPath) throws IOException, FileNotFoundException, NoSuchFileException, SiteCreationException, LibraryVersionException {
     deep++;
     String jsonPartialPath = voidPartialPath + ".json";
     String htmlPartialPath = voidPartialPath + ".html";
@@ -63,7 +64,7 @@ public class SofiaSourceFile {
         jsonCode = templateLiterals.apply(jsonCode);
       } catch (UndefinedLiteralException e) {
         Path safePath = Configuration.getInstance().getCommonsTemplatesPath().relativize(jsonSourceFilePath);
-        throw new SiteCreationException("Undefined literal " + e.getUndefinedLiteral() + " in " + safePath + ".");
+        throw new SiteCreationException("Undefined literal " + e.getUndefinedLiteral() + " on " + safePath + ".");
       }
       JSONObject jsonObject;
       try {
@@ -99,7 +100,7 @@ public class SofiaSourceFile {
     deep--;
   }
 
-  private void loadHTML(Path basePath, String htmlFilename, String id) throws IOException, NoSuchFileException, FileNotFoundException, SiteCreationException {
+  private void loadHTML(Path basePath, String htmlFilename, String id) throws IOException, NoSuchFileException, FileNotFoundException, SiteCreationException, LibraryVersionException {
     Path sourceFilePath = getSourceFilePath(basePath, htmlFilename);
     Logger.debug("Load the HTML file source %s.", sourceFilePath);
     filePaths.add(sourceFilePath);
@@ -140,7 +141,7 @@ public class SofiaSourceFile {
     return sb.toString();
   }
 
-  private void process(Path basePath, String fullLine, String id) throws IOException, NoSuchFileException, FileNotFoundException, InvalidFragmentTag, SiteCreationException {
+  private void process(Path basePath, String fullLine, String id) throws IOException, NoSuchFileException, FileNotFoundException, InvalidFragmentTag, SiteCreationException, LibraryVersionException {
 
     String changedLine;
     if (id != null) {
@@ -159,22 +160,31 @@ public class SofiaSourceFile {
       if (!Files.exists(fullPath)) {
         throw new FileNotFoundException("File not found: " + fileName);
       }
-      css.append(fullPath);
+      css.append(fullPath); // Explicit css file on tag
       return;
     }
-    if (line.startsWith("<html")) {
-      if (deep != 1) {
-        throw new InvalidFragmentTag("A HTML fragment can't have the <html> tag", 0);
+    do {
+      if (line.startsWith("<html")) {
+        if (deep != 1) {
+          throw new InvalidFragmentTag("A HTML fragment can't have the <html> tag", 0);
+        }
+        int i = line.indexOf("profiles");
+        if (i > 0) {
+          this.profiles = line.substring(i + 10, line.length() - 2);
+        }
+        actual = html;
+        if (deep == 1) {
+          actual.append("<html>").append('\n');
+        }
+        break;
       }
-      int i = line.indexOf("profiles");
-      if (i > 0) {
-        this.profiles = line.substring(i + 10, line.length() - 2);
+      if (line.startsWith("<script lib=\"") && line.endsWith("\"></script>")) {
+        String libraryReference = line.substring(13, line.length() - 11);
+        Logger.debug("Library reference name found: %s.", libraryReference);
+        Library library = new Library(libraryReference);
+        libraries.add(library);
+        break;
       }
-      actual = html;
-      if (deep == 1) {
-        actual.append("<html>").append('\n');
-      }
-    } else {
       switch (line) {
         case "<style>":
           actual = css;
@@ -201,10 +211,10 @@ public class SofiaSourceFile {
           actual.append('\n');
           break;
       }
-    }
+    } while (false);
   }
 
-  private String getProcessedLine(Path basePath, String fullLine, String line) throws NoSuchFileException, IOException, FileNotFoundException, InvalidFragmentTag, SiteCreationException {
+  private String getProcessedLine(Path basePath, String fullLine, String line) throws NoSuchFileException, IOException, FileNotFoundException, InvalidFragmentTag, SiteCreationException, LibraryVersionException {
     StringBuilder sb = new StringBuilder();
 
     Tag tag = HTMLTagFactory.get(line);
@@ -303,5 +313,9 @@ public class SofiaSourceFile {
 
   String getJavaScriptCode() {
     return js.getCode();
+  }
+
+  Libraries getLibraries() {
+    return libraries;
   }
 }

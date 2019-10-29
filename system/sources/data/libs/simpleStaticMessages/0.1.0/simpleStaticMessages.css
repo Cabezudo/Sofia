@@ -1,0 +1,26 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+.simpleStaticMessages > div {
+  font-family: #{application.color.main};
+  font-size:  #{application.color.main};
+  background-color: #{application.color.main};
+  text-align: center;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.simpleStaticMessages > div.red {
+  background-color: #D11250;
+  color: white;
+  font-weight: bold;
+}
+
+.simpleStaticMessages > div.green {
+  background-color: #008F68;
+  color: white;
+  font-weight: bold;
+}

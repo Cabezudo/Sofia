@@ -63,11 +63,11 @@ public class HTMLFilter implements Filter {
           request.getSession().setAttribute("lastPage", lastPage);
         }
 
-        if (Environment.getInstance().isLocal()) {
+        if (Environment.getInstance().isDevelopment()) {
           try {
             SiteCreator.getInstance().createPage(site, requestURI);
           } catch (SQLException | IOException | InvalidFragmentTag e) {
-            if (Environment.getInstance().isLocal()) {
+            if (Environment.getInstance().isDevelopment()) {
               e.printStackTrace();
             }
             throw new ServletException(e);
