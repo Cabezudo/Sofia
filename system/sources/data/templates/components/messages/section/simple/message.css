@@ -1,0 +1,26 @@
+/*
+    Created on : Oct 31, 2019, 11:40:48 AM
+    Author     : Esteban Cabezudo
+*/
+
+.simpleStaticMessage {
+  display: flex;
+  justify-content: center;
+  font-family: 'Abel', sans-serif;
+  font-size: 28px;
+  font-weight: 400;
+  background-color: #{theme.application.color.main};
+  color: white;
+  padding: 28px;
+  margin: 10px 0;
+}
+
+.simpleStaticMessage > div.red {
+  background-color: #D11250;
+  font-weight: bold;
+}
+
+.simpleStaticMessage > div.green {
+  background-color: #008F68;
+  font-weight: bold;
+}

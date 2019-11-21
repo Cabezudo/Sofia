@@ -1,35 +1,27 @@
 package net.cabezudo.sofia.core.creator;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.List;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
- * @version 0.01.00, 2019.10.26
+ * @version 0.01.00, 2019.11.12
  */
 public class Libraries implements Iterable<Library> {
 
-  private final Map<String, Library> map;
+  private final List<Library> list;
 
   public Libraries() {
-    this.map = new TreeMap<>();
+    this.list = new ArrayList<>();
+  }
+
+  void add(Library library) {
+    list.add(library);
   }
 
   @Override
   public Iterator<Library> iterator() {
-    return map.values().iterator();
+    return list.iterator();
   }
-
-  void add(Library library) throws LibraryVersionException {
-    Library l = map.get(library.getName());
-    if (l == null) {
-      map.put(library.getName(), library);
-    } else {
-      if (!l.getVersion().equals(library.getVersion())) {
-        throw new LibraryVersionException("try to replace a library " + l + " with library " + library + ".");
-      }
-    }
-  }
-
 }

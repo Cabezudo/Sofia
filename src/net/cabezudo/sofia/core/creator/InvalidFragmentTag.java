@@ -13,7 +13,7 @@ public class InvalidFragmentTag extends Exception {
     this.col = col;
   }
 
-  public int getCol() {
+  public int getRow() {
     return col;
   }
 }

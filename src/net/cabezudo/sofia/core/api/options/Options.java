@@ -1,13 +1,12 @@
 package net.cabezudo.sofia.core.api.options;
 
-import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.api.options.list.ListOptionFactory;
+import net.cabezudo.sofia.core.configuration.Configuration;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -23,11 +22,7 @@ public class Options implements Iterable<Option> {
       return;
     }
     String decodedQueryString;
-    try {
-      decodedQueryString = URLDecoder.decode(queryString, StandardCharsets.UTF_8.name());
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
+    decodedQueryString = URLDecoder.decode(queryString, Configuration.getInstance().getEncoding());
     String[] parameters = decodedQueryString.split("&");
     for (String parameter : parameters) {
       Option qp = ListOptionFactory.get(parameter);

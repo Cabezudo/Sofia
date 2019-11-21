@@ -53,13 +53,16 @@ input.error {
 
 #application {
   display: flex;
+  width: 100vw;
+  height: 100vh;
+  flex-direction: column;
 }
 
 #content {
-  height: calc(100vh - 40px);
+  display: flex;
   width: 100%;
-  margin: 20px;
-  margin-left: 68px;
+  justify-content: center;
+  align-items: center;
 }
 
 div.title {

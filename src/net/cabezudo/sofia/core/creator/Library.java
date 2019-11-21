@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
@@ -18,11 +19,10 @@ public class Library {
 
   private final String name;
   private final String version;
-  private final List<Path> javaScriptsFilePaths = new ArrayList<>();
-  private final List<Path> styleSheetFilePaths = new ArrayList<>();
-  private final Path libraryPath;
+  private final List<SofiaJavaScriptSource> javaScriptsFilePaths = new ArrayList<>();
+  private final List<SofiaCascadingStyleSheetSource> styleSheetFilePaths = new ArrayList<>();
 
-  Library(String reference) throws IOException {
+  Library(String reference, Caller caller) throws IOException {
     // TODO validate name format
     // TODO validate versión format
     // TODO add library using just the name.
@@ -37,34 +37,53 @@ public class Library {
     } else {
       throw new RuntimeException("The library reference must have a colon separator: " + reference);
     }
-    libraryPath = Configuration.getInstance().getCommonsLibsPath().resolve(name).resolve(version);
-    loadJavaScriptPaths(libraryPath);
-    loadStyleSheetPaths(libraryPath);
+    Path basePath = Configuration.getInstance().getCommonsLibsPath();
+    Path partialPath = Paths.get(name).resolve(version);
+    loadJavaScriptPaths(basePath, partialPath, caller);
+    loadStyleSheetPaths(basePath, partialPath, caller);
   }
 
-  List<Path> getJavaScritpPaths() {
+  List<SofiaJavaScriptSource> getJavaScritpPaths() {
     return javaScriptsFilePaths;
   }
 
-  List<Path> getStyleSheetFilePaths() {
+  List<SofiaCascadingStyleSheetSource> getCascadingStyleSheetSources() {
     return styleSheetFilePaths;
   }
 
-  private void loadJavaScriptPaths(Path libraryPath) throws IOException {
-    loadPaths(libraryPath, ".js", javaScriptsFilePaths);
-  }
-
-  private void loadStyleSheetPaths(Path libraryPath) throws IOException {
-    loadPaths(libraryPath, ".css", styleSheetFilePaths);
-  }
-
-  private void loadPaths(Path libraryPath, String extension, List<Path> filePaths) throws IOException {
+  private void loadJavaScriptPaths(Path basePath, Path partialPath, Caller caller) throws IOException {
+    Path libraryPath = basePath.resolve(partialPath);
     if (Files.isDirectory(libraryPath)) {
       Files.walkFileTree(libraryPath, new SimpleFileVisitor<Path>() {
         @Override
-        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-          if (file.toString().endsWith(extension)) {
-            filePaths.add(file);
+        public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
+          if (filePath.toString().endsWith(".js")) {
+            Path basePath = Configuration.getInstance().getSourcesPath();
+            SofiaJavaScriptSource sofiaSource = new SofiaJavaScriptSource(caller);
+            Path partialPath = basePath.relativize(filePath);
+            sofiaSource.setPaths(basePath, partialPath);
+            sofiaSource.load();
+            javaScriptsFilePaths.add(sofiaSource);
+          }
+          return FileVisitResult.CONTINUE;
+        }
+      });
+    }
+  }
+
+  private void loadStyleSheetPaths(Path basePath, Path partialPath, Caller caller) throws IOException {
+    Path libraryPath = basePath.resolve(partialPath);
+    if (Files.isDirectory(libraryPath)) {
+      Files.walkFileTree(libraryPath, new SimpleFileVisitor<Path>() {
+        @Override
+        public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
+          if (filePath.toString().endsWith(".css")) {
+            Path basePath = Configuration.getInstance().getSourcesPath();
+            SofiaCascadingStyleSheetSource sofiaSource = new SofiaCascadingStyleSheetSource(caller);
+            Path partialPath = basePath.relativize(filePath);
+            sofiaSource.setPaths(basePath, partialPath);
+            sofiaSource.load();
+            styleSheetFilePaths.add(sofiaSource);
           }
           return FileVisitResult.CONTINUE;
         }

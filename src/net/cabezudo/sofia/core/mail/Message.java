@@ -25,12 +25,6 @@ public class Message implements JSONable {
     if (from == null) {
       throw new RuntimeException("No se encontró la dirección de envío.");
     }
-    System.out.println(toName);
-    System.out.println(to);
-    System.out.println(subject);
-    System.out.println(text);
-    System.out.println(html);
-
     this.fromName = fromName;
     this.from = from;
     this.toName = toName;

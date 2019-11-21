@@ -11,7 +11,7 @@ const simpleStaticMessage = ({ id = null, element = null } = {}) => {
     element = Core.validateIdOrElement(id, element);
   };
   const createGUI = () => {
-    element.className = 'simpleStaticMessages';
+    element.className = 'simpleStaticMessage';
     Core.setMessagesContainer(element);
     const defaultMessage = element.innerHTML;
     messageContainer = document.createElement('div');
