@@ -6,10 +6,6 @@ package net.cabezudo.sofia.core.creator;
  */
 public class SiteCreationException extends Exception {
 
-  SiteCreationException(String message, Throwable cause, String filename, int line, int column) {
-    super(message, cause);
-  }
-
   SiteCreationException(String message) {
     super(message);
   }

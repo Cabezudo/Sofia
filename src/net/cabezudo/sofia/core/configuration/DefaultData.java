@@ -49,8 +49,8 @@ public class DefaultData {
   public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException {
     try {
       Logger.info("Load the JDBC driver %s.", Configuration.getInstance().getDatabaseDriver());
-      Class.forName(Configuration.getInstance().getDatabaseDriver()).newInstance();
-    } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+      Class.forName(Configuration.getInstance().getDatabaseDriver());
+    } catch (ClassNotFoundException e) {
       throw new ConfigurationException(e);
     }
 

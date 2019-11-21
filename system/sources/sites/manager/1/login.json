@@ -1,6 +1,11 @@
 {
-  "template": "pages/login",
+  "template": "pages/login/login",
   "login": {
     "afterLoginSucessfullPage": "/manager/index.html"
+  },
+  "messages": {
+    "message": {
+      "default": "Bienvenido a la página principal del servidor"
+    }
   }
 }

@@ -5,10 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acceso al sistema</title>
     <link rel="stylesheet" type="text/css" href="css/login.css">
+    <script src="js/variables.js"></script>
     <script src="js/login.js"></script>
+    <script lib="core:0.1.0"></script>
     <script>
       const login = (() => {
         const createGUI = () => {
+          Core.setMessagesContainer('messages');
         };
         Core.addOnloadFunction(createGUI);
       })();
@@ -17,8 +20,11 @@
     </style>
   </head>
   <body>
-    <div class="fullScreen allCentered">
-      <section id="login" template="logins/basic-login/login"></section>
+    <div id="application">
+      <section id="messages" template="messages/section/simple/message"></section>
+      <div id="content">
+        <section id="login" template="logins/simple/login"></section>
+      </div>
     </div>
   </body>
 </html>

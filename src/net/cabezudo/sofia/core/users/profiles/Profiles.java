@@ -33,4 +33,8 @@ public class Profiles implements Iterable<Profile> {
     }
     list.add(profile);
   }
+
+  public boolean isEmpty() {
+    return list.isEmpty();
+  }
 }

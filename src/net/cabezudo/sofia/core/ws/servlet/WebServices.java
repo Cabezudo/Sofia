@@ -2,13 +2,13 @@ package net.cabezudo.sofia.core.ws.servlet;
 
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.clients.DetailClientsService;
 import net.cabezudo.sofia.clients.ListClientsService;
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.passwords.PasswordPairValidatorService;
 import net.cabezudo.sofia.core.passwords.PasswordValidatorService;
@@ -42,7 +42,7 @@ public class WebServices extends HttpServlet {
 
     response.setHeader("Content-Type", "application/json; charset=utf-8");
 
-    String uri = URLDecoder.decode(request.getRequestURI(), StandardCharsets.UTF_8);
+    String uri = URLDecoder.decode(request.getRequestURI(), Configuration.getInstance().getEncoding());
 
     String serverName = request.getServerName();
     if (serverName.startsWith("api.")) {

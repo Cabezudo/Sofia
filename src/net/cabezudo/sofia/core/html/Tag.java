@@ -9,10 +9,12 @@ import java.util.Map;
  */
 public abstract class Tag {
 
+  private final String name;
   private final Map<String, String> properties = new HashMap<>();
   private final int column;
 
-  protected Tag(String data, int column) {
+  protected Tag(String name, String data, int column) {
+    this.name = name;
     this.column = column;
     String[] ps = data.trim().split("\\s");
     for (String property : ps) {
@@ -37,5 +39,13 @@ public abstract class Tag {
 
   public int getColumn() {
     return column;
+  }
+
+  public String getStartTag() {
+    return "<" + name + " id=\"" + properties.get("id") + "\">";
+  }
+
+  public String getEndTag() {
+    return "</" + name + ">";
   }
 }

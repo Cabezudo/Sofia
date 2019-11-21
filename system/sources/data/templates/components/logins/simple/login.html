@@ -24,15 +24,6 @@
     text-align: center;
   }
 
-  #login .title {
-    font-family: '#{theme.caption.title.font.family}';
-    font-size: #{theme.caption.title.font.size.default};
-    font-weight: bold;
-    color: #333;
-    line-height: calc(#{theme.caption.title.font.size.default} + 10px);
-    text-align: center;
-
-  }
   #loginMessageContainer {
     display: flex;
   }
@@ -146,9 +137,6 @@
           }
         }
       });
-      simpleStaticMessages({
-        id: 'loginMessages'
-      });
       const sendLoginInformation = () => {
         const formObject = {
           email: loginEMailElement.value,
@@ -162,18 +150,12 @@
   })();
 
 </script>
-<div id="login">
-  <div id="loginFormContainer" class="form">
-    <div class="titleContainer">
-      <div class="title">#{title}</div>
-      <div class="otherOption">o&nbsp;<a href="register.html">crear una cuenta</a></div>
-    </div>
-    <input id="loginEMail" type="email" name="username" placeholder="correo electrónico" autocomplete="off">
-    <input id="loginPassword" type="password" name="password" placeholder="contraseña">
-    <div id="loginMessages"></div>
-    <div id="loginButton">Acceder</div>
-    <div class="footContainer">
-      <div class="otherOption">o&nbsp;<a href="#{recoverPasswordPage}">recuperar contraseña</a></div>
-    </div>
+<div id="loginFormContainer" class="form">
+  <div class="createAccount"><a href="register.html">crear una cuenta</a></div>
+  <input id="loginEMail" type="email" name="username" placeholder="correo electrónico" autocomplete="off">
+  <input id="loginPassword" type="password" name="password" placeholder="contraseña">
+  <div id="loginButton">Acceder</div>
+  <div class="footContainer">
+    <div class="otherOption">o&nbsp;<a href="#{recoverPasswordPage}">recuperar contraseña</a></div>
   </div>
 </div>

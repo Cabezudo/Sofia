@@ -3,13 +3,13 @@ package net.cabezudo.sofia.core.server.js;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
@@ -45,48 +45,52 @@ public class JSServlet extends HttpServlet {
       response.setContentType("text/javascript");
       try (FileInputStream in = new FileInputStream(jsFilePath.toFile()); OutputStream out = response.getOutputStream();) {
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("const variables = {\n");
         String lastPage = (String) request.getSession().getAttribute("lastPage");
-        if (lastPage == null) {
-          sb.append("  lastPage: null,\n");
-        } else {
-          sb.append("  lastPage: '").append(lastPage).append("',\n");
-        }
         String comebackPage = (String) request.getSession().getAttribute("comebackPage");
-        if (comebackPage == null) {
-          sb.append("  comebackPage: null,\n");
-        } else {
-          sb.append("  comebackPage: '").append(comebackPage).append("',\n");
-        }
-        request.getSession().setAttribute("", requestURI);
-        sb.append("  user: ");
-        if (user == null) {
-          sb.append("null\n");
-        } else {
-          sb.append("{\n");
-          sb.append("  id: '").append(user.getId()).append("',\n");
-          sb.append("  email: '").append(user.getMail().getAddress()).append("',\n");
-          sb.append("    profiles: [\n");
-          Profiles profiles = UserManager.getInstance().getProfiles(user);
-          boolean first = true;
-          for (Profile profile : profiles) {
-            if (first) {
-              first = false;
-            } else {
-              sb.append(",\n");
-            }
-            sb.append("      {\n");
-            sb.append("        id: ").append(profile.getId()).append(",\n");
-            sb.append("        name: '").append(profile.getName()).append("'\n");
-            sb.append("      }");
+
+        if ("js/variables.js".equals(fileName)) {
+          StringBuilder sb = new StringBuilder();
+
+          sb.append("const variables = {\n");
+          if (lastPage == null) {
+            sb.append("  lastPage: null,\n");
+          } else {
+            sb.append("  lastPage: '").append(lastPage).append("',\n");
           }
-          sb.append("\n    ]\n");
-          sb.append("  }\n");
+          if (comebackPage == null) {
+            sb.append("  comebackPage: null,\n");
+          } else {
+            sb.append("  comebackPage: '").append(comebackPage).append("',\n");
+          }
+          request.getSession().setAttribute("", requestURI);
+          sb.append("  user: ");
+          if (user == null) {
+            sb.append("null\n");
+          } else {
+            sb.append("{\n");
+            sb.append("  id: '").append(user.getId()).append("',\n");
+            sb.append("  email: '").append(user.getMail().getAddress()).append("',\n");
+            sb.append("    profiles: [\n");
+            Profiles profiles = UserManager.getInstance().getProfiles(user);
+            boolean first = true;
+            for (Profile profile : profiles) {
+              if (first) {
+                first = false;
+              } else {
+                sb.append(",\n");
+              }
+              sb.append("      {\n");
+              sb.append("        id: ").append(profile.getId()).append(",\n");
+              sb.append("        name: '").append(profile.getName()).append("'\n");
+              sb.append("      }");
+            }
+            sb.append("\n    ]\n");
+            sb.append("  }\n");
+          }
+          sb.append("};\n");
+          sb.append("\n");
+          out.write(sb.toString().getBytes(Configuration.getInstance().getEncoding()));
         }
-        sb.append("};\n");
-        sb.append("\n");
-        out.write(sb.toString().getBytes(StandardCharsets.UTF_8));
 
         byte[] buffer = new byte[1024];
         int count;
