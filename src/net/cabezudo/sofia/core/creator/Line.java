@@ -16,7 +16,9 @@ public abstract class Line implements Comparable<Line> {
     return lineNumber;
   }
 
-  abstract Line replace(TemplateLiterals templateLiterals) throws UndefinedLiteralException;
+  abstract Line replace(TemplateVariables templateVariables) throws UndefinedLiteralException;
 
   abstract boolean isNotEmpty();
+
+  abstract boolean startWith(String start);
 }

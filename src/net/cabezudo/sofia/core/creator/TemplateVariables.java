@@ -9,18 +9,24 @@ import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.core.sites.Site;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.05.30
  */
-public class TemplateLiterals {
+public class TemplateVariables {
 
   private final JSONObject jsonObject;
+  private final Site site;
+  private final String partialVoidPathName;
 
-  public TemplateLiterals() {
+  public TemplateVariables(Site site, String partialVoidPathName) {
     jsonObject = new JSONObject();
+    this.site = site;
+    this.partialVoidPathName = partialVoidPathName;
   }
 
   public void add(Path basePath, String fileName) throws FileNotFoundException, IOException, JSONParseException, UndefinedLiteralException {
@@ -57,8 +63,7 @@ public class TemplateLiterals {
       try {
         value = digString(name);
       } catch (PropertyNotExistException e) {
-        Position position = new Position(lineNumber, i + 3);
-        throw new UndefinedLiteralException(e.getPropertyName(), partialFilePath, position, e);
+        throw new UndefinedLiteralException(e.getPropertyName(), i + 3, e);
       }
       sb.append(value);
     }
@@ -85,5 +90,12 @@ public class TemplateLiterals {
 
   String digString(String name) throws PropertyNotExistException {
     return jsonObject.digString(name);
+  }
+
+  void save() throws IOException {
+    Path templateVariablesFilePath = site.getJSPath().resolve(partialVoidPathName + "TemplateVariables.js");
+    Logger.debug("Creating the template variables file %s.", templateVariablesFilePath);
+    String code = "const templateVariables = " + jsonObject.toJSON() + ";\n";
+    Files.write(templateVariablesFilePath, code.getBytes(Configuration.getInstance().getEncoding()));
   }
 }

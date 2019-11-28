@@ -13,18 +13,18 @@ abstract class SofiaSourceContainer {
 
   abstract void save() throws SiteCreationException, IOException;
 
-  protected abstract void apply(TemplateLiterals templateLiterals) throws UndefinedLiteralException;
+  protected abstract void apply(TemplateVariables templateVariables) throws UndefinedLiteralException;
 
-  protected void apply(SofiaSource code, TemplateLiterals templateLiterals) throws UndefinedLiteralException {
+  protected void apply(SofiaSource code, TemplateVariables templateVariables) throws UndefinedLiteralException {
     for (int i = 0; i < code.getLines().getSize(); i++) {
       Line line = code.get(i);
-      line = line.replace(templateLiterals);
+      line = line.replace(templateVariables);
       code.set(i, line);
     }
   }
 
-  Line apply(Line line, TemplateLiterals templateLiterals) throws UndefinedLiteralException {
-    return line.replace(templateLiterals);
+  Line apply(Line line, TemplateVariables templateVariables) throws UndefinedLiteralException {
+    return line.replace(templateVariables);
   }
 
   void setTargetFilePath(Path targetFilePath) {

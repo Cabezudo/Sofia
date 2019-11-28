@@ -58,7 +58,7 @@ public final class Configuration {
   private final Path commonsThemesPath;
   private final Path commonsMailTemplatesPath;
   private final Path sitesSourcesPath;
-  private final Path sourcesPath;
+  private final Path commonSourcesPath;
   private final Path sitesPath;
 
   private Configuration() throws FileNotFoundException, IOException {
@@ -89,9 +89,9 @@ public final class Configuration {
       checkPath(systemPath);
       systemDataPath = systemPath.resolve("data");
       Files.createDirectories(systemDataPath);
-      sourcesPath = systemPath.resolve("sources");
-      Files.createDirectories(sourcesPath);
-      sitesDataPath = sourcesPath.resolve("data");
+      commonSourcesPath = systemPath.resolve("sources");
+      Files.createDirectories(commonSourcesPath);
+      sitesDataPath = commonSourcesPath.resolve("data");
       Files.createDirectories(sitesDataPath);
       commonsFontsPath = sitesDataPath.resolve("fonts");
       Files.createDirectories(commonsFontsPath);
@@ -105,7 +105,7 @@ public final class Configuration {
       Files.createDirectories(commonsMailTemplatesPath);
       commonsThemesPath = sitesDataPath.resolve("themes");
       Files.createDirectories(commonsThemesPath);
-      sitesSourcesPath = sourcesPath.resolve("sites");
+      sitesSourcesPath = commonSourcesPath.resolve("sites");
       Files.createDirectories(sitesSourcesPath);
       sitesPath = systemPath.resolve("sites");
       Files.createDirectories(sitesPath);
@@ -208,8 +208,8 @@ public final class Configuration {
     return sitesSourcesPath;
   }
 
-  public Path getSourcesPath() {
-    return sourcesPath;
+  public Path getCommonSourcesPath() {
+    return commonSourcesPath;
   }
 
   public Path getSitesPath() {

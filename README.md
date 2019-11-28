@@ -386,8 +386,9 @@ Si el servidor está trabajando en un ambiente de desarrollo se puede colocar en
 Orden de lectura de archivos
 Cuando el sitema crea una página estática toma una serie de archivos para hacer la tarea.
 Lee el archivo commons.json y toma los valores comunes para todo el sitio. Toma el el nombre del tema para el sitio. El tema lo va a buscar de un direcotrio `themes` dentro de `data`.
-Lee el archivo `fonts.css` y lo agrega a los estilos del sitio.
-Lee el archivo `style.css` que existe en el tema elegido.
+Lee el archivo `fonts.css` que se encuentra en el raiz de los fuentes del sitio y lo agrega a los estilos del sitio. Este archivo se utiliza para colocar en un solo sitio todas las fuentes.
+Lee el archivo `style.css` que se encuentra en el raiz de los fuentes del sitio. Este archivo se utiliza para colocar configuraciónes de estilos que no pueden ser colocadas en otro lugar. Configuraciones temporales, de prueba o globales que no pertenecen al tema.
+Lee el archivo `style.css` que existe dentro del directorio del tema elegido.
 Luego se copia el directorio de imágenes completo de las fuentes al directrio donde se creará el sitio.
 Utilizando el nombre de la pagina a mostrar se busca un archivo de configuración con el mismo nomber. Si la página es index.html se busca primero `index.json`. Si se encuentra el archivo de configuración se agrega las variables de plantilla a las variables de plantilla y se busca una propiedad `template`. Si esta propiedad se encuentra se carga el template indicado en la propiedad. Si no se encuentra se carga el archivo `index.html`.
 Si no se encuentra el archivo de configuración simplemente se carga el archivo `index.html`.

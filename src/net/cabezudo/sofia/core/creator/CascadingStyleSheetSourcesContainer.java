@@ -63,11 +63,11 @@ public class CascadingStyleSheetSourcesContainer extends SofiaSourceContainer {
 
   private CodeLine processLine(Path path, int lineNumber, String s) {
     if (s.startsWith("@import url(")) {
-      Line line = new CodeLine(s, path, lineNumber);
+      Line line = new CodeLine(s, lineNumber);
       imports.add(line);
       return null;
     }
-    return new CodeLine(s, path, lineNumber);
+    return new CodeLine(s, lineNumber);
   }
 
   @Override
@@ -99,12 +99,12 @@ public class CascadingStyleSheetSourcesContainer extends SofiaSourceContainer {
   }
 
   @Override
-  protected void apply(TemplateLiterals templateLiterals) throws UndefinedLiteralException {
+  protected void apply(TemplateVariables templateVariables) throws UndefinedLiteralException {
     for (Line line : imports) {
-      super.apply(line, templateLiterals);
+      super.apply(line, templateVariables);
     }
     for (SofiaSource file : files) {
-      super.apply(file, templateLiterals);
+      super.apply(file, templateVariables);
     }
   }
 

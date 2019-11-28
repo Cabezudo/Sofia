@@ -1,7 +1,5 @@
 package net.cabezudo.sofia.core.creator;
 
-import java.nio.file.Path;
-
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.06.06
@@ -9,22 +7,16 @@ import java.nio.file.Path;
 public class UndefinedLiteralException extends Exception {
 
   private final String literal;
-  private final Path filePath;
-  private final Position position;
+  private final int row;
 
-  UndefinedLiteralException(String literal, Path filePath, Position position, Throwable cause) {
+  UndefinedLiteralException(String literal, int row, Throwable cause) {
     super("Undefined literal: " + literal, cause);
     this.literal = literal;
-    this.filePath = filePath;
-    this.position = position;
+    this.row = row;
   }
 
-  Position getPosition() {
-    return position;
-  }
-
-  Path getFilePath() {
-    return filePath;
+  int getRow() {
+    return row;
   }
 
   String getUndefinedLiteral() {

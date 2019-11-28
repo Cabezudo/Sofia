@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.creator;
 
-import java.nio.file.Path;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 
 /**
@@ -10,20 +9,22 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 public class CodeLine extends Line {
 
   private final String line;
-  private final Path partialFilePath;
 
-  public CodeLine(String line, Path partialFilePath, int lineNumber) {
+  public CodeLine(String line, int lineNumber) {
     super(lineNumber);
-    this.partialFilePath = partialFilePath;
     this.line = line;
   }
 
-  private CodeLine(StringBuilder sb, Path partialFilePath, int lineNumber) {
-    this(sb.toString(), partialFilePath, lineNumber);
+  private CodeLine(StringBuilder sb, int lineNumber) {
+    this(sb.toString(), lineNumber);
+  }
+
+  CodeLine(String line) {
+    this(line, 0);
   }
 
   @Override
-  Line replace(TemplateLiterals templateLiterals) throws UndefinedLiteralException {
+  Line replace(TemplateVariables templateVariables) throws UndefinedLiteralException {
     StringBuilder sb = new StringBuilder();
     int i;
     int last = 0;
@@ -35,15 +36,14 @@ public class CodeLine extends Line {
       last++;
       String value;
       try {
-        value = templateLiterals.digString(name);
+        value = templateVariables.digString(name);
       } catch (PropertyNotExistException e) {
-        Position position = new Position(super.getLineNumber(), i + 3);
-        throw new UndefinedLiteralException(name, partialFilePath, position, e);
+        throw new UndefinedLiteralException(name, i + 3, e);
       }
       sb.append(value);
     }
     sb.append(line.substring(last));
-    return new CodeLine(sb, partialFilePath, super.getLineNumber());
+    return new CodeLine(sb, super.getLineNumber());
   }
 
   @Override
@@ -59,14 +59,15 @@ public class CodeLine extends Line {
   @Override
   public int compareTo(Line o) {
     CodeLine codeLine = (CodeLine) o;
-    int c = partialFilePath.compareTo(codeLine.partialFilePath);
-    if (c != 0) {
-      return c;
-    }
-    c = line.compareTo(codeLine.line);
+    int c = line.compareTo(codeLine.line);
     if (c != 0) {
       return c;
     }
     return super.getLineNumber() - codeLine.getLineNumber();
+  }
+
+  @Override
+  boolean startWith(String start) {
+    return line.startsWith(start);
   }
 }

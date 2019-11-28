@@ -9,7 +9,7 @@ import java.util.Map;
  */
 public abstract class Tag {
 
-  private final String name;
+  private String name;
   private final Map<String, String> properties = new HashMap<>();
   private final int column;
 
@@ -47,5 +47,9 @@ public abstract class Tag {
 
   public String getEndTag() {
     return "</" + name + ">";
+  }
+
+  public void rename(String name) {
+    this.name = name;
   }
 }
