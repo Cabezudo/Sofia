@@ -1,25 +1,35 @@
 package net.cabezudo.sofia.core.creator;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
- * @version 0.01.00, 2019.11.12
+ * @version 0.01.00, 2019.11.28
  */
-class Lines implements Iterable<Line> {
+class Imports implements Iterable<Line> {
 
-  List<Line> lines = new ArrayList<>();
+  final Set<Line> set;
+
+  Imports() {
+    this.set = new TreeSet<>();
+  }
 
   void add(Line line) {
-    lines.add(line);
+    set.add(line);
+  }
+
+  void add(Imports imports) {
+    for (Line line : imports) {
+      set.add(line);
+    }
   }
 
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    for (Line line : lines) {
+    for (Line line : set) {
       sb.append(line);
       sb.append('\n');
     }
@@ -28,20 +38,10 @@ class Lines implements Iterable<Line> {
 
   @Override
   public Iterator<Line> iterator() {
-    return lines.iterator();
+    return set.iterator();
   }
 
   int getSize() {
-    return lines.size();
-  }
-
-  Line get(int i
-  ) {
-    return lines.get(i);
-  }
-
-  void set(int i, Line line
-  ) {
-    lines.set(i, line);
+    return set.size();
   }
 }

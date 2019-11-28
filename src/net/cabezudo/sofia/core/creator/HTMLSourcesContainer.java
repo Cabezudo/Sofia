@@ -35,11 +35,11 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
   private final CascadingStyleSheetSourcesContainer cssContainer = new CascadingStyleSheetSourcesContainer();
   private final Libraries libraries = new Libraries();
   private final Site site;
-  private final TemplateLiterals templateLiterals;
+  private final TemplateVariables templateVariables;
 
-  HTMLSourcesContainer(Site site, TemplateLiterals templateLiterals) {
+  HTMLSourcesContainer(Site site, TemplateVariables templateVariables) {
     this.site = site;
-    this.templateLiterals = templateLiterals;
+    this.templateVariables = templateVariables;
     this.css = new SofiaCascadingStyleSheetSource(null);
     this.js = new SofiaJavaScriptSource(null);
     this.html = new SofiaHTMLSource(null);
@@ -63,14 +63,14 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
   }
 
   void load(Path basePath, Path voidPartialPath, String id, Caller caller) throws IOException, SiteCreationException, LibraryVersionException, NoSuchFileException, FileNotFoundException, SQLException {
-    String jsonPartialPath = voidPartialPath + ".json";
+    String jsonPartialPathName = voidPartialPath + ".json";
     String htmlPartialPathName = voidPartialPath + ".html";
     Path htmlPartialPath = Paths.get(htmlPartialPathName);
     Path htmlSourceFilePath = getSourceFilePath(basePath, htmlPartialPathName);
     Logger.debug("Loadding %s file into HTML container.", htmlSourceFilePath);
 
     this.actual = html;
-
+    Path jsonPartialPath = Paths.get(jsonPartialPathName);
     Path jsonSourceFilePath = basePath.resolve(jsonPartialPath);
     if (Files.isRegularFile(jsonSourceFilePath)) {
       Logger.debug("FOUND configuration file %s for %s.", jsonSourceFilePath, htmlPartialPathName);
@@ -79,9 +79,10 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
       int lineNumber = 1;
       for (String line : lines) {
         try {
-          sb.append(templateLiterals.replace(line, lineNumber, jsonSourceFilePath));
+          sb.append(templateVariables.replace(line, lineNumber, jsonSourceFilePath));
         } catch (UndefinedLiteralException e) {
-          throw new SiteCreationException(e.getMessage());
+          Position position = new Position(lineNumber, e.getRow());
+          throw new LocatedSiteCreationException(e.getMessage(), jsonPartialPath, position);
         }
         lineNumber++;
       }
@@ -93,30 +94,55 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
       }
       String templateName = jsonObject.getNullString("template");
       if (templateName == null) {
+        loadCSS(basePath, htmlPartialPath, id, caller);
         loadHTML(basePath, htmlPartialPath, id, caller);
       } else {
         // Read template from template files
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        Path htmlSourceTemplateFilePath = commonsComponentsTemplatePath.resolve(templateName + ".html");
+        Path htmlSourceTemplateFilePath = Paths.get(templateName + ".html");
+        Path cssSourceTemplateFilePath = Paths.get(templateName + ".css");
+        Path htmlSourceTemplateFullFilePath = commonsComponentsTemplatePath.resolve(htmlSourceTemplateFilePath);
 
-        Logger.debug("Load template %s from file %s.", htmlSourceTemplateFilePath.relativize(commonsComponentsTemplatePath), jsonPartialPath);
+        Logger.debug("Load template %s from file %s.", htmlSourceTemplateFullFilePath, jsonPartialPath);
         jsonObject.remove("template");
-        loadHTML(basePath, htmlSourceTemplateFilePath, id, caller);
+        loadCSS(commonsComponentsTemplatePath, cssSourceTemplateFilePath, id, caller);
+        loadHTML(commonsComponentsTemplatePath, htmlSourceTemplateFilePath, id, caller);
         // TODO read images from template
       }
       if (id != null) {
         JSONObject idJSONObject = new JSONObject();
         idJSONObject.add(new JSONPair(id, jsonObject));
-        templateLiterals.add(idJSONObject);
+        templateVariables.add(idJSONObject);
       } else {
-        templateLiterals.add(jsonObject);
+        templateVariables.add(jsonObject);
       }
     } else {
       loadHTML(basePath, htmlPartialPath, id, caller);
     }
   }
 
+  private void loadCSS(Path basePath, Path cssPartialPath, String id, Caller caller) throws IOException {
+    Path cssSourceFilePath = basePath.resolve(cssPartialPath);
+    if (!Files.exists(cssSourceFilePath)) {
+      return;
+    }
+    Logger.debug("Load the CSS file source %s.", cssSourceFilePath);
+
+    int lineNumber = 0;
+    css.add(new CodeLine("/* created by system using " + cssPartialPath + " called from " + caller + " */", lineNumber));
+    try (Stream<String> lines = Files.lines(cssSourceFilePath, Configuration.getInstance().getEncoding())) {
+      for (String line : (Iterable<String>) lines::iterator) {
+        lineNumber++;
+        line = addIdToTemplateVariables(line, id);
+        css.add(new CodeLine(line, lineNumber));
+      }
+    }
+  }
+
   private void loadHTML(Path basePath, Path partialPath, String id, Caller caller) throws IOException, NoSuchFileException, FileNotFoundException, SiteCreationException, LibraryVersionException, SQLException {
+    if (partialPath.isAbsolute()) {
+      throw new RuntimeException("The path " + partialPath + " is absolute.");
+    }
     Path sourceFilePath = basePath.resolve(partialPath);
     Logger.debug("Load the HTML file source %s.", sourceFilePath);
 
@@ -129,7 +155,8 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
             throw new SiteCreationException("The page " + sourceFilePath + " is not a main page.");
           }
         }
-        process(sourceFilePath.getParent(), partialPath, line, id, lineNumber, caller);
+        line = addIdToTemplateVariables(line, id);
+        processHTML(sourceFilePath.getParent(), partialPath, line, id, lineNumber, caller);
       }
     } catch (InvalidFragmentTag e) {
       Position position = new Position(lineNumber, e.getRow());
@@ -137,7 +164,23 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
     }
   }
 
-  private void process(Path basePath, Path partialPath, String fullLine, String id, int lineNumber, Caller caller) throws IOException, NoSuchFileException, FileNotFoundException, InvalidFragmentTag, SiteCreationException, LibraryVersionException, SQLException {
+  private String addIdToTemplateVariables(String line, String id) {
+    StringBuilder sb = new StringBuilder();
+    int i;
+    int last = 0;
+
+    while ((i = line.indexOf("#{", last)) != -1) {
+      sb.append(line.substring(last, i));
+      last = line.indexOf("}", i);
+      String name = line.substring(i + 2, last);
+      last++;
+      sb.append("#{").append(id).append(".").append(name).append("}");
+    }
+    sb.append(line.substring(last));
+    return sb.toString();
+  }
+
+  private void processHTML(Path basePath, Path partialPath, String fullLine, String id, int lineNumber, Caller caller) throws IOException, NoSuchFileException, FileNotFoundException, InvalidFragmentTag, SiteCreationException, LibraryVersionException, SQLException {
 
     String changedLine;
     if (id != null) {
@@ -175,7 +218,7 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
         }
         actual = html;
         if (caller != null) {
-          actual.add(new CodeLine("<html>\n", partialPath, lineNumber));
+          actual.add(new CodeLine("<html>\n", lineNumber));
         }
         break;
       }
@@ -191,15 +234,15 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
       switch (line) {
         case "<style>":
           actual = css;
-          actual.add(new CodeLine("/* created by system using " + partialPath + " called from " + caller + " */", partialPath, lineNumber));
+          actual.add(new CodeLine("/* created by system using " + partialPath + " called from " + caller + " */", lineNumber));
           break;
         case "<script>":
           actual = js;
-          actual.add(new CodeLine("//( created by system using " + partialPath + " called from " + caller, partialPath, lineNumber));
+          actual.add(new CodeLine("//( created by system using " + partialPath + " called from " + caller, lineNumber));
           break;
         case "</html>":
           if (caller != null) {
-            actual.add(new CodeLine("</html>\n", partialPath, lineNumber));
+            actual.add(new CodeLine("</html>\n", lineNumber));
           }
           actual = html;
           break;
@@ -210,10 +253,10 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
         default:
           if (actual.getType() == SofiaSource.Type.HTML) {
             String l = getProcessedLine(basePath, partialPath, changedLine, line, lineNumber, caller);
-            actual.add(new CodeLine(l, partialPath, lineNumber));
+            actual.add(new CodeLine(l, lineNumber));
             break;
           }
-          actual.add(new CodeLine(changedLine, partialPath, lineNumber));
+          actual.add(new CodeLine(changedLine, lineNumber));
           break;
       }
     } while (false);
@@ -224,19 +267,30 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
 
     Tag tag = HTMLTagFactory.get(line);
     if (tag != null && tag.isSection()) {
-      actual.add(new CodeLine(tag.getStartTag(), partialPath, lineNumber));
       if (tag.getValue("file") != null) {
+        tag.rename("div");
+        actual.add(new CodeLine(tag.getStartTag(), lineNumber));
         String fileName = tag.getValue("file");
+        Path newFileBasePath;
+        if (fileName.startsWith("/")) {
+          newFileBasePath = site.getSourcesPath();
+          fileName = fileName.substring(1);
+        } else {
+          newFileBasePath = basePath;
+        }
         Path filePath = Paths.get(fileName);
         try {
           Caller newCaller = new Caller(basePath, partialPath, lineNumber);
-          load(basePath, filePath, tag.getId(), newCaller);
+          load(newFileBasePath, filePath, tag.getId(), newCaller);
         } catch (NoSuchFileException e) {
-          throw new NoSuchFileException("No such file: " + fileName);
+          throw new NoSuchFileException("Can't find the file " + fileName + " called from " + partialPath + ":" + lineNumber);
         }
+        actual.add(new CodeLine(tag.getEndTag(), lineNumber));
         return sb.toString();
       }
       if (tag.getValue("template") != null) {
+        tag.rename("div");
+        actual.add(new CodeLine(tag.getStartTag(), lineNumber));
         String templateName = tag.getValue("template");
         Path templatePath = Paths.get(templateName);
         if (tag.getId() == null) {
@@ -259,7 +313,7 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
         } catch (NoSuchFileException e) {
           throw new NoSuchFileException("No such template file: " + templateName);
         }
-        actual.add(new CodeLine(tag.getEndTag(), partialPath, lineNumber));
+        actual.add(new CodeLine(tag.getEndTag(), lineNumber));
         return sb.toString();
       }
     }
@@ -281,7 +335,7 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
         JSONPair jsonPair = new JSONPair(id, jsonObject);
         JSONObject jsonTemplateObject = new JSONObject();
         jsonTemplateObject.add(jsonPair);
-        templateLiterals.add(jsonTemplateObject);
+        templateVariables.add(jsonTemplateObject);
       } catch (JSONParseException e) {
         throw new SiteCreationException("Cant parse " + jsonSourceFilePath + ". " + e.getMessage());
       }
@@ -297,7 +351,7 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
 
   private Path getSourceFilePath(Path basePath, String fileName) {
     if (fileName.startsWith("/")) {
-      return Configuration.getInstance().getSourcesPath().resolve(fileName.substring(1));
+      return Configuration.getInstance().getCommonSourcesPath().resolve(fileName.substring(1));
     } else {
       return basePath.resolve(fileName);
     }
@@ -335,7 +389,7 @@ public class HTMLSourcesContainer extends SofiaSourceContainer {
   }
 
   @Override
-  protected void apply(TemplateLiterals templateLiterals) throws UndefinedLiteralException {
-    super.apply(html, templateLiterals);
+  protected void apply(TemplateVariables templateVariables) throws UndefinedLiteralException {
+    super.apply(html, templateVariables);
   }
 }

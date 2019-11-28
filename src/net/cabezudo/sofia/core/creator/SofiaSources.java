@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.sql.SQLException;
+import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
 
@@ -15,17 +17,17 @@ import net.cabezudo.sofia.core.users.profiles.Profiles;
 public class SofiaSources {
 
   private final Site site;
-  private final TemplateLiterals templateLiterals;
+  private final TemplateVariables templateVariables;
   private final HTMLSourcesContainer html;
   private final JavaScriptSourcesContainer js;
   private final CascadingStyleSheetSourcesContainer css;
   private final Path voidPartialPath;
 
-  SofiaSources(Site site, TemplateLiterals templateLiterals, Path voidPartialPath) throws IOException, SiteCreationException, LibraryVersionException, SQLException {
+  SofiaSources(Site site, TemplateVariables templateVariables, Path voidPartialPath) throws IOException, SiteCreationException, LibraryVersionException, SQLException {
     this.site = site;
-    this.templateLiterals = templateLiterals;
+    this.templateVariables = templateVariables;
     this.voidPartialPath = voidPartialPath;
-    html = new HTMLSourcesContainer(site, templateLiterals);
+    html = new HTMLSourcesContainer(site, templateVariables);
     Path htmlPath = site.getVersionPath().resolve(voidPartialPath + ".html");
     html.setTargetFilePath(htmlPath);
 
@@ -50,14 +52,14 @@ public class SofiaSources {
     // TODO agregar las variables al inicio del archivo de JS
     // TODO apply here the template literals
     // TODO load here, at first, the js libraries from the sources, and the css, and the images, and videos and sounds
-    String templateLiteralsString = "const templateLiterals = " + templateLiterals.toJSON() + ";\n";
-    JavaScriptSourcesContainer variablesFile = new JavaScriptSourcesContainer();
-    Path variablesFilePath = site.getJSPath().resolve("variables.js");
-    variablesFile.setTargetFilePath(variablesFilePath);
+    String templateVariablesString = "const templateVariables = " + templateVariables.toJSON() + ";\n";
+    JavaScriptSourcesContainer templateVariablesFile = new JavaScriptSourcesContainer();
+    Path variablesFilePath = site.getJSPath().resolve(voidPartialPath + "TemplateVariables.js");
+    templateVariablesFile.setTargetFilePath(variablesFilePath);
 
-    SofiaJavaScriptSource variablesSource = new SofiaJavaScriptSource(null);
-    variablesSource.add(new CodeLine(templateLiteralsString, null, 0));
-    variablesFile.add(variablesSource);
+    SofiaJavaScriptSource templateVariablesSource = new SofiaJavaScriptSource(null);
+    templateVariablesSource.add(new CodeLine(templateVariablesString, 0));
+    templateVariablesFile.add(templateVariablesSource);
 
     Libraries libraries = html.getLibraries();
     css.add(libraries);
@@ -67,17 +69,12 @@ public class SofiaSources {
     SofiaJavaScriptSource sofiaJavaScriptSource = html.getSofiaJavaScriptSource();
     js.add(sofiaJavaScriptSource);
 
-    try {
-      variablesFile.apply(templateLiterals);
-      html.apply(templateLiterals);
-      css.apply(templateLiterals);
-      js.apply(templateLiterals);
-    } catch (UndefinedLiteralException e) {
-      throw new LocatedSiteCreationException(e.getMessage(), e.getFilePath(), e.getPosition());
+    if (Environment.getInstance().isDevelopment()) {
+      Logger.debug(templateVariablesString);
     }
 
     // TODO add libraries to js file
-    variablesFile.save();
+    templateVariablesFile.save();
     html.save();
     css.save();
     js.save();

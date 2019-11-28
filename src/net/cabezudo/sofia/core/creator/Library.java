@@ -58,7 +58,7 @@ public class Library {
         @Override
         public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
           if (filePath.toString().endsWith(".js")) {
-            Path basePath = Configuration.getInstance().getSourcesPath();
+            Path basePath = Configuration.getInstance().getCommonSourcesPath();
             SofiaJavaScriptSource sofiaSource = new SofiaJavaScriptSource(caller);
             Path partialPath = basePath.relativize(filePath);
             sofiaSource.setPaths(basePath, partialPath);
@@ -78,7 +78,7 @@ public class Library {
         @Override
         public FileVisitResult visitFile(Path filePath, BasicFileAttributes attrs) throws IOException {
           if (filePath.toString().endsWith(".css")) {
-            Path basePath = Configuration.getInstance().getSourcesPath();
+            Path basePath = Configuration.getInstance().getCommonSourcesPath();
             SofiaCascadingStyleSheetSource sofiaSource = new SofiaCascadingStyleSheetSource(caller);
             Path partialPath = basePath.relativize(filePath);
             sofiaSource.setPaths(basePath, partialPath);

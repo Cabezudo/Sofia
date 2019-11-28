@@ -1,0 +1,176 @@
+{
+  "theme": {
+    "application": {
+      "container": {
+        "width": {
+          "default": "100vw",
+          "480": "480px",
+          "750": "750px",
+          "1024": "1024px",
+          "1250": "1250px",
+          "1800": "1800px"
+        }
+      },
+      "color": {
+        "main": "#3F0E40"
+      }
+    },
+    "title": {
+      "font": {
+        "family": "Arial",
+        "weight": {
+          "default": "bold",
+          "480": "bold",
+          "750": "bold",
+          "1024": "bold",
+          "1250": "bold",
+          "1800": "bold"
+        },
+        "size": {
+          "default": "26px",
+          "480": "26px",
+          "750": "26px",
+          "1024": "26px",
+          "1250": "26px",
+          "1800": "26px"
+        },
+        "padding": {
+          "default": "20px",
+          "480": "26px",
+          "750": "26px",
+          "1024": "26px",
+          "1250": "26px",
+          "1800": "26px"
+        }
+      }
+    },
+    "subtitle": {
+      "font": {
+        "family": "Arial",
+        "weight": {
+          "default": "bold",
+          "480": "bold",
+          "750": "bold",
+          "1024": "bold",
+          "1250": "bold",
+          "1800": "bold"
+        },
+        "size": {
+          "default": "20px",
+          "480": "20px",
+          "750": "20px",
+          "1024": "20px",
+          "1250": "20px",
+          "1800": "20px"
+        },
+        "padding": {
+          "default": "20px",
+          "480": "26px",
+          "750": "26px",
+          "1024": "26px",
+          "1250": "26px",
+          "1800": "26px"
+        }
+      }
+    },
+    "messages": {
+      "font": {
+        "family": "'Economica', sans-serif",
+        "size": {
+          "default": "20px",
+          "480": "20px",
+          "750": "20px",
+          "1024": "20px",
+          "1250": "20px",
+          "1800": "20px"
+        },
+        "padding": {
+          "default": "20px",
+          "480": "26px",
+          "750": "26px",
+          "1024": "26px",
+          "1250": "26px",
+          "1800": "26px"
+        }
+      }
+    },
+    "text": {
+      "font": {
+        "family": "Roboto Condensed",
+        "size": {
+          "default": "18px",
+          "480": "26px",
+          "750": "26px",
+          "1024": "26px",
+          "1250": "26px",
+          "1800": "26px"
+        }
+      }
+    },
+    "caption": {
+      "title": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "34px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      },
+      "option": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "18px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      },
+      "text": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "22px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      }
+    },
+    "button": {
+      "red": {
+        "color": "white",
+        "backgroundColor": "#D11250"
+      },
+      "orange": {
+        "red": {
+          "color": "white",
+          "backgroundColor": "#DB5800"
+        }
+      },
+      "blue": {
+        "red": {
+          "color": "white",
+          "backgroundColor": "#006899"
+        }
+      },
+      "green": {
+        "red": {
+          "color": "white",
+          "backgroundColor": "#008F68"
+        }
+      }
+    }
+  }
+}

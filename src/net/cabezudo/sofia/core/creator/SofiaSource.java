@@ -59,7 +59,7 @@ abstract class SofiaSource {
     int lineNumber = 1;
     for (String s : ls) {
       if (!s.isEmpty()) {
-        Line line = new CodeLine(s, path, lineNumber);
+        Line line = new CodeLine(s, lineNumber);
         add(line);
       }
       lineNumber++;

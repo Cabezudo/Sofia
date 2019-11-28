@@ -52,26 +52,19 @@ public class SiteCreator {
     Files.createDirectories(site.getCSSPath());
     Files.createDirectories(site.getImagesPath());
 
-    TemplateLiterals templateLiterals = new TemplateLiterals();
+    TemplateVariables templateVariables = new TemplateVariables(site, voidPartialPathName);
     try {
-      templateLiterals.add(site.getSourcesPath(), "commons.json");
+      templateVariables.add(site.getSourcesPath(), "commons.json");
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e.getMessage());
     }
-    String themeName = templateLiterals.get("themeName");
+    String themeName = templateVariables.get("themeName");
     if (themeName == null) {
       throw new SiteCreationException("Can't find the theme for the site in the commons.json file.");
     }
 
-    SofiaSources sofiaSources = new SofiaSources(site, templateLiterals, voidPartialPath);
     // TODO Read all the theme style sheets after the entire site
-    Path themeBasePath = Configuration.getInstance().getCommonsThemesPath().resolve(themeName);
-    try {
-      templateLiterals.add(themeBasePath, "values.json");
-    } catch (UndefinedLiteralException e) {
-      throw new SiteCreationException(e.getMessage());
-    }
-    sofiaSources.setTheme(themeBasePath);
+    ThemeSourceFile themeSourceFile = new ThemeSourceFile(themeName, templateVariables);
 
     try {
       FileHelper.copyDirectory(site.getSourcesImagesPath(), site.getImagesPath());
@@ -79,13 +72,25 @@ public class SiteCreator {
       Logger.warning("Image directory not found: %s", site.getSourcesImagesPath());
     }
 
-    sofiaSources.create();
+    BaseHTMLSourceFile baseHTLMSourceFile = new BaseHTMLSourceFile(site, templateVariables, voidPartialPath);
 
-    createPagePermissions(site, sofiaSources, requestURI);
+    // sofiaSources.create();
+    //    createPagePermissions(site, sofiaSources, requestURI);
+    //
+    //    if (Environment.getInstance().isDevelopment()) {
+    //      Logger.debug(templateVariables.toJSON());
+    //    }
+    Path cascadingStyleSheetPath = Paths.get(voidPartialPath + ".css");
+    CascadingStyleSheetSourceFile css = new CascadingStyleSheetSourceFile(site.getCSSPath(), cascadingStyleSheetPath);
+    css.add(site.getSourcesPath(), "fonts.css", templateVariables, null);
+    css.add(site.getSourcesPath(), "style.css", templateVariables, null);
+    css.add(themeSourceFile);
+    css.add(baseHTLMSourceFile);
+    css.save();
 
-    if (Environment.getInstance().isDevelopment()) {
-      Logger.debug(templateLiterals.toJSON());
-    }
+    templateVariables.save();
+
+    baseHTLMSourceFile.save();
   }
 
   private void createPagePermissions(Site site, SofiaSources sofiaSourceFile, String requestURI) throws SQLException {
@@ -100,5 +105,10 @@ public class SiteCreator {
       }
       AuthorizationManager.getInstance().add(profiles, requestURI, permissionType, site);
     }
+  }
+
+  private void save(String html, Path filePath) throws SiteCreationException, IOException {
+    Logger.debug("Creating the file %s.", filePath);
+    Files.write(filePath, html.getBytes(Configuration.getInstance().getEncoding()));
   }
 }

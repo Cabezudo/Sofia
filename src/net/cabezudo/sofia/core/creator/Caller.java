@@ -33,7 +33,7 @@ class Caller {
 
   @Override
   public String toString() {
-    Path relativizedFilePath = Configuration.getInstance().getSourcesPath().relativize(filePath);
+    Path relativizedFilePath = Configuration.getInstance().getCommonSourcesPath().relativize(filePath);
     return relativizedFilePath + ":" + getLineNumber();
   }
 }

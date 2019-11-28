@@ -48,9 +48,9 @@ class JavaScriptSourcesContainer extends SofiaSourceContainer {
   }
 
   @Override
-  protected void apply(TemplateLiterals templateLiterals) throws UndefinedLiteralException {
+  protected void apply(TemplateVariables templateVariables) throws UndefinedLiteralException {
     for (SofiaJavaScriptSource file : files) {
-      super.apply(file, templateLiterals);
+      super.apply(file, templateVariables);
     }
   }
 }
