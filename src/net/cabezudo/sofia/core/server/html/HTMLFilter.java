@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
-import net.cabezudo.sofia.core.creator.LibraryVersionException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
 import net.cabezudo.sofia.core.creator.SiteCreator;
 import net.cabezudo.sofia.core.sites.Site;
@@ -67,7 +66,7 @@ public class HTMLFilter implements Filter {
         if (Environment.getInstance().isDevelopment()) {
           try {
             SiteCreator.getInstance().createPage(site, requestURI);
-          } catch (SQLException | IOException | InvalidFragmentTag | LibraryVersionException e) {
+          } catch (SQLException | IOException | InvalidFragmentTag e) {
             if (Environment.getInstance().isDevelopment()) {
               e.printStackTrace();
             }

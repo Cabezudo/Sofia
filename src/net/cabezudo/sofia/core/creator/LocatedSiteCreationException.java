@@ -12,7 +12,7 @@ class LocatedSiteCreationException extends SiteCreationException {
   private final Position position;
 
   LocatedSiteCreationException(String message, Path filePath, Position position) {
-    super(message + ". " + filePath + ", " + position);
+    super(message + " at " + filePath + ":" + position);
     this.filePath = filePath;
     this.position = position;
   }

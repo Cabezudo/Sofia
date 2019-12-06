@@ -6,8 +6,8 @@ package net.cabezudo.sofia.core.html;
  */
 public class Section extends Tag {
 
-  public Section(String data, int column) {
-    super("section", data, column);
+  public Section(String data, int row) {
+    super("section", data, row);
   }
 
   @Override
