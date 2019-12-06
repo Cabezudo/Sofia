@@ -46,4 +46,6 @@ abstract class SofiaSourceFile {
   abstract String getVoidPartialPathName();
 
   abstract void add(Line line);
+
+  abstract void add(Lines lines);
 }

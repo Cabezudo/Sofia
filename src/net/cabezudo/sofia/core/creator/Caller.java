@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.creator;
 
 import java.nio.file.Path;
-import net.cabezudo.sofia.core.configuration.Configuration;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -12,11 +11,13 @@ class Caller {
   private final Path relativePath;
   private final Path filePath;
   private final Integer lineNumber;
+  private final Caller caller;
 
-  Caller(Path basePath, Path relativePath, Integer lineNumer) {
+  Caller(Path basePath, Path relativePath, Integer lineNumer, Caller caller) {
     this.relativePath = relativePath;
     this.filePath = basePath.resolve(relativePath);
     this.lineNumber = lineNumer;
+    this.caller = caller;
   }
 
   public Path getRelativePath() {
@@ -33,7 +34,10 @@ class Caller {
 
   @Override
   public String toString() {
-    Path relativizedFilePath = Configuration.getInstance().getCommonSourcesPath().relativize(filePath);
-    return relativizedFilePath + ":" + getLineNumber();
+    if (caller == null) {
+      return relativePath + ":" + getLineNumber();
+    } else {
+      return relativePath + ":" + getLineNumber() + " called from " + caller;
+    }
   }
 }

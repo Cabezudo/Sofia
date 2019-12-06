@@ -23,15 +23,16 @@ import net.cabezudo.sofia.core.users.profiles.Profiles;
  */
 class HTMLSourceFile extends SofiaSourceFile {
 
-  protected Lines lines;
+  private final Lines lines;
   protected final Libraries libraries;
   private final CSSSourceFile css;
   private final JSSourceFile js;
   private Profiles profiles = new Profiles();
 
-  HTMLSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller, Libraries libraries) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+  HTMLSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
     super(site, basePath, partialPath, templateVariables, caller);
-    this.libraries = libraries;
+    this.lines = new Lines();
+    this.libraries = new Libraries();
 
     Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
     Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
@@ -39,7 +40,7 @@ class HTMLSourceFile extends SofiaSourceFile {
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
   }
 
-  void loadJSONConfigurationFile() throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+  void loadJSONConfigurationFile() throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     Path jsonPartialPath = Paths.get(getVoidPartialPathName() + ".json");
     Path jsonSourceFilePath = getBasePath().resolve(jsonPartialPath);
     if (Files.isRegularFile(jsonSourceFilePath)) {
@@ -70,17 +71,17 @@ class HTMLSourceFile extends SofiaSourceFile {
 
         Logger.debug("Load template %s from file %s.", templatePath, jsonPartialPath);
         jsonObject.remove("template");
-        HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null, libraries);
+        HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null);
         templateFile.loadJSONConfigurationFile();
         templateFile.loadHTMLFile();
-        this.lines = templateFile.getLines();
+        libraries.add(templateFile.getLibraries());
+        this.lines.add(templateFile.getLines());
       }
       getTemplateVariables().merge(jsonObject);
     }
   }
 
-  void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException {
-    this.lines = new Lines();
+  void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException {
     SofiaSourceFile actual = this;
 
     Path htmlSourceFilePath = getBasePath().resolve(getPartialPath());
@@ -98,13 +99,13 @@ class HTMLSourceFile extends SofiaSourceFile {
             String libraryReference = trimmedNewLine.substring(13, trimmedNewLine.length() - 11);
             Logger.debug("Library reference name found: %s.", libraryReference);
 
-            Caller newCaller = new Caller(getBasePath(), getPartialPath(), lineNumber);
+            Caller newCaller = new Caller(getBasePath(), getPartialPath(), lineNumber, getCaller());
             Library library = new Library(getSite(), libraryReference, getTemplateVariables(), newCaller);
             libraries.add(library);
             break;
           }
 
-          switch (newLine) {
+          switch (trimmedNewLine) {
             case "<style>":
               actual = css;
               if (getCaller() == null) {
@@ -136,6 +137,7 @@ class HTMLSourceFile extends SofiaSourceFile {
                 Line processedLine = getProcessedLine(newLine, lineNumber);
                 if (processedLine != null) {
                   actual.add(processedLine);
+                  libraries.add(processedLine.getLibraries());
                 }
                 break;
               }
@@ -151,18 +153,18 @@ class HTMLSourceFile extends SofiaSourceFile {
     }
   }
 
-  private Line getProcessedLine(String line, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+  private Line getProcessedLine(String line, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     Tag tag = HTMLTagFactory.get(line);
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
-        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), getLibraries(), tag, lineNumber);
+        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
         return fragmentLine;
       }
       if (tag.getValue("template") != null) {
         if (tag.getId() == null) {
           throw new LocatedSiteCreationException("A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
         }
-        HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), getLibraries(), tag, lineNumber);
+        HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
         return fragmentLine;
       }
     }
@@ -193,14 +195,14 @@ class HTMLSourceFile extends SofiaSourceFile {
   }
 
   String toHTML() {
-    return lines.toHTML();
+    return lines.getCode();
   }
 
   void save(Path filePath) throws IOException {
     Logger.debug("Creating the html file %s.", filePath);
     StringBuilder code = new StringBuilder();
     for (Line line : lines) {
-      code.append(line.toHTML()).append('\n');
+      code.append(line.getCode()).append('\n');
     }
     Files.write(filePath, code.toString().getBytes(Configuration.getInstance().getEncoding()));
   }
@@ -211,7 +213,15 @@ class HTMLSourceFile extends SofiaSourceFile {
 
   @Override
   public void add(Line line) {
+    if (line == null) {
+      return;
+    }
     lines.add(line);
+  }
+
+  @Override
+  public void add(Lines lines) {
+    lines.add(lines);
   }
 
   @Override
@@ -222,5 +232,14 @@ class HTMLSourceFile extends SofiaSourceFile {
 
   Profiles getProfiles() {
     return profiles;
+  }
+
+  Lines getJavaScriptLines() {
+    Lines lines = new Lines();
+    lines.add(js.getJavaScriptLines());
+    for (Line line : this.lines) {
+      lines.add(line.getJavaScriptLines());
+    }
+    return lines;
   }
 }

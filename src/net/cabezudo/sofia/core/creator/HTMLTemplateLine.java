@@ -25,7 +25,7 @@ public class HTMLTemplateLine extends Line {
   private final HTMLTemplateSourceFile file;
   private final Line endLine;
 
-  HTMLTemplateLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Libraries libraries, Tag tag, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+  HTMLTemplateLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     super(lineNumber);
 
     tag.rename("div");
@@ -37,9 +37,9 @@ public class HTMLTemplateLine extends Line {
       throw new InvalidFragmentTag("A template tag must have an id.", tag.getColumn());
     }
     try {
-      Caller newCaller = new Caller(basePath, parentPath, lineNumber);
+      Caller newCaller = new Caller(basePath, parentPath, lineNumber, caller);
       Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-      file = new HTMLTemplateSourceFile(site, templatesBasePath, templatePath, tag.getId(), templateVariables, newCaller, libraries);
+      file = new HTMLTemplateSourceFile(site, templatesBasePath, templatePath, tag.getId(), templateVariables, newCaller);
       file.loadJSONConfigurationFile();
       String configurationFile = tag.getValue("configurationFile");
 
@@ -76,11 +76,16 @@ public class HTMLTemplateLine extends Line {
   }
 
   @Override
-  String toHTML() {
+  Libraries getLibraries() {
+    return file.getLibraries();
+  }
+
+  @Override
+  String getCode() {
     StringBuilder sb = new StringBuilder();
-    sb.append(startLine.toHTML()).append('\n');
+    sb.append(startLine.getCode()).append('\n');
     sb.append(file.toHTML());
-    sb.append(endLine.toHTML()).append('\n');
+    sb.append(endLine.getCode()).append('\n');
     return sb.toString();
   }
 
@@ -104,4 +109,8 @@ public class HTMLTemplateLine extends Line {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
+  @Override
+  Lines getJavaScriptLines() {
+    return file.getJavaScriptLines();
+  }
 }

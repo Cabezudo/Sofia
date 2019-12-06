@@ -23,6 +23,7 @@ public class Library {
   private final String version;
   private final List<JSSourceFile> jsSourceFiles = new ArrayList<>();
   private final List<CSSSourceFile> cssSourceFiles = new ArrayList<>();
+  private final Caller caller;
 
   Library(Site site, String reference, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException {
     // TODO validate name format
@@ -39,9 +40,14 @@ public class Library {
     } else {
       throw new RuntimeException("The library reference must have a colon separator:" + reference + ":" + caller);
     }
+    this.caller = caller;
     Path basePath = Configuration.getInstance().getCommonsLibsPath();
     Path partialPath = Paths.get(name).resolve(version);
     loadFiles(site, basePath, partialPath, templateVariables, caller);
+  }
+
+  Caller getCaller() {
+    return caller;
   }
 
   List<JSSourceFile> getJavaScritpFiles() {
@@ -68,6 +74,8 @@ public class Library {
         if (filePath.toString().endsWith(".js")) {
           Logger.debug("JS file library %s FOUND.", filePath);
           JSSourceFile file = new JSSourceFile(site, basePath, partialFilePath, templateVariables, caller);
+          file.loadFile();
+
           jsSourceFiles.add(file);
         }
         if (filePath.toString().endsWith(".css")) {
@@ -89,11 +97,7 @@ public class Library {
 
   @Override
   public String toString() {
-    return name + ":" + version;
-  }
-
-  ThemeSourceFile getCascadingStyleSheetSourceFiles() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return name + "/" + version;
   }
 
   List<JSSourceFile> getJSFiles() {

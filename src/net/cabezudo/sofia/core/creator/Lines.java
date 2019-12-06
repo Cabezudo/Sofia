@@ -17,6 +17,9 @@ class Lines implements Iterable<Line> {
   }
 
   void add(Lines ls) {
+    if (ls == null) {
+      return;
+    }
     for (Line line : ls) {
       add(line);
     }
@@ -44,10 +47,10 @@ class Lines implements Iterable<Line> {
     return !lines.isEmpty();
   }
 
-  String toHTML() {
+  String getCode() {
     StringBuilder sb = new StringBuilder();
     for (Line line : lines) {
-      sb.append(line.toHTML());
+      sb.append(line.getCode());
       sb.append('\n');
     }
     return sb.toString();

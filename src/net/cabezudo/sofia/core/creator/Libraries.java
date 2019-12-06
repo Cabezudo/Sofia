@@ -1,8 +1,10 @@
 package net.cabezudo.sofia.core.creator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -11,19 +13,32 @@ import java.util.List;
 public class Libraries implements Iterable<Library> {
 
   private final List<Library> list;
+  private final Map<String, Library> map;
 
   public Libraries() {
     this.list = new ArrayList<>();
+    this.map = new HashMap<>();
   }
 
-  void add(Libraries libraries) {
+  void add(Libraries libraries) throws LibraryVersionConflictException {
+    if (libraries == null) {
+      return;
+    }
     for (Library library : libraries) {
       add(library);
     }
   }
 
-  void add(Library library) {
-    list.add(library);
+  void add(Library l) throws LibraryVersionConflictException {
+    Library library = map.get(l.getName());
+    if (library == null) {
+      map.put(l.getName(), l);
+      list.add(l);
+    } else {
+      if (!l.getVersion().equals(library.getVersion())) {
+        throw new LibraryVersionConflictException(library, l);
+      }
+    }
   }
 
   @Override
@@ -45,14 +60,14 @@ public class Libraries implements Iterable<Library> {
     return lines;
   }
 
-  Lines getJSLines() {
+  Lines getJavaScriptLines() {
     Lines lines = new Lines();
     for (Library library : list) {
       System.out.println(library);
       for (JSSourceFile file : library.getJSFiles()) {
         Line commentLine = new CodeLine("// " + library + " addeded from " + file.getCaller());
         lines.add(commentLine);
-        for (Line line : file.getLines()) {
+        for (Line line : file.getJavaScriptLines()) {
           lines.add(line);
         }
       }

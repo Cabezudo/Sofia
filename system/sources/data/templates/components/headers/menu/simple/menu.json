@@ -21,14 +21,14 @@
     "items": [
       {
         "name": {
-          "es": "nombre"
+          "es": "item 1"
         },
         "url": "url",
         "logged": null
       },
       {
         "name": {
-          "es": "nombre"
+          "es": "item 2"
         },
         "url": "url",
         "logged": null

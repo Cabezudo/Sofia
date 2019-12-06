@@ -11,8 +11,8 @@ import net.cabezudo.sofia.core.sites.Site;
  */
 class HTMLFragmentSourceFile extends HTMLSourceFile {
 
-  HTMLFragmentSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller, Libraries libraries) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
-    super(site, basePath, partialPath, templateVariables, caller, libraries);
+  HTMLFragmentSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+    super(site, basePath, partialPath, templateVariables, caller);
   }
 
   @Override

@@ -26,6 +26,11 @@ class CSSSourceFile extends SofiaSourceFile {
   }
 
   @Override
+  public void add(Lines lines) {
+    lines.add(lines);
+  }
+
+  @Override
   public String getVoidPartialPathName() {
     String partialPathName = getPartialPath().toString();
     return partialPathName.substring(0, partialPathName.length() - 4);

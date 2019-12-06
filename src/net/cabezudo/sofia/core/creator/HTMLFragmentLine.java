@@ -18,7 +18,7 @@ public class HTMLFragmentLine extends Line {
   private final HTMLFragmentSourceFile file;
   private final Line endLine;
 
-  HTMLFragmentLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Libraries libraries, Tag tag, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+  HTMLFragmentLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     super(lineNumber);
     tag.rename("div");
     startLine = new CodeLine(tag.getStartTag(), lineNumber);
@@ -33,8 +33,8 @@ public class HTMLFragmentLine extends Line {
     }
     Path partialPath = Paths.get(fileName);
     try {
-      Caller newCaller = new Caller(basePath, parentPath, lineNumber);
-      file = new HTMLFragmentSourceFile(site, newFileBasePath, partialPath, templateVariables, newCaller, libraries);
+      Caller newCaller = new Caller(basePath, parentPath, lineNumber, caller);
+      file = new HTMLFragmentSourceFile(site, newFileBasePath, partialPath, templateVariables, newCaller);
       file.loadJSONConfigurationFile();
       file.loadHTMLFile();
     } catch (NoSuchFileException e) {
@@ -43,11 +43,16 @@ public class HTMLFragmentLine extends Line {
   }
 
   @Override
-  String toHTML() {
+  Libraries getLibraries() {
+    return file.getLibraries();
+  }
+
+  @Override
+  String getCode() {
     StringBuilder sb = new StringBuilder();
-    sb.append(startLine.toHTML()).append('\n');
+    sb.append(startLine.getCode()).append('\n');
     sb.append(file.toHTML());
-    sb.append(endLine.toHTML()).append('\n');
+    sb.append(endLine.getCode()).append('\n');
     return sb.toString();
   }
 
@@ -69,6 +74,11 @@ public class HTMLFragmentLine extends Line {
   @Override
   public int compareTo(Line o) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  Lines getJavaScriptLines() {
+    return file.getJavaScriptLines();
   }
 
 }

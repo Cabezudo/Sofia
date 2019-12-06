@@ -25,9 +25,10 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
   private final CSSSourceFile css;
   private final JSSourceFile js;
   private final String id;
+  private Lines lines;
 
-  HTMLTemplateSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller, Libraries libraries) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
-    super(site, basePath, partialPath, templateVariables, caller, libraries);
+  HTMLTemplateSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+    super(site, basePath, partialPath, templateVariables, caller);
     this.id = id;
 
     Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
@@ -36,7 +37,8 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
   }
 
-  void loadJSONConfigurationFile() throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+  @Override
+  void loadJSONConfigurationFile() throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     Path jsonPartialPath = Paths.get(getVoidPartialPathName() + ".json");
     Path jsonSourceFilePath = getBasePath().resolve(jsonPartialPath);
     if (Files.isRegularFile(jsonSourceFilePath)) {
@@ -67,7 +69,7 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
 
         Logger.debug("Load template %s from file %s.", templatePath, jsonPartialPath);
         jsonObject.remove("template");
-        HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null, libraries);
+        HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null);
         templateFile.loadJSONConfigurationFile();
         templateFile.loadHTMLFile();
 
@@ -80,7 +82,8 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     }
   }
 
-  void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException {
+  @Override
+  void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException {
     this.lines = new Lines();
     SofiaSourceFile actual = this;
 
@@ -99,13 +102,13 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
             String libraryReference = trimmedNewLine.substring(13, trimmedNewLine.length() - 11);
             Logger.debug("Library reference name found: %s.", libraryReference);
 
-            Caller newCaller = new Caller(getBasePath(), getPartialPath(), lineNumber);
+            Caller newCaller = new Caller(getBasePath(), getPartialPath(), lineNumber, getCaller());
             Library library = new Library(getSite(), libraryReference, getTemplateVariables(), newCaller);
             libraries.add(library);
             break;
           }
 
-          switch (newLine) {
+          switch (trimmedNewLine) {
             case "<style>":
               actual = css;
               if (getCaller() == null) {
@@ -149,20 +152,20 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     }
   }
 
-  private Line getProcessedLine(String line, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+  private Line getProcessedLine(String line, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     StringBuilder sb = new StringBuilder();
 
     Tag tag = HTMLTagFactory.get(line);
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
-        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), getLibraries(), tag, lineNumber);
+        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
         add(fragmentLine);
       }
       if (tag.getValue("template") != null) {
         if (tag.getId() == null) {
           throw new LocatedSiteCreationException("A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
         }
-        HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), getLibraries(), tag, lineNumber);
+        HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
         add(fragmentLine);
       }
     }
@@ -177,4 +180,15 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     }
     return actual;
   }
+
+  @Override
+  Lines getJavaScriptLines() {
+    Lines newLines = new Lines();
+    newLines.add(js.getJavaScriptLines());
+    for (Line line : lines) {
+      newLines.add(line.getJavaScriptLines());
+    }
+    return newLines;
+  }
+
 }
