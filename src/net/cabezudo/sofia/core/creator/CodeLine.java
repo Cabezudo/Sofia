@@ -47,7 +47,7 @@ public class CodeLine extends Line {
   }
 
   @Override
-  String toHTML() {
+  String getCode() {
     return line;
   }
 
@@ -69,6 +69,16 @@ public class CodeLine extends Line {
   @Override
   boolean startWith(String start) {
     return line.startsWith(start);
+  }
+
+  @Override
+  Libraries getLibraries() {
+    return null;
+  }
+
+  @Override
+  Lines getJavaScriptLines() {
+    return null;
   }
 
 }

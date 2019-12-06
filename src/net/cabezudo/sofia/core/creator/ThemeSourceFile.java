@@ -39,6 +39,11 @@ final class ThemeSourceFile extends SofiaSourceFile {
   }
 
   @Override
+  public void add(Lines lines) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
   public String getVoidPartialPathName() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }

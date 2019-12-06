@@ -35,7 +35,7 @@ public class SiteCreator {
     return INSTANCE;
   }
 
-  public void createPage(Site site, String requestURI) throws IOException, SQLException, FileNotFoundException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag {
+  public void createPage(Site site, String requestURI) throws IOException, SQLException, FileNotFoundException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException {
     String htmlPartialPathName = requestURI.substring(1);
     String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPathName.length() - 5); // Used to create the javascript and css files for this html page
     Path voidPartialPath = Paths.get(voidPartialPathName);
@@ -76,26 +76,23 @@ public class SiteCreator {
 
     Path basePath = site.getSourcesPath();
 
-    Libraries libraries = new Libraries();
-
-    HTMLSourceFile baseFile = new HTMLSourceFile(site, basePath, htmlPartialPath, templateVariables, null, libraries);
+    HTMLSourceFile baseFile = new HTMLSourceFile(site, basePath, htmlPartialPath, templateVariables, null);
 
     baseFile.loadJSONConfigurationFile();
     baseFile.loadHTMLFile();
 
-    // sofiaSources.create();
-    //    createPagePermissions(site, sofiaSources, requestURI);
-    //
-    //    if (Environment.getInstance().isDevelopment()) {
-    //      Logger.debug(templateVariables.toJSON());
-    //    }
+    if (Environment.getInstance().isDevelopment()) {
+      Logger.debug(templateVariables.toJSON());
+    }
+
     Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
     baseFile.save(htmlFilePath);
 
     createPagePermissions(site, baseFile, requestURI);
 
     JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, null);
-    jsFile.add(libraries);
+    jsFile.add(baseFile.getLibraries());
+    jsFile.add(baseFile.getJavaScriptLines());
     Path jsFilePath = site.getJSPath().resolve(jsPartialPath);
     jsFile.save(jsFilePath);
 

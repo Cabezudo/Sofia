@@ -22,5 +22,9 @@ public abstract class Line implements Comparable<Line> {
 
   abstract boolean startWith(String start);
 
-  abstract String toHTML();
+  abstract String getCode();
+
+  abstract Libraries getLibraries();
+
+  abstract Lines getJavaScriptLines();
 }
