@@ -21,4 +21,6 @@ public abstract class Line implements Comparable<Line> {
   abstract boolean isNotEmpty();
 
   abstract boolean startWith(String start);
+
+  abstract String toHTML();
 }

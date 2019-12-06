@@ -47,7 +47,7 @@ public class CodeLine extends Line {
   }
 
   @Override
-  public String toString() {
+  String toHTML() {
     return line;
   }
 
@@ -70,4 +70,5 @@ public class CodeLine extends Line {
   boolean startWith(String start) {
     return line.startsWith(start);
   }
+
 }

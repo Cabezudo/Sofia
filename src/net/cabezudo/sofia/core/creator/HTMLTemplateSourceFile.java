@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.json.JSON;
+import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
@@ -14,24 +15,20 @@ import net.cabezudo.sofia.core.html.HTMLTagFactory;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
-import net.cabezudo.sofia.core.users.profiles.ProfileManager;
-import net.cabezudo.sofia.core.users.profiles.Profiles;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
- * @version 0.01.00, 2019.12.03
+ * @version 0.01.00, 2019.12.04
  */
-class HTMLSourceFile extends SofiaSourceFile {
+class HTMLTemplateSourceFile extends HTMLSourceFile {
 
-  protected Lines lines;
-  protected final Libraries libraries;
   private final CSSSourceFile css;
   private final JSSourceFile js;
-  private Profiles profiles = new Profiles();
+  private final String id;
 
-  HTMLSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller, Libraries libraries) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
-    super(site, basePath, partialPath, templateVariables, caller);
-    this.libraries = libraries;
+  HTMLTemplateSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller, Libraries libraries) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+    super(site, basePath, partialPath, templateVariables, caller, libraries);
+    this.id = id;
 
     Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
     Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
@@ -43,7 +40,7 @@ class HTMLSourceFile extends SofiaSourceFile {
     Path jsonPartialPath = Paths.get(getVoidPartialPathName() + ".json");
     Path jsonSourceFilePath = getBasePath().resolve(jsonPartialPath);
     if (Files.isRegularFile(jsonSourceFilePath)) {
-      Logger.debug("FOUND configuration file %s for HTML %s.", jsonPartialPath, getPartialPath());
+      Logger.debug("FOUND template configuration file %s for %s.", jsonPartialPath, getPartialPath());
       List<String> jsonLines = Files.readAllLines(jsonSourceFilePath);
       StringBuilder sb = new StringBuilder();
       int lineNumber = 1;
@@ -73,9 +70,13 @@ class HTMLSourceFile extends SofiaSourceFile {
         HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null, libraries);
         templateFile.loadJSONConfigurationFile();
         templateFile.loadHTMLFile();
+
         this.lines = templateFile.getLines();
       }
-      getTemplateVariables().merge(jsonObject);
+      JSONPair configurationPair = new JSONPair(id, jsonObject);
+      JSONObject newJSONObject = new JSONObject();
+      newJSONObject.add(configurationPair);
+      getTemplateVariables().merge(newJSONObject);
     }
   }
 
@@ -84,12 +85,12 @@ class HTMLSourceFile extends SofiaSourceFile {
     SofiaSourceFile actual = this;
 
     Path htmlSourceFilePath = getBasePath().resolve(getPartialPath());
-    Logger.debug("Load HTML source file %s.", getPartialPath());
+    Logger.debug("Load template HTML source file %s.", getPartialPath());
     List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
     int lineNumber = 1;
     for (String l : linesFromFile) {
       try {
-        String newLine = getTemplateVariables().replace(l, lineNumber, htmlSourceFilePath);
+        String newLine = getTemplateVariables().replace(id, l, lineNumber, htmlSourceFilePath);
         String trimmedNewLine = newLine.trim();
 
         do {
@@ -133,10 +134,7 @@ class HTMLSourceFile extends SofiaSourceFile {
               break;
             default:
               if (actual == this) {
-                Line processedLine = getProcessedLine(newLine, lineNumber);
-                if (processedLine != null) {
-                  actual.add(processedLine);
-                }
+                actual.add(getProcessedLine(newLine, lineNumber));
                 break;
               }
               actual.add(new CodeLine(newLine, lineNumber));
@@ -152,75 +150,31 @@ class HTMLSourceFile extends SofiaSourceFile {
   }
 
   private Line getProcessedLine(String line, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+    StringBuilder sb = new StringBuilder();
+
     Tag tag = HTMLTagFactory.get(line);
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
         HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), getLibraries(), tag, lineNumber);
-        return fragmentLine;
+        add(fragmentLine);
       }
       if (tag.getValue("template") != null) {
         if (tag.getId() == null) {
           throw new LocatedSiteCreationException("A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
         }
         HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), getLibraries(), tag, lineNumber);
-        return fragmentLine;
+        add(fragmentLine);
       }
     }
 
     return new CodeLine(line, lineNumber);
   }
 
+  @Override
   protected SofiaSourceFile searchHTMLTag(SofiaSourceFile actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
     if (line.startsWith("<html")) {
-      if (getCaller() != null) {
-        throw new InvalidFragmentTag("A HTML fragment can't have the <html> tag", 0);
-      }
-      int i = line.indexOf("profiles");
-      if (i > 0) {
-        String profileString = line.substring(i + 10, line.length() - 2);
-        Logger.debug("Profiles: " + profileString);
-        String[] ps = profileString.split(",");
-        profiles = ProfileManager.getInstance().createFromNames(ps, getSite());
-      }
-      add(new CodeLine("<html>\n", lineNumber));
-      return this;
+      throw new InvalidFragmentTag("A HTML template can't have the <html> tag: " + getPartialPath(), 0);
     }
     return actual;
-  }
-
-  Lines getLines() {
-    return lines;
-  }
-
-  String toHTML() {
-    return lines.toHTML();
-  }
-
-  void save(Path filePath) throws IOException {
-    Logger.debug("Creating the html file %s.", filePath);
-    StringBuilder code = new StringBuilder();
-    for (Line line : lines) {
-      code.append(line.toHTML()).append('\n');
-    }
-    Files.write(filePath, code.toString().getBytes(Configuration.getInstance().getEncoding()));
-  }
-
-  Libraries getLibraries() {
-    return libraries;
-  }
-
-  @Override
-  public void add(Line line) {
-    lines.add(line);
-  }
-
-  @Override
-  public final String getVoidPartialPathName() {
-    String partialPathName = getPartialPath().toString();
-    return partialPathName.substring(0, partialPathName.length() - 5);
-  }
-
-  Profiles getProfiles() {
-    return profiles;
   }
 }

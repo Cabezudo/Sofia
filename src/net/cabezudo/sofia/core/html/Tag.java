@@ -2,6 +2,7 @@ package net.cabezudo.sofia.core.html;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -25,6 +26,30 @@ public abstract class Tag {
     }
   }
 
+  @Override
+  public String toString() {
+    return getStartTag() + getEndTag();
+  }
+
+  public String getStartTag() {
+    StringBuilder sb = new StringBuilder();
+    sb.append("<").append(name);
+    for (Entry<String, String> entry : properties.entrySet()) {
+      switch (entry.getKey()) {
+        case "template":
+        case "file":
+          continue;
+      }
+      sb.append(" ").append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
+    }
+    sb.append(">");
+    return sb.toString();
+  }
+
+  public String getEndTag() {
+    return "</" + name + ">";
+  }
+
   public boolean isSection() {
     return false;
   }
@@ -39,14 +64,6 @@ public abstract class Tag {
 
   public int getColumn() {
     return column;
-  }
-
-  public String getStartTag() {
-    return "<" + name + " id=\"" + properties.get("id") + "\">";
-  }
-
-  public String getEndTag() {
-    return "</" + name + ">";
   }
 
   public void rename(String name) {

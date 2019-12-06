@@ -48,16 +48,24 @@ public class TemplateVariables {
     }
   }
 
-  String replace(String l, int lineNumber, Path partialFilePath) throws UndefinedLiteralException {
+  String replace(String line, int lineNumber, Path partialFilePath) throws UndefinedLiteralException {
+    return replace(null, line, lineNumber, partialFilePath);
+  }
+
+  String replace(String id, String line, int lineNumber, Path partialFilePath) throws UndefinedLiteralException {
     StringBuilder sb = new StringBuilder();
     int i;
     int last = 0;
 
-    String line = l.trim();
     while ((i = line.indexOf("#{", last)) != -1) {
       sb.append(line.substring(last, i));
       last = line.indexOf("}", i);
-      String name = line.substring(i + 2, last);
+      String name;
+      if (id == null) {
+        name = line.substring(i + 2, last);
+      } else {
+        name = id + "." + line.substring(i + 2, last);
+      }
       last++;
       String value;
       try {
@@ -80,7 +88,7 @@ public class TemplateVariables {
     return this.toJSON();
   }
 
-  void add(JSONObject jsonData) {
+  void merge(JSONObject jsonData) {
     jsonObject.merge(jsonData);
   }
 

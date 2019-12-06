@@ -16,14 +16,10 @@ class Lines implements Iterable<Line> {
     lines.add(line);
   }
 
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    for (Line line : lines) {
-      sb.append(line);
-      sb.append('\n');
+  void add(Lines ls) {
+    for (Line line : ls) {
+      add(line);
     }
-    return sb.toString();
   }
 
   @Override
@@ -40,8 +36,20 @@ class Lines implements Iterable<Line> {
     return lines.get(i);
   }
 
-  void set(int i, Line line
-  ) {
+  void set(int i, Line line) {
     lines.set(i, line);
+  }
+
+  boolean isNotEmpty() {
+    return !lines.isEmpty();
+  }
+
+  String toHTML() {
+    StringBuilder sb = new StringBuilder();
+    for (Line line : lines) {
+      sb.append(line.toHTML());
+      sb.append('\n');
+    }
+    return sb.toString();
   }
 }

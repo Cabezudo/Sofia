@@ -15,6 +15,7 @@ import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
@@ -88,6 +89,7 @@ public class DefaultData {
 
   private static void createSites() throws SQLException {
     Logger.info("Create sites.");
+    Site site;
     if (System.console() != null) {
       String baseDomainName;
       System.out.println("Crear sitio para el servidor.");
@@ -117,10 +119,11 @@ public class DefaultData {
           System.out.println("A domain name must have a dot in it.");
         }
       } while (!validDomain);
-      SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
+      site = SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
     } else {
-      SiteManager.getInstance().create("Manager", "manager", "localhost");
+      site = SiteManager.getInstance().create("Manager", "manager", "localhost");
     }
+
     SiteManager.getInstance().create("Playground", "playground");
   }
 

@@ -124,7 +124,7 @@ public class WebUserDataManager {
     }
   }
 
-  public ClientData get(HttpServletRequest request) throws SQLException {
+  public synchronized ClientData get(HttpServletRequest request) throws SQLException {
     HttpSession session = request.getSession();
     String sessionId = session.getId();
 

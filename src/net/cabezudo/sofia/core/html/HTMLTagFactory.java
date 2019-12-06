@@ -7,15 +7,14 @@ package net.cabezudo.sofia.core.html;
 public class HTMLTagFactory {
 
   public static Tag get(String line) {
-    if (!line.equals("</section>") && line.endsWith("</section>")) {
-      int i = line.indexOf(">");
-      if (i == -1) {
+    int s = line.indexOf("<section");
+    if (s >= 0 && line.endsWith("</section>")) {
+      int e = line.indexOf(">");
+      if (e == -1) {
         return null;
       }
-      String tag = line.substring(1, i);
-      if (tag.startsWith("section")) {
-        return new Section(tag.substring(7), 0);
-      }
+      String tag = line.substring(1, e);
+      return new Section(tag.substring(s + 8), s);
     }
     return null;
   }

@@ -7,7 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import net.cabezudo.json.exceptions.JSONParseException;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.logger.Logger;
@@ -36,10 +35,13 @@ public class SiteCreator {
     return INSTANCE;
   }
 
-  public void createPage(Site site, String requestURI) throws IOException, SQLException, FileNotFoundException, JSONParseException, SiteCreationException, InvalidFragmentTag, LibraryVersionException {
-    String htmlPartialPath = requestURI.substring(1);
-    String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPath.length() - 5); // Used to create the javascript and css files for this html page
+  public void createPage(Site site, String requestURI) throws IOException, SQLException, FileNotFoundException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag {
+    String htmlPartialPathName = requestURI.substring(1);
+    String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPathName.length() - 5); // Used to create the javascript and css files for this html page
     Path voidPartialPath = Paths.get(voidPartialPathName);
+    Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");
+    Path cssPartialPath = Paths.get(voidPartialPathName + ".css");
+    Path jsPartialPath = Paths.get(voidPartialPathName + ".js");
 
     Path fileContentPath = site.getVersionPath().resolve(htmlPartialPath);
     if (Environment.getInstance().isProduction() && Files.exists(fileContentPath)) {
@@ -52,7 +54,7 @@ public class SiteCreator {
     Files.createDirectories(site.getCSSPath());
     Files.createDirectories(site.getImagesPath());
 
-    TemplateVariables templateVariables = new TemplateVariables(site, voidPartialPathName);
+    TemplateVariables templateVariables = new TemplateVariables(site, voidPartialPath.toString());
     try {
       templateVariables.add(site.getSourcesPath(), "commons.json");
     } catch (UndefinedLiteralException e) {
@@ -64,7 +66,7 @@ public class SiteCreator {
     }
 
     // TODO Read all the theme style sheets after the entire site
-    ThemeSourceFile themeSourceFile = new ThemeSourceFile(themeName, templateVariables);
+    ThemeSourceFile themeSourceFile = new ThemeSourceFile(site, themeName, templateVariables);
 
     try {
       FileHelper.copyDirectory(site.getSourcesImagesPath(), site.getImagesPath());
@@ -72,7 +74,14 @@ public class SiteCreator {
       Logger.warning("Image directory not found: %s", site.getSourcesImagesPath());
     }
 
-    BaseHTMLSourceFile baseHTLMSourceFile = new BaseHTMLSourceFile(site, templateVariables, voidPartialPath);
+    Path basePath = site.getSourcesPath();
+
+    Libraries libraries = new Libraries();
+
+    HTMLSourceFile baseFile = new HTMLSourceFile(site, basePath, htmlPartialPath, templateVariables, null, libraries);
+
+    baseFile.loadJSONConfigurationFile();
+    baseFile.loadHTMLFile();
 
     // sofiaSources.create();
     //    createPagePermissions(site, sofiaSources, requestURI);
@@ -80,24 +89,24 @@ public class SiteCreator {
     //    if (Environment.getInstance().isDevelopment()) {
     //      Logger.debug(templateVariables.toJSON());
     //    }
-    Path cascadingStyleSheetPath = Paths.get(voidPartialPath + ".css");
-    CascadingStyleSheetSourceFile css = new CascadingStyleSheetSourceFile(site.getCSSPath(), cascadingStyleSheetPath);
-    css.add(site.getSourcesPath(), "fonts.css", templateVariables, null);
-    css.add(site.getSourcesPath(), "style.css", templateVariables, null);
-    css.add(themeSourceFile);
-    css.add(baseHTLMSourceFile);
-    css.save();
+    Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
+    baseFile.save(htmlFilePath);
+
+    createPagePermissions(site, baseFile, requestURI);
+
+    JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, null);
+    jsFile.add(libraries);
+    Path jsFilePath = site.getJSPath().resolve(jsPartialPath);
+    jsFile.save(jsFilePath);
 
     templateVariables.save();
-
-    baseHTLMSourceFile.save();
   }
 
-  private void createPagePermissions(Site site, SofiaSources sofiaSourceFile, String requestURI) throws SQLException {
+  private void createPagePermissions(Site site, HTMLSourceFile htmlSourceFile, String requestURI) throws SQLException {
     // TODO Borrar los permisos para esta pagina en este sitio en la base de datos.
     AuthorizationManager.getInstance().delete(requestURI, site);
     // Search and add permission for the page
-    Profiles profiles = sofiaSourceFile.getProfiles();
+    Profiles profiles = htmlSourceFile.getProfiles();
     if (!profiles.isEmpty()) {
       PermissionType permissionType = PermissionTypeManager.getInstance().get("read", site);
       if (permissionType == null) {
@@ -105,10 +114,5 @@ public class SiteCreator {
       }
       AuthorizationManager.getInstance().add(profiles, requestURI, permissionType, site);
     }
-  }
-
-  private void save(String html, Path filePath) throws SiteCreationException, IOException {
-    Logger.debug("Creating the file %s.", filePath);
-    Files.write(filePath, html.getBytes(Configuration.getInstance().getEncoding()));
   }
 }

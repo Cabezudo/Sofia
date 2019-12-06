@@ -2,24 +2,26 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.core.sites.Site;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.11.26
  */
-class ThemeSourceFile {
+final class ThemeSourceFile extends SofiaSourceFile {
 
-  private List<CascadingStyleSheetSourceFile> files = new ArrayList<>();
+  private List<CSSSourceFile> files = new ArrayList<>();
   private String themeName;
+  private final CSSSourceFile css;
 
-  ThemeSourceFile(String themeName, TemplateVariables templateVariables) throws IOException, SiteCreationException {
+  ThemeSourceFile(Site site, String themeName, TemplateVariables templateVariables) throws IOException, SiteCreationException {
+    super(site, Configuration.getInstance().getCommonsThemesPath(), Paths.get(themeName), templateVariables, null);
     this.themeName = themeName;
 
     Path themeBasePath = Configuration.getInstance().getCommonsThemesPath().resolve(themeName);
@@ -28,29 +30,16 @@ class ThemeSourceFile {
     } catch (UndefinedLiteralException | JSONParseException | FileNotFoundException e) {
       throw new SiteCreationException(e.getMessage());
     }
-    CascadingStyleSheetSourceFile file = new CascadingStyleSheetSourceFile(themeBasePath, "style.css", templateVariables, null);
-    if (Files.exists(file.getFullTargetFilePath())) {
-      List<String> fileLines = Files.readAllLines(file.getFullTargetFilePath());
-
-      int lineNumber = 1;
-      for (String s : fileLines) {
-        if (!s.isEmpty()) {
-          Line line = new CodeLine(s, lineNumber);
-          file.add(line);
-        }
-        lineNumber++;
-      }
-      files.add(file);
-    } else {
-      Logger.warning("File NOT FOUND: %s.", file.getFullTargetFilePath());
-    }
+    css = new CSSSourceFile(getSite(), themeBasePath, Paths.get("style.css"), templateVariables, null);
   }
 
-  String getName() {
-    return themeName;
+  @Override
+  public void add(Line line) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  List<CascadingStyleSheetSourceFile> getFiles() {
-    return files;
+  @Override
+  public String getVoidPartialPathName() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }
