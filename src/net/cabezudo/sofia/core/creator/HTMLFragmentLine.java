@@ -81,4 +81,8 @@ public class HTMLFragmentLine extends Line {
     return file.getJavaScriptLines();
   }
 
+  @Override
+  Lines getCascadingStyleSheetLines() {
+    return file.getCascadingStyleSheetLines();
+  }
 }

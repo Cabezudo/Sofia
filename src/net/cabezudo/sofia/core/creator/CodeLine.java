@@ -81,4 +81,8 @@ public class CodeLine extends Line {
     return null;
   }
 
+  @Override
+  Lines getCascadingStyleSheetLines() {
+    return null;
+  }
 }

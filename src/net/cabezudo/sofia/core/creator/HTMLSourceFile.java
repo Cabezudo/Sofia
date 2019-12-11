@@ -235,11 +235,20 @@ class HTMLSourceFile extends SofiaSourceFile {
   }
 
   Lines getJavaScriptLines() {
-    Lines lines = new Lines();
-    lines.add(js.getJavaScriptLines());
+    Lines codeLines = new Lines();
+    codeLines.add(js.getJavaScriptLines());
     for (Line line : this.lines) {
-      lines.add(line.getJavaScriptLines());
+      codeLines.add(line.getJavaScriptLines());
     }
-    return lines;
+    return codeLines;
+  }
+
+  Lines getCascadingStyleSheetLines() {
+    Lines codeLines = new Lines();
+    codeLines.add(css.getCascadingStyleSheetLines());
+    for (Line line : this.lines) {
+      codeLines.add(line.getCascadingStyleSheetLines());
+    }
+    return codeLines;
   }
 }

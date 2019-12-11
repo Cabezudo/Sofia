@@ -54,6 +54,7 @@ public class HTMLTemplateLine extends Line {
 
 //      addImagesResources(Configuration.getInstance().getCommonsComponentsTemplatesPath(), templateName);
     } catch (NoSuchFileException e) {
+      e.printStackTrace();
       throw new NoSuchFileException("No such template file: " + templateName);
     }
   }
@@ -112,5 +113,10 @@ public class HTMLTemplateLine extends Line {
   @Override
   Lines getJavaScriptLines() {
     return file.getJavaScriptLines();
+  }
+
+  @Override
+  Lines getCascadingStyleSheetLines() {
+    return file.getCascadingStyleSheetLines();
   }
 }

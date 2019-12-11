@@ -43,12 +43,12 @@ public class JSServlet extends HttpServlet {
       Path jsFilePath = jsPath.resolve(fileName);
 
       response.setContentType("text/javascript");
-      try (FileInputStream in = new FileInputStream(jsFilePath.toFile()); OutputStream out = response.getOutputStream();) {
 
-        String lastPage = (String) request.getSession().getAttribute("lastPage");
-        String comebackPage = (String) request.getSession().getAttribute("comebackPage");
-
+      try (OutputStream out = response.getOutputStream();) {
         if ("js/variables.js".equals(fileName)) {
+          String lastPage = (String) request.getSession().getAttribute("lastPage");
+          String comebackPage = (String) request.getSession().getAttribute("comebackPage");
+
           StringBuilder sb = new StringBuilder();
 
           sb.append("const variables = {\n");
@@ -90,16 +90,21 @@ public class JSServlet extends HttpServlet {
           sb.append("};\n");
           sb.append("\n");
           out.write(sb.toString().getBytes(Configuration.getInstance().getEncoding()));
+        } else {
+          try (FileInputStream in = new FileInputStream(jsFilePath.toFile());) {
+            byte[] buffer = new byte[1024];
+            int count;
+            while ((count = in.read(buffer)) >= 0) {
+              out.write(buffer, 0, count);
+            }
+            out.flush();
+          }
         }
-
-        byte[] buffer = new byte[1024];
-        int count;
-        while ((count = in.read(buffer)) >= 0) {
-          out.write(buffer, 0, count);
-        }
-        out.flush();
+      } catch (EMailNotExistException e) {
+        SystemMonitor.log(e);
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       }
-    } catch (SQLException | EMailNotExistException e) {
+    } catch (SQLException e) {
       SystemMonitor.log(e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
