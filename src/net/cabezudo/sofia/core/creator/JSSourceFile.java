@@ -19,13 +19,18 @@ class JSSourceFile extends SofiaSourceFile {
 
   JSSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller) {
     super(site, basePath, partialPath, templateVariables, caller);
-    this.lines = new Lines();
     this.libraries = new Libraries();
+    this.lines = new Lines();
   }
 
   void loadFile() throws IOException, LocatedSiteCreationException {
     Path jsSourceFilePath = getBasePath().resolve(getPartialPath());
     Logger.debug("Load JavaScript source file %s.", getPartialPath());
+
+    if (!Files.exists(jsSourceFilePath)) {
+      Logger.debug("File %s NOT FOUND.", getPartialPath());
+      return;
+    }
 
     List<String> linesFromFile = Files.readAllLines(jsSourceFilePath);
     int lineNumber = 1;
@@ -59,9 +64,12 @@ class JSSourceFile extends SofiaSourceFile {
     Logger.debug("Creating the js file %s.", filePath);
     StringBuilder code = new StringBuilder();
 
+    String templateVariablesCode = "const templateVariables = " + getTemplateVariables().toJSON() + ";\n";
+    code.append(templateVariablesCode);
+
     for (Library library : libraries) {
       Logger.debug("Search files in library %s.", library);
-      for (JSSourceFile file : library.getJSFiles()) {
+      for (JSSourceFile file : library.getJavaScritpFiles()) {
         code.append("// Library ").append(library.toString()).append(" addeded by system.\n");
         Logger.debug("Add lines from file %s.", file.getPartialPath());
         code.append(file.getJavaScriptCode()).append('\n');

@@ -9,7 +9,6 @@ import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
@@ -98,12 +97,5 @@ public class TemplateVariables {
 
   String digString(String name) throws PropertyNotExistException {
     return jsonObject.digString(name);
-  }
-
-  void save() throws IOException {
-    Path templateVariablesFilePath = site.getJSPath().resolve(partialVoidPathName + "TemplateVariables.js");
-    Logger.debug("Creating the template variables file %s.", templateVariablesFilePath);
-    String code = "const templateVariables = " + jsonObject.toJSON() + ";\n";
-    Files.write(templateVariablesFilePath, code.getBytes(Configuration.getInstance().getEncoding()));
   }
 }

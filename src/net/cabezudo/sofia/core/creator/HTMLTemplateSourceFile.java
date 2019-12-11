@@ -32,9 +32,12 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     this.id = id;
 
     Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
-    Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
     css = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
+    css.loadFile();
+
+    Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
+    js.loadFile();
   }
 
   @Override

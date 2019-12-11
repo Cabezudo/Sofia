@@ -2,12 +2,13 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**
@@ -16,35 +17,61 @@ import net.cabezudo.sofia.core.sites.Site;
  */
 final class ThemeSourceFile extends SofiaSourceFile {
 
-  private List<CSSSourceFile> files = new ArrayList<>();
-  private String themeName;
-  private final CSSSourceFile css;
+  private final String themeName;
+  private final Lines lines;
 
   ThemeSourceFile(Site site, String themeName, TemplateVariables templateVariables) throws IOException, SiteCreationException {
     super(site, Configuration.getInstance().getCommonsThemesPath(), Paths.get(themeName), templateVariables, null);
     this.themeName = themeName;
+    this.lines = new Lines();
+  }
 
-    Path themeBasePath = Configuration.getInstance().getCommonsThemesPath().resolve(themeName);
+  void loadFile() throws IOException, SiteCreationException {
+    Path partialThemeBasePath = Paths.get(themeName);
+    Path themeBasePath = Configuration.getInstance().getCommonsThemesPath();
+    Path templateVariablesBasePath = themeBasePath.resolve(partialThemeBasePath);
+    Path partialStyleFilePath = partialThemeBasePath.resolve("style.css");
+    Path styleFilePath = themeBasePath.resolve(partialStyleFilePath);
+
     try {
-      templateVariables.add(themeBasePath, "values.json");
+      getTemplateVariables().add(templateVariablesBasePath, "values.json");
     } catch (UndefinedLiteralException | JSONParseException | FileNotFoundException e) {
       throw new SiteCreationException(e.getMessage());
     }
-    css = new CSSSourceFile(getSite(), themeBasePath, Paths.get("style.css"), templateVariables, null);
+
+    Logger.debug("Load style.css theme source file %s.", getPartialPath());
+    add(new CodeLine("/* Addeded by system using content from " + partialStyleFilePath + " */"));
+
+    List<String> linesFromFile = Files.readAllLines(styleFilePath);
+    int lineNumber = 1;
+    for (String line : linesFromFile) {
+      try {
+        String newLine = getTemplateVariables().replace(line, lineNumber, partialStyleFilePath);
+        add(new CodeLine(newLine, lineNumber));
+      } catch (UndefinedLiteralException e) {
+        Position position = new Position(lineNumber, e.getRow());
+        throw new LocatedSiteCreationException(e.getMessage(), partialStyleFilePath, position);
+      }
+      lineNumber++;
+    }
   }
 
   @Override
   public void add(Line line) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    lines.add(line);
   }
 
   @Override
   public void add(Lines lines) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported.");
   }
 
   @Override
   public String getVoidPartialPathName() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    throw new UnsupportedOperationException("Not supported.");
+  }
+
+  Lines getCascadingStyleSheetLines() {
+    return lines;
   }
 }

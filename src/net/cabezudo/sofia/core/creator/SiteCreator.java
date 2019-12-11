@@ -67,6 +67,7 @@ public class SiteCreator {
 
     // TODO Read all the theme style sheets after the entire site
     ThemeSourceFile themeSourceFile = new ThemeSourceFile(site, themeName, templateVariables);
+    themeSourceFile.loadFile();
 
     try {
       FileHelper.copyDirectory(site.getSourcesImagesPath(), site.getImagesPath());
@@ -96,7 +97,12 @@ public class SiteCreator {
     Path jsFilePath = site.getJSPath().resolve(jsPartialPath);
     jsFile.save(jsFilePath);
 
-    templateVariables.save();
+    CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, null);
+    cssFile.add(themeSourceFile.getCascadingStyleSheetLines());
+    cssFile.add(baseFile.getLibraries());
+    cssFile.add(baseFile.getCascadingStyleSheetLines());
+    Path cssFilePath = site.getCSSPath().resolve(cssPartialPath);
+    cssFile.save(cssFilePath);
   }
 
   private void createPagePermissions(Site site, HTMLSourceFile htmlSourceFile, String requestURI) throws SQLException {

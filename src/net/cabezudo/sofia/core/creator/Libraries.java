@@ -49,7 +49,7 @@ public class Libraries implements Iterable<Library> {
   Lines getCCSLines() {
     Lines lines = new Lines();
     for (Library library : list) {
-      for (CSSSourceFile file : library.getCSSFiles()) {
+      for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
         Line commentLine = new CodeLine("/* " + library + " addeded from " + file.getCaller() + " */");
         lines.add(commentLine);
         for (Line line : file.getLines()) {
@@ -64,7 +64,7 @@ public class Libraries implements Iterable<Library> {
     Lines lines = new Lines();
     for (Library library : list) {
       System.out.println(library);
-      for (JSSourceFile file : library.getJSFiles()) {
+      for (JSSourceFile file : library.getJavaScritpFiles()) {
         Line commentLine = new CodeLine("// " + library + " addeded from " + file.getCaller());
         lines.add(commentLine);
         for (Line line : file.getJavaScriptLines()) {

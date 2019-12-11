@@ -27,4 +27,6 @@ public abstract class Line implements Comparable<Line> {
   abstract Libraries getLibraries();
 
   abstract Lines getJavaScriptLines();
+
+  abstract Lines getCascadingStyleSheetLines();
 }

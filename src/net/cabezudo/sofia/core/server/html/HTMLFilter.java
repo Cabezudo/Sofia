@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
+import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
 import net.cabezudo.sofia.core.creator.SiteCreator;
 import net.cabezudo.sofia.core.sites.Site;
@@ -71,7 +72,7 @@ public class HTMLFilter implements Filter {
               e.printStackTrace();
             }
             throw new ServletException(e);
-          } catch (JSONParseException | SiteCreationException e) {
+          } catch (JSONParseException | SiteCreationException | LibraryVersionConflictException e) {
             throw new ServletException(e);
           }
         }
