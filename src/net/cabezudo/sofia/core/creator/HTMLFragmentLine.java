@@ -51,7 +51,7 @@ public class HTMLFragmentLine extends Line {
   String getCode() {
     StringBuilder sb = new StringBuilder();
     sb.append(startLine.getCode()).append('\n');
-    sb.append(file.toHTML());
+    sb.append(file.getCode());
     sb.append(endLine.getCode()).append('\n');
     return sb.toString();
   }
