@@ -20,15 +20,27 @@ import net.cabezudo.sofia.core.sites.Site;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.12.04
  */
-class HTMLTemplateSourceFile extends HTMLSourceFile {
+class HTMLTemplateSourceFile implements SofiaSource {
 
+  private final Site site;
+  private final Path basePath;
+  private final Path partialPath;
+  private final TemplateVariables templateVariables;
+  private final Caller caller;
+  private final Lines lines;
+  protected final Libraries libraries;
   private final CSSSourceFile css;
   private final JSSourceFile js;
   private final String id;
-  private Lines lines;
 
   HTMLTemplateSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
-    super(site, basePath, partialPath, templateVariables, caller);
+    this.site = site;
+    this.basePath = basePath;
+    this.partialPath = partialPath;
+    this.templateVariables = templateVariables;
+    this.caller = caller;
+    this.lines = new Lines();
+    this.libraries = new Libraries();
     this.id = id;
 
     Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
@@ -40,12 +52,37 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     js.loadFile();
   }
 
+  Site getSite() {
+    return site;
+  }
+
+  Path getBasePath() {
+    return basePath;
+  }
+
+  Path getPartialPath() {
+    return partialPath;
+  }
+
+  TemplateVariables getTemplateVariables() {
+    return templateVariables;
+  }
+
+  Caller getCaller() {
+    return caller;
+  }
+
   @Override
+  public final String getVoidPartialPathName() {
+    String partialPathName = getPartialPath().toString();
+    return partialPathName.substring(0, partialPathName.length() - 5);
+  }
+
   void loadJSONConfigurationFile() throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     Path jsonPartialPath = Paths.get(getVoidPartialPathName() + ".json");
     Path jsonSourceFilePath = getBasePath().resolve(jsonPartialPath);
     if (Files.isRegularFile(jsonSourceFilePath)) {
-      Logger.debug("FOUND template configuration file %s for %s.", jsonPartialPath, getPartialPath());
+      Logger.debug("FOUND template configuration file %s for template %s.", jsonPartialPath, getPartialPath());
       List<String> jsonLines = Files.readAllLines(jsonSourceFilePath);
       StringBuilder sb = new StringBuilder();
       int lineNumber = 1;
@@ -76,7 +113,8 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
         templateFile.loadJSONConfigurationFile();
         templateFile.loadHTMLFile();
 
-        this.lines = templateFile.getLines();
+        Lines lines = templateFile.getLines();
+        getLines().add(lines);
       }
       JSONPair configurationPair = new JSONPair(id, jsonObject);
       JSONObject newJSONObject = new JSONObject();
@@ -85,10 +123,8 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     }
   }
 
-  @Override
   void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException {
-    this.lines = new Lines();
-    SofiaSourceFile actual = this;
+    SofiaSource actual = this;
 
     Path htmlSourceFilePath = getBasePath().resolve(getPartialPath());
     Logger.debug("Load template HTML source file %s.", getPartialPath());
@@ -110,7 +146,6 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
             libraries.add(library);
             break;
           }
-
           switch (trimmedNewLine) {
             case "<style>":
               actual = css;
@@ -177,7 +212,7 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
   }
 
   @Override
-  protected SofiaSourceFile searchHTMLTag(SofiaSourceFile actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
     if (line.startsWith("<html")) {
       throw new InvalidFragmentTag("A HTML template can't have the <html> tag: " + getPartialPath(), 0);
     }
@@ -185,7 +220,7 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
   }
 
   @Override
-  Lines getJavaScriptLines() {
+  public Lines getLines() {
     Lines newLines = new Lines();
     newLines.add(js.getJavaScriptLines());
     for (Line line : lines) {
@@ -194,4 +229,44 @@ class HTMLTemplateSourceFile extends HTMLSourceFile {
     return newLines;
   }
 
+  @Override
+  public void add(Line line) {
+    if (line == null) {
+      return;
+    }
+    lines.add(line);
+  }
+
+  @Override
+  public void add(Lines lines) {
+    lines.add(lines);
+  }
+
+  @Override
+  public Lines getCascadingStyleSheetLines() {
+    Lines newLines = new Lines();
+    newLines.add(css.getCascadingStyleSheetLines());
+    for (Line line : getLines()) {
+      newLines.add(line.getCascadingStyleSheetLines());
+    }
+    return newLines;
+  }
+
+  @Override
+  public Lines getJavaScriptLines() {
+    Lines codeLines = new Lines();
+    codeLines.add(js.getJavaScriptLines());
+    for (Line line : this.lines) {
+      codeLines.add(line.getJavaScriptLines());
+    }
+    return codeLines;
+  }
+
+  Libraries getLibraries() {
+    return libraries;
+  }
+
+  String getCode() {
+    return lines.getCode();
+  }
 }

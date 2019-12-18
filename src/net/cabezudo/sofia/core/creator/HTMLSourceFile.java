@@ -21,8 +21,13 @@ import net.cabezudo.sofia.core.users.profiles.Profiles;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.12.03
  */
-class HTMLSourceFile extends SofiaSourceFile {
+class HTMLSourceFile implements SofiaSource {
 
+  private final Site site;
+  private final Path basePath;
+  private final Path partialPath;
+  private final TemplateVariables templateVariables;
+  private final Caller caller;
   private final Lines lines;
   protected final Libraries libraries;
   private final CSSSourceFile css;
@@ -30,14 +35,40 @@ class HTMLSourceFile extends SofiaSourceFile {
   private Profiles profiles = new Profiles();
 
   HTMLSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
-    super(site, basePath, partialPath, templateVariables, caller);
+    this.site = site;
+    this.basePath = basePath;
+    this.partialPath = partialPath;
+    this.templateVariables = templateVariables;
+    this.caller = caller;
     this.lines = new Lines();
     this.libraries = new Libraries();
 
     Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
     Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
     css = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
+    css.loadFile();
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
+    js.loadFile();
+  }
+
+  Site getSite() {
+    return site;
+  }
+
+  Path getBasePath() {
+    return basePath;
+  }
+
+  Path getPartialPath() {
+    return partialPath;
+  }
+
+  TemplateVariables getTemplateVariables() {
+    return templateVariables;
+  }
+
+  Caller getCaller() {
+    return caller;
   }
 
   void loadJSONConfigurationFile() throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
@@ -82,7 +113,7 @@ class HTMLSourceFile extends SofiaSourceFile {
   }
 
   void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException {
-    SofiaSourceFile actual = this;
+    SofiaSource actual = this;
 
     Path htmlSourceFilePath = getBasePath().resolve(getPartialPath());
     Logger.debug("Load HTML source file %s.", getPartialPath());
@@ -172,7 +203,8 @@ class HTMLSourceFile extends SofiaSourceFile {
     return new CodeLine(line, lineNumber);
   }
 
-  protected SofiaSourceFile searchHTMLTag(SofiaSourceFile actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  @Override
+  public SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
     if (line.startsWith("<html")) {
       if (getCaller() != null) {
         throw new InvalidFragmentTag("A HTML fragment can't have the <html> tag", 0);
@@ -190,11 +222,12 @@ class HTMLSourceFile extends SofiaSourceFile {
     return actual;
   }
 
-  Lines getLines() {
+  @Override
+  public Lines getLines() {
     return lines;
   }
 
-  String toHTML() {
+  String getCode() {
     return lines.getCode();
   }
 
@@ -234,7 +267,8 @@ class HTMLSourceFile extends SofiaSourceFile {
     return profiles;
   }
 
-  Lines getJavaScriptLines() {
+  @Override
+  public Lines getJavaScriptLines() {
     Lines codeLines = new Lines();
     codeLines.add(js.getJavaScriptLines());
     for (Line line : this.lines) {
@@ -243,7 +277,8 @@ class HTMLSourceFile extends SofiaSourceFile {
     return codeLines;
   }
 
-  Lines getCascadingStyleSheetLines() {
+  @Override
+  public Lines getCascadingStyleSheetLines() {
     Lines codeLines = new Lines();
     codeLines.add(css.getCascadingStyleSheetLines());
     for (Line line : this.lines) {

@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.logger.Logger;
@@ -12,15 +13,44 @@ import net.cabezudo.sofia.core.sites.Site;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.12.03
  */
-class JSSourceFile extends SofiaSourceFile {
+class JSSourceFile implements SofiaSource {
 
+  private final Site site;
+  private final Path basePath;
+  private final Path partialPath;
+  private final TemplateVariables templateVariables;
+  private final Caller caller;
   private final Libraries libraries;
   private final Lines lines;
 
   JSSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller) {
-    super(site, basePath, partialPath, templateVariables, caller);
+    this.site = site;
+    this.basePath = basePath;
+    this.partialPath = partialPath;
+    this.templateVariables = templateVariables;
+    this.caller = caller;
     this.libraries = new Libraries();
     this.lines = new Lines();
+  }
+
+  Site getSite() {
+    return site;
+  }
+
+  Path getBasePath() {
+    return basePath;
+  }
+
+  Path getPartialPath() {
+    return partialPath;
+  }
+
+  TemplateVariables getTemplateVariables() {
+    return templateVariables;
+  }
+
+  Caller getCaller() {
+    return caller;
   }
 
   void loadFile() throws IOException, LocatedSiteCreationException {
@@ -89,7 +119,23 @@ class JSSourceFile extends SofiaSourceFile {
     return lines.getCode();
   }
 
-  Lines getJavaScriptLines() {
+  @Override
+  public Lines getJavaScriptLines() {
     return lines;
+  }
+
+  @Override
+  public SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Lines getLines() {
+    return lines;
+  }
+
+  @Override
+  public Lines getCascadingStyleSheetLines() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

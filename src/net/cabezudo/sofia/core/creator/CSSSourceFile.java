@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.logger.Logger;
@@ -12,15 +13,44 @@ import net.cabezudo.sofia.core.sites.Site;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.12.03
  */
-class CSSSourceFile extends SofiaSourceFile {
+class CSSSourceFile implements SofiaSource {
 
+  private final Site site;
+  private final Path basePath;
+  private final Path partialPath;
+  private final TemplateVariables templateVariables;
+  private final Caller caller;
   private final Libraries libraries;
   private final Lines lines;
 
   CSSSourceFile(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller) {
-    super(site, basePath, partialPath, templateVariables, caller);
+    this.site = site;
+    this.basePath = basePath;
+    this.partialPath = partialPath;
+    this.templateVariables = templateVariables;
+    this.caller = caller;
     this.libraries = new Libraries();
     this.lines = new Lines();
+  }
+
+  Site getSite() {
+    return site;
+  }
+
+  Path getBasePath() {
+    return basePath;
+  }
+
+  Path getPartialPath() {
+    return partialPath;
+  }
+
+  TemplateVariables getTemplateVariables() {
+    return templateVariables;
+  }
+
+  Caller getCaller() {
+    return caller;
   }
 
   void loadFile() throws IOException, LocatedSiteCreationException {
@@ -32,7 +62,7 @@ class CSSSourceFile extends SofiaSourceFile {
       return;
     }
 
-    add(new CodeLine(cssSourceFilePath + " addeded by " + getCaller() + "."));
+    add(new CodeLine("/* " + getPartialPath() + " addeded by " + getCaller() + " */"));
     List<String> linesFromFile = Files.readAllLines(cssSourceFilePath);
     int lineNumber = 1;
     for (String line : linesFromFile) {
@@ -47,7 +77,8 @@ class CSSSourceFile extends SofiaSourceFile {
     }
   }
 
-  Lines getLines() {
+  @Override
+  public Lines getLines() {
     return lines;
   }
 
@@ -78,7 +109,6 @@ class CSSSourceFile extends SofiaSourceFile {
     for (Library library : libraries) {
       Logger.debug("Search files in library %s.", library);
       for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
-        code.append("/* Library ").append(library.toString()).append(" addeded by system. */\n");
         Logger.debug("Add lines from file %s.", file.getPartialPath());
         code.append(file.getCascadingStyleSheetCode()).append('\n');
       }
@@ -92,7 +122,18 @@ class CSSSourceFile extends SofiaSourceFile {
     return lines.getCode();
   }
 
-  Lines getCascadingStyleSheetLines() {
+  @Override
+  public Lines getCascadingStyleSheetLines() {
     return lines;
+  }
+
+  @Override
+  public SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public Lines getJavaScriptLines() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }
