@@ -34,6 +34,15 @@ public class Profiles implements Iterable<Profile> {
     list.add(profile);
   }
 
+  public void add(Profiles profiles) {
+    if (profiles == null) {
+      throw new InvalidParameterException("The parameter is null");
+    }
+    for (Profile profile : profiles) {
+      list.add(profile);
+    }
+  }
+
   public boolean isEmpty() {
     return list.isEmpty();
   }

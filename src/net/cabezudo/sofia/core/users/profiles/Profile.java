@@ -47,4 +47,9 @@ public class Profile {
     }
     return site;
   }
+
+  @Override
+  public String toString() {
+    return "[ id: " + id + ", name: " + name + ", site: " + site + " ]";
+  }
 }

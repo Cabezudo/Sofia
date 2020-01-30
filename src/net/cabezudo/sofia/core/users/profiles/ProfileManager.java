@@ -34,8 +34,11 @@ public class ProfileManager {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       for (String s : ps) {
         String name = s.trim();
+        Logger.debug("Profile name to search or create: " + name);
         Profile profile = get(connection, name, site);
+        Logger.debug("Profile found: " + profile);
         if (profile == null) {
+          Logger.debug("Create profile using name: " + name);
           profile = create(connection, name, site);
         }
         profiles.add(profile);

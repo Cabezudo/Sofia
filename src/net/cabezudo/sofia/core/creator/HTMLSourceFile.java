@@ -98,13 +98,14 @@ class HTMLSourceFile implements SofiaSource {
       if (templateName != null) {
         // Read template from template files
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        Path templatePath = Paths.get(templateName);
+        Path voidTemplatePath = Paths.get(templateName + ".html");
 
-        Logger.debug("Load template %s from file %s.", templatePath, jsonPartialPath);
+        Logger.debug("Load template %s from file %s.", voidTemplatePath, jsonPartialPath);
         jsonObject.remove("template");
-        HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null);
+        HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, voidTemplatePath, getTemplateVariables(), null);
         templateFile.loadJSONConfigurationFile();
         templateFile.loadHTMLFile();
+        profiles.add(templateFile.getProfiles());
         libraries.add(templateFile.getLibraries());
         this.lines.add(templateFile.getLines());
       }
@@ -116,7 +117,10 @@ class HTMLSourceFile implements SofiaSource {
     SofiaSource actual = this;
 
     Path htmlSourceFilePath = getBasePath().resolve(getPartialPath());
-    Logger.debug("Load HTML source file %s.", getPartialPath());
+    if (!Files.exists(htmlSourceFilePath)) {
+      Logger.debug("HTML file source %s NOT FOUND.", getPartialPath());
+      return;
+    }
     List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
     int lineNumber = 1;
     for (String l : linesFromFile) {
