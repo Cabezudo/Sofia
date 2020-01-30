@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.QueryString;
+import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
@@ -93,6 +94,7 @@ public class HTMLAuthorizationFilter implements Filter {
             }
             request.getSession().setAttribute("comebackPage", comebackPage);
           }
+          Logger.debug("Not logged. Redirect to login.");
           response.sendRedirect(Configuration.getInstance().getLoginURL());
           return;
         } catch (SQLException e) {

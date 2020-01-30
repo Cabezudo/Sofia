@@ -105,7 +105,7 @@ class HTMLTemplateSourceFile implements SofiaSource {
       if (templateName != null) {
         // Read template from template files
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        Path templatePath = Paths.get(templateName);
+        Path templatePath = Paths.get(templateName + ".html");
 
         Logger.debug("Load template %s from file %s.", templatePath, jsonPartialPath);
         jsonObject.remove("template");

@@ -38,7 +38,7 @@ public class Library {
       this.name = pair[0];
       this.version = pair[1];
     } else {
-      throw new RuntimeException("The library reference must have a colon separator:" + reference + ":" + caller);
+      throw new RuntimeException("The library reference must have a slash separator: " + reference + " called from " + caller);
     }
     this.caller = caller;
     Path basePath = Configuration.getInstance().getCommonsLibsPath();
