@@ -85,9 +85,6 @@ div.subtitle {
 }
 
 @media all and ( min-width: 750px ) {
-  #content {
-    margin-left: 20px;
-  }
 }
 
 @media all and ( min-width: 1024px ) {

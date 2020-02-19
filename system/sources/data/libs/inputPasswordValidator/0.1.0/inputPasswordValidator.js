@@ -23,15 +23,14 @@ const inputPasswordValidator = ({ element = null, onValid = null, onNotValid = n
 
       const element = event.srcElement;
       if (requestId === data.requestId) {
-        Core.cleanMessagesContainer();
         data.elementId = element.id;
         if (data.status === 'ERROR') {
-          Core.addMessage(data);
+          Core.showMessage(data);
           element.classList.add('error');
         }
         if (data.status === 'OK') {
           element.classList.remove('error');
-          Core.addMessage(data);
+          Core.showMessage(data);
           if (Core.isFunction(onValid)) {
             onValid();
           }

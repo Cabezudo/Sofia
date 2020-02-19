@@ -12,15 +12,13 @@
   background-color: #{theme.application.color.main};
   color: white;
   padding: 28px;
-  margin: 10px 0;
+  transition: background-color 0.5s linear;
 }
 
-.simpleStaticMessage > div.red {
-  background-color: #D11250;
-  font-weight: bold;
+.simpleStaticMessage.red {
+  background-color: #F7BAC9;
 }
 
-.simpleStaticMessage > div.green {
-  background-color: #008F68;
-  font-weight: bold;
+.simpleStaticMessage.green {
+  background-color: #B8D6A4;
 }

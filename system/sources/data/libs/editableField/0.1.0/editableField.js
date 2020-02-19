@@ -73,9 +73,8 @@ const editableField = ({ element = null, id = null, validationURI = null, update
         }
       }
       if (requestId === data.requestId) {
-        Core.cleanMessagesContainer();
         element.classList.remove('error');
-        Core.addMessage(data);
+        Core.showMessage(data);
         if (data.status === 'ERROR') {
           element.classList.add('error');
         }

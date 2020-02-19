@@ -22,11 +22,10 @@ const inputPasswordPairValidator = ({ element = null, repetitionElement = null, 
   const assignTriggers = () => {
     element.addEventListener('response', event => {
       const data = event.detail;
-      Core.cleanMessagesContainer();
       const messages = event.detail.messages;
       element.classList.remove('error');
       messages.forEach(message => {
-        Core.addMessage(message);
+        Core.showMessage(message);
         if (message.type === 'ERROR') {
           element.classList.add('error');
         }

@@ -1,7 +1,9 @@
 {
   "login": {
     "afterLoginSucessfullPage": "manager/index.html",
-    "recoverPasswordPage": "recoverPassword.html",
+    "recoverPasswordPage": "recoverPassword.html"
+  },
+  "messages": {
     "message": {
       "default": "Iniciar sesión"
     }

@@ -3,5 +3,10 @@
     "color": {
       "main": "#{theme.application.color.main}"
     }
+  },
+  "messages": {
+    "message": {
+      "default": "Bienvenido a la página principal del servidor"
+    }
   }
 }
