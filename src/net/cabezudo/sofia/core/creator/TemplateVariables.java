@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
@@ -29,8 +30,13 @@ public class TemplateVariables {
   }
 
   public void add(Path basePath, String fileName) throws FileNotFoundException, IOException, JSONParseException, UndefinedLiteralException {
+    add(basePath, fileName, null);
+  }
+
+  public void add(Path basePath, String fileName, String id) throws FileNotFoundException, IOException, JSONParseException, UndefinedLiteralException {
     Path partialFilePath = Paths.get(fileName);
     Path fullPath = basePath.resolve(fileName);
+    Logger.debug("Search template literals file: %s", fullPath);
     if (Files.exists(fullPath)) {
       Logger.debug("Template literals file FOUND: %s", fullPath);
       List<String> lines = Files.readAllLines(fullPath);
@@ -40,10 +46,18 @@ public class TemplateVariables {
         sb.append(replace(line, lineNumber, partialFilePath));
         lineNumber++;
       }
-      JSONObject newJSONObject = new JSONObject(sb.toString());
-      jsonObject.merge(newJSONObject);
+      if (id != null) {
+        JSONObject newJSONObject = new JSONObject(sb.toString());
+        JSONObject idObject = new JSONObject();
+        JSONPair idPair = new JSONPair(id, newJSONObject);
+        idObject.add(idPair);
+        jsonObject.merge(idObject);
+      } else {
+        JSONObject newJSONObject = new JSONObject(sb.toString());
+        jsonObject.merge(newJSONObject);
+      }
     } else {
-      Logger.debug("Template literals file NOT FOUND: %s", fullPath);
+      Logger.debug("Template literals file to add to template variables NOT FOUND: %s", fullPath);
     }
   }
 
@@ -70,8 +84,9 @@ public class TemplateVariables {
       try {
         value = digString(name);
       } catch (PropertyNotExistException e) {
-        throw new UndefinedLiteralException(e.getPropertyName(), i + 3, e);
+        throw new UndefinedLiteralException(name, i + 3, e);
       }
+      Logger.debug("Replace %s with %s.", name, value);
       sb.append(value);
     }
     sb.append(line.substring(last));
@@ -88,7 +103,10 @@ public class TemplateVariables {
   }
 
   void merge(JSONObject jsonData) {
+    System.out.println(jsonObject);
     jsonObject.merge(jsonData);
+    System.out.println("*******************************************************************");
+    System.out.println(jsonObject);
   }
 
   public String get(String themeName) {

@@ -72,7 +72,6 @@
     const changeAcceptButton = () => {
       if (validEMail && passwordValid) {
         Core.trigger(loginButton, 'enabled');
-        Core.cleanMessagesContainer();
       } else {
         Core.trigger(loginButton, 'disabled');
       }
@@ -132,8 +131,7 @@
               location.assign(variables.comebackPage);
             }
           } else {
-            Core.cleanMessagesContainer();
-            Core.addMessage({status: 'ERROR', message: payload.message});
+            Core.showMessage({status: 'ERROR', message: payload.message});
           }
         }
       });

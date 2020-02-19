@@ -82,7 +82,7 @@ class HTMLTemplateSourceFile implements SofiaSource {
     Path jsonPartialPath = Paths.get(getVoidPartialPathName() + ".json");
     Path jsonSourceFilePath = getBasePath().resolve(jsonPartialPath);
     if (Files.isRegularFile(jsonSourceFilePath)) {
-      Logger.debug("FOUND template configuration file %s for template %s.", jsonPartialPath, getPartialPath());
+      Logger.debug("FOUND HTML template configuration file %s for template %s.", jsonPartialPath, getPartialPath());
       List<String> jsonLines = Files.readAllLines(jsonSourceFilePath);
       StringBuilder sb = new StringBuilder();
       int lineNumber = 1;
@@ -99,7 +99,7 @@ class HTMLTemplateSourceFile implements SofiaSource {
       try {
         jsonObject = JSON.parse(sb.toString()).toJSONObject();
       } catch (JSONParseException e) {
-        throw new SiteCreationException("Cant parse " + jsonSourceFilePath + ". " + e.getMessage());
+        throw new SiteCreationException("Can't parse " + jsonSourceFilePath + ". " + e.getMessage());
       }
       String templateName = jsonObject.getNullString("template");
       if (templateName != null) {

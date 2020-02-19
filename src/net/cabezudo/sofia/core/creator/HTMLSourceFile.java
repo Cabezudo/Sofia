@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.creator;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -102,6 +103,8 @@ class HTMLSourceFile implements SofiaSource {
 
         Logger.debug("Load template %s from file %s.", voidTemplatePath, jsonPartialPath);
         jsonObject.remove("template");
+        getTemplateVariables().merge(jsonObject);
+
         HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, voidTemplatePath, getTemplateVariables(), null);
         templateFile.loadJSONConfigurationFile();
         templateFile.loadHTMLFile();
@@ -109,7 +112,6 @@ class HTMLSourceFile implements SofiaSource {
         libraries.add(templateFile.getLibraries());
         this.lines.add(templateFile.getLines());
       }
-      getTemplateVariables().merge(jsonObject);
     }
   }
 
@@ -196,8 +198,22 @@ class HTMLSourceFile implements SofiaSource {
         return fragmentLine;
       }
       if (tag.getValue("template") != null) {
-        if (tag.getId() == null) {
+        String id = tag.getId();
+        if (id == null) {
           throw new LocatedSiteCreationException("A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
+        }
+        String configurationFile = tag.getValue("configuration");
+        if (configurationFile != null) {
+          Logger.info("Load configuration file %s used for template with id %s.", configurationFile, id);
+          try {
+            if (configurationFile.startsWith("/")) {
+              getTemplateVariables().add(site.getSourcesPath(), configurationFile.substring(1), id);
+            } else {
+              getTemplateVariables().add(getBasePath(), configurationFile, id);
+            }
+          } catch (FileNotFoundException | JSONParseException | UndefinedLiteralException e) {
+            throw new SiteCreationException(e.getMessage());
+          }
         }
         HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
         return fragmentLine;

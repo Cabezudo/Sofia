@@ -15,19 +15,9 @@ const Core = {
   screenBlockerDiv: null,
   pageParameters: new URLSearchParams(location.search),
   lastSection: null,
-  addMessage: message => {
-    if (Core.messagesContainer) {
-      Core.trigger(Core.messagesContainer, 'add', message);
-    }
-  },
-  setMessage: (elementId, message) => {
+  showMessage: (messageObject) => {
     if (Core.messagesContainer !== null) {
-      const messageObject = {
-        status: "MESSAGE",
-        message,
-        elementId
-      };
-      Core.trigger(Core.messagesContainer, 'set', messageObject);
+      Core.trigger(Core.messagesContainer, 'showMessage', messageObject);
     } else {
       throw new Error('No messages container defined.');
     }
@@ -43,7 +33,7 @@ const Core = {
   },
   cleanMessagesContainer: () => {
     if (Core.messagesContainer) {
-      Core.trigger(Core.messagesContainer, 'clearMessages');
+      Core.trigger(Core.messagesContainer, 'cleanMessages');
     }
   },
   getNextRequestId: () => {

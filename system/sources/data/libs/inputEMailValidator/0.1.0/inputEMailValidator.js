@@ -26,10 +26,9 @@ const inputEMailValidator = ({ element = null, onValid = null, onNotValid = null
 
       const element = event.srcElement;
       if (requestId === data.requestId) {
-        Core.cleanMessagesContainer();
         const data = event.detail;
         data.elementId = element.id;
-        Core.addMessage(data);
+        Core.showMessage(data);
         if (data.status === 'ERROR') {
           element.classList.add('error');
         }
