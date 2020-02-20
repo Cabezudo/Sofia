@@ -5,17 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina principal</title>
     <link rel="stylesheet" type="text/css" href="/css/manager/index.css">
+    <script src="/js/variables.js"></script>
     <script src="/js/manager/index.js"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="linkTo/0.1.0"></script>
     <script>
+      {
+        const createGUI = () => {
+          linkTo({
+            id: 'sites',
+            onClick: '/manager/sites.html'
+          });
+        };
+        Core.addOnloadFunction(createGUI);
+      }
     </script>
     <style>
+      .table {
+        display: flex;
+        flex-wrap: wrap;
+        width: 60%;
+        margin: auto;
+      }
+      .cell {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 25%;
+        height: 100px;
+      }
     </style>
   </head>
   <body>
-    <div class="fullScreen">
-      <section id="lateralMenu" template="menues/lateral/simple/menu"></section>
-      <div id="content">
-      </div>
+    <section file="header.html"></section>
+    <section id="messages" template="messages/section/simple/message"></section>
+    <div class="table">
+      <div class="cell"><div id="sites">Sitios</div></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
     </div>
   </body>
 </html>

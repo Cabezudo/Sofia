@@ -103,10 +103,7 @@ public class TemplateVariables {
   }
 
   void merge(JSONObject jsonData) {
-    System.out.println(jsonObject);
     jsonObject.merge(jsonData);
-    System.out.println("*******************************************************************");
-    System.out.println(jsonObject);
   }
 
   public String get(String themeName) {

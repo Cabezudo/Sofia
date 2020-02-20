@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/css/manager/sites.css">
+    <script src="/js/variables.js"></script>
     <script src="/js/manager/sites.js"></script>
-    <script lib="core:0.1.0"></script>
-    <script lib="simpleList:0.1.0"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="simpleList/0.1.0"></script>
     <script>
       {
         const createGUI = () => {
@@ -33,12 +34,9 @@
     </style>
   </head>
   <body>
-    <div class="fullScreen">
-      <div id="application">
-        <section id="lateralMenu" template="headers/menu/simple/menu"></section>
-        <section id="title" template="messages/section/messages"></section>
-        <div id="siteList"></div>
-      </div>
-    </div>
+    <section file="header.html"></section>
+    <section file="menu.html"></section>
+    <section id="messages" template="messages/section/simple/message"></section>
+    <div id="siteList"></div>
   </body>
 </html>

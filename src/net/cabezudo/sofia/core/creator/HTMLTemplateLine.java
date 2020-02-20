@@ -68,7 +68,6 @@ public class HTMLTemplateLine extends Line {
         JSONPair jsonPair = new JSONPair(tagId, jsonObject);
         JSONObject jsonTemplateObject = new JSONObject();
         jsonTemplateObject.add(jsonPair);
-        System.out.println(jsonTemplateObject);
         templateVariables.merge(jsonTemplateObject);
       } catch (JSONParseException e) {
         throw new SiteCreationException("Cant parse " + jsonSourceFilePath + ". " + e.getMessage());
