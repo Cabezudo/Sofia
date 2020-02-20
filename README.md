@@ -245,33 +245,33 @@ Un fragmento es mucho más simple que una página HTML. Es apenas un poco mas de
 ```html
 <div id="foot">
   <div class="copy">© 2019 Cabezudo. All rights reserved.v/div>
-</div>
+  </div>
 ```
 Es exactamente el contenido de una etiqueta cualquiera. La diferencia es que podemos colocar dos etiquetas mas dentro del archivo.
 Para organizar el código de HTML5 en Sofía tratamos de agrupar todo el código que tiene relación entre si en un solo lugar. Es por eso que un fragmento puede tener dos etiquetas de una página HTML normal. Estas son `<script>` y `<style>.`. Estas deben de ir solas en una línea. La de apertura y la de cierre. Todo lo que se encuentre dentro de estas etiquetas serán movidos a sus respectivos archivos de estilos y JavaScript.
 El uso de la etiqueta de JavaScript es el mas fácil de explicar. Tenemos un componente, queremos iniciarlo, agregarle disparadores, estilos, crearlo a partir de un archivo de configuración o para lo que se nos ocurra que podemos aplicarle JavaScript. Para esto, usamos la sección `<script>`.
 La sección `<style>` es para lo mismo. Definir un estilo en particular para un componente en particular. El siguiente es un ejemplo de fragmento de código con toda su funcionalidad.
 ```html
-<style>
-  #foot {
-  border-top: 1px solid lightgray;
-}
-#foot > div.content {
-  width: #{foot.container.width};
-  margin: auto;
-  border-bottom: 1px solid lightgray;
-  display: flex;
-}
-</style>
-<script>
-  const createGUI = () => {
-    // Crear algo de la interfaz
-  };
-  Core.addOnloadFunction(createGUI);
-</script>
-<div id="foot">
-  <div class="copy">© 2019 Cabezudo. All rights reserved.</div>
-</div>
+  <style>
+    #foot {
+    border-top: 1px solid lightgray;
+  }
+  #foot > div.content {
+    width: #{foot.container.width};
+    margin: auto;
+    border-bottom: 1px solid lightgray;
+    display: flex;
+  }
+  </style>
+  <script>
+    const createGUI = () => {
+      // Crear algo de la interfaz
+    };
+    Core.addOnloadFunction(createGUI);
+  </script>
+  <div id="foot">
+    <div class="copy">© 2019 Cabezudo. All rights reserved.</div>
+  </div>
 ```
 No importa si colocamos una sección antes de la otra o inclusive si colocamos varias. Serán agregadas al archivo final en el orden que se encuentran en el archivo fuente.
 ### ¡Hola mundo!
@@ -290,7 +290,7 @@ Para hacer esto vamos a preparar nuestra aplicación para que utilice la pantall
 ```
 Una vez que está preparado el espacio para la aplicación vamos a agregar dentro de sección de la apliación la siguiente línea:
 ```html
-<section id="helloWord" template="text/centered/index.html"></section>
+  <section id="helloWord" template="text/centered/index.html"></section>
 ```
 Esta línea indica que hay que agregar una sección que utilice el template `text/centered/index.html` en ese lugar. Ahora podemos colocar en la entrada de URL de nuestro navegador `http://playground/test.html` y ver el texto centrado.
 Vemos un texto centrado pero no es el texto que queremos. Necesitamos colocar nuestro propio texto en ese lugar. Para esto tenemos que configurar el componente para colocar el texto que vamos a usar. Por lo general los componentes tienen un archivo de configuración, este tiene el mismo nombre que el archivo HTML del componente pero con extensión `json`. En ese archivo podemos ver las opciones de configuración de nuestro componente. Vamos a buscar el archivo para nuestro texto centrado. Si abrimos el archivo vemos que tiene muchas propiedades. La que nos interesa es la propiedad llamada `text`. Esa propiedad define el texto que se va a mostrar en pantalla. Vamos a definir entonces esa propieada para nuestro componente. No vamos a cambiarla ahí porque estaríamos cambiando el valor por defecto para todas las aplicaciones que usen ese componente. En lugar de eso vamos a agregar la propiedad en el archivo de configuración de nuestra página `test.html`.
@@ -306,7 +306,7 @@ Cada etiqueta `section` que hace referencia a un componente tiene un id. Este id
 Solo vamos a colocar las propiedades que nos interesan cambiar. En este caso, solo el texto. Pero podemos jugar con los otros valores para experimentar un poco.
 Esto parece muy simple. Podríamos hablerlo escrito en 5 minutos y sin tanto problema. Pero imaginemos algo mas complicado. Imaginemos que tenemos que colocar varios textos centrados en una misma página. Imaginemos ahora algo mas complejo como un menú o un acceso a usuarios registrados. Utilizando esta idea, para agregar un acceso a usuarios a nuestro sitio solo debemos cambiar la propiedad template de la linea a la cual apunta nuestro componente y poner la siguiente línea.
 ```html
-<section id="login" template="logins/basic-login/login"></section>
+  <section id="login" template="logins/basic-login/login"></section>
 ```
 Si. Un login completo, totalmente funcional, que permite a una persona registrarse en el sistema, que valida en tiempo real si el correo está bien formado o si el nombre de dominio es válido. Todo sin hacer absolutamente nada mas.
 ### Estilos
@@ -386,11 +386,11 @@ Si el servidor está trabajando en un ambiente de desarrollo se puede colocar en
 Orden de lectura de archivos
 Cuando el sitema crea una página estática toma una serie de archivos para hacer la tarea.
 Lee el archivo commons.json y toma los valores comunes para todo el sitio. Toma el el nombre del tema para el sitio. El tema lo va a buscar de un direcotrio `themes` dentro de `data`.
-Lee el archivo `fonts.css` que se encuentra en el raiz de los fuentes del sitio y lo agrega a los estilos del sitio. Este archivo se utiliza para colocar en un solo sitio todas las fuentes.
-Lee el archivo `style.css` que se encuentra en el raiz de los fuentes del sitio. Este archivo se utiliza para colocar configuraciónes de estilos que no pueden ser colocadas en otro lugar. Configuraciones temporales, de prueba o globales que no pertenecen al tema.
+Lee el archivo `fonts.css` que se encuentra en el raíz de los fuentes del sitio y lo agrega a los estilos del sitio. Este archivo se utiliza para colocar en un solo sitio todas las fuentes.
+Lee el archivo `style.css` que se encuentra en el raíz de los fuentes del sitio. Este archivo se utiliza para colocar configuraciónes de estilos que no pueden ser colocadas en otro lugar. Configuraciones temporales, de prueba o globales que no pertenecen al tema.
 Lee el archivo `style.css` que existe dentro del directorio del tema elegido.
-Luego se copia el directorio de imágenes completo de las fuentes al directrio donde se creará el sitio.
-Utilizando el nombre de la pagina a mostrar se busca un archivo de configuración con el mismo nomber. Si la página es index.html se busca primero `index.json`. Si se encuentra el archivo de configuración se agrega las variables de plantilla a las variables de plantilla y se busca una propiedad `template`. Si esta propiedad se encuentra se carga el template indicado en la propiedad. Si no se encuentra se carga el archivo `index.html`.
+Luego se copia el directorio de imágenes completo de las fuentes al directorio donde se creará el sitio.
+Utilizando el nombre de la página a mostrar se busca un archivo de configuración con el mismo nombre. Si la página es index.html se busca primero `index.json`. Si se encuentra el archivo de configuración se agrega las variables de plantilla a las variables de plantilla y se busca una propiedad `template`. Si esta propiedad se encuentra se busca primero un attributo para indicar la configuración a leer, si no se encuentra especificada una configuración en un atributo se busca un archivo con el nombre del id de la sección y extensión `.json`, luego se busca un archivo de configuración con el nombre del archivo plantilla y por último el archivo la plantilla indicada en la propiedad. Si no se encuentra se carga el archivo `index.html`.
 Si no se encuentra el archivo de configuración simplemente se carga el archivo `index.html`.
 
 

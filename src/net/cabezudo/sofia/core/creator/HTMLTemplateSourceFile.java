@@ -101,25 +101,27 @@ class HTMLTemplateSourceFile implements SofiaSource {
       } catch (JSONParseException e) {
         throw new SiteCreationException("Can't parse " + jsonSourceFilePath + ". " + e.getMessage());
       }
+
+      JSONPair configurationPair = new JSONPair(id, jsonObject);
+      JSONObject newJSONObject = new JSONObject();
+      newJSONObject.add(configurationPair);
+      getTemplateVariables().merge(newJSONObject);
+
       String templateName = jsonObject.getNullString("template");
       if (templateName != null) {
         // Read template from template files
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
         Path templatePath = Paths.get(templateName + ".html");
 
-        Logger.debug("Load template %s from file %s.", templatePath, jsonPartialPath);
+        Logger.debug("Load template %s from file %s in HTML template source file.", templatePath, jsonPartialPath);
         jsonObject.remove("template");
         HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null);
         templateFile.loadJSONConfigurationFile();
         templateFile.loadHTMLFile();
 
-        Lines lines = templateFile.getLines();
-        getLines().add(lines);
+        Lines linesFromTemplateFile = templateFile.getLines();
+        getLines().add(linesFromTemplateFile);
       }
-      JSONPair configurationPair = new JSONPair(id, jsonObject);
-      JSONObject newJSONObject = new JSONObject();
-      newJSONObject.add(configurationPair);
-      getTemplateVariables().merge(newJSONObject);
     }
   }
 
@@ -191,8 +193,6 @@ class HTMLTemplateSourceFile implements SofiaSource {
   }
 
   private Line getProcessedLine(String line, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
-    StringBuilder sb = new StringBuilder();
-
     Tag tag = HTMLTagFactory.get(line);
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
@@ -200,7 +200,8 @@ class HTMLTemplateSourceFile implements SofiaSource {
         add(fragmentLine);
       }
       if (tag.getValue("template") != null) {
-        if (tag.getId() == null) {
+        String id = tag.getId();
+        if (id == null) {
           throw new LocatedSiteCreationException("A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
         }
         HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());

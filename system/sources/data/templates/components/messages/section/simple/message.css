@@ -11,7 +11,7 @@
   font-weight: 400;
   background-color: #{theme.application.color.main};
   color: white;
-  padding: 28px;
+  padding: 22px;
   transition: background-color 0.5s linear;
 }
 

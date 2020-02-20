@@ -3,6 +3,8 @@
  * Author:     Esteban Cabezudo
  */
 
+/* global Core */
+
 const linkTo = ({ onClick = null, id = null, element = null } = {}) => {
   const validateOptions = () => {
     if (id !== null) {
