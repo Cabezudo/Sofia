@@ -237,8 +237,8 @@ class HTMLSourceFile implements SofiaSource {
           throw new SiteCreationException(e.getMessage());
         }
 
-        HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), tag, lineNumber, getCaller());
-        return fragmentLine;
+        HTMLTemplateLine templateLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), tag, lineNumber, getCaller());
+        return templateLine;
       }
     }
 
