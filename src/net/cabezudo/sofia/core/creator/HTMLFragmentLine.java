@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.html.Tag;
+import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**
@@ -18,27 +19,32 @@ public class HTMLFragmentLine extends Line {
   private final HTMLFragmentSourceFile file;
   private final Line endLine;
 
-  HTMLFragmentLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
+  HTMLFragmentLine(Site site, Path basePath, Path callerFilePartialPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
     super(lineNumber);
     tag.rename("div");
     startLine = new CodeLine(tag.getStartTag(), lineNumber);
     endLine = new CodeLine(tag.getEndTag(), lineNumber);
-    String fileName = tag.getValue("file");
-    Path newFileBasePath;
-    if (fileName.startsWith("/")) {
-      newFileBasePath = site.getSourcesPath();
-      fileName = fileName.substring(1);
+    String fileAttributeValue = tag.getValue("file");
+
+    Path callerFileParentPath = callerFilePartialPath.getParent();
+    Path partialFilePath;
+    if (fileAttributeValue.startsWith("/")) {
+      partialFilePath = Paths.get(fileAttributeValue.substring(1));
     } else {
-      newFileBasePath = basePath;
+      if (callerFileParentPath != null) {
+        partialFilePath = callerFileParentPath.resolve(fileAttributeValue);
+      } else {
+        partialFilePath = Paths.get(fileAttributeValue);
+      }
     }
-    Path partialPath = Paths.get(fileName);
     try {
-      Caller newCaller = new Caller(basePath, parentPath, lineNumber, caller);
-      file = new HTMLFragmentSourceFile(site, newFileBasePath, partialPath, templateVariables, newCaller);
+      Logger.debug("Read file %s from file attribute.", partialFilePath);
+      Caller newCaller = new Caller(basePath, callerFilePartialPath, lineNumber, caller);
+      file = new HTMLFragmentSourceFile(site, basePath, partialFilePath, templateVariables, newCaller);
       file.loadJSONConfigurationFile();
       file.loadHTMLFile();
     } catch (NoSuchFileException e) {
-      throw new NoSuchFileException("Can't find the file " + fileName + " called from " + parentPath + ":" + lineNumber);
+      throw new NoSuchFileException("Can't find the file " + partialFilePath + " called from " + callerFilePartialPath + ":" + lineNumber);
     }
   }
 
@@ -67,12 +73,14 @@ public class HTMLFragmentLine extends Line {
   }
 
   @Override
-  boolean startWith(String start) {
+  boolean startWith(String start
+  ) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
-  public int compareTo(Line o) {
+  public int compareTo(Line o
+  ) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

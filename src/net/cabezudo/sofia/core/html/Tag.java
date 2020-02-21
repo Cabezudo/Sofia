@@ -18,6 +18,7 @@ public abstract class Tag {
     this.name = name;
     this.column = column;
     String[] ps = data.trim().split("\\s");
+    // TODO Improve the parser. Fail with <section file="/  manager/header.html"></section>
     for (String property : ps) {
       String[] p = property.split("=");
       String propertyName = p[0];
