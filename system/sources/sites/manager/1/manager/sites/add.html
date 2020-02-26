@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html profiles="administrator, assistant">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página principal</title>
+    <link rel="stylesheet" type="text/css" href="/css/manager/sites/add.css">
+    <script src="/js/manager/sites/add.js"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="inputGenericValidator/0.1.0"></script>
+    <script lib="linkTo/0.1.0"></script>
+    <script>
+      {
+        const createGUI = () => {
+          const detailDiv = Core.validateById('detail');
+          const siteName = Core.validateById('siteName');
+          inputGenericValidator({
+            element: siteName,
+            getValidationURL: () => {
+              return `/api/v1/sites/names/${siteName.value}/validate`;
+            }
+          });
+          Core.screenBlocker.unblock();
+          linkTo({onClick: 'sites.html', id: 'siteList'});
+        };
+        Core.addOnloadFunction(createGUI);
+      }
+    </script>
+    <style file="menu.css"></style>
+  </head>
+  <body>
+    <section file="../header.html"></section>
+    <section file="addMenu.html"></section>
+    <section id="messages" template="messages/section/simple/message"></section>
+    <div id="detail">
+      <div class="title">Detalle de sitio</div>
+      <div><input id="siteName"/></div>
+      <div><input id="siteVersion"/></div>
+      <div class="subtitle">Domains</div>
+      <div id="domains" class="list"></div>
+    </div>
+  </body>
+</html>

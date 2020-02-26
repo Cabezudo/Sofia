@@ -46,10 +46,16 @@ class HTMLSourceFile implements SofiaSource {
     this.lines = new Lines();
     this.libraries = new Libraries();
 
-    Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
+    String cssPartialName = getVoidPartialPathName() + ".css";
+
+    Path cssPartialPath = Paths.get(cssPartialName);
+
     Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
     css = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
-    css.loadFile();
+    if (cssPartialPath.toString().equals("manager/sites/../header.css")) {
+      throw new RuntimeException();
+    }
+    css.load(cssPartialName, caller);
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
     js.loadFile();
   }
@@ -127,10 +133,21 @@ class HTMLSourceFile implements SofiaSource {
   void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException {
     SofiaSource actual = this;
 
-    Path htmlSourceFilePath = getBasePath().resolve(getPartialFilePath());
+    Path htmlSourceFilePath;
+    if (caller == null) {
+      htmlSourceFilePath = getBasePath().resolve(partialFilePath);
+    } else {
+      if (partialFilePath.startsWith("/")) {
+        htmlSourceFilePath = getBasePath().resolve(partialFilePath);
+      } else {
+        Path parent = caller.getFilePath().getParent();
+        htmlSourceFilePath = parent.resolve(partialFilePath);
+      }
+    }
+    Logger.debug("Load HTML source file %s.", partialFilePath);
+
     if (!Files.exists(htmlSourceFilePath)) {
-      Logger.debug("HTML file source %s NOT FOUND.", getPartialFilePath());
-      return;
+      throw new SiteCreationException("HTML file source " + getPartialFilePath() + " NOT FOUND.");
     }
     List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
     int lineNumber = 1;
@@ -140,7 +157,10 @@ class HTMLSourceFile implements SofiaSource {
         String trimmedNewLine = newLine.trim();
 
         do {
-          actual = searchHTMLTag(actual, trimmedNewLine, lineNumber);
+          if (searchHTMLTag(actual, trimmedNewLine, lineNumber)) {
+            actual = this;
+            break;
+          }
           if (trimmedNewLine.startsWith("<script lib=\"") && trimmedNewLine.endsWith("\"></script>")) {
             String libraryReference = trimmedNewLine.substring(13, trimmedNewLine.length() - 11);
             Logger.debug("Library reference name found: %s.", libraryReference);
@@ -148,6 +168,13 @@ class HTMLSourceFile implements SofiaSource {
             Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
             Library library = new Library(getSite(), libraryReference, getTemplateVariables(), newCaller);
             libraries.add(library);
+            break;
+          }
+          if (trimmedNewLine.startsWith("<style file=\"") && trimmedNewLine.endsWith("\"></style>")) {
+            String styleFilePartialFileName = trimmedNewLine.substring(13, trimmedNewLine.length() - 10);
+            Logger.debug("Found independent style file call: %s.", styleFilePartialFileName);
+            Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
+            css.load(styleFilePartialFileName, newCaller);
             break;
           }
 
@@ -169,7 +196,7 @@ class HTMLSourceFile implements SofiaSource {
               }
               break;
             case "</html>":
-              if (getCaller() != null) {
+              if (getCaller() == null) {
                 actual.add(new CodeLine("</html>\n", lineNumber));
               }
               actual = this;
@@ -246,7 +273,7 @@ class HTMLSourceFile implements SofiaSource {
   }
 
   @Override
-  public SofiaSource searchHTMLTag(SofiaSource actual, String line,
+  public boolean searchHTMLTag(SofiaSource actual, String line,
           int lineNumber) throws SQLException, InvalidFragmentTag {
     if (line.startsWith("<html")) {
       if (getCaller() != null) {
@@ -260,9 +287,9 @@ class HTMLSourceFile implements SofiaSource {
         profiles = ProfileManager.getInstance().createFromNames(ps, getSite());
       }
       add(new CodeLine("<html>\n", lineNumber));
-      return this;
+      return true;
     }
-    return actual;
+    return false;
   }
 
   @Override

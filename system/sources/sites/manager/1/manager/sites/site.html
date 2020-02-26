@@ -6,9 +6,10 @@
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/css/manager/sites/site.css">
     <script src="/js/manager/sites/site.js"></script>
-    <script lib="core:0.1.0"></script>
-    <script lib="editableField:0.1.0"></script>
-    <script lib="bottomMessages:0.1.0"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="editableField/0.1.0"></script>
+    <script lib="bottomMessages/0.1.0"></script>
+    <script lib="linkTo/0.1.0"></script>
     <script>
       {
         const createGUI = () => {
@@ -51,28 +52,24 @@
           Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
 
           bottomMessages({id: 'messages'});
+
+          linkTo({onClick: 'sites.html', id: 'siteList'});
         };
         Core.addOnloadFunction(createGUI);
       }
     </script>
-    <style>
-    </style>
+    <style file="menu.css"></style>
   </head>
   <body>
-    <div class="fullScreen">
-      <div id="application">
-        <section id="lateralMenu" template="menues/lateral/simple/menu" configurationFile="../lateralMenu.json"></section>
-        <div id="content">
-          <div id="detail">
-            <div class="title">Detalle de sitio</div>
-            <div><div id="siteName"></div></div>
-            <div><div id="siteVersion"></div></div>
-            <div class="subtitle">Domains</div>
-            <div id="domains" class="list"></div>
-          </div>
-          <div id="messages"></div>
-        </div>
-      </div>
+    <section file="../header.html"></section>
+    <section file="siteMenu.html"></section>
+    <section id="messages" template="messages/section/simple/message"></section>
+    <div id="detail">
+      <div class="title">Detalle de sitio</div>
+      <div><div id="siteName"></div></div>
+      <div><div id="siteVersion"></div></div>
+      <div class="subtitle">Domains</div>
+      <div id="domains" class="list"></div>
     </div>
   </body>
 </html>

@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.creator.Caller;
 import net.cabezudo.sofia.core.logger.Logger;
 
 /**
@@ -46,6 +47,30 @@ public class FileHelper {
             Files.copy(path, destPath);
           }
         }
+      }
+    }
+  }
+
+  public static Path resolveFullFilePath(Path basePath, Path defaultBasePath, String partialFileName, Caller caller) {
+    Path resolvedBasePath;
+    if (basePath == null) {
+      resolvedBasePath = defaultBasePath;
+    } else {
+      resolvedBasePath = basePath;
+    }
+    if (caller == null) {
+      return resolvedBasePath.resolve(partialFileName);
+    } else {
+      if (partialFileName.startsWith("/")) {
+        return resolvedBasePath.resolve(partialFileName);
+      } else {
+        Path parent;
+        if (basePath == null) {
+          parent = caller.getFilePath().getParent();
+        } else {
+          parent = basePath;
+        }
+        return parent.resolve(partialFileName);
       }
     }
   }

@@ -1,0 +1,10 @@
+#header {
+  display: flex;
+  justify-content: flex-start;
+  padding: 12px;
+  background-color: #{theme.application.color.main};
+  color: white;
+}
+#header > .logo {
+  font-size: 20px;
+}

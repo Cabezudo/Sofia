@@ -43,9 +43,10 @@ class HTMLTemplateSourceFile implements SofiaSource {
     this.libraries = new Libraries();
     this.id = id;
 
-    Path cssPartialPath = Paths.get(getVoidPartialPathName() + ".css");
+    String cssPartialFileName = getVoidPartialPathName() + ".css";
+    Path cssPartialPath = Paths.get(cssPartialFileName);
     css = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
-    css.loadFile();
+    css.load(cssPartialFileName, caller);
 
     Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
@@ -138,7 +139,7 @@ class HTMLTemplateSourceFile implements SofiaSource {
         String trimmedNewLine = newLine.trim();
 
         do {
-          actual = searchHTMLTag(actual, trimmedNewLine, lineNumber);
+          searchHTMLTag(actual, trimmedNewLine, lineNumber);
           if (trimmedNewLine.startsWith("<script lib=\"") && trimmedNewLine.endsWith("\"></script>")) {
             String libraryReference = trimmedNewLine.substring(13, trimmedNewLine.length() - 11);
             Logger.debug("Library reference name found: %s.", libraryReference);
@@ -213,11 +214,11 @@ class HTMLTemplateSourceFile implements SofiaSource {
   }
 
   @Override
-  public SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
     if (line.startsWith("<html")) {
       throw new InvalidFragmentTag("A HTML template can't have the <html> tag: " + getPartialPath(), 0);
     }
-    return actual;
+    return false;
   }
 
   @Override

@@ -81,7 +81,7 @@ public class Library {
         if (filePath.toString().endsWith(".css")) {
           Logger.debug("CSS file library %s FOUND.", filePath);
           CSSSourceFile file = new CSSSourceFile(site, basePath, partialFilePath, templateVariables, caller);
-          file.loadFile();
+          file.load(basePath, partialFilePath.toString(), caller);
           cssSourceFiles.add(file);
         }
       }

@@ -7,18 +7,21 @@
   display: flex;
   justify-content: center;
   font-family: 'Abel', sans-serif;
-  font-size: 28px;
+  font-size: 18px;
   font-weight: 400;
-  background-color: #{theme.application.color.main};
-  color: white;
-  padding: 22px;
+  background-color: white;
+  color: darkgray;
+  padding: 14px;
+  height: 0;
   transition: background-color 0.5s linear;
 }
 
 .simpleStaticMessage.red {
   background-color: #F7BAC9;
+  height: auto;
 }
 
 .simpleStaticMessage.green {
   background-color: #B8D6A4;
+  height: auto;
 }
