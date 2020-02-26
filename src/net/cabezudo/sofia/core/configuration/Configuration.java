@@ -279,4 +279,8 @@ public final class Configuration {
   public String getLoginURL() {
     return "/login.html";
   }
+
+  public Path getAPIConfigurationFile() {
+    return systemPath.resolve("apiDefinition.json");
+  }
 }

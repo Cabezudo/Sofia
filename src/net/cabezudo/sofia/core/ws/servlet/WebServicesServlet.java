@@ -35,7 +35,7 @@ import net.cabezudo.sofia.people.ListPeopleService;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.13
  */
-public class WebServices extends HttpServlet {
+public class WebServicesServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
