@@ -26,25 +26,15 @@ public class HTMLFragmentLine extends Line {
     endLine = new CodeLine(tag.getEndTag(), lineNumber);
     String fileAttributeValue = tag.getValue("file");
 
-    Path callerFileParentPath = callerFilePartialPath.getParent();
-    Path partialFilePath;
-    if (fileAttributeValue.startsWith("/")) {
-      partialFilePath = Paths.get(fileAttributeValue.substring(1));
-    } else {
-      if (callerFileParentPath != null) {
-        partialFilePath = callerFileParentPath.resolve(fileAttributeValue);
-      } else {
-        partialFilePath = Paths.get(fileAttributeValue);
-      }
-    }
     try {
-      Logger.debug("Read file %s from file attribute.", partialFilePath);
+      Logger.debug("Read file %s from file attribute.", fileAttributeValue);
       Caller newCaller = new Caller(basePath, callerFilePartialPath, lineNumber, caller);
+      Path partialFilePath = Paths.get(fileAttributeValue);
       file = new HTMLFragmentSourceFile(site, basePath, partialFilePath, templateVariables, newCaller);
       file.loadJSONConfigurationFile();
       file.loadHTMLFile();
     } catch (NoSuchFileException e) {
-      throw new NoSuchFileException("Can't find the file " + partialFilePath + " called from " + callerFilePartialPath + ":" + lineNumber);
+      throw new NoSuchFileException("Can't find the file " + fileAttributeValue + " called from " + callerFilePartialPath + ":" + lineNumber);
     }
   }
 

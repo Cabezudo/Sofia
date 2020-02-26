@@ -4,11 +4,12 @@
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página principal</title>
-    <link rel="stylesheet" type="text/css" href="/css/manager/sites.css">
+    <link rel="stylesheet" type="text/css" href="/css/manager/sites/sites.css">
     <script src="/js/variables.js"></script>
-    <script src="/js/manager/sites.js"></script>
+    <script src="/js/manager/sites/sites.js"></script>
     <script lib="core/0.1.0"></script>
     <script lib="simpleList/0.1.0"></script>
+    <script lib="linkTo/0.1.0"></script>
     <script>
       {
         const createGUI = () => {
@@ -26,17 +27,17 @@
             },
             notLoggedURL: '/'
           });
+          linkTo({onClick: 'add.html', id: 'addSite'});
         };
         Core.addOnloadFunction(createGUI);
       }
     </script>
-    <style>
-    </style>
+    <style file="menu.css"></style>
   </head>
   <body>
-    <section file="header.html"></section>
+    <section file="../header.html"></section>
+    <section file="sitesMenu.html"></section>
     <section id="messages" template="messages/section/simple/message"></section>
-    <section file="menu.html"></section>
     <div id="siteList"></div>
   </body>
 </html>

@@ -16,10 +16,10 @@ class HTMLFragmentSourceFile extends HTMLSourceFile {
   }
 
   @Override
-  public SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
     if (line.startsWith("<html")) {
       throw new InvalidFragmentTag("A HTML fragment can't have the <html> tag", 0);
     }
-    return actual;
+    return false;
   }
 }

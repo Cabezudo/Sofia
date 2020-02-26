@@ -6,7 +6,7 @@ import java.nio.file.Path;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.11.12
  */
-class Caller {
+public class Caller {
 
   private final Path relativePath;
   private final Path filePath;

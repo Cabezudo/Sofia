@@ -20,6 +20,6 @@ interface SofiaSource {
 
   String getVoidPartialPathName();
 
-  SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag;
+  boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag;
 
 }

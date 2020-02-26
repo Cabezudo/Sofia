@@ -63,7 +63,6 @@ public class Libraries implements Iterable<Library> {
   Lines getJavaScriptLines() {
     Lines lines = new Lines();
     for (Library library : list) {
-      System.out.println(library);
       for (JSSourceFile file : library.getJavaScritpFiles()) {
         Line commentLine = new CodeLine("// " + library + " addeded from " + file.getCaller());
         lines.add(commentLine);

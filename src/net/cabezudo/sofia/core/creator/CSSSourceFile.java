@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
@@ -51,30 +52,6 @@ class CSSSourceFile implements SofiaSource {
 
   Caller getCaller() {
     return caller;
-  }
-
-  void loadFile() throws IOException, LocatedSiteCreationException {
-    Path cssSourceFilePath = getBasePath().resolve(getPartialPath());
-    Logger.debug("Load Cascading Style Sheet source file %s.", getPartialPath());
-
-    if (!Files.exists(cssSourceFilePath)) {
-      Logger.debug("File %s NOT FOUND.", getPartialPath());
-      return;
-    }
-
-    add(new CodeLine("/* " + getPartialPath() + " addeded by " + getCaller() + " */"));
-    List<String> linesFromFile = Files.readAllLines(cssSourceFilePath);
-    int lineNumber = 1;
-    for (String line : linesFromFile) {
-      try {
-        String newLine = getTemplateVariables().replace(line, lineNumber, cssSourceFilePath);
-        add(new CodeLine(newLine, lineNumber));
-      } catch (UndefinedLiteralException e) {
-        Position position = new Position(lineNumber, e.getRow());
-        throw new LocatedSiteCreationException(e.getMessage(), getPartialPath(), position);
-      }
-      lineNumber++;
-    }
   }
 
   @Override
@@ -128,12 +105,41 @@ class CSSSourceFile implements SofiaSource {
   }
 
   @Override
-  public SofiaSource searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override
   public Lines getJavaScriptLines() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  void load(String partialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
+    load(null, partialFileName, newCaller);
+  }
+
+  void load(Path loadFileBasePath, String partialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
+    Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(loadFileBasePath, getBasePath(), partialFileName, newCaller);
+
+    Logger.debug("Load Cascading Style Sheet source file %s.", partialFileName);
+
+    if (!Files.exists(cssFullSourceFilePath)) {
+      Logger.debug("File %s NOT FOUND.", getPartialPath());
+      return;
+    }
+
+    add(new CodeLine("/* " + getPartialPath() + " addeded by " + getCaller() + " */"));
+    List<String> linesFromFile = Files.readAllLines(cssFullSourceFilePath);
+    int lineNumber = 1;
+    for (String line : linesFromFile) {
+      try {
+        String newLine = getTemplateVariables().replace(line, lineNumber, cssFullSourceFilePath);
+        add(new CodeLine(newLine, lineNumber));
+      } catch (UndefinedLiteralException e) {
+        Position position = new Position(lineNumber, e.getRow());
+        throw new LocatedSiteCreationException(e.getMessage(), getPartialPath(), position);
+      }
+      lineNumber++;
+    }
   }
 }
