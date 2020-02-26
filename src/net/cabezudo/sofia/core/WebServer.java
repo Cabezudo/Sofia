@@ -2,11 +2,16 @@ package net.cabezudo.sofia.core;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 import javax.servlet.DispatcherType;
+import net.cabezudo.json.JSON;
+import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.json.exceptions.PropertyNotExistException;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationFileNotFoundException;
 import net.cabezudo.sofia.core.configuration.DefaultData;
@@ -24,7 +29,8 @@ import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
-import net.cabezudo.sofia.core.ws.servlet.WebServices;
+import net.cabezudo.sofia.core.ws.WebServices;
+import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -100,7 +106,14 @@ public class WebServer {
     return INSTANCE;
   }
 
-  private Handler setServer(Site site) throws SQLException {
+  private Handler setServer(Site site) throws SQLException, JSONParseException, IOException, PropertyNotExistException {
+    Path apiConfigurationFilePath = Configuration.getInstance().getAPIConfigurationFile();
+    Logger.debug("Load API configuration file: %s", apiConfigurationFilePath);
+    JSONObject apiConfiguration = JSON.parse(apiConfigurationFilePath, Configuration.getInstance().getEncoding().name()).toJSONObject();
+    WebServices.getInstance().add(apiConfiguration);
+
+    System.exit(0);
+
     Logger.debug("Create handler for host %s", site.getBaseDomainName().getName());
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
@@ -115,7 +128,7 @@ public class WebServer {
     ServletHolder logoutHolder = new ServletHolder("logout", LogoutHolder.class);
     context.addServlet(logoutHolder, "/logout");
 
-    ServletHolder apiHolder = new ServletHolder("webServices", WebServices.class);
+    ServletHolder apiHolder = new ServletHolder("webServices", WebServicesServlet.class);
     context.addServlet(apiHolder, "/api/*");
 
     ServletHolder fontsHolder = new ServletHolder("fonts", FontHolder.class);
@@ -147,7 +160,7 @@ public class WebServer {
     String[] virtualHosts = new String[1];
     virtualHosts[0] = "api." + site.getBaseDomainName().getName();
     context.setVirtualHosts(virtualHosts);
-    ServletHolder apiHolder = new ServletHolder("webServices", WebServices.class);
+    ServletHolder apiHolder = new ServletHolder("webServices", WebServicesServlet.class);
     context.addServlet(apiHolder, "/*");
 
     context.setErrorHandler(new SofiaErrorHandler());
