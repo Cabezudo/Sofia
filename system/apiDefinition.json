@@ -1,250 +1,202 @@
 {
   "get": [
     {
-      "url": "/api/v1/sites",
-      "class": "net.cabezudo.sofia.core.sites.SiteListService",
-      "description": ""
+      "path": "/api/v1/sites",
+      "class": "net.cabezudo.sofia.core.sites.SiteListService"
     },
     {
-      "url": "/api/v1/sites/{siteId}",
-      "class": "net.cabezudo.sofia.core.sites.SiteService",
-      "description": ""
+      "path": "/api/v1/sites/{siteId}",
+      "class": "net.cabezudo.sofia.core.sites.SiteService"
     },
     {
-      "url": "/api/v1/sites/{siteId}/names/{name}/validate",
-      "class": "net.cabezudo.sofia.core.sites.SiteNameValidationService",
-      "description": ""
+      "path": "/api/v1/sites/{siteId}/names/{name}/validate",
+      "class": "net.cabezudo.sofia.core.sites.SiteNameValidationService"
     },
     {
-      "url": "/api/v1/sites/{siteId}/versions/{version}/validate",
-      "class": "net.cabezudo.sofia.core.sites.SiteVersionValidatorService",
-      "description": ""
+      "path": "/api/v1/sites/{siteId}/versions/{version}/validate",
+      "class": "net.cabezudo.sofia.core.sites.SiteVersionValidatorService"
     },
     {
-      "url": "/api/v1/sites/{siteId}/hosts",
-      "class": "net.cabezudo.sofia.core.sites.SiteHostameListService",
-      "description": ""
+      "path": "/api/v1/sites/{siteId}/hosts",
+      "class": "net.cabezudo.sofia.core.sites.SiteHostameListService"
     },
     {
-      "url": "/api/v1/sites/{siteId}/hosts/{hostname}/names/{name}/validate",
-      "class": "net.cabezudo.sofia.core.sites.SiteHostnameNameValidationService",
-      "description": ""
+      "path": "/api/v1/sites/{siteId}/hosts/{hostname}/names/{name}/validate",
+      "class": "net.cabezudo.sofia.core.sites.SiteHostnameNameValidationService"
     },
     {
-      "url": "/api/v1/mails/{email}/validate",
-      "class": "net.cabezudo.sofia.emails.EMailValidatorService",
-      "description": ""
+      "path": "/api/v1/mails/{email}/validate",
+      "class": "net.cabezudo.sofia.emails.EMailValidatorService"
     },
     {
-      "url": "/api/v1/users/logged",
-      "class": "net.cabezudo.sofia.core.users.autentication.AuthenticatedService",
-      "description": ""
+      "path": "/api/v1/users/logged",
+      "class": "net.cabezudo.sofia.core.users.autentication.AuthenticatedService"
     },
     {
-      "url": "/api/v1/users/{email}/password/recover",
-      "class": "net.cabezudo.sofia.core.passwords.RecoverPasswordService",
-      "description": ""
+      "path": "/api/v1/users/{email}/password/recover",
+      "class": "net.cabezudo.sofia.core.passwords.RecoverPasswordService"
     },
     {
-      "url": "/api/v1/users",
-      "class": "net.cabezudo.sofia.core.users.ListUsersService",
-      "description": ""
+      "path": "/api/v1/users",
+      "class": "net.cabezudo.sofia.core.users.ListUsersService"
     },
     {
-      "url": "/api/v1/persons",
-      "class": "net.cabezudo.sofia.people.ListPeopleService",
-      "description": ""
+      "path": "/api/v1/persons",
+      "class": "net.cabezudo.sofia.people.ListPeopleService"
     },
     {
-      "url": "/api/v1/clients",
-      "class": "net.cabezudo.sofia.clients.ListClientsService",
-      "description": ""
+      "path": "/api/v1/clients",
+      "class": "net.cabezudo.sofia.clients.ListClientsService"
     },
     {
-      "url": "/api/v1/clients/{clientId}",
-      "class": "net.cabezudo.sofia.clients.DetailClientsService",
-      "description": ""
+      "path": "/api/v1/clients/{clientId}",
+      "class": "net.cabezudo.sofia.clients.DetailClientsService"
     }
   ],
   "post": [
     {
-      "url": "/api/v1/password/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService",
-      "description": ""
+      "path": "/api/v1/password/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
     },
     {
-      "url": "/api/v1/password/pair/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordPairValidatorService",
-      "description": ""
+      "path": "/api/v1/password/pair/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordPairValidatorService"
     },
     {
-      "url": "/api/v1/users/login",
-      "class": "net.cabezudo.sofia.core.users.autentication.LoginService",
-      "description": ""
+      "path": "/api/v1/users/login",
+      "class": "net.cabezudo.sofia.core.users.autentication.LoginService"
     },
     {
-      "url": "/api/v1/users/{hash}/password",
-      "class": "net.cabezudo.sofia.core.passwords.SetPasswordService",
-      "description": ""
+      "path": "/api/v1/users/{hash}/password",
+      "class": "net.cabezudo.sofia.core.passwords.SetPasswordService"
     },
     {
-      "url": "/api/v1/users",
-      "class": "net.cabezudo.sofia.core.users.AddUserService",
-      "description": ""
+      "path": "/api/v1/users",
+      "class": "net.cabezudo.sofia.core.users.AddUserService"
     },
     {
-      "url": "/api/v1/person",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/person",
+      "class": ""
     },
     {
-      "url": "/api/v1/enterprise/",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/enterprise/",
+      "class": ""
     },
     {
-      "url": "/api/v1/enterprise/{enterpriseId}/person/{personId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/enterprise/{enterpriseId}/person/{personId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}/person/{personId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}/person/{personId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}/dish",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}/dish",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}/year/{year}/month/{month}/day/{day}/course",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}/year/{year}/month/{month}/day/{day}/course",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}/year/{year}/month/{month}/day/{day}/course/{courseId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}/year/{year}/month/{month}/day/{day}/course/{courseId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/course/{courseId}/dish/{dishId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/course/{courseId}/dish/{dishId}",
+      "class": ""
     }
   ],
   "put": [
     {
-      "url": "/api/v1/sites/{siteId}",
-      "class": "net.cabezudo.sofia.core.sites.SiteModifyService",
-      "description": ""
+      "path": "/api/v1/sites/{siteId}",
+      "class": "net.cabezudo.sofia.core.sites.SiteModifyService"
     },
     {
-      "url": "/api/v1/sites/{siteId}/hosts/{hostId}",
-      "class": "net.cabezudo.sofia.core.sites.SiteModifyDomainNameService",
-      "description": ""
+      "path": "/api/v1/sites/{siteId}/hosts/{hostId}",
+      "class": "net.cabezudo.sofia.core.sites.SiteModifyDomainNameService"
     },
     {
-      "url": "/api/v1/person/{personId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/person/{personId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/enterprise/{enterpriseId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/enterprise/{enterpriseId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/dish/{dishId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/dish/{dishId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/course/{courseId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/course/{courseId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}/ingredient/{ingredientId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}/ingredient/{ingredientId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/year/{year}/month/{month}/day/{day}/courses/publish",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/year/{year}/month/{month}/day/{day}/courses/publish",
+      "class": ""
     },
     {
-      "url": "/api/v1/year/{year}/month/{month}/day/{day}/courses/unpublish",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/year/{year}/month/{month}/day/{day}/courses/unpublish",
+      "class": ""
     }
   ],
   "delete": [
     {
-      "url": "/api/v1/users/{userId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/users/{userId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/person/{personId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/person/{personId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/enterprise/{enterpriseId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/enterprise/{enterpriseId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/enterprise/{enterpriseId}/person/{personId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/enterprise/{enterpriseId}/person/{personId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}/person/{personId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}/person/{personId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/restaurant/{restaurantId}/dish/{dishId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/restaurant/{restaurantId}/dish/{dishId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/course/{courseId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/course/{courseId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/course/{courseId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/course/{courseId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/course/{courseId}/dish/{dishId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/course/{courseId}/dish/{dishId}",
+      "class": ""
     },
     {
-      "url": "/api/v1/ingredient/{ingredientId}",
-      "class": "",
-      "description": ""
+      "path": "/api/v1/ingredient/{ingredientId}",
+      "class": ""
     }
   ]
 }

@@ -13,6 +13,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.ConfigurationFileNotFoundException;
 import net.cabezudo.sofia.core.configuration.DefaultData;
 import net.cabezudo.sofia.core.configuration.Environment;
@@ -29,7 +30,7 @@ import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
-import net.cabezudo.sofia.core.ws.WebServices;
+import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import org.eclipse.jetty.server.Handler;
@@ -110,9 +111,11 @@ public class WebServer {
     Path apiConfigurationFilePath = Configuration.getInstance().getAPIConfigurationFile();
     Logger.debug("Load API configuration file: %s", apiConfigurationFilePath);
     JSONObject apiConfiguration = JSON.parse(apiConfigurationFilePath, Configuration.getInstance().getEncoding().name()).toJSONObject();
-    WebServices.getInstance().add(apiConfiguration);
-
-    System.exit(0);
+    try {
+      WebServicesUniverse.getInstance().add(apiConfiguration);
+    } catch (ClassNotFoundException e) {
+      throw new ConfigurationException(e);
+    }
 
     Logger.debug("Create handler for host %s", site.getBaseDomainName().getName());
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
