@@ -22,9 +22,7 @@ const inputGenericValidator = ({ element = null, id = null, getValidationURL = n
       element = Core.validateById(id);
     }
     element.className = 'inputGenericValidator';
-    if (element.value && element.value.length > 0) {
-      sendValidationRequest(element);
-    }
+    sendValidationRequest(element);
   };
   const assignTriggers = () => {
     element.addEventListener('response', event => {
@@ -66,8 +64,13 @@ const inputGenericValidator = ({ element = null, id = null, getValidationURL = n
     });
   };
   const sendValidationRequest = element => {
-    const response = Core.sendGet(getValidationURL(), element);
-    requestId = response.requestId;
+    if (element.value) {
+      const name = element.value.trim();
+      if (name.length > 0) {
+        const response = Core.sendGet(getValidationURL(), element);
+        requestId = response.requestId;
+      }
+    }
   };
 
   validateOptions();

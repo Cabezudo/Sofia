@@ -16,9 +16,9 @@ import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.hostname.HostnameMaxSizeException;
-import net.cabezudo.sofia.hostname.HostnameValidationException;
-import net.cabezudo.sofia.hostname.HostnameValidator;
+import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
+import net.cabezudo.sofia.core.hostname.HostnameValidationException;
+import net.cabezudo.sofia.core.hostname.HostnameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
