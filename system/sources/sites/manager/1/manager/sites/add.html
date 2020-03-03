@@ -21,7 +21,6 @@
             }
           });
           Core.screenBlocker.unblock();
-          linkTo({onClick: 'sites.html', id: 'siteList'});
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -33,7 +32,7 @@
     <section file="addMenu.html"></section>
     <section id="messages" template="messages/section/simple/message"></section>
     <div id="detail">
-      <div class="title">Detalle de sitio</div>
+      <div class="title">Agregar sitio</div>
       <div><input id="siteName"/></div>
       <div><input id="siteVersion"/></div>
       <div class="subtitle">Domains</div>

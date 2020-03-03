@@ -52,8 +52,6 @@
           Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
 
           bottomMessages({id: 'messages'});
-
-          linkTo({onClick: 'sites.html', id: 'siteList'});
         };
         Core.addOnloadFunction(createGUI);
       }
