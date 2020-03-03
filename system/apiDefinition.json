@@ -13,6 +13,10 @@
       "class": "net.cabezudo.sofia.core.sites.SiteNameValidationService"
     },
     {
+      "path": "/api/v1/sites/names/{name}/validate",
+      "class": "net.cabezudo.sofia.core.sites.SiteNamesValidationService"
+    },
+    {
       "path": "/api/v1/sites/{siteId}/versions/{version}/validate",
       "class": "net.cabezudo.sofia.core.sites.SiteVersionValidatorService"
     },

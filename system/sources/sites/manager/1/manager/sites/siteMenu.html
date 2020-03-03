@@ -1,1 +1,13 @@
-<div id="menu"><div id="siteList">Listado</div></div>
+<script>
+  {
+    const createGUI = () => {
+      linkTo({onClick: '../index.html', id: 'home'});
+      linkTo({onClick: 'sites.html', id: 'siteList'});
+      linkTo({onClick: 'add.html', id: 'addSite'});
+    };
+    Core.addOnloadFunction(createGUI);
+  }
+</script>
+
+
+<div id="menu"><div id="home">home</div><div>&bull;</div><div id="siteList">listado</div><div>&bull;</div><div id="addSite">agregar</div></div>
