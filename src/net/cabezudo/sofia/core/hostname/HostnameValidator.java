@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.hostname;
+package net.cabezudo.sofia.core.hostname;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

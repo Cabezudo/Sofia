@@ -5,9 +5,9 @@
 
 /* global Core */
 
-const simpleStaticMessage = ({ id = null, element = null } = {}) => {
+const simpleStaticMessage = ({ id = null, element = null, visibleTime = 5000 } = {}) => {
   const
-          REMOVE_MESSAGE_TIME_DELAY = 3000;
+          REMOVE_MESSAGE_TIME_DELAY = visibleTime;
   let
           defaultMessage,
           messageContainer,

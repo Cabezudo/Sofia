@@ -14,12 +14,22 @@
         const createGUI = () => {
           const detailDiv = Core.validateById('detail');
           const siteName = Core.validateById('siteName');
+          const siteHost = Core.validateById('siteHost');
+
           inputGenericValidator({
             element: siteName,
             getValidationURL: () => {
               return `/api/v1/sites/names/${siteName.value}/validate`;
             }
           });
+
+          inputGenericValidator({
+            element: siteHost,
+            getValidationURL: () => {
+              return `/api/v1/hosts/names/${siteHost.value}/validate`;
+            }
+          });
+
           Core.screenBlocker.unblock();
         };
         Core.addOnloadFunction(createGUI);
@@ -34,8 +44,8 @@
     <div id="detail">
       <div class="title">Agregar sitio</div>
       <div><input id="siteName"/></div>
-      <div><input id="siteVersion"/></div>
-      <div class="subtitle">Domains</div>
+      <div><input id="siteVersion" value="1" disabled/></div>
+      <div><input id="siteHost" /></div>
       <div id="domains" class="list"></div>
     </div>
   </body>

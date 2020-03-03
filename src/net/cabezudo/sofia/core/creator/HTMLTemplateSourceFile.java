@@ -46,7 +46,7 @@ class HTMLTemplateSourceFile implements SofiaSource {
     String cssPartialFileName = getVoidPartialPathName() + ".css";
     Path cssPartialPath = Paths.get(cssPartialFileName);
     css = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
-    css.load(cssPartialFileName, caller);
+    css.load(basePath, cssPartialFileName, caller);
 
     Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);

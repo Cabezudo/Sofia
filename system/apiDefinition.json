@@ -22,11 +22,15 @@
     },
     {
       "path": "/api/v1/sites/{siteId}/hosts",
-      "class": "net.cabezudo.sofia.core.sites.SiteHostameListService"
+      "class": "net.cabezudo.sofia.core.sites.SiteHostnameListService"
     },
     {
       "path": "/api/v1/sites/{siteId}/hosts/{hostname}/names/{name}/validate",
       "class": "net.cabezudo.sofia.core.sites.SiteHostnameNameValidationService"
+    },
+    {
+      "path": "/api/v1/hosts/names/{name}/validate",
+      "class": "net.cabezudo.sofia.core.hostname.HostnameNameValidationService"
     },
     {
       "path": "/api/v1/mails/{email}/validate",

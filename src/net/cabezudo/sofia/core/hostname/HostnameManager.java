@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.hostname;
+package net.cabezudo.sofia.core.hostname;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
