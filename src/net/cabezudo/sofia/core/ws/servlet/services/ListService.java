@@ -8,6 +8,7 @@ import net.cabezudo.sofia.core.api.options.list.Limit;
 import net.cabezudo.sofia.core.api.options.list.ListOptions;
 import net.cabezudo.sofia.core.api.options.list.Offset;
 import net.cabezudo.sofia.core.api.options.list.Sort;
+import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -22,8 +23,8 @@ public abstract class ListService extends Service {
   private final Offset offset; // Is final because not persist and only matter the request value
   private Limit limit;
 
-  public ListService(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-    super(request, response);
+  public ListService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+    super(request, response, tokens);
 
     // List the clients. GET /api/v1/clients?sort=+name,-lastName&fields=name,lastName&offset=10&limit=50
     listOptions = new ListOptions(request);

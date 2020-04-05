@@ -51,13 +51,17 @@ public class HTMLAuthorizationFilter implements Filter {
       User user = null;
       try {
         if (clientData != null) {
+          Logger.fine("User FOUND in client data.");
           user = clientData.getUser();
+        } else {
+          Logger.fine("User NOT FOUND in client data.");
         }
         if (Environment.getInstance().isDevelopment()) {
           QueryString queryString = new QueryString(request);
           List<String> userParameterList = queryString.get("user");
           if (userParameterList != null && userParameterList.size() > 0) {
             String email = userParameterList.get(0);
+            Logger.fine("User email FOUND in url parameters: " + email);
             user = UserManager.getInstance().getByEMail(email, site);
             if (clientData == null) {
               clientData = WebUserDataManager.getInstance().get(request);
@@ -75,12 +79,16 @@ public class HTMLAuthorizationFilter implements Filter {
       request.getSession().setAttribute("user", user);
 
       String requestURI = request.getRequestURI();
-      Path path = Paths.get(requestURI);
-      if ("/".equals(path.toString())) {
-        path = Paths.get("/index.html");
+      Logger.fine("Request path: " + requestURI);
+      Path path = Paths.get(requestURI);;
+      if (requestURI.endsWith("/")) {
+        path = Paths.get(requestURI + "/index.html");
+        Logger.fine("NO FILE FOUND in path, add index.");
       }
+      Logger.fine("Path: " + path);
       if (path.toString().endsWith("html")) {
         try {
+          Logger.fine("Check for permissions.");
           PermissionType permissionType = PermissionTypeManager.getInstance().get("read", site);
           if (!AuthorizationManager.getInstance().hasAuthorization(path.toString(), user, permissionType, site)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);

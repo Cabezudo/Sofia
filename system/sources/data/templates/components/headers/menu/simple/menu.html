@@ -60,7 +60,8 @@
       for (const i in items) {
         const item = items[i];
 
-        if (item.logged === null || (Core.isLogged() && item.logged === true) || (Core.isNotLogged() && item.logged === false)) {
+        const hide = item.hide !== undefined && item.hide !== null && item.hide.includes(window.location.pathname);
+        if (item.logged === null || (Core.isLogged() && item.logged === true) || (Core.isNotLogged() && item.logged === false) && !hide) {
           const itemElement = document.createElement('div');
           menu.appendChild(itemElement);
           itemElement.className = 'item';

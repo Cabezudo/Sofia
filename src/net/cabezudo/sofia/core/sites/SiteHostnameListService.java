@@ -24,11 +24,9 @@ import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 public class SiteHostnameListService extends ListService {
 
   private final int MAX_ITEMS = 200;
-  private final Tokens tokens;
 
   public SiteHostnameListService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

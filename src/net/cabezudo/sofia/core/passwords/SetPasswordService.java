@@ -27,11 +27,8 @@ import net.cabezudo.sofia.emails.EMailNotExistException;
  */
 public class SetPasswordService extends Service {
 
-  private final Tokens tokens;
-
   public SetPasswordService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

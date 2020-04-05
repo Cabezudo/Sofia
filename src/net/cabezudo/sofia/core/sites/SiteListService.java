@@ -19,7 +19,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 public class SiteListService extends ListService {
 
   public SiteListService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
+    super(request, response, tokens);
   }
 
   @Override
