@@ -9,6 +9,9 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
+import net.cabezudo.sofia.core.hostname.HostnameValidationException;
+import net.cabezudo.sofia.core.hostname.HostnameValidator;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
@@ -16,9 +19,6 @@ import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
-import net.cabezudo.sofia.core.hostname.HostnameValidationException;
-import net.cabezudo.sofia.core.hostname.HostnameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -27,11 +27,8 @@ import net.cabezudo.sofia.core.hostname.HostnameValidator;
  */
 public class SiteModifyDomainNameService extends Service {
 
-  private final Tokens tokens;
-
   public SiteModifyDomainNameService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

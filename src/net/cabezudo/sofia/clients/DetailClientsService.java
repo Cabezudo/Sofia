@@ -15,11 +15,8 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class DetailClientsService extends Service {
 
-  private final Tokens tokens;
-
   public DetailClientsService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

@@ -5,15 +5,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
+import net.cabezudo.sofia.core.hostname.HostnameValidationException;
+import net.cabezudo.sofia.core.hostname.HostnameValidator;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
-import net.cabezudo.sofia.core.hostname.HostnameValidationException;
-import net.cabezudo.sofia.core.hostname.HostnameValidator;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -21,11 +21,8 @@ import net.cabezudo.sofia.core.hostname.HostnameValidator;
  */
 public class SiteHostnameNameValidationService extends Service {
 
-  private final Tokens tokens;
-
   public SiteHostnameNameValidationService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

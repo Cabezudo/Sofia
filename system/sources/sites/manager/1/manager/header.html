@@ -1,1 +1,9 @@
-<div id="header"><div class="logo">Sofia</div></div>
+<script>
+  {
+    const createGUI = () => {
+      linkTo({onClick: '/', id: 'logo'});
+    };
+    Core.addOnloadFunction(createGUI);
+  }
+</script>
+<div id="header"><div id="logo" class="logo">Sofia</div></div>

@@ -18,11 +18,8 @@ import net.cabezudo.sofia.core.ws.servlet.services.ValidationService;
  */
 public class SiteNamesValidationService extends ValidationService {
 
-  private final Tokens tokens;
-
   public SiteNamesValidationService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

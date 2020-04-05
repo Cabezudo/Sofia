@@ -18,11 +18,8 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class SiteService extends Service {
 
-  private final Tokens tokens;
-
   public SiteService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

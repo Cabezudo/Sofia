@@ -13,6 +13,7 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
+import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 
 /**
@@ -24,12 +25,14 @@ public abstract class Service<T extends Response> {
 
   protected final HttpServletRequest request;
   protected final HttpServletResponse response;
+  protected final Tokens tokens;
   private final HttpSession session;
   protected final PrintWriter out;
 
-  protected Service(HttpServletRequest request, HttpServletResponse response) throws ServletException {
+  protected Service(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     this.request = request;
     this.response = response;
+    this.tokens = tokens;
     this.session = request.getSession();
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
     try {

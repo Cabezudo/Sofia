@@ -25,7 +25,11 @@
           "es": "item 1"
         },
         "url": "url",
-        "logged": null
+        "logged": null,
+        "hide": [
+          "url1",
+          "url2"
+        ]
       },
       {
         "name": {

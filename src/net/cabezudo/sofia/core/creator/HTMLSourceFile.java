@@ -144,10 +144,11 @@ class HTMLSourceFile implements SofiaSource {
         htmlSourceFilePath = parent.resolve(partialFilePath);
       }
     }
-    Logger.debug("Load HTML source file %s.", partialFilePath);
+    Logger.debug("Load HTML source file %s.", htmlSourceFilePath);
 
     if (!Files.exists(htmlSourceFilePath)) {
-      throw new SiteCreationException("HTML file source " + getPartialFilePath() + " NOT FOUND.");
+      return;
+      //throw new SiteCreationException("HTML file source " + getPartialFilePath() + " NOT FOUND.");
     }
     List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
     int lineNumber = 1;
@@ -285,6 +286,7 @@ class HTMLSourceFile implements SofiaSource {
         Logger.debug("Profiles: " + profileString);
         String[] ps = profileString.split(",");
         profiles = ProfileManager.getInstance().createFromNames(ps, getSite());
+        System.out.println(profiles);
       }
       add(new CodeLine("<html>\n", lineNumber));
       return true;

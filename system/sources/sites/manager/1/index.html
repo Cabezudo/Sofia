@@ -11,6 +11,10 @@
     <script>
       {
         const createGUI = () => {
+          linkTo({
+            id: 'managerLink',
+            onClick: '/manager/'
+          });
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -18,6 +22,9 @@
   </head>
   <body>
     <section id="header" template="headers/menu/simple/menu" configuration="header.json"></section>
-    <section id="messages" template="messages/section/simple/message"></section>
+    <div id="content">
+      <p>El servidor ha sido instalado correctamente y está funcionando.</p>
+      <p>Para acceder a la consola de administración utilice <span id="managerLink">este enlace</span>.</p>
+    </div>
   </body>
 </html>

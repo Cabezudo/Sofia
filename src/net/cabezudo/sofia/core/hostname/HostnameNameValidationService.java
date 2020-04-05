@@ -18,11 +18,8 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class HostnameNameValidationService extends Service {
 
-  private final Tokens tokens;
-
   public HostnameNameValidationService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
-    super(request, response);
-    this.tokens = tokens;
+    super(request, response, tokens);
   }
 
   @Override

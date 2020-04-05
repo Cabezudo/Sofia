@@ -12,6 +12,7 @@ import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
 import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
+import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 
@@ -21,8 +22,8 @@ import net.cabezudo.sofia.core.ws.servlet.services.ListService;
  */
 public class ListClientsService extends ListService {
 
-  public ListClientsService(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-    super(request, response);
+  public ListClientsService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+    super(request, response, tokens);
   }
 
   @Override

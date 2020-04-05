@@ -7,6 +7,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -16,8 +17,8 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class PasswordValidatorService extends Service {
 
-  public PasswordValidatorService(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-    super(request, response);
+  public PasswordValidatorService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+    super(request, response, tokens);
   }
 
   @Override

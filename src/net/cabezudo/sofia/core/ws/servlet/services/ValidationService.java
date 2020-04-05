@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.ws.servlet.services;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 
 /**
@@ -11,8 +12,8 @@ import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
  */
 public abstract class ValidationService extends Service<ValidationResponse> {
 
-  public ValidationService(HttpServletRequest request, HttpServletResponse response) throws ServletException {
-    super(request, response);
+  public ValidationService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+    super(request, response, tokens);
   }
 
 }
