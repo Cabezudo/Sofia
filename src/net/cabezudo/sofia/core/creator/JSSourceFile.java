@@ -20,6 +20,7 @@ class JSSourceFile implements SofiaSource {
   private final Path partialPath;
   private final TemplateVariables templateVariables;
   private final Caller caller;
+  private final CSSImports imports;
   private final Libraries libraries;
   private final Lines lines;
 
@@ -29,6 +30,7 @@ class JSSourceFile implements SofiaSource {
     this.partialPath = partialPath;
     this.templateVariables = templateVariables;
     this.caller = caller;
+    this.imports = new CSSImports();
     this.libraries = new Libraries();
     this.lines = new Lines();
   }
@@ -73,6 +75,18 @@ class JSSourceFile implements SofiaSource {
         throw new LocatedSiteCreationException(e.getMessage(), getPartialPath(), position);
       }
       lineNumber++;
+    }
+  }
+
+  @Override
+  public void add(CSSImport cssImport) {
+    imports.add(cssImport);
+  }
+
+  @Override
+  public void add(CSSImports newCSSImports) {
+    for (CSSImport cssImport : newCSSImports) {
+      imports.add(cssImport);
     }
   }
 
@@ -132,6 +146,11 @@ class JSSourceFile implements SofiaSource {
   @Override
   public Lines getLines() {
     return lines;
+  }
+
+  @Override
+  public CSSImports getCascadingStyleSheetImports() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   @Override

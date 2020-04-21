@@ -31,6 +31,7 @@ class HTMLSourceFile implements SofiaSource {
   private final TemplateVariables templateVariables;
   private final Caller caller;
   private final Lines lines;
+  protected final CSSImports cssImports;
   protected final Libraries libraries;
   private final CSSSourceFile css;
   private final JSSourceFile js;
@@ -44,6 +45,7 @@ class HTMLSourceFile implements SofiaSource {
     this.templateVariables = templateVariables;
     this.caller = caller;
     this.lines = new Lines();
+    this.cssImports = new CSSImports();
     this.libraries = new Libraries();
 
     String cssPartialName = getVoidPartialPathName() + ".css";
@@ -317,8 +319,22 @@ class HTMLSourceFile implements SofiaSource {
   }
 
   @Override
-  public void add(Line line
-  ) {
+  public void add(CSSImport cssImport) {
+    if (cssImport == null) {
+      return;
+    }
+    lines.add(cssImport);
+  }
+
+  @Override
+  public void add(CSSImports newCSSImports) {
+    for (CSSImport cssImport : newCSSImports) {
+      cssImports.add(cssImport);
+    }
+  }
+
+  @Override
+  public void add(Line line) {
     if (line == null) {
       return;
     }
@@ -349,6 +365,16 @@ class HTMLSourceFile implements SofiaSource {
       codeLines.add(line.getJavaScriptLines());
     }
     return codeLines;
+  }
+
+  @Override
+  public CSSImports getCascadingStyleSheetImports() {
+    CSSImports imports = new CSSImports();
+    imports.add(css.getCascadingStyleSheetImports());
+    for (Line line : this.lines) {
+      imports.add(line.getCascadingStyleSheetImports());
+    }
+    return imports;
   }
 
   @Override

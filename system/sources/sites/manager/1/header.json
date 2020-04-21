@@ -13,6 +13,16 @@
       },
       {
         "name": {
+          "es": "administración"
+        },
+        "url": "/manager/",
+        "logged": true,
+        "profiles": [
+          "Administrator"
+        ]
+      },
+      {
+        "name": {
           "es": "salir"
         },
         "url": "logout",

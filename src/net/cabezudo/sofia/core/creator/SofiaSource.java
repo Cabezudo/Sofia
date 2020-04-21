@@ -8,6 +8,10 @@ import java.sql.SQLException;
  */
 interface SofiaSource {
 
+  void add(CSSImport cssImport);
+
+  void add(CSSImports cssImports);
+
   void add(Line line);
 
   void add(Lines lines);
@@ -15,6 +19,8 @@ interface SofiaSource {
   Lines getLines();
 
   Lines getJavaScriptLines();
+
+  CSSImports getCascadingStyleSheetImports();
 
   Lines getCascadingStyleSheetLines();
 

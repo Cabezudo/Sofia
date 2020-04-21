@@ -41,12 +41,31 @@
     <section file="../header.html"></section>
     <section file="addMenu.html"></section>
     <section id="messages" template="messages/section/simple/message"></section>
-    <div id="detail">
-      <div class="title">Agregar sitio</div>
-      <div><input id="siteName"/></div>
-      <div><input id="siteVersion" value="1" disabled/></div>
-      <div><input id="siteHost" /></div>
-      <div id="domains" class="list"></div>
-    </div>
+    <section id="detail" class="blue">
+      <div class="container">
+        <h2 class="title">Agregar sitio</h2>
+        <hr>
+        <div class="column">
+          <div class="content">
+            <p>Complete los campos a continuación para agregar un nuevo sitio al servidor. El nombre del sitio es arbitrario, puede elegir el que sea. El nombre de host tiene que ser un host que pueda resolverse a una IP.</p>
+          </div>
+        </div>
+        <div class="column">
+          <div class="content">
+            <div class="field"><div class="control"><input id="siteName" placeholder="Nombre"/></div></div>
+            <div class="field"><div class="control"><input id="siteVersion" value="1" disabled/></div></div>
+            <div class="field"><div class="control"><input id="siteHost" placeholder="Host" /></div></div>
+            <div class="field"><div class="control centered">
+                <button type="button" name="add" class="button blue"disabled >Agregar</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer>
+      <div class="control centered">
+        &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
+      </div>
+    </footer>
   </body>
 </html>
