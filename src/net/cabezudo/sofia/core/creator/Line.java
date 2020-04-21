@@ -28,5 +28,12 @@ public abstract class Line implements Comparable<Line> {
 
   abstract Lines getJavaScriptLines();
 
+  abstract CSSImports getCascadingStyleSheetImports();
+
   abstract Lines getCascadingStyleSheetLines();
+
+  boolean isCSSImport() {
+    return false;
+  }
+
 }

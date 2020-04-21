@@ -57,6 +57,11 @@ public class CodeLine extends Line {
   }
 
   @Override
+  boolean isCSSImport() {
+    return line.startsWith("@import ");
+  }
+
+  @Override
   public int compareTo(Line o) {
     CodeLine codeLine = (CodeLine) o;
     int c = line.compareTo(codeLine.line);
@@ -82,7 +87,17 @@ public class CodeLine extends Line {
   }
 
   @Override
+  CSSImports getCascadingStyleSheetImports() {
+    return null;
+  }
+
+  @Override
   Lines getCascadingStyleSheetLines() {
     return null;
+  }
+
+  @Override
+  public String toString() {
+    return this.getCode();
   }
 }

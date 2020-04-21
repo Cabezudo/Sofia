@@ -21,6 +21,7 @@ class CSSSourceFile implements SofiaSource {
   private final Path partialPath;
   private final TemplateVariables templateVariables;
   private final Caller caller;
+  private final CSSImports cssImports;
   private final Libraries libraries;
   private final Lines lines;
 
@@ -30,6 +31,7 @@ class CSSSourceFile implements SofiaSource {
     this.partialPath = partialPath;
     this.templateVariables = templateVariables;
     this.caller = caller;
+    this.cssImports = new CSSImports();
     this.libraries = new Libraries();
     this.lines = new Lines();
   }
@@ -60,13 +62,31 @@ class CSSSourceFile implements SofiaSource {
   }
 
   @Override
+  public void add(CSSImport cssImport) {
+    cssImports.add(cssImport);
+  }
+
+  @Override
+  public void add(CSSImports newCSSImports) {
+    for (CSSImport cssImport : newCSSImports) {
+      cssImports.add(cssImport);
+    }
+  }
+
+  @Override
   public void add(Line line) {
-    lines.add(line);
+    if (line.isCSSImport()) {
+      cssImports.add(new CSSImport(line));
+    } else {
+      lines.add(line);
+    }
   }
 
   @Override
   public void add(Lines lines) {
-    this.lines.add(lines);
+    for (Line line : lines) {
+      this.lines.add(line);
+    }
   }
 
   public void add(Libraries libraries) throws LibraryVersionConflictException {
@@ -84,6 +104,15 @@ class CSSSourceFile implements SofiaSource {
     StringBuilder code = new StringBuilder();
 
     for (Library library : libraries) {
+      for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
+        cssImports.add(file.getCascadingStyleSheetImports());
+      }
+    }
+    System.out.println("******************************************************************************************");
+    System.out.println(cssImports.toString());
+    code.append(cssImports.toString());
+
+    for (Library library : libraries) {
       Logger.debug("Search files in library %s.", library);
       for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
         Logger.debug("Add lines from file %s.", file.getPartialPath());
@@ -97,6 +126,11 @@ class CSSSourceFile implements SofiaSource {
 
   String getCascadingStyleSheetCode() {
     return lines.getCode();
+  }
+
+  @Override
+  public CSSImports getCascadingStyleSheetImports() {
+    return cssImports;
   }
 
   @Override

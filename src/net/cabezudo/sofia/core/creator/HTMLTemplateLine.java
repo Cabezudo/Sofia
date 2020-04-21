@@ -115,6 +115,11 @@ public class HTMLTemplateLine extends Line {
   }
 
   @Override
+  CSSImports getCascadingStyleSheetImports() {
+    return file.getCascadingStyleSheetImports();
+  }
+
+  @Override
   Lines getCascadingStyleSheetLines() {
     return file.getCascadingStyleSheetLines();
   }

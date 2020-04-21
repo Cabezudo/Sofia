@@ -21,12 +21,14 @@ final class ThemeSourceFile implements SofiaSource {
   private final Site site;
   private final TemplateVariables templateVariables;
   private final String themeName;
+  private final CSSImports cssImports;
   private final Lines lines;
 
   ThemeSourceFile(Site site, String themeName, TemplateVariables templateVariables) throws IOException, SiteCreationException {
     this.site = site;
     this.templateVariables = templateVariables;
     this.themeName = themeName;
+    this.cssImports = new CSSImports();
     this.lines = new Lines();
   }
 
@@ -69,8 +71,24 @@ final class ThemeSourceFile implements SofiaSource {
   }
 
   @Override
+  public void add(CSSImport cssImport) {
+    cssImports.add(cssImport);
+  }
+
+  @Override
+  public void add(CSSImports newCSSImports) {
+    for (CSSImport cssImport : newCSSImports) {
+      cssImports.add(cssImport);
+    }
+  }
+
+  @Override
   public void add(Line line) {
-    lines.add(line);
+    if (line.isCSSImport()) {
+      cssImports.add(new CSSImport(line));
+    } else {
+      lines.add(line);
+    }
   }
 
   @Override
@@ -81,6 +99,11 @@ final class ThemeSourceFile implements SofiaSource {
   @Override
   public String getVoidPartialPathName() {
     throw new UnsupportedOperationException("Not supported.");
+  }
+
+  @Override
+  public CSSImports getCascadingStyleSheetImports() {
+    return cssImports;
   }
 
   @Override

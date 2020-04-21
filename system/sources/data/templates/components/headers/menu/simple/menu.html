@@ -59,9 +59,30 @@
       const menu = Core.validateById('menu');
       for (const i in items) {
         const item = items[i];
-
+        console.log(`item: ${JSON.stringify(item)}`);
         const hide = item.hide !== undefined && item.hide !== null && item.hide.includes(window.location.pathname);
-        if (item.logged === null || (Core.isLogged() && item.logged === true) || (Core.isNotLogged() && item.logged === false) && !hide) {
+        let profileAccepted = false;
+        const menuProfiles = item.profiles;
+        const user = variables.user;
+        console.log(`user: ${JSON.stringify(user)}`);
+        console.log(`menuProfiles: ${JSON.stringify(menuProfiles)}`);
+        if (menuProfiles === undefined) {
+          profileAccepted = true;
+        } else {
+          if (user !== null) {
+            const userProfiles = user.profiles;
+            if (userProfiles !== undefined) {
+              console.log(`userProfiles: ${JSON.stringify(userProfiles)}`);
+              userProfiles.forEach(userProfile => {
+                if (menuProfiles.includes(userProfile.name)) {
+                  profileAccepted = true;
+                }
+              });
+            }
+          }
+        }
+        console.log(`profileAccepted: ${JSON.stringify(profileAccepted)}`);
+        if ((item.logged === null || (Core.isLogged() && item.logged === true) || (Core.isNotLogged() && item.logged === false) && !hide) && profileAccepted === true) {
           const itemElement = document.createElement('div');
           menu.appendChild(itemElement);
           itemElement.className = 'item';

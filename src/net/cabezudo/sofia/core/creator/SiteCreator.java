@@ -98,8 +98,10 @@ public class SiteCreator {
     jsFile.save(jsFilePath);
 
     CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, null);
+    cssFile.add(themeSourceFile.getCascadingStyleSheetImports());
     cssFile.add(themeSourceFile.getCascadingStyleSheetLines());
     cssFile.add(baseFile.getLibraries());
+    cssFile.add(baseFile.getCascadingStyleSheetImports());
     cssFile.add(baseFile.getCascadingStyleSheetLines());
     Path cssFilePath = site.getCSSPath().resolve(cssPartialPath);
     cssFile.save(cssFilePath);
