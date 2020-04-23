@@ -12,7 +12,7 @@
         }
       },
       "color": {
-        "main": "#000474"
+        "main": "#2980B9"
       }
     },
     "title": {
@@ -74,23 +74,16 @@
       }
     },
     "messages": {
-      "font": {
-        "family": "'Economica', sans-serif",
-        "size": {
-          "default": "20px",
-          "480": "20px",
-          "750": "20px",
-          "1024": "20px",
-          "1250": "20px",
-          "1800": "20px"
-        },
-        "padding": {
-          "default": "20px",
-          "480": "26px",
-          "750": "26px",
-          "1024": "26px",
-          "1250": "26px",
-          "1800": "26px"
+      "ok": {
+        "font": {
+          "family": "'Ubuntu', sans-serif",
+          "color": "white"
+        }
+      },
+      "error": {
+        "font": {
+          "family": "'Ubuntu', sans-serif",
+          "color": "#FFCCDA"
         }
       }
     },

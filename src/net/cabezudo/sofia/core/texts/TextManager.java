@@ -70,7 +70,7 @@ public class TextManager {
       case "site.name.ok":
         return "El nombre de sitio está correcto";
       case "site.name.empty":
-        return "Debe colocar un nombre para el sitio";
+        return "El nombre del sitio no debe estar vacío";
       case "site.updated":
         return "Datos del sitio actualizados";
       case "user.already.added":

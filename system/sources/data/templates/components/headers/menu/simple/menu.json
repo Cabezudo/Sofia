@@ -11,14 +11,21 @@
         "1800": "#{theme.application.container.width.1800}"
       }
     },
+    "title": {
+      "font": {
+        "font-family": [
+          "Titillium Web",
+          "sans-serif"
+        ]
+      }
+    },
     "color": {
       "main": "#{theme.application.color.main}"
     }
   },
-  "site": {
-    "name": "#{site.name}"
-  },
   "menu": {
+    "name": "#{site.name}",
+    "description": "the<br>description",
     "items": [
       {
         "name": {
@@ -29,6 +36,9 @@
         "hide": [
           "url1",
           "url2"
+        ],
+        "profiles": [
+          "profile1"
         ]
       },
       {

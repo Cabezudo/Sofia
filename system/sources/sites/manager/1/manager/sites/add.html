@@ -6,57 +6,124 @@
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/css/manager/sites/add.css">
     <script src="/js/manager/sites/add.js"></script>
+    <script src="/js/variables.js"></script>
     <script lib="core/0.1.0"></script>
     <script lib="inputGenericValidator/0.1.0"></script>
     <script lib="linkTo/0.1.0"></script>
     <script>
       {
+        let addButton, detailDiv, siteName, siteHost, siteNameErrorMessage, hostnameErrorMessage;
         const createGUI = () => {
-          const detailDiv = Core.validateById('detail');
-          const siteName = Core.validateById('siteName');
-          const siteHost = Core.validateById('siteHost');
-
+          detailDiv = Core.validateById('detail');
+          siteName = Core.validateById('siteName');
+          siteHost = Core.validateById('siteHost');
+          addButton = Core.validateById('add');
           inputGenericValidator({
             element: siteName,
             getValidationURL: () => {
               return `/api/v1/sites/names/${siteName.value}/validate`;
+            },
+            onValid: () => {
+              siteNameErrorMessage = undefined;
+              setFormStatus();
+            },
+            onNotValid: data => {
+              siteNameErrorMessage = data;
+              setFormStatus();
+            },
+            onFocus: () => {
+              setMessage();
             }
           });
-
           inputGenericValidator({
             element: siteHost,
             getValidationURL: () => {
               return `/api/v1/hosts/names/${siteHost.value}/validate`;
+            },
+            onValid: () => {
+              hostnameErrorMessage = undefined;
+              setFormStatus();
+            },
+            onNotValid: data => {
+              hostnameErrorMessage = data;
+              setFormStatus();
+            },
+            onFocus: () => {
+              setMessage();
             }
           });
-
-          Core.screenBlocker.unblock();
+        };
+        const setMessage = () => {
+          console.log(`add.html : setMessage`);
+          do {
+            if (siteNameErrorMessage && Core.inFocus(siteName)) {
+              Core.showMessage(siteNameErrorMessage);
+              break;
+            }
+            if (hostnameErrorMessage && Core.inFocus(siteHost)) {
+              Core.showMessage(hostnameErrorMessage);
+              break;
+            }
+            if (siteNameErrorMessage) {
+              Core.showMessage(siteNameErrorMessage);
+              break;
+            }
+            if (hostnameErrorMessage) {
+              Core.showMessage(hostnameErrorMessage);
+              break;
+            }
+            if (siteName.value === '' && siteHost.value === '') {
+              Core.showMessage({status: "OK", message: 'Complete the fields to add a new site'});
+              break;
+            }
+            if (siteName.value === '') {
+              Core.showMessage({status: "OK", message: 'Complete the site name field to complete the data'});
+              break;
+            }
+            if (siteHost.value === '') {
+              Core.showMessage({status: "OK", message: 'Complete the site host field to complete the data'});
+              break;
+            }
+            if (!siteNameErrorMessage && !hostnameErrorMessage) {
+              Core.showMessage({status: "OK", message: 'The data to add the site are correct.'});
+              break;
+            }
+          } while (false);
+        };
+        const setFormStatus = () => {
+          addButton.disabled = !(siteNameErrorMessage === undefined && hostnameErrorMessage === undefined);
+          setMessage();
         };
         Core.addOnloadFunction(createGUI);
+        Core.addSetFunction(() => {
+          setFormStatus();
+          siteName.focus();
+        });
       }
     </script>
-    <style file="menu.css"></style>
+    <style>
+      #messages {
+        height: 30px;
+      }
+    </style>
   </head>
   <body>
-    <section file="../header.html"></section>
-    <section file="addMenu.html"></section>
-    <section id="messages" template="messages/section/simple/message"></section>
-    <section id="detail" class="blue">
+    <section id="header" template="headers/menu/simple/menu"></section>
+    <section id="detail" class="section blue">
       <div class="container">
-        <h2 class="title">Agregar sitio</h2>
-        <hr>
+        <h2 class="title">Site add</h2>
         <div class="column">
           <div class="content">
-            <p>Complete los campos a continuación para agregar un nuevo sitio al servidor. El nombre del sitio es arbitrario, puede elegir el que sea. El nombre de host tiene que ser un host que pueda resolverse a una IP.</p>
+            <section id="messages" template="messages/section/simple/message"></section>
           </div>
         </div>
         <div class="column">
           <div class="content">
-            <div class="field"><div class="control"><input id="siteName" placeholder="Nombre"/></div></div>
-            <div class="field"><div class="control"><input id="siteVersion" value="1" disabled/></div></div>
-            <div class="field"><div class="control"><input id="siteHost" placeholder="Host" /></div></div>
+            <div class="field"><div class="control"><input id="siteName" placeholder="Nombre" spellcheck="false"/></div></div>
+            <div class="field"><div class="control"><input id="siteVersion" value="1" disabled /></div></div>
+            <div class="field"><div class="control"><input id="siteHost" placeholder="Host" spellcheck="false"/></div></div>
             <div class="field"><div class="control centered">
-                <button type="button" name="add" class="button blue"disabled >Agregar</button></div>
+                <button type="button" id="add" class="button blue">Agregar</button></div>
             </div>
           </div>
         </div>
