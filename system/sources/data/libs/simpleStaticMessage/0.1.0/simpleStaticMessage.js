@@ -10,9 +10,7 @@ const simpleStaticMessage = ({ id = null, element = null, visibleTime = 5000 } =
           REMOVE_MESSAGE_TIME_DELAY = visibleTime;
   let
           defaultMessage,
-          messageContainer,
-          messageRemoverTimer;
-
+          messageContainer;
   const validateOptions = () => {
     element = Core.validateIdOrElement(id, element);
   };
@@ -25,34 +23,38 @@ const simpleStaticMessage = ({ id = null, element = null, visibleTime = 5000 } =
     messageContainer.innerText = defaultMessage;
     element.appendChild(messageContainer);
   };
+  const clearMessage = () => {
+    console.log('simpleStaticMessage : clearMessage.');
+    messageContainer.innerText = defaultMessage;
+    element.classList.remove('red');
+    element.classList.remove('green');
+  };
   const assignTriggers = () => {
     element.addEventListener('cleanMessages', () => {
-      console.log('Clear messages.');
-      messageContainer.innerText = '';
+      clearMessage();
+    });
+    element.addEventListener('setDefaultMessage', event => {
+      defaultMessage = event.detail;
+      console.log(`simpleStaticMessage : trigger: setDefaultMessage : ${defaultMessage}`);
+      messageContainer.innerText = defaultMessage;
     });
     element.addEventListener('showMessage', event => {
-      console.log('Show message.');
       const payload = event.detail;
+      console.log(`simpleStaticMessage : trigger : showMessage : ${JSON.stringify(payload)}`);
       switch (payload.status) {
         case 'ERROR':
-          element.classList.remove('green');
-          element.classList.add('red');
+          messageContainer.innerText = payload.message;
+          element.classList.remove('ok');
+          element.classList.add('error');
           break;
         case 'OK':
-          element.classList.remove('red');
-          element.classList.add('green');
+          messageContainer.innerText = payload.message;
+          element.classList.remove('error');
+          element.classList.add('ok');
           break;
         default:
           throw new Error(`Invalid status: ${payload.status}`);
       }
-      messageContainer.innerText = payload.message;
-      if (messageRemoverTimer) {
-        clearTimeout(messageRemoverTimer);
-      }
-      messageRemoverTimer = setTimeout(() => {
-        element.className = 'simpleStaticMessage';
-        messageContainer.innerText = defaultMessage;
-      }, REMOVE_MESSAGE_TIME_DELAY);
     });
   };
   validateOptions();

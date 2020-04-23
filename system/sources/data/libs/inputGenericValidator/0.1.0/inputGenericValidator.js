@@ -5,7 +5,7 @@
 
 /* global Core */
 
-const inputGenericValidator = ({ element = null, id = null, getValidationURL = null, onValid = null, onNotValid = null, onKeyPress = null } = {}) => {
+const inputGenericValidator = ({ element = null, id = null, getValidationURL = null, onValid = null, onNotValid = null, onKeyPress = null, onFocus = null } = {}) => {
   let verificationTimer;
   let requestId = 0;
 
@@ -22,54 +22,56 @@ const inputGenericValidator = ({ element = null, id = null, getValidationURL = n
       element = Core.validateById(id);
     }
     element.className = 'inputGenericValidator';
-    sendValidationRequest(element);
   };
   const assignTriggers = () => {
     element.addEventListener('response', event => {
       const data = event.detail;
-
       const element = event.srcElement;
       if (requestId === data.requestId) {
         const data = event.detail;
         data.elementId = element.id;
-        Core.showMessage(data);
         if (data.status === 'ERROR') {
           element.classList.add('error');
+          if (Core.isFunction(onNotValid)) {
+            onNotValid(data);
+          }
         }
         if (data.status === 'OK') {
           element.classList.remove('error');
           if (Core.isFunction(onValid)) {
-            onValid();
-          }
-        } else {
-          if (Core.isFunction(onNotValid)) {
-            onNotValid();
+            onValid(data);
           }
         }
       }
     });
+    element.addEventListener("focus", event => {
+      if (Core.isFunction(onFocus)) {
+        onFocus(event);
+      }
+    });
     element.addEventListener("keypress", event => {
-      if (Core.isFunction(onKeyPress)) {
-        onKeyPress(event);
+      if (Core.isFunction(onFocus)) {
+        onFocus(event);
       }
     });
     element.addEventListener("keyup", event => {
       if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
         return;
       }
-      if (verificationTimer) {
+      if (verificationTimer !== undefined) {
         clearTimeout(verificationTimer);
       }
-      verificationTimer = setTimeout(sendValidationRequest(element), Core.EVENT_TIME_DELAY);
+      verificationTimer = setTimeout(() => {
+        sendValidationRequest(element);
+      }, 500);
     });
   };
   const sendValidationRequest = element => {
-    if (element.value) {
+    if (element.value !== null && element.value !== undefined) {
       const name = element.value.trim();
-      if (name.length > 0) {
-        const response = Core.sendGet(getValidationURL(), element);
-        requestId = response.requestId;
-      }
+      console.log(`inputGenericValidator : sendValidationRequest : send GET with ${getValidationURL()}`);
+      const response = Core.sendGet(getValidationURL(), element);
+      requestId = response.requestId;
     }
   };
 

@@ -6,11 +6,11 @@
 .simpleStaticMessage {
   display: flex;
   justify-content: center;
-  font-family: 'Abel', sans-serif;
+  font-family: #{theme.messages.ok.font.family};
   font-size: 18px;
-  font-weight: 400;
-  background-color: white;
-  color: darkgray;
+  font-weight: 200;
+  background-color: transparent;
+  color: #{theme.messages.ok.font.color};
   padding: 4px;
   height: 24px;
   transition: background-color 0.5s linear;
@@ -19,13 +19,12 @@
 .simpleStaticMessage div {
   display: flex;
   align-items: center;
-  color: black;
 }
 
-.simpleStaticMessage.red {
-  background-color: #F7BAC9;
+.simpleStaticMessage.error {
+  color: #{theme.messages.error.font.color};
 }
 
-.simpleStaticMessage.green {
-  background-color: #B8D6A4;
+.simpleStaticMessage.ok {
+  color: #{theme.messages.ok.font.color};
 }

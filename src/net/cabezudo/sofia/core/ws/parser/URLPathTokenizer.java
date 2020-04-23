@@ -23,10 +23,13 @@ public class URLPathTokenizer {
           if (sb.length() > 0) {
             token = TokenFactory.get(sb.toString());
             tokens.add(token);
+            sb = new StringBuilder();
+          } else {
+            token = TokenFactory.get("");
+            tokens.add(token);
           }
           token = TokenFactory.get(c);
           tokens.add(token);
-          sb = new StringBuilder();
           break;
         default:
           sb.append(c);

@@ -46,7 +46,6 @@ public class Tokens extends AbstractList<Token> {
   }
 
   public boolean match(String pattern) {
-
     Tokens patternTokens = URLPathTokenizer.tokenize(pattern);
 
     if (patternTokens.size() != this.size()) {

@@ -12,7 +12,9 @@ const Core = {
   messagesContainer: null,
   requestId: 0,
   onloadFunctions: [],
+  setPageFunctions: [],
   screenBlockerDiv: null,
+  loaderDiv: null,
   pageParameters: new URLSearchParams(location.search),
   lastSection: null,
   showMessage: (messageObject) => {
@@ -24,6 +26,9 @@ const Core = {
   },
   addOnloadFunction: (func) => {
     Core.onloadFunctions.push(func);
+  },
+  addSetFunction: (func) => {
+    Core.setPageFunctions.push(func);
   },
   changeSection: section => {
     if (Core.lastSection !== null) {
@@ -65,6 +70,9 @@ const Core = {
 //      element.setAttribute('lastDisplay', element.style.display);
 //    }
 //    element.style.display = 'none';
+  },
+  inFocus: element => {
+    return element === document.activeElement;
   },
   isEnter: event => {
     return event.key === 'Enter';
@@ -112,6 +120,7 @@ const Core = {
       case 'Home':
       case 'PageDown':
       case 'PageUp':
+      case 'Tab':
         return true;
       default:
         return false;
@@ -148,7 +157,7 @@ const Core = {
           Core.screenBlockerDiv.style.top = "0px";
           Core.screenBlockerDiv.style.width = "100vw";
           Core.screenBlockerDiv.style.height = "100vh";
-          Core.screenBlockerDiv.style.background = "gray";
+          Core.screenBlockerDiv.style.backgroundColor = "gray";
           Core.screenBlockerDiv.style.opacity = ".7";
           Core.screenBlockerDiv.focus();
           document.body.appendChild(Core.screenBlockerDiv);
@@ -245,9 +254,16 @@ const Core = {
             ;
     return {requestId};
   },
+  setDefaultMessage: message => {
+    if (Core.messagesContainer !== null) {
+      Core.trigger(Core.messagesContainer, 'setDefaultMessage', message);
+    } else {
+      throw new Error('No messages container defined.');
+    }
+  },
   setMessagesContainer: target => {
     Core.messagesContainer = typeof target === 'string' ? document.getElementById(target) : target;
-    console.log(`Set message container to ${Core.messagesContainer.id}`);
+    console.log(`Core : setMessagesContainer : Set to ${Core.messagesContainer.id}`);
   },
   show: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
@@ -261,6 +277,7 @@ const Core = {
 //    }
   },
   trigger: (target, eventName, detail) => {
+    console.log(`Core : trigger : Event ${eventName} to ${target.id} using data ${JSON.stringify(detail)}`);
     const event = new CustomEvent(eventName, {detail});
     target.dispatchEvent(event);
   },
@@ -303,7 +320,11 @@ window.onload = () => {
   Core.onloadFunctions.forEach(func => {
     func();
   });
+  Core.setPageFunctions.forEach(func => {
+    func();
+  });
   if (Core.pageParameters.has('section')) {
     Core.changeSection(Core.pageParameters.get('section'));
   }
+  document.body.style.opacity = "1";
 };

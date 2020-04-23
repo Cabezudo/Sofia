@@ -86,9 +86,6 @@ public class SiteCreator {
       Logger.debug(templateVariables.toJSON());
     }
 
-    Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
-    baseFile.save(htmlFilePath);
-
     createPagePermissions(site, baseFile, requestURI);
 
     JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, null);
@@ -105,6 +102,9 @@ public class SiteCreator {
     cssFile.add(baseFile.getCascadingStyleSheetLines());
     Path cssFilePath = site.getCSSPath().resolve(cssPartialPath);
     cssFile.save(cssFilePath);
+
+    Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
+    baseFile.save(htmlFilePath);
   }
 
   private void createPagePermissions(Site site, HTMLSourceFile htmlSourceFile, String requestURI) throws SQLException {

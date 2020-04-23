@@ -288,7 +288,6 @@ class HTMLSourceFile implements SofiaSource {
         Logger.debug("Profiles: " + profileString);
         String[] ps = profileString.split(",");
         profiles = ProfileManager.getInstance().createFromNames(ps, getSite());
-        System.out.println(profiles);
       }
       add(new CodeLine("<html>\n", lineNumber));
       return true;
@@ -309,8 +308,10 @@ class HTMLSourceFile implements SofiaSource {
     Logger.debug("Creating the html file %s.", filePath);
     StringBuilder code = new StringBuilder();
     for (Line line : lines) {
-      code.append(line.getCode()).append('\n');
+      String lineCode = line.getCode();
+      code.append(lineCode).append('\n');
     }
+
     Files.write(filePath, code.toString().getBytes(Configuration.getInstance().getEncoding()));
   }
 

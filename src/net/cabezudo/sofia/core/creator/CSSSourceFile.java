@@ -108,8 +108,6 @@ class CSSSourceFile implements SofiaSource {
         cssImports.add(file.getCascadingStyleSheetImports());
       }
     }
-    System.out.println("******************************************************************************************");
-    System.out.println(cssImports.toString());
     code.append(cssImports.toString());
 
     for (Library library : libraries) {
@@ -165,6 +163,7 @@ class CSSSourceFile implements SofiaSource {
     add(new CodeLine("/* " + getPartialPath() + " addeded by " + getCaller() + " */"));
     List<String> linesFromFile = Files.readAllLines(cssFullSourceFilePath);
     int lineNumber = 1;
+    Logger.debug("Replace template variables on source file %s.", cssFullSourceFilePath);
     for (String line : linesFromFile) {
       try {
         String newLine = getTemplateVariables().replace(line, lineNumber, cssFullSourceFilePath);
@@ -175,5 +174,27 @@ class CSSSourceFile implements SofiaSource {
       }
       lineNumber++;
     }
+  }
+
+  StringBuilder readFileFor(Path filePath) throws IOException {
+    Path htmlPartialPath = site.getVersionPath().relativize(filePath);
+    Path cssBasePath = site.getCSSPath().resolve(htmlPartialPath).getParent();
+    String htmlFileName = filePath.getFileName().toString();
+    int i = htmlFileName.lastIndexOf(".");
+    if (i == -1) {
+      return null;
+    }
+    String cssFileName = htmlFileName.substring(0, i) + ".css";
+    Path cssFilePath = cssBasePath.resolve(cssFileName);
+    if (!Files.exists(cssFilePath)) {
+      Logger.debug("The Cascading Style Sheet source file %s DO NOT exists.", cssFilePath);
+      return null;
+    }
+    StringBuilder sb = new StringBuilder((int) Files.size(cssFilePath));
+    List<String> linesFromFile = Files.readAllLines(cssFilePath);
+    for (String line : linesFromFile) {
+      sb.append(line).append('\n');
+    }
+    return sb;
   }
 }

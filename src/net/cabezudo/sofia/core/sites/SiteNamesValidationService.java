@@ -5,8 +5,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
@@ -24,18 +22,17 @@ public class SiteNamesValidationService extends ValidationService {
 
   @Override
   public void execute() throws ServletException {
-    int siteId;
     String name;
-    Token token;
-
-    User owner = super.getUser();
-
-    name = tokens.getValue("name").toString();
-
+    name = tokens.getValue("name").toString().trim();
+    if (name.isEmpty()) {
+      sendResponse(new ValidationResponse(Response.Status.ERROR, "site.name.empty"));
+      return;
+    }
     try {
       Site siteToValidate = SiteManager.getInstance().getByName(name);
       if (siteToValidate != null) {
         sendResponse(new ValidationResponse(Response.Status.ERROR, "site.name.exist"));
+        return;
       }
       sendResponse(new ValidationResponse(Response.Status.OK, "site.name.ok"));
     } catch (SQLException e) {

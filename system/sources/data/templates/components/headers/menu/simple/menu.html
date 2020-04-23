@@ -2,35 +2,66 @@
   .headerContainer {
     display: flex;
     color: #{application.color.main};
+    padding: .5rem 1.5rem;
+    background-color: #f8f8f8;
   }
   .headerContainer > .header {
-    width: #{application.container.width.default};
-    margin: auto;
     display: flex;
-    align-items: center;
     justify-content: space-between;
+    align-items: stretch;
+    display: flex;
+    flex-shrink: 0;
+    flex-grow: 1;
   }
-  .headerContainer > .header > .name {
-    font-size: 24px;
+  .headerContainer > .header > .nameContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+  }
+  .headerContainer > .header > .nameContainer > .name {
+    font-size: 36px;
+    line-height: 24px;
+    font-weight: 900;
+    font-family: 'Kanit', sans-serif;
+    text-transform: uppercase;
+  }
+  svg {
+    height: 1em;
+    width: auto;
+    shape-rendering: geometricprecision;
+    transform: scale(1.05);
   }
   .headerContainer > .header > .menu {
     display: flex;
+    align-items: center;
   }
   .headerContainer > .header > .menu > .item {
-    padding: 20px 10px;
+    padding: 0 10px;
+    color: #4a4a4a;
+  }
+  .headerContainer > .header > .menu > .icon {
+    height: 20px;
+    width: 20px;
+  }
+  .headerContainer > .header > .menu > .icon svg {
+    height: 20px;
+    width: 20px;
+    shape-rendering: geometricprecision;
+    transform: scale(0.9);
+
+
   }
   .headerContainer > .header > .menu > .item:hover {
+    color: #{application.color.main};
     cursor: pointer;
   }
   @media all and ( min-width: 480px ) {
     .headerContainer > .header {
-      width: #{application.container.width.480};
     }
   }
 
   @media all and ( min-width: 750px ) {
     .headerContainer > .header {
-      width: #{application.container.width.750};
     }}
 
   @media all and ( min-width: 1024px ) {
@@ -60,12 +91,9 @@
       for (const i in items) {
         const item = items[i];
         console.log(`item: ${JSON.stringify(item)}`);
-        const hide = item.hide !== undefined && item.hide !== null && item.hide.includes(window.location.pathname);
         let profileAccepted = false;
         const menuProfiles = item.profiles;
         const user = variables.user;
-        console.log(`user: ${JSON.stringify(user)}`);
-        console.log(`menuProfiles: ${JSON.stringify(menuProfiles)}`);
         if (menuProfiles === undefined) {
           profileAccepted = true;
         } else {
@@ -82,15 +110,44 @@
           }
         }
         console.log(`profileAccepted: ${JSON.stringify(profileAccepted)}`);
-        if ((item.logged === null || (Core.isLogged() && item.logged === true) || (Core.isNotLogged() && item.logged === false) && !hide) && profileAccepted === true) {
-          const itemElement = document.createElement('div');
-          menu.appendChild(itemElement);
-          itemElement.className = 'item';
-          itemElement.innerHTML = item.name.es;
-          linkTo({
-            onClick: item.url,
-            element: itemElement
-          });
+        const forLogged = item.logged === undefined || item.logged === null || (Core.isLogged() && item.logged === true)
+        console.log(`forLogged: ${forLogged}`);
+        const forNotLogged = item.logged === undefined || (Core.isNotLogged() && item.logged === false);
+        console.log(`forNotLogged: ${forNotLogged}`);
+        const hide = item.hide !== undefined && item.hide !== null && item.hide.includes(window.location.pathname);
+        const isNotHide = !hide;
+        console.log(`isNotHide: ${isNotHide}`);
+        console.log(`profileAccepted: ${profileAccepted}`);
+        if (forLogged && forNotLogged && isNotHide && profileAccepted) {
+          if (item.name !== undefined) {
+            const itemElement = document.createElement('div');
+            menu.appendChild(itemElement);
+            itemElement.className = 'item';
+            itemElement.innerHTML = item.name.es;
+            linkTo({
+              onClick: item.url,
+              element: itemElement
+            });
+          }
+          if (item.svg !== undefined) {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'item icon';
+            menu.appendChild(itemElement);
+
+            const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svgElement.setAttribute('viewBox', item.svg.viewBox);
+            itemElement.appendChild(svgElement);
+
+
+            const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathElement.setAttribute('fill', item.svg.path.fill);
+            pathElement.setAttribute('d', item.svg.path.d);
+            svgElement.appendChild(pathElement);
+            linkTo({
+              onClick: item.url,
+              element: itemElement
+            });
+          }
         }
       }
     };
@@ -99,7 +156,9 @@
 </script>
 <div class="headerContainer">
   <div class="header">
-    <div class="name">#{site.name}</div>
+    <div class="nameContainer">
+      <div class="name">#{menu.name}</div>
+    </div>
     <div id="menu" class="menu"></div>
   </div>
 </div>

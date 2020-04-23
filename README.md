@@ -384,7 +384,7 @@ Si el servidor está trabajando en un ambiente de desarrollo se puede colocar en
 
 
 Orden de lectura de archivos
-Cuando el sitema crea una página estática toma una serie de archivos para hacer la tarea.
+Cuando el sistema crea una página estática toma una serie de archivos para hacer la tarea.
 Lee el archivo commons.json y toma los valores comunes para todo el sitio. Toma el el nombre del tema para el sitio. El tema lo va a buscar de un direcotrio `themes` dentro de `data`.
 Lee el archivo `fonts.css` que se encuentra en el raíz de los fuentes del sitio y lo agrega a los estilos del sitio. Este archivo se utiliza para colocar en un solo sitio todas las fuentes.
 Lee el archivo `style.css` que se encuentra en el raíz de los fuentes del sitio. Este archivo se utiliza para colocar configuraciónes de estilos que no pueden ser colocadas en otro lugar. Configuraciones temporales, de prueba o globales que no pertenecen al tema.
@@ -396,3 +396,7 @@ Si no se encuentra el archivo de configuración simplemente se carga el archivo 
 
 
 
+Funciones de carga de página
+- para crear GUI
+Funciones de configuración de página
+- para setear valores por defecto
