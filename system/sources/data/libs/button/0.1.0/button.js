@@ -6,7 +6,7 @@
 /* global Core */
 
 const button = ({ id = null, element = null, type = null, text = null, enabled = true, onClick = null, onResponse = null } = {}) => {
-  const DISABLED_CLASS = 'disabledButton';
+  const DISABLED_CLASS = 'disabled';
 
   const validateOptions = () => {
     element = Core.validateIdOrElement(id, element);

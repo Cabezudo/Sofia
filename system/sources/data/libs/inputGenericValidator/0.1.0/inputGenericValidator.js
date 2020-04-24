@@ -49,11 +49,6 @@ const inputGenericValidator = ({ element = null, id = null, getValidationURL = n
         onFocus(event);
       }
     });
-    element.addEventListener("keypress", event => {
-      if (Core.isFunction(onFocus)) {
-        onFocus(event);
-      }
-    });
     element.addEventListener("keyup", event => {
       if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
         return;
