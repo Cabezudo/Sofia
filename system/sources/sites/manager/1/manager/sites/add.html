@@ -10,28 +10,34 @@
     <script lib="core/0.1.0"></script>
     <script lib="inputGenericValidator/0.1.0"></script>
     <script lib="linkTo/0.1.0"></script>
+    <script lib="button/0.1.0"></script>
     <script>
       {
-        let addButton, detailDiv, siteName, siteHost, siteNameErrorMessage, hostnameErrorMessage;
+        let addButton, detailDiv, siteName, siteHost, siteNameValidated, siteHostValidated, siteNameErrorMessage, hostnameErrorMessage;
         const createGUI = () => {
           detailDiv = Core.validateById('detail');
           siteName = Core.validateById('siteName');
           siteHost = Core.validateById('siteHost');
-          addButton = Core.validateById('add');
+          addButton = Core.validateById('addButton');
           inputGenericValidator({
             element: siteName,
             getValidationURL: () => {
               return `/api/v1/sites/names/${siteName.value}/validate`;
             },
             onValid: () => {
+              siteNameValidated = true;
               siteNameErrorMessage = undefined;
               setFormStatus();
+              setMessage();
             },
             onNotValid: data => {
+              siteNameValidated = true;
               siteNameErrorMessage = data;
               setFormStatus();
+              setMessage();
             },
             onFocus: () => {
+              setFormStatus();
               setMessage();
             }
           });
@@ -41,15 +47,43 @@
               return `/api/v1/hosts/names/${siteHost.value}/validate`;
             },
             onValid: () => {
+              siteHostValidated = true;
               hostnameErrorMessage = undefined;
               setFormStatus();
+              setMessage();
             },
             onNotValid: data => {
+              siteHostValidated = true;
               hostnameErrorMessage = data;
               setFormStatus();
+              setMessage();
             },
             onFocus: () => {
+              setFormStatus();
               setMessage();
+            }
+          });
+          const sendSiteInformation = () => {
+            siteName.disabled = true;
+            siteHost.disabled = true;
+          };
+          blueButton({
+            element: addButton,
+            enabled: false,
+            onClick: () => {
+              sendSiteInformation();
+            },
+            onResponse: event => {
+              const payload = event.detail;
+              if (payload.status === 'ADDEDED') {
+                if (variables.comebackPage === null) {
+                  location.assign('/manager/sites.html');
+                } else {
+                  location.assign(variables.comebackPage);
+                }
+              } else {
+                Core.showMessage({status: 'ERROR', message: payload.message});
+              }
             }
           });
         };
@@ -91,12 +125,18 @@
           } while (false);
         };
         const setFormStatus = () => {
-          addButton.disabled = !(siteNameErrorMessage === undefined && hostnameErrorMessage === undefined);
-          setMessage();
+          if (siteNameErrorMessage === undefined && hostnameErrorMessage === undefined && siteNameValidated & siteHostValidated) {
+            console.log(`add.html : setFormStatus : trigger enabled`);
+            Core.trigger(addButton, 'enabled');
+          } else {
+            console.log(`add.html : setFormStatus : trigger disabled`);
+            Core.trigger(addButton, 'disabled');
+          }
         };
         Core.addOnloadFunction(createGUI);
         Core.addSetFunction(() => {
-          setFormStatus();
+          setMessage();
+          Core.trigger(addButton, 'disabled');
           siteName.focus();
         });
       }
@@ -122,8 +162,10 @@
             <div class="field"><div class="control"><input id="siteName" placeholder="Nombre" spellcheck="false"/></div></div>
             <div class="field"><div class="control"><input id="siteVersion" value="1" disabled /></div></div>
             <div class="field"><div class="control"><input id="siteHost" placeholder="Host" spellcheck="false"/></div></div>
-            <div class="field"><div class="control centered">
-                <button type="button" id="add" class="button blue">Agregar</button></div>
+            <div class="field">
+              <div class="control centered">
+                <div id="addButton"></div>
+              </div>
             </div>
           </div>
         </div>

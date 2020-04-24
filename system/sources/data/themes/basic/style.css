@@ -10,7 +10,7 @@ body {
   transition: opacity .2s;
 }
 
-body, button, input, select, textarea {
+body, input, select, textarea {
   font-family: Ubuntu;
   margin: 0;
   padding: 0;
@@ -38,7 +38,7 @@ input, select, textarea {
   color: #4a4a4a;
 }
 
-button, input, select, textarea {
+input, select, textarea {
   -moz-appearance: none;
   -webkit-appearance: none;
   align-items: center;
@@ -55,39 +55,17 @@ button, input, select, textarea {
   vertical-align: top;
 }
 
-button:active, button:focus, input:active, input:focus, select select:active, select select:focus, textarea:active, textarea:focus {
+input:active, input:focus, select select:active, select select:focus, textarea:active, textarea:focus {
   outline: none;
 }
 
-button, input, select, textarea {
+input, select, textarea {
   margin: 0;
 }
 
-button {
-  font-size: 1.25rem;
-  font-weight: 700;
-  justify-content: center;
-  padding: calc(.5em - 1px) 1em;
-  text-align: center;
-  white-space: nowrap;
-  color: #fff;
-}
-
-button:focus {
-  border-color: transparent;
-  color: #fff;
-}
-
-button.blue {
-  background-color: #3498db;
-}
-
-button:hover.blue {
-  background-color: #2993d9;
-}
-
-button:disabled.blue {
-  background-color: #598CB1;
+input:disabled, textarea:disabled {
+  color: #969696;
+  background-color: #F0F0F0;
 }
 
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
