@@ -40,6 +40,7 @@ public class WebServicesServlet extends HttpServlet {
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       throw new RuntimeException(e);
     } catch (WebServiceNotFoundException e) {
+      System.out.println(e.getMessage());
       response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }
   }

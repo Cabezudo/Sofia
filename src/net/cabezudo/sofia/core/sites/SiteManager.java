@@ -28,6 +28,7 @@ import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
+import net.cabezudo.sofia.core.sites.validators.EmptySiteNameException;
 import net.cabezudo.sofia.core.users.User;
 
 /**
@@ -56,14 +57,14 @@ public class SiteManager {
   public Site getById(Connection connection, int id, User owner) throws SQLException {
     // TODO autorizacion
     String query
-        = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
-        + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
-        + "WHERE s.id = ? ORDER BY domainName";
+            = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+            + "FROM " + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "WHERE s.id = ? ORDER BY domainName";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, id);
-    Logger.fine(ps);
+    Logger.fine("SiteManager", "getById", ps);
     ResultSet rs = ps.executeQuery();
 
     String name = null;
@@ -84,9 +85,9 @@ public class SiteManager {
       DomainName domainName = new DomainName(domainNameId, id, domainNameName);
       if (domainNameId == baseDomainNameId) {
         baseDomainName = domainName;
-      } else {
-        domainNameList.add(domainName);
+        Logger.debug("Base domain found: %s (%s).", baseDomainName, baseDomainNameId);
       }
+      domainNameList.add(domainName);
     }
     Site site = new Site(id, name, baseDomainName, domainNameList, version);
     return site;
@@ -173,7 +174,7 @@ public class SiteManager {
     return list(null, null, null, null, null);
   }
 
-  SiteList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public SiteList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
@@ -193,10 +194,10 @@ public class SiteManager {
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query
-          = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
-          + "FROM " + SitesTable.NAME + " AS s "
-          + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
-          + where + sqlSort + sqlLimit;
+              = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
+              + "FROM " + SitesTable.NAME + " AS s "
+              + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
+              + where + sqlSort + sqlLimit;
 
       PreparedStatement ps = connection.prepareStatement(query);
       setSiteFilters(filters, ps);
@@ -244,13 +245,13 @@ public class SiteManager {
     }
   }
 
-  public void update(int siteId, String field, String value, User owner) throws SQLException, InvalidSiteValueException {
+  public void update(int siteId, String field, String value, User owner) throws SQLException, InvalidSiteVersionException, EmptySiteNameException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       update(connection, siteId, field, value, owner);
     }
   }
 
-  public void update(Connection connection, int siteId, String field, String value, User owner) throws InvalidSiteValueException, SQLException {
+  public void update(Connection connection, int siteId, String field, String value, User owner) throws SQLException, InvalidSiteVersionException, EmptySiteNameException {
     switch (field) {
       case "name":
         validateName(value);
@@ -269,9 +270,9 @@ public class SiteManager {
     ps.executeUpdate();
   }
 
-  public void validateName(String value) throws InvalidSiteNameException {
+  public void validateName(String value) throws EmptySiteNameException {
     if (value == null || value.isEmpty()) {
-      throw new InvalidSiteNameException("Invalid empty name", value);
+      throw new EmptySiteNameException();
     }
     // TODO Max length
   }
@@ -290,7 +291,7 @@ public class SiteManager {
     // TODO Max length and size
   }
 
-  Site getByName(String name) throws SQLException {
+  public Site getByName(String name) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       return getByName(connection, name);
     }
@@ -298,14 +299,14 @@ public class SiteManager {
 
   public Site getByName(Connection connection, String name) throws SQLException {
     String query
-        = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
-        + "FROM " + SitesTable.NAME + " AS s "
-        + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
-        + "WHERE s.name = ? ORDER BY domainName";
+            = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+            + "FROM " + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "WHERE s.name = ? ORDER BY domainName";
 
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, name);
-    Logger.fine(ps);
+    Logger.fine("SiteManager", "getByName", ps);
     ResultSet rs = ps.executeQuery();
 
     int id = 0;
@@ -315,7 +316,7 @@ public class SiteManager {
     DomainNameList domainNameList = new DomainNameList();
 
     if (rs.next()) {
-      while (rs.next()) {
+      do {
         if (id == 0) {
           id = rs.getInt("id");
           baseDomainNameId = rs.getInt("baseDomainNameId");
@@ -327,10 +328,10 @@ public class SiteManager {
         DomainName domainName = new DomainName(domainNameId, id, domainNameName);
         if (domainNameId == baseDomainNameId) {
           baseDomainName = domainName;
-        } else {
-          domainNameList.add(domainName);
+          Logger.debug("Base domain found: %s (%s).", baseDomainName, baseDomainNameId);
         }
-      }
+        domainNameList.add(domainName);
+      } while (rs.next());
       Site site = new Site(id, name, baseDomainName, domainNameList, version);
       return site;
     }
@@ -398,7 +399,7 @@ public class SiteManager {
     }
   }
 
-  int getTotal(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public int getTotal(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list total");
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
@@ -458,7 +459,7 @@ public class SiteManager {
     }
   }
 
-  int getHostsTotal(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public int getHostsTotal(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site host list total");
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
@@ -521,7 +522,7 @@ public class SiteManager {
     }
   }
 
-  DomainNameList listDomainName(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public DomainNameList listDomainName(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {

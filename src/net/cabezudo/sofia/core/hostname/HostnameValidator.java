@@ -6,7 +6,16 @@ package net.cabezudo.sofia.core.hostname;
  */
 public class HostnameValidator {
 
-  public static String validate(String hostname) throws HostnameMaxSizeException, HostnameValidationException {
+  private static HostnameValidator INSTANCE;
+
+  public static HostnameValidator getInstance() {
+    if (INSTANCE == null) {
+      INSTANCE = new HostnameValidator();
+    }
+    return INSTANCE;
+  }
+
+  public String validate(String hostname) throws HostnameMaxSizeException, HostnameValidationException {
     try {
       HostnameManager.getInstance().validate(hostname);
     } catch (EmptyHostnameException e) {

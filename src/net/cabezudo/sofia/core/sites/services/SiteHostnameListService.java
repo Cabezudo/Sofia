@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.sites;
+package net.cabezudo.sofia.core.sites.services;
 
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -8,6 +8,8 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;

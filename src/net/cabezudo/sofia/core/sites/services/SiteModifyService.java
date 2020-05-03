@@ -1,5 +1,6 @@
-package net.cabezudo.sofia.core.sites;
+package net.cabezudo.sofia.core.sites.services;
 
+import net.cabezudo.sofia.core.sites.validators.EmptySiteNameException;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -9,6 +10,9 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.sites.InvalidSiteVersionException;
+import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
@@ -58,8 +62,10 @@ public class SiteModifyService extends Service {
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
-    } catch (InvalidSiteValueException e) {
+    } catch (InvalidSiteVersionException e) {
       sendResponse(new Response(Response.Status.ERROR, Response.Type.UPDATE, e.getMessage(), e.getParameters()));
+    } catch (EmptySiteNameException e) {
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.UPDATE, e.getMessage()));
     }
   }
 

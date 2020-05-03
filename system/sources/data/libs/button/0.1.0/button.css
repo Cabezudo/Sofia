@@ -4,7 +4,6 @@
  */
 
 .button {
-  font-family: Ubuntu;
   margin: 0;
   padding: 0;
   -moz-appearance: none;
@@ -15,13 +14,13 @@
   box-shadow: none;
   display: inline-flex;
   height: 2.5em;
-  line-height: 1.5;
-  padding: calc(.5em - 1px) calc(.75em - 1px);
+  line-height: 12px;
+  padding: 3px 14px;
   position: relative;
   vertical-align: top;
   cursor: default;
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: 20px;
+  font-weight: 600;
   justify-content: center;
   text-align: center;
   white-space: nowrap;
@@ -38,11 +37,11 @@
 }
 
 .blueButton {
-  background-color: #3498db;
+  background-color: #001787;
 }
 
 .blueButton:not(.disabled):hover {
-  background-color: #2993d9;
+  background-color: #0023D0;
   cursor: pointer;
 }
 

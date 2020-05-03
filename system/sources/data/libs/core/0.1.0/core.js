@@ -13,6 +13,7 @@ const Core = {
   requestId: 0,
   onloadFunctions: [],
   setPageFunctions: [],
+  testFunctions: [],
   screenBlockerDiv: null,
   loaderDiv: null,
   pageParameters: new URLSearchParams(location.search),
@@ -192,17 +193,25 @@ const Core = {
             .then(function (response) {
               const headers = response.headers;
               const requestId = parseInt(headers.get('RequestId'));
-              response.json().then(jsonData => {
-                jsonData.requestId = requestId;
-                Core.trigger(origin, 'response', jsonData);
-              });
+              response.text().then(text => {
+                let jsonData;
+                try {
+                  jsonData = JSON.parse(text);
+                  jsonData.requestId = requestId;
+                  Core.trigger(origin, 'response', jsonData);
+                } catch (error) {
+                  console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
+                }
+              })
+                      ;
             })
             ;
-    return {requestId};
+    return {requestId}
+    ;
   },
   sendPost: (url, origin, formObject) => {
     if (!origin) {
-      throw new Error(`Invalid origin for sendGet: ${origin}`);
+      throw new Error(`Invalid origin for sendPost: ${origin}`);
     }
     const requestId = Core.getNextRequestId();
     fetch(url, {
@@ -217,19 +226,28 @@ const Core = {
       body: JSON.stringify(formObject)
     })
             .then(function (response) {
-              const headers = response.headers;
-              const requestId = parseInt(headers.get('RequestId'));
-              response.json().then(jsonData => {
-                jsonData.requestId = requestId;
-                Core.trigger(origin, 'response', jsonData);
-              });
+              if (response.status === 200) {
+                const headers = response.headers;
+                const requestId = parseInt(headers.get('RequestId'));
+                response.text().then(text => {
+                  let jsonData;
+                  try {
+                    jsonData = JSON.parse(text);
+                    jsonData.requestId = requestId;
+                    Core.trigger(origin, 'response', jsonData);
+                  } catch (error) {
+                    console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
+                  }
+                })
+                        ;
+              }
             })
             ;
     return {requestId};
   },
   sendPut: (url, origin, formObject) => {
     if (!origin) {
-      throw new Error(`Invalid origin for sendGet: ${origin}`);
+      throw new Error(`Invalid origin for sendPut: ${origin}`);
     }
     const requestId = Core.getNextRequestId();
     fetch(url, {
@@ -246,9 +264,15 @@ const Core = {
             .then(function (response) {
               const headers = response.headers;
               const requestId = parseInt(headers.get('RequestId'));
-              response.json().then(jsonData => {
-                jsonData.requestId = requestId;
-                Core.trigger(origin, 'response', jsonData);
+              response.text().then(text => {
+                let jsonData;
+                try {
+                  jsonData = JSON.parse(text);
+                  jsonData.requestId = requestId;
+                  Core.trigger(origin, 'response', jsonData);
+                } catch (error) {
+                  console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
+                }
               });
             })
             ;
@@ -275,6 +299,11 @@ const Core = {
 //    } else {
 //      element.style.display = '';
 //    }
+  },
+  tests: {
+    add: testFunction => {
+      Core.testFunctions.push(testFunction);
+    }
   },
   trigger: (target, eventName, detail) => {
     console.log(`Core : trigger : Event ${eventName} to ${target.id} using data ${JSON.stringify(detail)}`);
@@ -315,7 +344,6 @@ const Core = {
     }
   }
 };
-
 window.onload = () => {
   Core.onloadFunctions.forEach(func => {
     func();
@@ -327,4 +355,7 @@ window.onload = () => {
     Core.changeSection(Core.pageParameters.get('section'));
   }
   document.body.style.opacity = "1";
+  Core.testFunctions.forEach(func => {
+    func();
+  });
 };

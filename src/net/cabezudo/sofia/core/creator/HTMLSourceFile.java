@@ -191,6 +191,7 @@ class HTMLSourceFile implements SofiaSource {
               }
               break;
             case "<script>":
+            case "<script class=\"test\">":
               actual = js;
               if (getCaller() == null) {
                 actual.add(new CodeLine("// created by system using " + getPartialFilePath() + ":" + lineNumber + ".", lineNumber));

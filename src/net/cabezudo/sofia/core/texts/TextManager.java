@@ -71,8 +71,20 @@ public class TextManager {
         return "El nombre de sitio está correcto";
       case "site.name.empty":
         return "El nombre del sitio no debe estar vacío";
+      case "site.version.empty":
+        return "Debe especificarse una version para el sitio";
+      case "site.version.invalid":
+        return "La version '" + parameters[0] + "' indicada para el sitio no es válida";
+      case "site.version.zero":
+        return "La version indicada para el sitio no puede ser cero";
+      case "site.version.negative":
+        return "La version indicada para el sitio no puede ser negativa";
+      case "site.version.integer":
+        return "La version indicada para el sitio debe ser un número entero";
       case "site.updated":
         return "Datos del sitio actualizados";
+      case "site.name.created":
+        return "El sitio fué creado";
       case "user.already.added":
         return "El usuario ya ha sido agregado en el sistema";
       case "user.added":

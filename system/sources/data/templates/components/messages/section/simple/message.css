@@ -6,25 +6,30 @@
 .simpleStaticMessage {
   display: flex;
   justify-content: center;
-  font-family: #{theme.messages.ok.font.family};
+  font-family: #{theme.messages.font.family};
   font-size: 18px;
   font-weight: 200;
-  background-color: transparent;
-  color: #{theme.messages.ok.font.color};
-  padding: 4px;
-  height: 24px;
+  color: #fff;
+  background-color: #{theme.messages.ok.color};
+  padding: 10px;
   transition: background-color 0.5s linear;
+  align-content: center;
 }
 
 .simpleStaticMessage div {
   display: flex;
   align-items: center;
+  text-align: center;
 }
 
 .simpleStaticMessage.error {
-  color: #{theme.messages.error.font.color};
+  background-color: #{theme.messages.error.color};
 }
 
 .simpleStaticMessage.ok {
-  color: #{theme.messages.ok.font.color};
+  background-color: #{theme.messages.ok.color};
+}
+
+.simpleStaticMessage.message {
+  background-color: #{theme.messages.message.color};
 }
