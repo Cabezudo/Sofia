@@ -109,6 +109,7 @@ public class WebServer {
 
   private Handler setServer(Site site) throws SQLException, JSONParseException, IOException, PropertyNotExistException {
     Path apiConfigurationFilePath = Configuration.getInstance().getAPIConfigurationFile();
+    System.out.println(System.getProperties().get("java.class.path"));
     Logger.debug("Load API configuration file: %s", apiConfigurationFilePath);
     JSONObject apiConfiguration = JSON.parse(apiConfigurationFilePath, Configuration.getInstance().getEncoding().name()).toJSONObject();
     try {

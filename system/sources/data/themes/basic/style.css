@@ -1,23 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@600;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap');
 
 body {
   color: #4a4a4a;
-  font-size: 1em;
+  font-family: Ubuntu, sans-serif;
+  font-size: 22px;
   font-weight: 300;
   line-height: 1.5;
   opacity: 0;
   transition: opacity .2s;
 }
 
-body, input, select, textarea {
-  font-family: Ubuntu;
+input, select, textarea {
   margin: 0;
   padding: 0;
 }
 
 input.error {
   background-color: #FFE7E7;
+  border: 1px solid rgba(255,0,0,0.4);
   box-shadow: 0px 0px 12px -3px rgba(255,0,0,0.8);
 }
 
@@ -32,27 +34,22 @@ input, textarea {
 }
 
 input, select, textarea {
-  background-color: #fff;
-  border-color: transparent;
-  border-radius: 4px;
-  color: #4a4a4a;
-}
-
-input, select, textarea {
-  -moz-appearance: none;
-  -webkit-appearance: none;
   align-items: center;
-  border: 1px solid transparent;
+  background-color: #fff;
+  border: 1px solid #eee;
   border-radius: 4px;
   box-shadow: none;
+  color: #4a4a4a;
   display: inline-flex;
-  font-size: 1rem;
+  font-size: 22px;
+  font-family: 'Lato', sans-serif;
   height: 2.5em;
   justify-content: flex-start;
-  line-height: 1.5;
   padding: calc(.5em - 1px) calc(.75em - 1px);
   position: relative;
   vertical-align: top;
+  -moz-appearance: none;
+  -webkit-appearance: none;
 }
 
 input:active, input:focus, select select:active, select select:focus, textarea:active, textarea:focus {
@@ -89,65 +86,42 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   padding: 0;
 }
 
-.container {
-  flex-grow: 1;
-  margin: 0 auto;
+#application {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 2;
+  justify-content: center;
+  padding: 30px 20px;
   position: relative;
   width: auto;
 }
 
-.field:not(:last-child) {
-  margin-bottom: 1rem;
+.title:not(:last-child) {
+  margin-bottom: 12px;
+  font-size: 26px;
+  text-align: center;
+  font-weight: 600;
+  line-height: 26px;
 }
 
-.control {
+.field {
   display: flex;
   box-sizing: border-box;
 }
 
-.control.centered {
+.field:not(:last-child) {
+  margin-bottom: 20px;
+  font-weight: 300;
+}
+
+.field.centered {
   justify-content: center;
-}
-
-section.section {
-  padding: 3.5rem 1.5rem 4.5rem;
-}
-
-section.blue {
-  background-color: #2980b9;
-  color: #fff;
-}
-
-.title:not(:last-child) {
-  margin-bottom: 1.5rem;
-  text-transform: uppercase;
-  text-align: center;
-  word-break: break-word;
-  font-size: 2.4em;
-  font-weight: 600;
-  line-height: 1.125;
-}
-
-hr {
-  max-width: 120px;
-  margin: 1.5rem auto;
-}
-
-.column {
-  display: block;
-  flex-basis: 0;
-  flex-grow: 1;
-  flex-shrink: 1;
-  padding: 1rem 0;
-}
-
-.columns:not(:last-child) {
-  margin-bottom: 1.5rem;
-}
-
-.content p {
-  font-size: 1.125em;
-  line-height: 1.65;
 }
 
 a {
@@ -161,10 +135,31 @@ a:hover {
 
 footer {
   background-color: #222;
-  padding: 1.25rem 1.5rem 2rem;
+  bottom: 0px;
   color: #fff;
+  display: flex;
+  flex-grow: 0;
+  font-size: 12px;
+  justify-content: center;
+  padding: 40px 0;
 }
+
 @media all and ( min-width: 480px ) {
+  .content {
+    padding: 40px 30px;
+  }
+
+  .title:not(:last-child) {
+    margin-bottom: 15px;
+    text-align: left;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 26px;
+  }
+
+  .field:not(:last-child) {
+    margin-bottom: 28px;
+  }
 }
 
 @media all and ( min-width: 750px ) {

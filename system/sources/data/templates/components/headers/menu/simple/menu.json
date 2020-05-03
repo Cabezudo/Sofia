@@ -9,6 +9,20 @@
         "1024": "#{theme.application.container.width.1024}",
         "1250": "#{theme.application.container.width.1250}",
         "1800": "#{theme.application.container.width.1800}"
+      },
+      "padding": {
+        "top": {
+          "default": "10px"
+        },
+        "right": {
+          "default": "#{theme.application.container.padding.right.default}"
+        },
+        "bottom": {
+          "default": "10px"
+        },
+        "left": {
+          "default": "#{theme.application.container.padding.left.default}"
+        }
       }
     },
     "title": {
@@ -26,6 +40,11 @@
   "menu": {
     "name": "#{site.name}",
     "description": "the<br>description",
+    "font": {
+      "size": {
+        "default": "#{theme.menu.font.size.default}"
+      }
+    },
     "items": [
       {
         "name": {

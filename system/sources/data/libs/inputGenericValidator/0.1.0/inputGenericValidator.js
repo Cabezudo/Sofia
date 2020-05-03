@@ -60,6 +60,10 @@ const inputGenericValidator = ({ element = null, id = null, getValidationURL = n
         sendValidationRequest(element);
       }, 500);
     });
+    element.addEventListener("type", event => {
+      element.value = event.detail;
+      sendValidationRequest(element);
+    });
   };
   const sendValidationRequest = element => {
     if (element.value !== null && element.value !== undefined) {

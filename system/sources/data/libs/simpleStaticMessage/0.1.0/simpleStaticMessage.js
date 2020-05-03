@@ -5,9 +5,7 @@
 
 /* global Core */
 
-const simpleStaticMessage = ({ id = null, element = null, visibleTime = 5000 } = {}) => {
-  const
-          REMOVE_MESSAGE_TIME_DELAY = visibleTime;
+const simpleStaticMessage = ({ id = null, element = null, onShow = null } = {}) => {
   let
           defaultMessage,
           messageContainer;
@@ -45,15 +43,26 @@ const simpleStaticMessage = ({ id = null, element = null, visibleTime = 5000 } =
         case 'ERROR':
           messageContainer.innerText = payload.message;
           element.classList.remove('ok');
+          element.classList.remove('message');
           element.classList.add('error');
           break;
         case 'OK':
           messageContainer.innerText = payload.message;
           element.classList.remove('error');
+          element.classList.remove('message');
           element.classList.add('ok');
+          break;
+        case 'MESSAGE':
+          messageContainer.innerText = payload.message;
+          element.classList.remove('ok');
+          element.classList.remove('error');
+          element.classList.add('message');
           break;
         default:
           throw new Error(`Invalid status: ${payload.status}`);
+      }
+      if (Core.isFunction(onShow)) {
+        onShow();
       }
     });
   };

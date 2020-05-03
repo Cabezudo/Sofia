@@ -16,14 +16,20 @@ public class Logger {
   private static Level level = Level.INFO;
 
   public static void log(Level level, String message, Object... parameters) {
+    log(level, null, null, message, parameters);
+  }
+
+  public static void log(Level level, String clazz, String method, String message, Object... parameters) {
     if (Logger.level.compareTo(level) > 0) {
 //      return;
     }
     Date date = new Date();
+    String metadata = level + (clazz == null ? "" : ":" + clazz) + (method == null ? "" : ":" + method);
+
     if (parameters.length == 0) {
-      System.out.println(sdf.format(date) + " [" + level + "] " + message);
+      System.out.println(sdf.format(date) + " [" + metadata + "] " + message);
     } else {
-      System.out.println(sdf.format(date) + " [" + level + "] " + String.format(message, parameters));
+      System.out.println(sdf.format(date) + " [" + metadata + "] " + String.format(message, parameters));
     }
   }
 
@@ -39,14 +45,22 @@ public class Logger {
   }
 
   public static void fine(String message, Object... parameters) {
-    log(Level.FINE, message, parameters);
+    fine(null, null, message, parameters);
+  }
+
+  public static void fine(String clazz, String method, String message, Object... parameters) {
+    log(Level.FINE, clazz, method, message, parameters);
   }
 
   public static void fine(PreparedStatement ps) {
+    fine(null, null, ps);
+  }
+
+  public static void fine(String clazz, String method, PreparedStatement ps) {
     String psString = ps.toString();
     int i = psString.indexOf(": ");
     String message = psString.substring(i + 2);
-    fine(message);
+    fine(clazz, method, message);
   }
 
   public static void debug(String message, Object... parameters) {

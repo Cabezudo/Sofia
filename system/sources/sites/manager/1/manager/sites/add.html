@@ -13,26 +13,26 @@
     <script lib="button/0.1.0"></script>
     <script>
       {
-        let addButton, detailDiv, siteName, siteHost, siteNameValidated, siteHostValidated, siteNameErrorMessage, hostnameErrorMessage;
+        let addButton, detailDiv, nameInput, hostnameInput, nameValidated, hostnameValidated, nameErrorMessage, hostnameErrorMessage;
         const createGUI = () => {
           detailDiv = Core.validateById('detail');
-          siteName = Core.validateById('siteName');
-          siteHost = Core.validateById('siteHost');
+          nameInput = Core.validateById('name');
+          hostnameInput = Core.validateById('hostname');
           addButton = Core.validateById('addButton');
           inputGenericValidator({
-            element: siteName,
+            element: nameInput,
             getValidationURL: () => {
-              return `/api/v1/sites/names/${siteName.value}/validate`;
+              return `/api/v1/sites/names/${nameInput.value}/validate`;
             },
             onValid: () => {
-              siteNameValidated = true;
-              siteNameErrorMessage = undefined;
+              nameValidated = true;
+              nameErrorMessage = undefined;
               setFormStatus();
               setMessage();
             },
             onNotValid: data => {
-              siteNameValidated = true;
-              siteNameErrorMessage = data;
+              nameValidated = true;
+              nameErrorMessage = data;
               setFormStatus();
               setMessage();
             },
@@ -42,18 +42,18 @@
             }
           });
           inputGenericValidator({
-            element: siteHost,
+            element: hostnameInput,
             getValidationURL: () => {
-              return `/api/v1/hosts/names/${siteHost.value}/validate`;
+              return `/api/v1/hosts/names/${hostnameInput.value}/validate`;
             },
             onValid: () => {
-              siteHostValidated = true;
+              hostnameValidated = true;
               hostnameErrorMessage = undefined;
               setFormStatus();
               setMessage();
             },
             onNotValid: data => {
-              siteHostValidated = true;
+              hostnameValidated = true;
               hostnameErrorMessage = data;
               setFormStatus();
               setMessage();
@@ -63,21 +63,30 @@
               setMessage();
             }
           });
-          const sendSiteInformation = () => {
-            siteName.disabled = true;
-            siteHost.disabled = true;
+          const sendAddSiteInformation = () => {
+            nameInput.disabled = true;
+            hostnameInput.disabled = true;
+            const response = Core.sendPost(
+                    `/api/v1/sites`,
+                    addButton,
+                    {
+                      name: nameInput.value,
+                      version: version.value,
+                      hostname: hostnameInput.value
+                    });
+            console.log(response);
           };
           blueButton({
             element: addButton,
             enabled: false,
             onClick: () => {
-              sendSiteInformation();
+              sendAddSiteInformation();
             },
             onResponse: event => {
               const payload = event.detail;
-              if (payload.status === 'ADDEDED') {
+              if (payload.status === 'OK') {
                 if (variables.comebackPage === null) {
-                  location.assign('/manager/sites.html');
+                  location.assign('/manager/sites/sites.html');
                 } else {
                   location.assign(variables.comebackPage);
                 }
@@ -90,42 +99,42 @@
         const setMessage = () => {
           console.log(`add.html : setMessage`);
           do {
-            if (siteNameErrorMessage && Core.inFocus(siteName)) {
-              Core.showMessage(siteNameErrorMessage);
+            if (nameErrorMessage && Core.inFocus(nameInput)) {
+              Core.showMessage(nameErrorMessage);
               break;
             }
-            if (hostnameErrorMessage && Core.inFocus(siteHost)) {
+            if (hostnameErrorMessage && Core.inFocus(hostname)) {
               Core.showMessage(hostnameErrorMessage);
               break;
             }
-            if (siteNameErrorMessage) {
-              Core.showMessage(siteNameErrorMessage);
+            if (nameErrorMessage) {
+              Core.showMessage(nameErrorMessage);
               break;
             }
             if (hostnameErrorMessage) {
               Core.showMessage(hostnameErrorMessage);
               break;
             }
-            if (siteName.value === '' && siteHost.value === '') {
-              Core.showMessage({status: "OK", message: 'Complete the fields to add a new site'});
+            if (nameInput.value === '' && hostnameInput.value === '') {
+              Core.showMessage({status: "MESSAGE", message: 'Complete the fields to add a new site'});
               break;
             }
-            if (siteName.value === '') {
-              Core.showMessage({status: "OK", message: 'Complete the site name field to complete the data'});
+            if (nameInput.value === '') {
+              Core.showMessage({status: "MESSAGE", message: 'Complete the site name field to complete the data'});
               break;
             }
-            if (siteHost.value === '') {
-              Core.showMessage({status: "OK", message: 'Complete the site host field to complete the data'});
+            if (hostnameInput.value === '') {
+              Core.showMessage({status: "MESSAGE", message: 'Complete the site host field to complete the data'});
               break;
             }
-            if (!siteNameErrorMessage && !hostnameErrorMessage) {
+            if (!nameErrorMessage && !hostnameErrorMessage) {
               Core.showMessage({status: "OK", message: 'The data to add the site are correct.'});
               break;
             }
           } while (false);
         };
         const setFormStatus = () => {
-          if (siteNameErrorMessage === undefined && hostnameErrorMessage === undefined && siteNameValidated & siteHostValidated) {
+          if (nameErrorMessage === undefined && hostnameErrorMessage === undefined && nameValidated & hostnameValidated) {
             console.log(`add.html : setFormStatus : trigger enabled`);
             Core.trigger(addButton, 'enabled');
           } else {
@@ -137,44 +146,39 @@
         Core.addSetFunction(() => {
           setMessage();
           Core.trigger(addButton, 'disabled');
-          siteName.focus();
+          nameInput.focus();
         });
       }
     </script>
-    <style>
-      #messages {
-        height: 30px;
-      }
-    </style>
+    <script class="test">
+      Core.tests.add(() => {
+        const nameInput = Core.validateById('name');
+        const hostnameInput = Core.validateById('hostname');
+        Core.trigger(nameInput, 'type', `Sitio oficial para Cabezudo`);
+        Core.trigger(hostnameInput, 'type', `cabezudo.net`);
+      });
+    </script>
   </head>
   <body>
-    <section id="header" template="headers/menu/simple/menu"></section>
-    <section id="detail" class="section blue">
-      <div class="container">
+    <section id="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section id="detail" class="content">
         <h2 class="title">Site add</h2>
-        <div class="column">
-          <div class="content">
-            <section id="messages" template="messages/section/simple/message"></section>
+        <div class="form">
+          <div class="field"><input id="name" placeholder="Nombre" spellcheck="false"/></div>
+          <div class="field"><input id="version" value="1" disabled /></div>
+          <div class="field"><input id="hostname" placeholder="Host" spellcheck="false"/></div>
+          <div class="field centered">
+            <div id="addButton"></div>
           </div>
         </div>
-        <div class="column">
-          <div class="content">
-            <div class="field"><div class="control"><input id="siteName" placeholder="Nombre" spellcheck="false"/></div></div>
-            <div class="field"><div class="control"><input id="siteVersion" value="1" disabled /></div></div>
-            <div class="field"><div class="control"><input id="siteHost" placeholder="Host" spellcheck="false"/></div></div>
-            <div class="field">
-              <div class="control centered">
-                <div id="addButton"></div>
-              </div>
-            </div>
-          </div>
+      </section>
+      <section id="messages" template="messages/section/simple/message"></section>
+      <footer>
+        <div>
+          &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
         </div>
-      </div>
+      </footer>
     </section>
-    <footer>
-      <div class="control centered">
-        &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
-      </div>
-    </footer>
   </body>
 </html>

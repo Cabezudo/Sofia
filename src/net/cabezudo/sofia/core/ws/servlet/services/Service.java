@@ -28,6 +28,7 @@ public abstract class Service<T extends Response> {
   protected final Tokens tokens;
   private final HttpSession session;
   protected final PrintWriter out;
+  private String payload;
 
   protected Service(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     this.request = request;
@@ -68,7 +69,7 @@ public abstract class Service<T extends Response> {
     return clientData;
   }
 
-  protected String getPayload() throws ServletException {
+  private String readPayload() throws ServletException {
     String body;
     try {
       body = request.getReader().lines().reduce("", (partialBody, line) -> partialBody + line);
@@ -76,6 +77,13 @@ public abstract class Service<T extends Response> {
       throw new ServletException(e);
     }
     return body;
+  }
+
+  protected String getPayload() throws ServletException {
+    if (payload == null) {
+      payload = readPayload();
+    }
+    return payload;
   }
 
   protected void sendError(int error, Throwable cause) throws ServletException {

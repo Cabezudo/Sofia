@@ -10,23 +10,23 @@
     },
     {
       "path": "/api/v1/sites/{siteId}/names/{name}/validate",
-      "class": "net.cabezudo.sofia.core.sites.SiteNameValidationService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteNamesValidationService"
     },
     {
       "path": "/api/v1/sites/names/{name}/validate",
-      "class": "net.cabezudo.sofia.core.sites.SiteNamesValidationService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteNameValidationService"
     },
     {
       "path": "/api/v1/sites/{siteId}/versions/{version}/validate",
-      "class": "net.cabezudo.sofia.core.sites.SiteVersionValidatorService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteVersionValidatorService"
     },
     {
       "path": "/api/v1/sites/{siteId}/hosts",
-      "class": "net.cabezudo.sofia.core.sites.SiteHostnameListService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteHostnameListService"
     },
     {
       "path": "/api/v1/sites/{siteId}/hosts/{hostname}/names/{name}/validate",
-      "class": "net.cabezudo.sofia.core.sites.SiteHostnameNameValidationService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteHostnameNameValidationService"
     },
     {
       "path": "/api/v1/hosts/names/{name}/validate",
@@ -83,6 +83,10 @@
       "class": "net.cabezudo.sofia.core.users.AddUserService"
     },
     {
+      "path": "/api/v1/sites",
+      "class": "net.cabezudo.sofia.core.sites.services.AddSiteService"
+    },
+    {
       "path": "/api/v1/person",
       "class": ""
     },
@@ -122,11 +126,11 @@
   "put": [
     {
       "path": "/api/v1/sites/{siteId}",
-      "class": "net.cabezudo.sofia.core.sites.SiteModifyService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteModifyService"
     },
     {
       "path": "/api/v1/sites/{siteId}/hosts/{hostId}",
-      "class": "net.cabezudo.sofia.core.sites.SiteModifyDomainNameService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteModifyDomainNameService"
     },
     {
       "path": "/api/v1/person/{personId}",

@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.sites;
+package net.cabezudo.sofia.core.sites.services;
 
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -12,6 +12,8 @@ import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
 import net.cabezudo.sofia.core.hostname.HostnameValidator;
+import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
@@ -64,7 +66,7 @@ public class SiteModifyDomainNameService extends Service {
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();
       String hostnameName = jsonData.getString("value");
-      String messageKey = HostnameValidator.validate(hostnameName);
+      String messageKey = HostnameValidator.getInstance().validate(hostnameName);
 
       DomainName domainName = new DomainName(hostId, siteId, hostnameName);
       SiteManager.getInstance().update(site, domainName, owner);

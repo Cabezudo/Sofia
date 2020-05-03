@@ -1,43 +1,43 @@
-package net.cabezudo.sofia.core.sites;
+package net.cabezudo.sofia.core.sites.services;
 
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
-import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
-import net.cabezudo.sofia.core.hostname.HostnameValidationException;
-import net.cabezudo.sofia.core.hostname.HostnameValidator;
+import net.cabezudo.sofia.core.sites.InvalidSiteVersionException;
+import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
+import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.10.09
  */
-public class SiteHostnameNameValidationService extends Service {
+public class SiteVersionValidatorService extends Service {
 
-  public SiteHostnameNameValidationService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public SiteVersionValidatorService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
   @Override
   public void execute() throws ServletException {
     int siteId;
-    String name;
+    String versionParameter;
     Token token;
 
     User owner = super.getUser();
 
     token = tokens.getValue("siteId");
-
     try {
       siteId = token.toInteger();
-      name = tokens.getValue("name").toString();
+      versionParameter = tokens.getValue("version").toString();
     } catch (InvalidPathParameterException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter: " + token.toString());
       return;
@@ -49,26 +49,14 @@ public class SiteHostnameNameValidationService extends Service {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;
       }
-      Site siteWithHostname = SiteManager.getInstance().getByHostame(name, owner);
-      if (siteWithHostname != null && siteWithHostname.getId() != siteId) {
-        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, "site.hostname.exist.for.other.site", name, siteWithHostname.getName()));
-        return;
-      }
 
-      try {
-        HostnameValidator.validate(name);
-      } catch (HostnameMaxSizeException e) {
-        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage()));
-        return;
-      } catch (HostnameValidationException e) {
-        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
-        return;
-      }
-
-      sendResponse(new Response(Response.Status.OK, Response.Type.VALIDATION, "site.name.ok"));
+      SiteManager.getInstance().validateVersion(versionParameter);
+      sendResponse(new ValidationResponse(Response.Status.OK, "site.name.ok"));
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+    } catch (InvalidSiteVersionException e) {
+      sendResponse(new ValidationResponse(Response.Status.ERROR, e));
     }
   }
 }
