@@ -140,7 +140,7 @@ class HTMLSourceFile implements SofiaSource {
       htmlSourceFilePath = getBasePath().resolve(partialFilePath);
     } else {
       if (partialFilePath.startsWith("/")) {
-        htmlSourceFilePath = getBasePath().resolve(partialFilePath);
+        htmlSourceFilePath = getBasePath().resolve(partialFilePath.toString().substring(1));
       } else {
         Path parent = caller.getFilePath().getParent();
         htmlSourceFilePath = parent.resolve(partialFilePath);
@@ -149,8 +149,8 @@ class HTMLSourceFile implements SofiaSource {
     Logger.debug("Load HTML source file %s.", htmlSourceFilePath);
 
     if (!Files.exists(htmlSourceFilePath)) {
+      Logger.debug("HTML file source %s NOT FOUND.", htmlSourceFilePath);
       return;
-      //throw new SiteCreationException("HTML file source " + getPartialFilePath() + " NOT FOUND.");
     }
     List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
     int lineNumber = 1;
