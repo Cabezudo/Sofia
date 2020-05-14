@@ -16,16 +16,14 @@ public class DomainNameList implements Iterable<DomainName> {
   Map<Integer, DomainName> map = new TreeMap<>();
   List<DomainName> list = new ArrayList<>();
   private final int offset;
-  private final int size;
   private int total;
 
-  public DomainNameList(int offset, int size) {
+  public DomainNameList(int offset) {
     this.offset = offset;
-    this.size = size;
   }
 
   public DomainNameList() {
-    this(0, 0);
+    this(0);
   }
 
   public DomainName[] toArray() {
@@ -78,5 +76,9 @@ public class DomainNameList implements Iterable<DomainName> {
     for (DomainName domainName : domainNames) {
       add(domainName);
     }
+  }
+
+  public int getSize() {
+    return list.size();
   }
 }

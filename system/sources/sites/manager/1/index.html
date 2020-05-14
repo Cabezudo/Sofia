@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Página principal</title>
+    <title>Sofia Server</title>
     <link rel="stylesheet" type="text/css" href="css/index.css">
     <script src="js/variables.js"></script>
     <script src="js/index.js"></script>
@@ -21,10 +21,20 @@
     </script>
   </head>
   <body>
-    <section id="header" template="headers/menu/simple/menu" configuration="header.json"></section>
-    <div id="content">
-      <p>El servidor ha sido instalado correctamente y está funcionando.</p>
-      <p>Para acceder a la consola de administración utilice <span id="managerLink">este enlace</span>.</p>
-    </div>
+    <section id="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section class="content">
+        <h2 class="title">Sofía Server</h2>
+        <div id="managerLink" class="screenMenuItem">Manager</div>
+        <p>&nbsp;</p>
+        <p>El servidor ha sido instalado correctamente y está funcionando.</p>
+      </section>
+      <footer>
+        <div>
+          &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
+        </div>
+      </footer>
+    </section>
+
   </body>
 </html>

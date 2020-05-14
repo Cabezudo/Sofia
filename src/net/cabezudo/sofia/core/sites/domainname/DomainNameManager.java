@@ -46,7 +46,7 @@ public class DomainNameManager {
     Logger.fine(ps);
     ResultSet rs = ps.executeQuery();
 
-    DomainNameList list = new DomainNameList(0, 0);
+    DomainNameList list = new DomainNameList(0);
 
     while (rs.next()) {
       int id = rs.getInt("id");
@@ -160,11 +160,11 @@ public class DomainNameManager {
 
   public DomainName update(Site site, DomainName domainName, User owner) throws SQLException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
-      return update(connection, site, domainName, owner);
+      return update(connection, site, domainName);
     }
   }
 
-  public DomainName update(Connection connection, Site site, DomainName domainName, User owner) throws SQLException {
+  public DomainName update(Connection connection, Site site, DomainName domainName) throws SQLException {
     String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
     PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     ps.setString(1, domainName.getName());
@@ -172,5 +172,19 @@ public class DomainNameManager {
     Logger.fine(ps);
     ps.executeUpdate();
     return domainName;
+  }
+
+  public void delete(int hostId) throws SQLException {
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      delete(connection, hostId);
+    }
+  }
+
+  public void delete(Connection connection, int hostId) throws SQLException {
+    String query = "DELETE FROM " + DomainNamesTable.NAME + " WHERE id = ?";
+    PreparedStatement ps = connection.prepareStatement(query);
+    ps.setInt(1, hostId);
+    Logger.fine(ps);
+    ps.executeUpdate();
   }
 }

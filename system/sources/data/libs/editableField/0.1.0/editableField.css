@@ -5,19 +5,13 @@
 
 .editableField {
   display: flex;
-  position: relative;
   width: 100%;
 }
 
 .editableField > input {
-  padding: 0;
-  margin: 0;
   outline: none;
   background-color: #fff;
   color: #4a4a4a;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  -moz-appearance: none;
   -webkit-appearance: none;
   padding: calc(.5em - 1px) calc(.75em - 1px);
 }

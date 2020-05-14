@@ -30,7 +30,7 @@
     },
     {
       "path": "/api/v1/hosts/names/{name}/validate",
-      "class": "net.cabezudo.sofia.core.hostname.HostnameNameValidationService"
+      "class": "net.cabezudo.sofia.core.hostname.services.HostnameNameValidationService"
     },
     {
       "path": "/api/v1/mails/{email}/validate",
@@ -63,6 +63,10 @@
   ],
   "post": [
     {
+      "path": "/api/v1/messages/session",
+      "class": "net.cabezudo.sofia.core.session.services.AddMessageService"
+    },
+    {
       "path": "/api/v1/password/validate",
       "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
     },
@@ -85,6 +89,10 @@
     {
       "path": "/api/v1/sites",
       "class": "net.cabezudo.sofia.core.sites.services.AddSiteService"
+    },
+    {
+      "path": "/api/v1/sites/{siteId}/hosts",
+      "class": "net.cabezudo.sofia.core.sites.services.SiteHostnameAddService"
     },
     {
       "path": "/api/v1/person",
@@ -169,6 +177,14 @@
     {
       "path": "/api/v1/users/{userId}",
       "class": ""
+    },
+    {
+      "path": "/api/v1/sites/{siteId}",
+      "class": "net.cabezudo.sofia.core.sites.services.DeleteSiteService"
+    },
+    {
+      "path": "/api/v1/sites/{siteId}/hosts/{hostId}",
+      "class": "net.cabezudo.sofia.core.sites.services.DeleteSiteHostnameService"
     },
     {
       "path": "/api/v1/person/{personId}",

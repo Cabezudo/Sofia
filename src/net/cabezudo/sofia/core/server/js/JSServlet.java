@@ -62,6 +62,13 @@ public class JSServlet extends HttpServlet {
           } else {
             sb.append("  comebackPage: '").append(comebackPage).append("',\n");
           }
+          String message = (String) request.getSession().getAttribute("message");
+          if (message == null) {
+            sb.append("  message: null,\n");
+          } else {
+            sb.append("  message: ").append(message).append(",\n");
+            request.getSession().removeAttribute("message");
+          }
           request.getSession().setAttribute("", requestURI);
           sb.append("  user: ");
           if (user == null) {

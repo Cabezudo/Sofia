@@ -13,7 +13,7 @@
       {
         const createGUI = () => {
           linkTo({
-            id: 'sites',
+            id: 'sitesLink',
             onClick: '/manager/sites/sites.html'
           });
         };
@@ -37,17 +37,17 @@
     </style>
   </head>
   <body>
-    <section file="header.html"></section>
-    <section id="messages" template="messages/section/simple/message"></section>
-    <div class="table">
-      <div class="cell"><div id="sites">Sitios</div></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-      <div class="cell"></div>
-    </div>
+    <section id="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section class="content">
+        <h2 class="title">Administración</h2>
+        <div id="sitesLink" class="screenMenuItem">Sitios</div>
+      </section>
+      <footer>
+        <div>
+          &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
+        </div>
+      </footer>
+    </section>
   </body>
 </html>

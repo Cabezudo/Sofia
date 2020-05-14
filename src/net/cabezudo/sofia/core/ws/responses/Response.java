@@ -13,7 +13,7 @@ import net.cabezudo.sofia.core.texts.TextManager;
 public class Response {
 
   public enum Type {
-    ACTION, CREATE, DATA, READ, SET, UPDATE, VALIDATION
+    ACTION, CREATE, DATA, READ, SET, UPDATE, DELETE, VALIDATION
   }
 
   public enum Status {
@@ -23,12 +23,18 @@ public class Response {
   private JSONObject jsonObject;
   private final Status status;
   private final Type messageType;
+  private final JSONObject data;
   private final String message;
   private final Object[] os;
 
   public Response(Status status, Type messageType, String message, Object... os) {
+    this(status, messageType, null, message, os);
+  }
+
+  public Response(Status status, Type messageType, JSONObject data, String message, Object... os) {
     this.status = status;
     this.messageType = messageType;
+    this.data = data;
     this.message = message;
     this.os = os;
   }
@@ -39,6 +45,9 @@ public class Response {
       jsonObject.add(new JSONPair("status", status.toString()));
       jsonObject.add(new JSONPair("type", messageType.toString()));
       jsonObject.add(new JSONPair("message", TextManager.get(site, locale, message, os)));
+      if (data != null) {
+        jsonObject.add(new JSONPair("data", data));
+      }
     }
     return jsonObject;
   }

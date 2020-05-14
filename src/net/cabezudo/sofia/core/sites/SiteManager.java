@@ -86,8 +86,9 @@ public class SiteManager {
       if (domainNameId == baseDomainNameId) {
         baseDomainName = domainName;
         Logger.debug("Base domain found: %s (%s).", baseDomainName, baseDomainNameId);
+      } else {
+        domainNameList.add(domainName);
       }
-      domainNameList.add(domainName);
     }
     Site site = new Site(id, name, baseDomainName, domainNameList, version);
     return site;
@@ -132,7 +133,7 @@ public class SiteManager {
 
     ResultSet rs = ps.getGeneratedKeys();
     if (rs.next()) {
-      int id = rs.getInt(1);
+      int siteId = rs.getInt(1);
 
       DomainName baseDomainName = null;
       DomainNameList domainNames = new DomainNameList();
@@ -141,7 +142,7 @@ public class SiteManager {
         if (domainNameName == null || domainNameName.isEmpty()) {
           throw new InvalidParameterException("Invalid domain name: " + domainNameName);
         }
-        DomainName domainName = DomainNameManager.getInstance().add(connection, id, domainNameName);
+        DomainName domainName = DomainNameManager.getInstance().add(connection, siteId, domainNameName);
         if (baseDomainName == null) {
           baseDomainName = domainName;
         } else {
@@ -149,7 +150,7 @@ public class SiteManager {
         }
       }
 
-      Site site = new Site(id, name, baseDomainName, domainNames, DEFAULT_VERSION);
+      Site site = new Site(siteId, name, baseDomainName, domainNames, DEFAULT_VERSION);
 
       SiteManager.getInstance().update(connection, site);
 
@@ -160,6 +161,7 @@ public class SiteManager {
   }
 
   public Site update(Connection connection, Site site) throws SQLException {
+    // TODO Update the domain name list
     String query = "UPDATE " + SitesTable.NAME + " SET name = ?, domainName = ? WHERE id = ?";
     PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     ps.setString(1, site.getName());
@@ -329,8 +331,9 @@ public class SiteManager {
         if (domainNameId == baseDomainNameId) {
           baseDomainName = domainName;
           Logger.debug("Base domain found: %s (%s).", baseDomainName, baseDomainNameId);
+        } else {
+          domainNameList.add(domainName);
         }
-        domainNameList.add(domainName);
       } while (rs.next());
       Site site = new Site(id, name, baseDomainName, domainNameList, version);
       return site;
@@ -365,6 +368,32 @@ public class SiteManager {
         Logger.severe(e);
         DomainNameManager.getInstance().update(site, baseDomainName, owner);
       }
+    }
+  }
+
+  public void delete(int siteId) throws SQLException {
+    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+      delete(connection, siteId);
+    }
+  }
+
+  public void delete(Connection connection, int siteId) throws SQLException {
+    try {
+      connection.setAutoCommit(false);
+      String deleteHostsQuery = "DELETE FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
+      PreparedStatement dhps = connection.prepareStatement(deleteHostsQuery);
+      dhps.setInt(1, siteId);
+      Logger.fine(dhps);
+      dhps.executeUpdate();
+      String deleteSiteQuery = "DELETE FROM " + SitesTable.NAME + " WHERE id = ?";
+      PreparedStatement dsps = connection.prepareStatement(deleteSiteQuery);
+      dsps.setInt(1, siteId);
+      Logger.fine(dsps);
+      dsps.executeUpdate();
+      connection.commit();
+    } catch (SQLException e) {
+      connection.rollback();
+      throw e;
     }
   }
 
@@ -549,7 +578,7 @@ public class SiteManager {
       Logger.fine(ps);
       ResultSet rs = ps.executeQuery();
 
-      DomainNameList list = new DomainNameList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
+      DomainNameList list = new DomainNameList(offset == null ? 0 : offset.getValue());
       while (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("siteId");

@@ -45,6 +45,8 @@ public class TextManager {
         return "El apellido es correcto";
       case "login.fail":
         return "El usuario o la contraseña son incorrectos";
+      case "messages.sent":
+        return "El mensaje fué enviado";
       case "name.ok":
         return "El nombre es correcto";
       case "password.ok":
@@ -63,8 +65,14 @@ public class TextManager {
         return "La contraseña ha sido cambiada";
       case "person.email.in.use":
         return "El correo '" + parameters[0] + "' ya está siendo utilizado por un usuario";
+      case "site.host.deleted":
+        return "El host fue eliminado";
       case "site.hostname.exist.for.other.site":
         return "Ya existe el nombre de host '" + parameters[0] + "' en el sitio '" + parameters[1] + "'";
+      case "site.host.base.can.not.be.deleted":
+        return "No se puede eliminar el host base";
+      case "site.deleted":
+        return "El sitio fue eliminado";
       case "site.name.exist":
         return "Ya existe un sitio con ese nombre";
       case "site.name.ok":

@@ -1,32 +1,88 @@
 <style>
   .headerContainer {
-    display: flex;
-    color: #{application.color.main};
-    padding-top: #{application.container.padding.top.default};
-    padding-right: #{application.container.padding.right.default};
-    padding-bottom: #{application.container.padding.bottom.default};
-    padding-left: #{application.container.padding.left.default};
     background-color: #f8f8f8;
   }
-  .headerContainer > .header {
+  .nameContainer {
+    align-items: center;
+    color: #{menu.color};
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    align-items: stretch;
-    display: flex;
-    flex-shrink: 0;
-    flex-grow: 1;
+    padding-top: #{menu.padding.top.default};
+    padding-right: 0;
+    padding-bottom: #{menu.padding.bottom.default};
+    padding-left: #{menu.padding.left.default};
   }
-  .headerContainer > .header > .nameContainer {
+  .nameContainer > .name {
+    font-family: 'Kanit', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+  #menuButton {
+    width: 14px;
+    height: 14px;
+    padding-right: 20px;
     display: flex;
     flex-direction: column;
+  }
+  .burger {
+    justify-content: space-around;
+  }
+  .cross {
+    justify-content: center
+  }
+  .patty {
+    height: 2px;
+    width: 16px;
+    background-color: black;
+  }
+  .cross .patty:first-child {
+    transform: translateY(1px) rotate(45deg);
+  }
+  .cross .patty:nth-child(2) {
+    display: none;
+  }
+  .cross .patty:last-child {
+    transform: translateY(-1px) rotate(-45deg);
+  }
+  .buoy {
+    position: absolute;
+  }
+  #menuContainer {
+    background-color: #f8f8f8;
+    display: none;
+    width: 100vw;
+    padding-top: 20px;
+  }
+  #menuContainer.show {
+    display: flex;
+  }
+  #menuContainer > .menu {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    font-size: #{menu.font.size.default};
+    padding-bottom: 20px;
+    padding-left: #{menu.padding.left.default};
+  }
+  #menuContainer > .menu > .item {
+    color: #4a4a4a;
     padding: 10px 0;
   }
-  .headerContainer > .header > .nameContainer > .name {
-    font-size: 36px;
-    line-height: 24px;
-    font-weight: 900;
-    font-family: 'Kanit', sans-serif;
-    text-transform: uppercase;
+  #menuContainer > .menu > .icon {
+    height: 20px;
+    width: 20px;
+  }
+  #menuContainer > .menu > .icon svg {
+    height: 20px;
+    width: 20px;
+    shape-rendering: geometricprecision;
+    transform: scale(0.9);
+  }
+  #menuContainer > .menu > .item:hover {
+    color: #{menu.color};
+    cursor: pointer;
   }
   svg {
     height: 1em;
@@ -34,56 +90,50 @@
     shape-rendering: geometricprecision;
     transform: scale(1.05);
   }
-  .headerContainer > .header > .menu {
-    display: flex;
-    align-items: center;
-    font-size: #{menu.font.size.default};
-  }
-  .headerContainer > .header > .menu > .item {
-    padding: 0 10px;
-    color: #4a4a4a;
-  }
-  .headerContainer > .header > .menu > .icon {
-    height: 20px;
-    width: 20px;
-  }
-  .headerContainer > .header > .menu > .icon svg {
-    height: 20px;
-    width: 20px;
-    shape-rendering: geometricprecision;
-    transform: scale(0.9);
-
-
-  }
-  .headerContainer > .header > .menu > .item:hover {
-    color: #{application.color.main};
-    cursor: pointer;
-  }
   @media all and ( min-width: 480px ) {
     .headerContainer > .header {
     }
   }
 
   @media all and ( min-width: 750px ) {
-    .headerContainer > .header {
-    }}
+    .headerContainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .burger {
+      display: none;
+    }
+    .cross {
+      display: none;
+    }
+    .buoy {
+      position: static;
+    }
+    #menuContainer {
+      width: auto;
+      display: flex;
+    }
+    #menuContainer > .menu {
+      align-items: center;
+      flex-direction: row;
+      font-size: #{menu.font.size.750};
+      padding-left: #{menu.padding.left.750};
+      padding-right: #{menu.padding.right.750};
+      padding-bottom: 0;
+    }
+    #menuContainer > .menu > .item {
+      padding: 0 15px;
+    }
+  }
 
   @media all and ( min-width: 1024px ) {
-    .headerContainer > .header {
-      width: #{application.container.width.1024};
-    }
   }
 
   @media all and ( min-width: 1250px ) {
-    .headerContainer > .header {
-      width: #{application.container.width.1250};
-    }
   }
 
   @media all and ( min-width: 1800px ) {
-    .headerContainer > .header {
-      width: #{application.container.width.1800};
-    }
   }
 </style>
 <script lib="linkTo/0.1.0"></script>
@@ -137,12 +187,9 @@
             const itemElement = document.createElement('div');
             itemElement.className = 'item icon';
             menu.appendChild(itemElement);
-
             const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
             svgElement.setAttribute('viewBox', item.svg.viewBox);
             itemElement.appendChild(svgElement);
-
-
             const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
             pathElement.setAttribute('fill', item.svg.path.fill);
             pathElement.setAttribute('d', item.svg.path.d);
@@ -154,15 +201,40 @@
           }
         }
       }
+      const menuButton = Core.validateById('menuButton');
+      const menuContainer = Core.validateById('menuContainer');
+      menuButton.addEventListener("click", event => {
+        if (menuContainer.style.display === 'flex') {
+          menuContainer.style.display = 'none';
+          menuButton.className = 'burger';
+        } else {
+          menuButton.className = 'cross';
+          menuContainer.style.display = 'flex';
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        return false;
+      });
+      window.addEventListener("click", () => {
+        menuContainer.style.display = 'none';
+        menuButton.className = 'burger';
+      });
     };
     Core.addOnloadFunction(createGUI);
   }
 </script>
 <div class="headerContainer">
-  <div class="header">
-    <div class="nameContainer">
-      <div class="name">#{menu.name}</div>
+  <div class="nameContainer">
+    <div class="name">#{menu.name}</div>
+    <div id="menuButton" class="burger">
+      <div class="patty"></div>
+      <div class="patty"></div>
+      <div class="patty"></div>
     </div>
-    <div id="menu" class="menu"></div>
+  </div>
+  <div class="buoy">
+    <div id="menuContainer">
+      <div id="menu" class="menu"></div>
+    </div>
   </div>
 </div>
