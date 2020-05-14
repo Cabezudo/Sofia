@@ -26,28 +26,22 @@
   border-collapse: collapse;
 }
 
-.simpleList > div > table > tbody {
-  /*  display: block;
-    width: 100%;
-    height: 100%;*/
+.simpleList > div > table > tbody > tr {
 }
 
-.simpleList > div > table > tr {
-}
-
-.simpleList > div > table > tr > td {
-}
-
-.simpleList > div > table > tr:hover {
+.simpleList > div > table > tbody > tr.clickable:hover {
   cursor: pointer;
 }
 
-.simpleList > div > table > tr > td, .simpleList > div > table > td > div {
-  pointer-events: none;
+.simpleList > div > table > tbody > tr > td > div {
 }
 
-.simpleList > div > table > td > div {
-  display: inline-block;
+.simpleList > div > table > tbody > tr > td > div > p {
+  padding: 5px 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  border-bottom: 1px dashed #C4CAD5;
 }
 
 .simpleList > div > .messageBaseClass {
@@ -55,26 +49,4 @@
   text-align: center;
   padding: 10px;
   font-size: 20px;
-}
-
-/*
-   Appariencia. Esta puede cambiar de sitio a sitio. Es la que debería de cambiar el usuario.
-   Hay que buscar un mecanismo para que se pueda cambiar fácil. Tal vez marcarlas aquí para tomarlo automáticamente con
-   una herramienta
-*/
-
-.simpleList {
-  font-size: 22px;
-}
-
-.simpleList > div {
-  padding: 20px;
-}
-
-.simpleList > div > table > tbody > tr.clickable:hover {
-  cursor: pointer;
-}
-
-.simpleList > div > table > tbody > tr > td {
-  padding: 10px;
 }

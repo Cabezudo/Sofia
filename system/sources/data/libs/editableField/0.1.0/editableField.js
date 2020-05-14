@@ -5,7 +5,7 @@
 
 /* global Core */
 
-const editableField = ({ element = null, id = null, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null } = {}) => {
+const editableField = ({ element = null, id = null, disabled = false, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null } = {}) => {
   let inputElement, saveButton, lastValue, validationTimer, saveTimer, requestId = 0;
 
   const validateOptions = () => {
@@ -28,7 +28,11 @@ const editableField = ({ element = null, id = null, validationURI = null, update
     }
     element.classList.add('editableField');
     inputElement = document.createElement('input');
+    if (disabled) {
+      inputElement.setAttribute('disabled', true);
+    }
     inputElement.setAttribute('type', 'text');
+    inputElement.setAttribute('spellcheck', 'false');
     inputElement.value = defaultValue;
     lastValue = defaultValue;
     element.appendChild(inputElement);
@@ -54,10 +58,19 @@ const editableField = ({ element = null, id = null, validationURI = null, update
     const data = {
       field: inputElement.data.field,
       value: inputElement.value
-    }
+    };
     const response = Core.sendPut(updateURI, inputElement, data);
   };
   const assignTriggers = () => {
+    element.addEventListener('enabled', () => {
+      element.removeAttribute('disabled');
+    });
+    element.addEventListener('disabled', () => {
+      element.setAttribute('disabled', true);
+    });
+    element.addEventListener('toggle', () => {
+      element.setAttribute('disabled', !getAttribute('disabled'));
+    });
     inputElement.addEventListener('response', event => {
       const data = event.detail;
       console.log(data);

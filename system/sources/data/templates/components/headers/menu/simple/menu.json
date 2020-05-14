@@ -1,48 +1,51 @@
 
 {
-  "application": {
-    "container": {
-      "width": {
-        "default": "#{theme.application.container.width.default}",
-        "480": "#{theme.application.container.width.480}",
-        "750": "#{theme.application.container.width.750}",
-        "1024": "#{theme.application.container.width.1024}",
-        "1250": "#{theme.application.container.width.1250}",
-        "1800": "#{theme.application.container.width.1800}"
-      },
-      "padding": {
-        "top": {
-          "default": "10px"
-        },
-        "right": {
-          "default": "#{theme.application.container.padding.right.default}"
-        },
-        "bottom": {
-          "default": "10px"
-        },
-        "left": {
-          "default": "#{theme.application.container.padding.left.default}"
-        }
-      }
-    },
-    "title": {
-      "font": {
-        "font-family": [
-          "Titillium Web",
-          "sans-serif"
-        ]
-      }
-    },
-    "color": {
-      "main": "#{theme.application.color.main}"
-    }
-  },
   "menu": {
     "name": "#{site.name}",
     "description": "the<br>description",
+    "color": "#{theme.application.color.main}",
     "font": {
       "size": {
-        "default": "#{theme.menu.font.size.default}"
+        "default": "#{theme.menu.font.size.default}",
+        "480": "#{theme.menu.font.size.480}",
+        "750": "#{theme.menu.font.size.750}",
+        "1024": "#{theme.menu.font.size.1024}",
+        "1250": "#{theme.menu.font.size.1250}",
+        "1800": "#{theme.menu.font.size.1800}"
+      }
+    },
+    "padding": {
+      "top": {
+        "default": "#{theme.menu.padding.top.default}",
+        "480": "#{theme.menu.padding.top.480}",
+        "750": "#{theme.menu.padding.top.750}",
+        "1024": "#{theme.menu.padding.top.1024}",
+        "1250": "#{theme.menu.padding.top.1250}",
+        "1800": "#{theme.menu.padding.top.1800}"
+      },
+      "right": {
+        "default": "#{theme.menu.padding.right.default}",
+        "480": "#{theme.menu.padding.right.480}",
+        "750": "#{theme.menu.padding.right.750}",
+        "1024": "#{theme.menu.padding.right.1024}",
+        "1250": "#{theme.menu.padding.right.1250}",
+        "1800": "#{theme.menu.padding.right.1800}"
+      },
+      "bottom": {
+        "default": "#{theme.menu.padding.bottom.default}",
+        "480": "#{theme.menu.padding.bottom.480}",
+        "750": "#{theme.menu.padding.bottom.750}",
+        "1024": "#{theme.menu.padding.bottom.1024}",
+        "1250": "#{theme.menu.padding.bottom.1250}",
+        "1800": "#{theme.menu.padding.bottom.1800}"
+      },
+      "left": {
+        "default": "#{theme.menu.padding.left.default}",
+        "480": "#{theme.menu.padding.left.480}",
+        "750": "#{theme.menu.padding.left.750}",
+        "1024": "#{theme.menu.padding.left.1024}",
+        "1250": "#{theme.menu.padding.left.1250}",
+        "1800": "#{theme.menu.padding.left.1800}"
       }
     },
     "items": [

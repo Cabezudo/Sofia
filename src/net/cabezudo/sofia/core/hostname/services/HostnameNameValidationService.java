@@ -1,9 +1,12 @@
-package net.cabezudo.sofia.core.hostname;
+package net.cabezudo.sofia.core.hostname.services;
 
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
+import net.cabezudo.sofia.core.hostname.HostnameValidationException;
+import net.cabezudo.sofia.core.hostname.HostnameValidator;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;

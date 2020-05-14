@@ -4,8 +4,7 @@
  */
 
 .button {
-  margin: 0;
-  padding: 0;
+  margin: 0 8px;
   -moz-appearance: none;
   -webkit-appearance: none;
   align-items: center;
@@ -16,7 +15,6 @@
   height: 2.5em;
   line-height: 12px;
   padding: 3px 14px;
-  position: relative;
   vertical-align: top;
   cursor: default;
   font-size: 20px;
@@ -36,26 +34,27 @@
   color: #fff;
 }
 
+.button[disabled] {
+  color: lightgray;
+  background-color: white;
+  border: 1px solid lightgray;
+}
+
 .blueButton {
   background-color: #001787;
 }
 
-.blueButton:not(.disabled):hover {
+.blueButton:not([disabled]):hover {
   background-color: #0023D0;
   cursor: pointer;
 }
 
-.disabled {
-  background-color: #598CB1;
-  color: lightgray;
-  background-color: white;
-  border: 1px solid lightgray;
+.redButton {
+  background-color: #870003;
 }
 
-disabledButton {
-  color: lightgray;
-  background-color: white;
-  border: 1px solid lightgray;
+.redButton:not([disabled]):hover {
+  background-color: #D0000A;
 }
 
 @media all and ( min-width: 480px ) {

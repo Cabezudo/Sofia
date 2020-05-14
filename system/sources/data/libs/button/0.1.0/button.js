@@ -6,8 +6,6 @@
 /* global Core */
 
 const button = ({ id = null, element = null, type = null, text = null, enabled = true, onClick = null, onResponse = null } = {}) => {
-  const DISABLED_CLASS = 'disabled';
-
   const validateOptions = () => {
     element = Core.validateIdOrElement(id, element);
     id = element.id;
@@ -19,7 +17,7 @@ const button = ({ id = null, element = null, type = null, text = null, enabled =
     element.className = 'button';
     element.classList.add(`${type}Button`);
     if (!enabled) {
-      element.classList.add(DISABLED_CLASS);
+      element.setAttribute('disabled', true);
     }
     if (text !== null) {
       element.innerHTML = text;
@@ -31,20 +29,20 @@ const button = ({ id = null, element = null, type = null, text = null, enabled =
   };
   const assignTriggers = () => {
     element.addEventListener('enabled', () => {
-      element.classList.remove(DISABLED_CLASS);
+      element.removeAttribute('disabled');
     });
     element.addEventListener('disabled', () => {
-      element.classList.add(DISABLED_CLASS);
+      element.setAttribute('disabled', true);
     });
     element.addEventListener('toggle', () => {
-      element.classList.toggle(DISABLED_CLASS);
+      element.setAttribute('disabled', !getAttribute('disabled'));
     });
     element.addEventListener('click', event => {
-      if (element.classList.contains(DISABLED_CLASS)) {
+      if (element.getAttribute('disabled')) {
         return;
       }
       if (event.button === 0 && Core.isFunction(onClick)) {
-        element.classList.add(DISABLED_CLASS);
+        element.setAttribute('disabled', true);
         onClick();
       }
     });
@@ -52,7 +50,6 @@ const button = ({ id = null, element = null, type = null, text = null, enabled =
       if (Core.isFunction(onResponse)) {
         onResponse(event);
       }
-      element.classList.remove(DISABLED_CLASS);
     });
   };
   validateOptions();

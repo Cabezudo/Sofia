@@ -1,47 +1,57 @@
-package net.cabezudo.sofia.core.sites;
+package net.cabezudo.sofia.core.sites.services;
 
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Token;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
+import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
- * @version 0.01.00, 2019.24.10
- *
+ * @version 0.01.00, 2019.10.09
  */
-public class SiteService extends Service {
+public class DeleteSiteService extends Service {
 
-  public SiteService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public DeleteSiteService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
   @Override
   public void execute() throws ServletException {
+
     User owner = super.getUser();
 
-    Token token = tokens.getValue("siteId");
-    int siteId;
+    Token siteIdToken = tokens.getValue("siteId");
     try {
-      siteId = token.toInteger();
-    } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + token + " not found");
-      return;
-    }
+      int siteId;
 
-    try {
+      try {
+        siteId = siteIdToken.toInteger();
+      } catch (InvalidPathParameterException e) {
+        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
+        return;
+      }
+
       Site site = SiteManager.getInstance().getById(siteId, owner);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");
         return;
       }
-      out.print(site.toJSON());
+
+      SiteManager.getInstance().delete(siteId);
+      JSONObject data = new JSONObject();
+      data.add(new JSONPair("id", siteId));
+      sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.deleted"));
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");

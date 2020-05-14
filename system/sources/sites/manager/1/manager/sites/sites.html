@@ -19,7 +19,7 @@
             filterInputElement: null,
             cellMaker: row => {
               if (row) {
-                return `<td>${row.name} (v${row.version})</td>`;
+                return `<td><div><p>${row.name}</p></div></td>`;
               }
             },
             onClick: (event, data) => {
@@ -34,9 +34,18 @@
     <style file="menu.css"></style>
   </head>
   <body>
-    <section file="../header.html"></section>
-    <section file="sitesMenu.html"></section>
-    <section id="messages" template="messages/section/simple/message"></section>
-    <div id="siteList"></div>
+    <section id="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section id="detail" class="content">
+        <h2 class="title">Sites</h2>
+        <div id="siteList"></div>
+      </section>
+      <section id="messages" template="messages/section/simple/message"></section>
+      <footer>
+        <div>
+          &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
+        </div>
+      </footer>
+    </section>
   </body>
 </html>

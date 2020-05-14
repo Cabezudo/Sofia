@@ -42,6 +42,12 @@ const Core = {
       Core.trigger(Core.messagesContainer, 'cleanMessages');
     }
   },
+  disable: element => {
+    Core.trigger(element, 'disabled');
+  },
+  enable: element => {
+    Core.trigger(element, 'enabled');
+  },
   getNextRequestId: () => {
     return Core.requestId++;
   },
@@ -209,10 +215,40 @@ const Core = {
     return {requestId}
     ;
   },
+  sendDelete: (url, origin) => {
+    const requestId = Core.getNextRequestId();
+    fetch(url, {
+      method: "DELETE",
+      cache: "no-cache",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "RequestId": requestId
+      },
+      redirect: "follow"
+    })
+            .then(function (response) {
+              const headers = response.headers;
+              const requestId = parseInt(headers.get('RequestId'));
+              response.text().then(text => {
+                let jsonData;
+                try {
+                  jsonData = JSON.parse(text);
+                  jsonData.requestId = requestId;
+                  if (origin) {
+                    Core.trigger(origin, 'response', jsonData);
+                  }
+                } catch (error) {
+                  console.log(`%cCore : sendDelete : ${error.message}\n${text}`, 'color: red');
+                }
+              })
+                      ;
+            })
+            ;
+    return {requestId}
+    ;
+  },
   sendPost: (url, origin, formObject) => {
-    if (!origin) {
-      throw new Error(`Invalid origin for sendPost: ${origin}`);
-    }
     const requestId = Core.getNextRequestId();
     fetch(url, {
       method: "POST",
@@ -234,7 +270,9 @@ const Core = {
                   try {
                     jsonData = JSON.parse(text);
                     jsonData.requestId = requestId;
-                    Core.trigger(origin, 'response', jsonData);
+                    if (origin) {
+                      Core.trigger(origin, 'response', jsonData);
+                    }
                   } catch (error) {
                     console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
                   }
@@ -246,9 +284,6 @@ const Core = {
     return {requestId};
   },
   sendPut: (url, origin, formObject) => {
-    if (!origin) {
-      throw new Error(`Invalid origin for sendPut: ${origin}`);
-    }
     const requestId = Core.getNextRequestId();
     fetch(url, {
       method: "PUT",
@@ -269,7 +304,9 @@ const Core = {
                 try {
                   jsonData = JSON.parse(text);
                   jsonData.requestId = requestId;
-                  Core.trigger(origin, 'response', jsonData);
+                  if (origin) {
+                    Core.trigger(origin, 'response', jsonData);
+                  }
                 } catch (error) {
                   console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
                 }
@@ -289,6 +326,10 @@ const Core = {
     Core.messagesContainer = typeof target === 'string' ? document.getElementById(target) : target;
     console.log(`Core : setMessagesContainer : Set to ${Core.messagesContainer.id}`);
   },
+  setSessionMessage: message => {
+    console.log(`*** ${JSON.stringify(message)}`);
+    Core.sendPost(`/api/v1/messages/session`, null, message);
+  },
   show: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
     element.hidden = false;
@@ -306,7 +347,7 @@ const Core = {
     }
   },
   trigger: (target, eventName, detail) => {
-    console.log(`Core : trigger : Event ${eventName} to ${target.id} using data ${JSON.stringify(detail)}`);
+    console.log(`Core : trigger : Event ${eventName} to ${target.id} ${detail === undefined ? 'with no data' : `using data ${JSON.stringify(detail)}`}.`);
     const event = new CustomEvent(eventName, {detail});
     target.dispatchEvent(event);
   },
@@ -354,8 +395,11 @@ window.onload = () => {
   if (Core.pageParameters.has('section')) {
     Core.changeSection(Core.pageParameters.get('section'));
   }
-  document.body.style.opacity = "1";
   Core.testFunctions.forEach(func => {
     func();
   });
+  document.body.style.opacity = "1";
+  if (variables.message !== null) {
+    Core.showMessage(variables.message);
+  }
 };

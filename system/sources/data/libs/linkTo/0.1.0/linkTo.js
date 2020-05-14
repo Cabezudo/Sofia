@@ -20,6 +20,8 @@ const linkTo = ({ onClick = null, id = null, element = null } = {}) => {
   };
   const createGUI = () => {
     element.classList.add('linkTo');
+    const html = element.innerHTML;
+    element.innerHTML = `<div>${html}</div>`;
     element.onclick = () => {
       if (typeof onClick === 'function') {
         onClick(this);

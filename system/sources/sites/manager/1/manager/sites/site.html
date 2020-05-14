@@ -9,83 +9,331 @@
     <script src="/js/variables.js"></script>
     <script lib="core/0.1.0"></script>
     <script lib="editableField/0.1.0"></script>
-    <script lib="bottomMessages/0.1.0"></script>
     <script lib="linkTo/0.1.0"></script>
+    <script lib="button/0.1.0"></script>
+    <script lib="crossButton/0.1.0"></script>
+    <script lib="inputGenericValidator/0.1.0"></script>
     <script>
       {
+        let
+                siteData,
+                detailDiv,
+                domainsElement,
+                deleteSiteButton,
+                addHostButton,
+                saveHostButton,
+                cancelAddHostButton,
+                nameValidated,
+                nameErrorMessage,
+                newHostInput,
+                savingNewHost = false,
+                hostnameErrorMessage,
+                newHostInputValidated = false,
+                newHostnameErrorMessage;
         const createGUI = () => {
-          const detailDiv = Core.validateById('detail');
+          deleteSiteButton = Core.validateById('deleteSiteButton');
+          addHostButton = Core.validateById('addHostButton');
+          saveHostButton = Core.validateById('saveHostButton');
+          cancelAddHostButton = Core.validateById('cancelAddHostButton');
+          detailDiv = Core.validateById('detail');
           detailDiv.addEventListener('response', event => {
-            const site = event.detail;
+            siteData = event.detail;
             editableField({
-              id: 'siteName',
-              validationURI: `/api/v1/sites/${site.id}/names/{value}/validate`,
-              updateURI: `/api/v1/sites/${site.id}`,
+              id: 'nameInput',
+              validationURI: `/api/v1/sites/${siteData.id}/names/{value}/validate`,
+              updateURI: `/api/v1/sites/${siteData.id}`,
               field: 'name',
-              defaultValue: site.name
+              defaultValue: siteData.name
             });
-            editableField({
-              id: 'siteVersion',
-              validationURI: `/api/v1/sites/${site.id}/versions/{value}/validate`,
-              updateURI: `/api/v1/sites/${site.id}`,
-              field: 'version',
-              defaultValue: site.version
+            redButton({
+              element: deleteSiteButton,
+              enabled: true,
+              onClick: () => {
+                Core.screenBlocker.block();
+                Core.sendDelete(`/api/v1/sites/${siteData.id}`, deleteSiteButton);
+              },
+              onResponse: event => {
+                const detail = event.detail;
+                if (detail.status === 'OK') {
+                  Core.setSessionMessage({
+                    status: "OK", message: `${detail.message}`
+                  });
+                  if (variables.comebackPage === null) {
+                    location.assign('/manager/sites/sites.html');
+                  } else {
+                    location.assign(variables.comebackPage);
+                  }
+                } else {
+                  Core.screenBlocker.unblock();
+                  Core.showMessage({status: 'ERROR', message: detail.message});
+                }
+              }
             });
-            const domains = site.domains;
-            const domainsElement = document.getElementById('domains');
+            blueButton({
+              element: addHostButton,
+              enabled: true,
+              onClick: () => {
+                addBlankHost();
+              },
+              onResponse: event => {
+                const detail = event.detail;
+                if (detail.status === 'OK') {
+                  if (variables.comebackPage === null) {
+                    location.assign('/manager/sites/sites.html');
+                  } else {
+                    location.assign(variables.comebackPage);
+                  }
+                } else {
+                  Core.showMessage({status: 'ERROR', message: detail.message});
+                }
+              }
+            });
+            blueButton({
+              element: saveHostButton,
+              enabled: false,
+              onClick: () => {
+                addNewHostOnServer();
+              },
+              onResponse: event => {
+                const detail = event.detail;
+                if (detail.status === 'OK') {
+                  removeNewHostInput();
+                  const data = detail.data;
+                  savingNewHost = false;
+                  addDomainToList(siteData.id, data.id, data.name);
+                  updateView();
+                } else {
+                  savingNewHost = false;
+                  Core.showMessage({status: 'ERROR', message: detail.message});
+                  updateView();
+                }
+              }
+            });
+            redButton({
+              element: cancelAddHostButton,
+              enabled: false,
+              onClick: () => {
+                removeNewHostInput();
+              }
+            });
+            const domains = siteData.domains;
+            domainsElement = document.getElementById('domains');
+            let baseDomain = true;
             domains.forEach(host => {
-              const domainsInput = (() => {
-                const element = document.createElement('div');
-                editableField({
-                  element,
-                  validationURI: `/api/v1/sites/${site.id}/hosts/${host.id}/names/{value}/validate`,
-                  updateURI: `/api/v1/sites/${site.id}/hosts/${host.id}`,
-                  field: 'name',
-                  defaultValue: host.name
-                });
-                return element;
-              })();
-              domainsElement.appendChild(domainsInput);
+              addDomainToList(siteData.id, host.id, host.name, baseDomain);
+              baseDomain = false;
             });
             Core.screenBlocker.unblock();
           });
-          Core.screenBlocker.block();
-          Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
+        };
+        const addNewHostOnServer = () => {
+          savingNewHost = true;
+          const name = newHostInput.value;
+          Core.sendPost(`/api/v1/sites/${siteData.id}/hosts`, saveHostButton, {
+            name
+          });
+          updateView();
+        };
+        const addDomainToList = (siteId, hostId, hostName, baseDomain) => {
+          const domainsInput = () => {
+            const editableFieldContainerDiv = document.createElement('div');
+            editableFieldContainerDiv.className = 'editableFieldContainerDiv';
+            const editableFieldDiv = document.createElement('div');
+            editableFieldDiv.id = `host:${hostId}`;
+            editableField({
+              element: editableFieldDiv,
+              disabled: baseDomain,
+              validationURI: `/api/v1/sites/${siteId}/hosts/${hostId}/names/{value}/validate`,
+              updateURI: `/api/v1/sites/${siteId}/hosts/${hostId}`,
+              field: 'name',
+              defaultValue: hostName
+            });
+            editableFieldContainerDiv.appendChild(editableFieldDiv);
 
-          bottomMessages({id: 'messages'});
+            if (!baseDomain) {
+              const deleteHostButtonDiv = crossButton({
+                onClick: () => {
+                  Core.sendDelete(`/api/v1/sites/${siteId}/hosts/${hostId}`, deleteHostButtonDiv);
+                },
+                onResponse: event => {
+                  const detail = event.detail;
+                  const status = detail.status;
+                  if (status === 'OK') {
+                    Core.showMessage({status: "OK", message: detail.message});
+                    const fieldId = `host:${detail.data.id}`;
+                    document.getElementById(fieldId).parentElement.remove();
+                  } else {
+                    Core.showMessage({status: 'ERROR', message: detail.message});
+                  }
+                }
+              });
+              editableFieldContainerDiv.appendChild(deleteHostButtonDiv);
+            }
+            return editableFieldContainerDiv;
+          };
+          domainsElement.appendChild(domainsInput());
+        };
+        const removeNewHostInput = () => {
+          newHostInputValidated = false;
+          newHostInput = undefined;
+          newHost.remove();
+          newHostnameErrorMessage = undefined;
+          updateView();
+        };
+        const addBlankHost = () => {
+          if (document.getElementById(`newHost`) !== null) {
+            console.log('site.html : addBlankHost : New host alreade exists');
+            return;
+          }
+          const newHost = document.createElement('div');
+          newHost.innerHTML = '<input placeholder="Hostname" spellcheck="false"/>';
+          newHost.id = 'newHost';
+          newHost.className = 'editableField';
+          newHostInput = newHost.children[0];
+          newHostInput.addEventListener("focusout", () => {
+            if (newHostInput.value === '') {
+              removeNewHostInput();
+            }
+          });
+          domainsElement.appendChild(newHost);
+          inputGenericValidator({
+            element: newHostInput,
+            getValidationURL: () => {
+              return `/api/v1/hosts/names/${newHostInput.value}/validate`;
+            },
+            onValid: event => {
+              newHostInputValidated = true;
+              newHostnameErrorMessage = undefined;
+              updateView();
+            },
+            onNotValid: data => {
+              newHostInputValidated = true;
+              newHostnameErrorMessage = data;
+              updateView();
+            },
+            onFocus: () => {
+              updateView();
+            }
+          });
+          newHostInput.focus();
+          setMessage();
+        };
+        const setMessage = () => {
+          do {
+            if (savingNewHost) {
+              Core.showMessage({status: "OK", message: 'Saving new host...'});
+              break;
+            }
+            if (nameErrorMessage && Core.inFocus(nameInput)) {
+              Core.showMessage(nameErrorMessage);
+              break;
+            }
+            if (newHostnameErrorMessage) {
+              Core.showMessage(newHostnameErrorMessage);
+              break;
+            }
+            if (!newHostInputValidated && newHostInput !== undefined && newHostInput.value === '') {
+              Core.showMessage({status: "OK", message: 'Specify a new host name.'});
+              break;
+            }
+            if (!nameErrorMessage && !newHostnameErrorMessage) {
+              Core.showMessage({status: "OK", message: 'The data for the site are correct.'});
+              break;
+            }
+          } while (false);
+        };
+        const setFormStatus = () => {
+          console.log(`savingNewHost ${savingNewHost}`);
+          console.log(`hostnameErrorMessage ${hostnameErrorMessage}`);
+          console.log(`newHostInput ${newHostInput}`);
+          console.log(`nameErrorMessage ${nameErrorMessage}`);
+          console.log(`newHostnameErrorMessage ${newHostnameErrorMessage}`);
+          console.log(`newHostInputValidated ${newHostInputValidated}`);
+          if (savingNewHost) {
+            Core.disable(deleteSiteButton);
+            Core.disable(cancelAddHostButton);
+            return;
+          } else {
+            Core.enable(deleteSiteButton);
+          }
+          if (hostnameErrorMessage === undefined && newHostInput === undefined) {
+            Core.enable(addHostButton);
+            Core.disable(cancelAddHostButton);
+          } else {
+            Core.disable(addHostButton);
+            Core.enable(cancelAddHostButton);
+          }
+          if (addHostButton.getAttribute('disabled') && newHostInputValidated && !newHostnameErrorMessage) {
+            Core.enable(saveHostButton);
+          } else {
+            saveHostButton.setAttribute('disabled', true);
+            Core.disable(saveHostButton);
+          }
+        };
+        const updateView = () => {
+          setMessage();
+          setFormStatus();
         };
         Core.addOnloadFunction(createGUI);
+        Core.addSetFunction(() => {
+          Core.screenBlocker.block();
+          Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
+          setMessage();
+          nameInput.focus();
+        });
       }
     </script>
-    <style file="menu.css"></style>
+    <style>
+      .list .editableFieldContainerDiv {
+        display: flex;
+        border: 0;
+        border-bottom: 1px solid lightgray;
+        padding: 0;
+        align-items: center;
+      }
+      .crossButton {
+        opacity: 0;
+        transition: opacity .3s linear;
+      }
+      .list .editableFieldContainerDiv:hover .crossButton {
+        opacity: 1;
+      }
+      .list .editableField input {
+        border: 0;
+        padding: 0;
+      }
+      .list .editableField input:disabled {
+        background-color: transparent;
+      }
+    </style>
   </head>
   <body>
-    <section id="header" template="headers/menu/simple/menu"></section>
-    <section id="detail" class="section blue">
-      <div class="container">
-        <h2 class="title">Site detail</h2>
-        <div class="column">
-          <div class="content">
-            <section id="messages" template="messages/section/simple/message"></section>
+    <section id="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section id="detail" class="content">
+        <h2 class="title">Detalle de sitio</h2>
+        <div class="form">
+          <div class="field"><div id="nameInput" spellcheck="false"></div></div>
+          <div class="field"><div id="versionInput" spellcheck="false"></div></div>
+          <div class="subtitle">Domains</div>
+          <div><div id="domains" class="list"></div></div>
+          <div class="field space"></div>
+          <div class="field centered">
+            <div id="addHostButton">add host</div>
+            <div id="saveHostButton">save host</div>
+            <div id="cancelAddHostButton">cancel</div>
+          </div>
+          <div class="field centered">
+            <div id="deleteSiteButton">delete site</div>
           </div>
         </div>
-        <div class="column">
-          <div class="content">
-            <div class="field"><div class="control"><div id="siteName" spellcheck="false"></div></div></div>
-            <div class="field"><div class="control"><div id="siteVersion" spellcheck="false"></div></div></div>
-            <div class="subtitle">Domains</div>
-            <div id="domains" class="list"></div>
-            <div class="control centered">
-              <div id="deleteButton"></div>
-            </div>
-          </div>
+      </section>
+      <section id="messages" template="messages/section/simple/message"></section>
+      <footer>
+        <div>
+          &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
         </div>
-      </div>
+      </footer>
     </section>
-    <footer>
-      <div class="control centered">
-        &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
-      </div>
-    </footer>
   </body>
 </html>

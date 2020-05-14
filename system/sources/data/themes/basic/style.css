@@ -7,7 +7,6 @@ body {
   font-family: Ubuntu, sans-serif;
   font-size: 22px;
   font-weight: 300;
-  line-height: 1.5;
   opacity: 0;
   transition: opacity .2s;
 }
@@ -46,7 +45,6 @@ input, select, textarea {
   height: 2.5em;
   justify-content: flex-start;
   padding: calc(.5em - 1px) calc(.75em - 1px);
-  position: relative;
   vertical-align: top;
   -moz-appearance: none;
   -webkit-appearance: none;
@@ -98,7 +96,6 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   flex-grow: 2;
   justify-content: center;
   padding: 30px 20px;
-  position: relative;
   width: auto;
 }
 
@@ -110,9 +107,21 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   line-height: 26px;
 }
 
+.subtitle:not(:last-child) {
+  margin-bottom: 6px;
+  font-size: 22px;
+  text-align: left;
+  font-weight: 600;
+  line-height: 18px;
+}
+
 .field {
   display: flex;
   box-sizing: border-box;
+}
+
+.field .space {
+  height: 30px;
 }
 
 .field:not(:last-child) {
@@ -124,6 +133,10 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   justify-content: center;
 }
 
+p {
+  text-align: center;
+}
+
 a {
   color: inherit;
   text-decoration: none;
@@ -131,6 +144,21 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+.screenMenuItem {
+  display: flex;
+  justify-content: center;
+}
+
+.screenMenuItem > div {
+  border-bottom: 1px solid #888;
+  transition: border-bottom-color .2s linear, color .2s linear;
+}
+
+.screenMenuItem > div:hover {
+  color: blue;
+  border-bottom-color: transparent;
 }
 
 footer {
