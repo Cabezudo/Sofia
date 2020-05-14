@@ -25,6 +25,10 @@ public class HTMLFragmentLine extends Line {
     startLine = new CodeLine(tag.getStartTag(), lineNumber);
     endLine = new CodeLine(tag.getEndTag(), lineNumber);
     String fileAttributeValue = tag.getValue("file");
+    if (!fileAttributeValue.endsWith(".html")) {
+      int row = tag.getColumnValue("file");
+      throw new LocatedSiteCreationException("A file MUST end with .html", callerFilePartialPath, new Position(lineNumber, row));
+    }
 
     try {
       Logger.debug("Read file %s from file attribute.", fileAttributeValue);
