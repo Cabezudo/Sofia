@@ -11,7 +11,7 @@ import java.util.Map.Entry;
 public abstract class Tag {
 
   private String name;
-  private final Map<String, String> properties = new HashMap<>();
+  private final Map<String, Property> properties = new HashMap<>();
   private final int column;
 
   protected Tag(String name, String data, int column) {
@@ -23,7 +23,8 @@ public abstract class Tag {
       String[] p = property.split("=");
       String propertyName = p[0];
       String propertyValue = p[1].substring(1, p[1].length() - 1);
-      properties.put(propertyName, propertyValue);
+      // TODO Parse the tag in order to get the column position of the value of the property
+      properties.put(propertyName, new Property(propertyValue, 0));
     }
   }
 
@@ -35,7 +36,7 @@ public abstract class Tag {
   public String getStartTag() {
     StringBuilder sb = new StringBuilder();
     sb.append("<").append(name);
-    for (Entry<String, String> entry : properties.entrySet()) {
+    for (Entry<String, Property> entry : properties.entrySet()) {
       switch (entry.getKey()) {
         case "template":
         case "file":
@@ -56,7 +57,11 @@ public abstract class Tag {
   }
 
   public String getValue(String propertyName) {
-    return properties.get(propertyName);
+    System.out.println(propertyName);
+    if (properties.get(propertyName) == null) {
+      return null;
+    }
+    return properties.get(propertyName).getValue();
   }
 
   public String getId() {
@@ -69,5 +74,9 @@ public abstract class Tag {
 
   public void rename(String name) {
     this.name = name;
+  }
+
+  public int getColumnValue(String propertyName) {
+    return properties.get(propertyName).getColumn();
   }
 }
