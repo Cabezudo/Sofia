@@ -162,23 +162,21 @@
   <body>
     <section id="application">
       <section id="header" template="headers/menu/simple/menu"></section>
-      <section id="detail" class="content">
-        <h2 class="title">Site add</h2>
-        <div class="form">
-          <div class="field"><input id="name" placeholder="Nombre" spellcheck="false"/></div>
-          <div class="field"><input id="version" value="1" disabled /></div>
-          <div class="field"><input id="hostname" placeholder="Host" spellcheck="false"/></div>
-          <div class="field centered">
-            <div id="addButton"></div>
+      <section class="container">
+        <section id="detail" class="content">
+          <h2 class="title">Site add</h2>
+          <div class="form">
+            <div class="field"><input id="name" placeholder="Nombre" spellcheck="false"/></div>
+            <div class="field"><input id="version" value="1" disabled /></div>
+            <div class="field"><input id="hostname" placeholder="Host" spellcheck="false"/></div>
+            <div class="field centered">
+              <div id="addButton">add site</div>
+            </div>
           </div>
-        </div>
+        </section>
       </section>
       <section id="messages" template="messages/section/simple/message"></section>
-      <footer>
-        <div>
-          &copy; 2013 - 2020 Esteban Cabezudo&nbsp;|&nbsp;<a href="">Licencia</a>
-        </div>
-      </footer>
+      <section id="footer" file="/footer.html"></section>
     </section>
   </body>
 </html>
