@@ -12,13 +12,12 @@
   border-radius: 4px;
   box-shadow: none;
   display: inline-flex;
-  height: 2.5em;
   line-height: 12px;
-  padding: 3px 14px;
+  padding: 10px 24px;
   vertical-align: top;
   cursor: default;
-  font-size: 20px;
-  font-weight: 600;
+  font-size: 18px;
+  font-weight: 500;
   justify-content: center;
   text-align: center;
   white-space: nowrap;

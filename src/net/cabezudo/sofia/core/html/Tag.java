@@ -42,7 +42,8 @@ public abstract class Tag {
         case "file":
           continue;
       }
-      sb.append(" ").append(entry.getKey()).append("=\"").append(entry.getValue()).append("\"");
+      Property property = entry.getValue();
+      sb.append(" ").append(entry.getKey()).append("=\"").append(property.getValue()).append("\"");
     }
     sb.append(">");
     return sb.toString();

@@ -1,4 +1,9 @@
 {
+  "messages": {
+    "message": {
+      "default": "Site details"
+    }
+  },
   "header": {
     "menu": {
       "name": "#{site.shortName}",
@@ -21,6 +26,12 @@
             "es": "Agregar"
           },
           "url": "add.html"
+        },
+        {
+          "name": {
+            "es": "Salir"
+          },
+          "url": "/logout"
         },
         {
           "svg": {

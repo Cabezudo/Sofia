@@ -5,7 +5,7 @@
 
 /* global Core */
 
-const editableField = ({ element = null, id = null, disabled = false, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null } = {}) => {
+const editableField = ({ element = null, id = null, disabled = false, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null, onKeyDown = null } = {}) => {
   let inputElement, saveButton, lastValue, validationTimer, saveTimer, requestId = 0;
 
   const validateOptions = () => {
@@ -62,6 +62,11 @@ const editableField = ({ element = null, id = null, disabled = false, validation
     const response = Core.sendPut(updateURI, inputElement, data);
   };
   const assignTriggers = () => {
+    element.addEventListener("keydown", event => {
+      if (Core.isFunction(onKeyDown)) {
+        onKeyDown(event);
+      }
+    });
     element.addEventListener('enabled', () => {
       element.removeAttribute('disabled');
     });

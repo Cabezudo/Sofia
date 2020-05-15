@@ -1,4 +1,9 @@
 {
+  "messages": {
+    "message": {
+      "default": "Fill the site name and host"
+    }
+  },
   "header": {
     "menu": {
       "name": "#{site.shortName}",
@@ -15,6 +20,12 @@
             "es": "Listado"
           },
           "url": "sites.html"
+        },
+        {
+          "name": {
+            "es": "Salir"
+          },
+          "url": "/logout"
         },
         {
           "svg": {

@@ -7,12 +7,32 @@
     <link rel="stylesheet" type="text/css" href="/css/manager/sites/sites.css">
     <script src="/js/variables.js"></script>
     <script src="/js/manager/sites/sites.js"></script>
+    <script lib="button/0.1.0"></script>
     <script lib="core/0.1.0"></script>
-    <script lib="simpleList/0.1.0"></script>
     <script lib="linkTo/0.1.0"></script>
+    <script lib="simpleList/0.1.0"></script>
     <script>
       {
         const createGUI = () => {
+          blueButton({
+            element: addSiteButton,
+            enabled: true,
+            onClick: () => {
+              document.location.href = 'add.html';
+            },
+            onResponse: event => {
+              const detail = event.detail;
+              if (detail.status === 'OK') {
+                if (variables.comebackPage === null) {
+                  location.assign('/manager/sites/sites.html');
+                } else {
+                  location.assign(variables.comebackPage);
+                }
+              } else {
+                Core.showMessage({status: 'ERROR', message: detail.message});
+              }
+            }
+          });
           simpleList({
             id: 'siteList',
             source: '/api/v1/sites',
@@ -20,6 +40,8 @@
             cellMaker: row => {
               if (row) {
                 return `<td><div><p>${row.name}</p></div></td>`;
+              } else {
+                return `<td><div><p>&nbsp;</p></div></td>`;
               }
             },
             onClick: (event, data) => {
@@ -36,9 +58,14 @@
   <body>
     <section id="application">
       <section id="header" template="headers/menu/simple/menu"></section>
-      <section id="detail" class="content">
-        <h2 class="title">Sites</h2>
-        <div id="siteList"></div>
+      <section id="detail" class="container">
+        <section id="detail" class="content">
+          <h2 class="title">Sites</h2>
+          <div id="siteList"></div>
+        </section>
+        <div class="field centered">
+          <div id="addSiteButton">add site</div>
+        </div>
       </section>
       <section id="messages" template="messages/section/simple/message"></section>
       <section id="footer" file="/footer.html"></section>

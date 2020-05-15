@@ -163,45 +163,45 @@
       "error": {
         "color": "#B1001C"
       }
-    }
-  },
-  "text": {
-    "font": {
-      "family": "Roboto Condensed",
-      "size": {
-        "default": "18px",
-        "480": "26px",
-        "750": "26px",
-        "1024": "26px",
-        "1250": "26px",
-        "1800": "26px"
-      }
-    }
-  },
-  "caption": {
-    "title": {
-      "font": {
-        "family": "Roboto Condensed",
-        "size": {
-          "default": "34px",
-          "480": "48px",
-          "750": "48px",
-          "1024": "48px",
-          "1250": "48px",
-          "1800": "48px"
-        }
-      }
     },
-    "option": {
-      "font": {
-        "family": "Roboto Condensed",
-        "size": {
-          "default": "18px",
-          "480": "48px",
-          "750": "48px",
-          "1024": "48px",
-          "1250": "48px",
-          "1800": "48px"
+    "caption": {
+      "title": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "34px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      },
+      "option": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "18px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      },
+      "text": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "22px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
         }
       }
     },
@@ -209,12 +209,12 @@
       "font": {
         "family": "Roboto Condensed",
         "size": {
-          "default": "22px",
-          "480": "48px",
-          "750": "48px",
-          "1024": "48px",
-          "1250": "48px",
-          "1800": "48px"
+          "default": "18px",
+          "480": "26px",
+          "750": "26px",
+          "1024": "26px",
+          "1250": "26px",
+          "1800": "26px"
         }
       }
     }

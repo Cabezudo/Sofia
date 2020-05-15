@@ -6,6 +6,10 @@
       simpleStaticMessage({id: 'simpleStaticMessage'});
     };
     Core.addOnloadFunction(createGUI);
-  })();
+    Core.addSetFunction(() => {
+      Core.showMessage({status: "MESSAGE", message: '#{message.default}'});
+    });
+  }
+  )();
 </script>
-<div id="simpleStaticMessage">#{message.default}</div>
+<div id="simpleStaticMessage"></div>

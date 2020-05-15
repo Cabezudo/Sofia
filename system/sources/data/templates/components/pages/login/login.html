@@ -20,12 +20,14 @@
     </style>
   </head>
   <body>
-    <div id="application">
-      <section id="header" template="headers/menu/simple/menu" configuration="/header.json"></section>
-      <section id="messages" template="messages/section/simple/message"></section>
-      <div id="content">
-        <section id="login" template="logins/simple/login"></section>
-      </div>
-    </div>
+    <section id="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section class="container">
+        <section class="content">
+          <section id="login" template="logins/simple/login"></section>
+        </section>
+      </section>
+      <section id="footer" file="footer.html"></section>
+    </section>
   </body>
 </html>

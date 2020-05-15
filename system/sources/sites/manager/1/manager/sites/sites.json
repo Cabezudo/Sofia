@@ -22,6 +22,12 @@
           "url": "add.html"
         },
         {
+          "name": {
+            "es": "Salir"
+          },
+          "url": "/logout"
+        },
+        {
           "svg": {
             "viewBox": "0 0 512 512",
             "path": {

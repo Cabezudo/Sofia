@@ -90,11 +90,14 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   height: 100vh;
 }
 
+.container {
+  overflow: auto;
+  flex-grow: 2;
+}
+
 .content {
   display: flex;
   flex-direction: column;
-  flex-grow: 2;
-  justify-content: center;
   padding: 30px 20px;
   width: auto;
 }
