@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.sites;
+package net.cabezudo.sofia.core.sites.services;
 
 import java.sql.SQLException;
 import javax.servlet.ServletException;
@@ -7,6 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.sites.SiteList;
+import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;

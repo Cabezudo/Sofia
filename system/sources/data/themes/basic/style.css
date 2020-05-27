@@ -132,7 +132,7 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   font-weight: 300;
 }
 
-.field.centered {
+.centered {
   justify-content: center;
 }
 
@@ -173,6 +173,19 @@ footer {
   font-size: 12px;
   justify-content: center;
   padding: 40px 0;
+}
+
+.linkContainer {
+  padding: 30px;
+}
+
+.link {
+  display: flex;
+  padding: 5px;
+}
+
+.smallText {
+  font-size: 16px;
 }
 
 @media all and ( min-width: 480px ) {

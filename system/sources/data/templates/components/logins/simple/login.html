@@ -13,7 +13,6 @@
 <script lib="inputEMailValidator/0.1.0"></script>
 <script lib="inputPasswordValidator/0.1.0"></script>
 <script lib="button/0.1.0"></script>
-<script lib="simpleStaticMessages/0.1.0"></script>
 <script>
   const loginForm = (() => {
     let loginEMailElement;
@@ -101,12 +100,10 @@
   })();
 
 </script>
-<div id="loginFormContainer" class="form">
-  <div class="createAccount"><a href="register.html">crear una cuenta</a></div>
-  <input id="loginEMail" type="email" name="username" placeholder="correo electrónico" autocomplete="off">
-  <input id="loginPassword" type="password" name="password" placeholder="contraseña">
-  <div id="loginButton">Acceder</div>
-  <div class="footContainer">
-    <div class="otherOption">o&nbsp;<a href="#{recoverPasswordPage}">recuperar contraseña</a></div>
+<div>
+  <div class="field"><input id="loginEMail" type="email" name="username" placeholder="correo electrónico" autocomplete="off"></div>
+  <div class="field"><input id="loginPassword" type="password" name="password" placeholder="contraseña"></div>
+  <div class="field centered">
+    <div id="loginButton">login</div>
   </div>
 </div>

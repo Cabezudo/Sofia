@@ -108,14 +108,14 @@ public class SiteManager {
     return getById(connection, domainName.getSiteId(), owner);
   }
 
-  public Site create(String name, String... domainNames) throws SQLException {
+  public Site create(String name, String... domainNames) throws SQLException, IOException {
     try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
       Site site = add(connection, name, domainNames);
       return site;
     }
   }
 
-  public Site add(Connection connection, String name, String... domainNameNames) throws SQLException {
+  public Site add(Connection connection, String name, String... domainNameNames) throws SQLException, IOException {
     connection.setAutoCommit(false);
     if (name == null || name.isEmpty()) {
       throw new InvalidParameterException("Invalid parameter name: " + name);
@@ -149,10 +149,13 @@ public class SiteManager {
           domainNames.add(domainName);
         }
       }
-
       Site site = new Site(siteId, name, baseDomainName, domainNames, DEFAULT_VERSION);
-
       SiteManager.getInstance().update(connection, site);
+
+      Path siteSourcesBasePath = site.getSourcesPath();
+      if (!Files.exists(siteSourcesBasePath)) {
+        Files.createDirectories(siteSourcesBasePath);
+      }
 
       connection.setAutoCommit(true);
       return site;

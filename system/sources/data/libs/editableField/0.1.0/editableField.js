@@ -6,7 +6,7 @@
 /* global Core */
 
 const editableField = ({ element = null, id = null, disabled = false, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null, onKeyDown = null } = {}) => {
-  let inputElement, saveButton, lastValue, validationTimer, saveTimer, requestId = 0;
+  let inputElement, lastValue, lastValueSaved, validationTimer, saveTimer, requestId = 0;
 
   const validateOptions = () => {
     if (element === null && id === null) {
@@ -35,12 +35,10 @@ const editableField = ({ element = null, id = null, disabled = false, validation
     inputElement.setAttribute('spellcheck', 'false');
     inputElement.value = defaultValue;
     lastValue = defaultValue;
+    lastValueSaved = defaultValue;
     element.appendChild(inputElement);
     element.inputElement = inputElement;
     inputElement.data = {validationURI, field};
-
-    saveButton = document.createElement('div');
-    element.appendChild(saveButton);
   };
   const sendValidationRequest = event => {
     const inputElement = event.srcElement;
@@ -53,8 +51,11 @@ const editableField = ({ element = null, id = null, disabled = false, validation
     requestId = response.requestId;
   };
   const sendUpdateRequest = () => {
-    saveButton.innerHTML = 'Saving...';
-    saveButton.className = 'saving';
+    if (lastValueSaved === inputElement.value) {
+      return;
+    }
+    lastValueSaved = inputElement.value;
+    Core.showMessage({status: "OK", message: `Saving ${field}...`});
     const data = {
       field: inputElement.data.field,
       value: inputElement.value
@@ -76,15 +77,16 @@ const editableField = ({ element = null, id = null, disabled = false, validation
     element.addEventListener('toggle', () => {
       element.setAttribute('disabled', !getAttribute('disabled'));
     });
+    inputElement.addEventListener('focusout', event => {
+      sendUpdateRequest(event);
+    });
     inputElement.addEventListener('response', event => {
       const data = event.detail;
       console.log(data);
       if (data.status === 'OK') {
         if (data.type === 'UPDATE') {
-          saveButton.innerHTML = 'Saved';
-          saveButton.className = 'saved';
-          saveButton.style.opacity = 0;
-          saveButton.style.pointerEvents = 'none';
+          Core.showMessage({status: "OK", message: `Saved ${field}.`});
+          fieldUpdated = true;
           if (Core.isFunction(onUpdate)) {
             onUpdate();
           }
@@ -98,13 +100,9 @@ const editableField = ({ element = null, id = null, disabled = false, validation
         }
         if (data.status === 'OK') {
           if (data.type === 'VALIDATION') {
-            saveButton.innerHTML = 'Save';
-            saveButton.className = '';
-            saveButton.style.opacity = 1;
-            saveButton.style.pointerEvents = 'auto';
             saveTimer = setTimeout(event => {
               sendUpdateRequest(event);
-            }, 8000);
+            }, 4000);
             if (Core.isFunction(onValid)) {
               onValid();
             }

@@ -58,7 +58,6 @@ public abstract class Tag {
   }
 
   public String getValue(String propertyName) {
-    System.out.println(propertyName);
     if (properties.get(propertyName) == null) {
       return null;
     }

@@ -2,7 +2,7 @@
   "get": [
     {
       "path": "/api/v1/sites",
-      "class": "net.cabezudo.sofia.core.sites.SiteListService"
+      "class": "net.cabezudo.sofia.core.sites.services.SiteListService"
     },
     {
       "path": "/api/v1/sites/{siteId}",

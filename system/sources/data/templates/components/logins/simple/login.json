@@ -1,6 +1,5 @@
 {
   "afterLoginSucessfullPage": "home.html",
-  "recoverPasswordPage": "passwordRecovery.html",
   "theme": {
     "caption": {
       "title": {
