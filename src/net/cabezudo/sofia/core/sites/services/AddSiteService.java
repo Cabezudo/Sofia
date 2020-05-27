@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sites.services;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -67,7 +68,7 @@ public class AddSiteService extends Service {
 
     try {
       SiteManager.getInstance().create(name, hostname);
-    } catch (SQLException e) {
+    } catch (SQLException | IOException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     }

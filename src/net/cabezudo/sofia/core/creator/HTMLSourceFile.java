@@ -146,12 +146,20 @@ class HTMLSourceFile implements SofiaSource {
         htmlSourceFilePath = parent.resolve(partialFilePath);
       }
     }
-    Logger.debug("Load HTML source file %s.", htmlSourceFilePath);
+    Logger.debug("HTMLSourceFile:loadHTMLFile:Load HTML source file %s.", htmlSourceFilePath);
 
     if (!Files.exists(htmlSourceFilePath)) {
-      Logger.debug("HTML file source %s NOT FOUND.", htmlSourceFilePath);
-      return;
+      if (partialFilePath.startsWith("/")) {
+        htmlSourceFilePath = site.getSourcesPath().resolve(partialFilePath.toString().substring(1));
+      } else {
+        htmlSourceFilePath = site.getSourcesPath().resolve(partialFilePath);
+      }
+      if (!Files.exists(htmlSourceFilePath)) {
+        Logger.debug("HTMLSourceFile:loadHTMLFile:HTML file source %s NOT FOUND.", htmlSourceFilePath);
+        return;
+      }
     }
+    Logger.debug("HTMLSourceFile:loadHTMLFile:HTML file %s FOUND.", htmlSourceFilePath);
     List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
     int lineNumber = 1;
     for (String l : linesFromFile) {
@@ -166,7 +174,7 @@ class HTMLSourceFile implements SofiaSource {
           }
           if (trimmedNewLine.startsWith("<script lib=\"") && trimmedNewLine.endsWith("\"></script>")) {
             String libraryReference = trimmedNewLine.substring(13, trimmedNewLine.length() - 11);
-            Logger.debug("Library reference name found: %s.", libraryReference);
+            Logger.debug("HTMLSourceFile:loadHTMLFile:Library reference name found: %s.", libraryReference);
 
             Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
             Library library = new Library(getSite(), libraryReference, getTemplateVariables(), newCaller);
@@ -175,7 +183,7 @@ class HTMLSourceFile implements SofiaSource {
           }
           if (trimmedNewLine.startsWith("<style file=\"") && trimmedNewLine.endsWith("\"></style>")) {
             String styleFilePartialFileName = trimmedNewLine.substring(13, trimmedNewLine.length() - 10);
-            Logger.debug("Found independent style file call: %s.", styleFilePartialFileName);
+            Logger.debug("HTMLSourceFile:loadHTMLFile:Found independent style file call: %s.", styleFilePartialFileName);
             Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
             css.load(styleFilePartialFileName, newCaller);
             break;

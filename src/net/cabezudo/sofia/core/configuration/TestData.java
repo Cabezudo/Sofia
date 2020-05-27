@@ -101,7 +101,7 @@ public class TestData {
       }
     } catch (SQLException e) {
       throw new RuntimeException("Problem configurating system in system configuration listener.", e);
-    } catch (EMailAddressAlreadyAssignedException e) {
+    } catch (EMailAddressAlreadyAssignedException | IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -124,7 +124,7 @@ public class TestData {
     }
   }
 
-  private static void createSites() throws SQLException {
+  private static void createSites() throws SQLException, IOException {
     Logger.info("Create sites.");
     SiteManager.getInstance().create("Manager", "localhost");
     SiteManager.getInstance().create("Playground", "playground");

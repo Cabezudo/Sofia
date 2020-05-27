@@ -43,11 +43,12 @@
               validationURI: `/api/v1/sites/${siteData.id}/names/{value}/validate`,
               updateURI: `/api/v1/sites/${siteData.id}`,
               field: 'name',
-              defaultValue: siteData.name
+              defaultValue: siteData.name,
+              disabled: (siteData.id === 1 || siteData.id === 2)
             });
             redButton({
               element: deleteSiteButton,
-              enabled: true,
+              enabled: false,
               onClick: () => {
                 Core.screenBlocker.block();
                 Core.sendDelete(`/api/v1/sites/${siteData.id}`, deleteSiteButton);
@@ -124,6 +125,9 @@
               baseDomain = false;
             });
             Core.screenBlocker.unblock();
+            if (siteData.id !== 1 && siteData.id !== 2) {
+              Core.enable(deleteSiteButton);
+            }
           });
         };
         const addNewHostOnServer = () => {
@@ -260,7 +264,9 @@
             Core.disable(cancelAddHostButton);
             return;
           } else {
-            Core.enable(deleteSiteButton);
+            if (siteData.id !== 1 && siteData.id !== 2) {
+              Core.enable(deleteSiteButton);
+            }
           }
           if (hostnameErrorMessage === undefined && newHostInput === undefined) {
             Core.enable(addHostButton);

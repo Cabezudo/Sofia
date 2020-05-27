@@ -42,6 +42,11 @@ public class DeleteSiteService extends Service {
         return;
       }
 
+      if (siteId == 1 || siteId == 2) {
+        sendError(HttpServletResponse.SC_FORBIDDEN, "The resource " + siteId + " can't be deleted.");
+        return;
+      }
+
       Site site = SiteManager.getInstance().getById(siteId, owner);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");

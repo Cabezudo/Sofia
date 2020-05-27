@@ -76,7 +76,7 @@ public class DefaultData {
         User owner = UserManager.getInstance().getAdministrator();
         createData(owner);
       }
-    } catch (SQLException e) {
+    } catch (SQLException | IOException e) {
       throw new RuntimeException("Problem configurating system in system configuration listener.", e);
     }
   }
@@ -86,7 +86,7 @@ public class DefaultData {
     createPostalCodes(country, owner);
   }
 
-  private static void createSites() throws SQLException {
+  private static void createSites() throws SQLException, IOException {
     Logger.info("Create sites.");
     Site site;
     if (System.console() != null) {
