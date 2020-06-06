@@ -20,9 +20,9 @@
     text-transform: uppercase;
   }
   #menuButton {
+    padding-right: 20px;
     width: 14px;
     height: 14px;
-    padding-right: 20px;
     display: flex;
     flex-direction: column;
   }
@@ -49,16 +49,21 @@
   .buoy {
     position: absolute;
   }
+
   #menuContainer {
+    display: flex;
+    align-items: center;
+  }
+
+  #itemsContainer {
     background-color: #f8f8f8;
     display: none;
     width: 100vw;
-    padding-top: 20px;
   }
-  #menuContainer.show {
+  #itemsContainer.show {
     display: flex;
   }
-  #menuContainer > .menu {
+  #itemsContainer > .menu {
     align-items: flex-start;
     display: flex;
     flex-direction: column;
@@ -66,21 +71,21 @@
     padding-bottom: 20px;
     padding-left: #{menu.padding.left.default};
   }
-  #menuContainer > .menu > .item {
+  #itemsContainer > .menu > .item {
     color: #4a4a4a;
     padding: 10px 0;
   }
-  #menuContainer > .menu > .icon {
+  #itemsContainer > .menu > .icon {
     height: 20px;
     width: 20px;
   }
-  #menuContainer > .menu > .icon svg {
+  #itemsContainer > .menu > .icon svg {
     height: 20px;
     width: 20px;
     shape-rendering: geometricprecision;
     transform: scale(0.9);
   }
-  #menuContainer > .menu > .item:hover {
+  #itemsContainer > .menu > .item:hover {
     color: #{menu.color};
     cursor: pointer;
   }
@@ -101,7 +106,7 @@
       justify-content: space-between;
       align-items: center;
     }
-    .burger {
+    #menuButton {
       display: none;
     }
     .cross {
@@ -111,18 +116,20 @@
       position: static;
     }
     #menuContainer {
-      width: auto;
-      display: flex;
+      padding-left: #{menu.padding.left.750};
+      padding-right: #{menu.padding.right.750};
     }
-    #menuContainer > .menu {
+    #itemsContainer {
+      width: auto;
+      display: flex !important;
+    }
+    #itemsContainer > .menu {
       align-items: center;
       flex-direction: row;
       font-size: #{menu.font.size.750};
-      padding-left: #{menu.padding.left.750};
-      padding-right: #{menu.padding.right.750};
       padding-bottom: 0;
     }
-    #menuContainer > .menu > .item {
+    #itemsContainer > .menu > .item {
       padding: 0 15px;
     }
   }
@@ -164,60 +171,95 @@
           }
         }
         console.log(`profileAccepted: ${JSON.stringify(profileAccepted)}`);
-        const forLogged = item.logged === undefined || item.logged === null || (Core.isLogged() && item.logged === true)
-        console.log(`forLogged: ${forLogged}`);
-        const forNotLogged = item.logged === undefined || (Core.isNotLogged() && item.logged === false);
-        console.log(`forNotLogged: ${forNotLogged}`);
+        const login = item.logged === undefined || item.logged === null || (Core.isLogged() && item.logged === true) || (Core.isNotLogged() && item.logged === false);
+        console.log(`login ${login}`);
         const hide = item.hide !== undefined && item.hide !== null && item.hide.includes(window.location.pathname);
         const isNotHide = !hide;
         console.log(`isNotHide: ${isNotHide}`);
         console.log(`profileAccepted: ${profileAccepted}`);
-        if (forLogged && forNotLogged && isNotHide && profileAccepted) {
+        if (login && isNotHide && profileAccepted) {
+          const createSVG = (svg, url) => {
+            const itemElement = document.createElement('div');
+            itemElement.className = 'item icon';
+            const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            svgElement.setAttribute('viewBox', svg.viewBox);
+            itemElement.appendChild(svgElement);
+            const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+            pathElement.setAttribute('fill', svg.path.fill);
+            pathElement.setAttribute('d', svg.path.d);
+            svgElement.appendChild(pathElement);
+            linkTo({
+              onClick: url,
+              element: itemElement
+            });
+            return itemElement;
+          };
           if (item.name !== undefined) {
             const itemElement = document.createElement('div');
             menu.appendChild(itemElement);
             itemElement.className = 'item';
-            itemElement.innerHTML = item.name.es;
+            itemElement.innerHTML = item.name.en;
             linkTo({
               onClick: item.url,
               element: itemElement
             });
           }
+          if (item.template !== undefined) {
+            const templateName = item.template.name;
+            switch (templateName) {
+              case 'twitter':
+                const svg = {
+                  viewBox: "0 0 512 512",
+                  path: {
+                    fill: "currentColor",
+                    d: "M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z"
+                  }
+                };
+                const itemElement = createSVG(svg, item.template.url);
+                menu.appendChild(itemElement);
+                break;
+              case 'userProfile':
+              {
+                const svg = {
+                  viewBox: "0 0 20 20",
+                  path: {
+                    fill: "currentColor",
+                    d: "m 19.516418,18.090822 c 0.03687,0.856967 -0.972379,1.463064 -1.912083,1.337937 -5.207164,-0.0046 -10.41488,0.0094 -15.6216986,-0.007 C 1.0132326,19.365661 0.44984722,18.509628 0.58215601,17.743048 0.55740234,16.734451 0.55303944,15.666493 1.2588014,14.800831 2.5576409,13.095831 4.7394232,12.06408 6.9049077,11.34297 7.5012387,10.444987 6.5907545,9.8010605 6.0371421,9.1499095 5.2771826,7.7302539 5.4298286,6.1171209 5.3412165,4.5951168 5.4077641,3.0168878 6.4104477,1.3687499 8.2418834,0.83377557 10.402946,0.10019217 13.263171,0.79881497 14.245292,2.690327 c 0.825007,1.4470567 0.487283,3.0912331 0.381896,4.6336153 -0.109833,0.9814239 -0.392643,2.0812703 -1.399528,2.6810907 -0.60899,0.974466 0.258869,1.643214 1.333683,1.819384 2.044848,0.865422 4.226687,2.102699 4.845922,4.099196 0.180358,0.711296 0.08502,1.444973 0.109158,2.167209 z"
+                  }
+                };
+                const itemElement = createSVG(svg, item.template.url);
+                menu.appendChild(itemElement);
+                break;
+              }
+              default:
+                throw new Error(`Invalid template name ${templateName}`);
+            }
+          }
           if (item.svg !== undefined) {
-            const itemElement = document.createElement('div');
-            itemElement.className = 'item icon';
+            const itemElement = createSVG(item.svg, item.url);
             menu.appendChild(itemElement);
-            const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-            svgElement.setAttribute('viewBox', item.svg.viewBox);
-            itemElement.appendChild(svgElement);
-            const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-            pathElement.setAttribute('fill', item.svg.path.fill);
-            pathElement.setAttribute('d', item.svg.path.d);
-            svgElement.appendChild(pathElement);
-            linkTo({
-              onClick: item.url,
-              element: itemElement
-            });
           }
         }
       }
       const menuButton = Core.validateById('menuButton');
-      const menuContainer = Core.validateById('menuContainer');
+      const itemsContainer = Core.validateById('itemsContainer');
       menuButton.addEventListener("click", event => {
-        if (menuContainer.style.display === 'flex') {
-          menuContainer.style.display = 'none';
+        if (itemsContainer.style.display === 'flex') {
+          itemsContainer.style.display = 'none';
           menuButton.className = 'burger';
         } else {
           menuButton.className = 'cross';
-          menuContainer.style.display = 'flex';
+          itemsContainer.style.display = 'flex';
         }
         event.preventDefault();
         event.stopPropagation();
         return false;
       });
       window.addEventListener("click", () => {
-        menuContainer.style.display = 'none';
-        menuButton.className = 'burger';
+        if (window.getComputedStyle(menuButton).display !== 'none') {
+          itemsContainer.style.display = 'none';
+          menuButton.className = 'burger';
+        }
       });
     };
     Core.addOnloadFunction(createGUI);
@@ -226,14 +268,16 @@
 <div class="headerContainer">
   <div class="nameContainer">
     <div class="name">#{menu.name}</div>
-    <div id="menuButton" class="burger">
-      <div class="patty"></div>
-      <div class="patty"></div>
-      <div class="patty"></div>
+    <div id="menuContainer">
+      <div id="menuButton" class="burger">
+        <div class="patty"></div>
+        <div class="patty"></div>
+        <div class="patty"></div>
+      </div>
     </div>
   </div>
   <div class="buoy">
-    <div id="menuContainer">
+    <div id="itemsContainer">
       <div id="menu" class="menu"></div>
     </div>
   </div>

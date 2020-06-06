@@ -5,7 +5,7 @@
   },
   "messages": {
     "message": {
-      "default": "Login"
+      "default": "Type user and password"
     }
   }
 }

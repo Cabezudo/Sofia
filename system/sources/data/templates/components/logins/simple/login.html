@@ -75,15 +75,15 @@
           sendLoginInformation();
         },
         onResponse: event => {
-          const payload = event.detail;
-          if (payload.status === 'LOGGED') {
+          const detail = event.detail;
+          if (detail.status === 'LOGGED') {
             if (variables.comebackPage === null) {
               location.assign('#{afterLoginSucessfullPage}');
             } else {
               location.assign(variables.comebackPage);
             }
           } else {
-            Core.showMessage({status: 'ERROR', message: payload.message});
+            Core.showMessage({status: 'ERROR', message: detail.message});
           }
         }
       });
@@ -101,7 +101,7 @@
 
 </script>
 <div>
-  <div class="field"><input id="loginEMail" type="email" name="username" placeholder="correo electrónico" autocomplete="off"></div>
+  <div class="field"><input id="loginEMail" type="email" name="username" placeholder="correo electrónico"></div>
   <div class="field"><input id="loginPassword" type="password" name="password" placeholder="contraseña"></div>
   <div class="field centered">
     <div id="loginButton">login</div>

@@ -16,6 +16,10 @@ const inputEMailValidator = ({ element = null, onValid = null, onNotValid = null
   };
   const createGUI = () => {
     element.className = 'inputEMailValidator';
+    element.setAttribute('autocomplete', 'off');
+    element.setAttribute('autocorrect', 'off');
+    element.setAttribute('autocapitalize', 'off');
+    element.setAttribute('spellcheck', 'false');
     if (element.value && element.value.length > 0) {
       sendValidationRequest(element);
     }

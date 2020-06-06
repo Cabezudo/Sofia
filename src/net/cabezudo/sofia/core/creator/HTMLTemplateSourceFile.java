@@ -181,7 +181,11 @@ class HTMLTemplateSourceFile implements SofiaSource {
               break;
             default:
               if (actual == this) {
-                actual.add(getProcessedLine(newLine, lineNumber));
+                Line processedLine = getProcessedLine(newLine, lineNumber);
+                if (processedLine != null) {
+                  actual.add(processedLine);
+                  libraries.add(processedLine.getLibraries());
+                }
                 break;
               }
               actual.add(new CodeLine(newLine, lineNumber));
@@ -201,15 +205,15 @@ class HTMLTemplateSourceFile implements SofiaSource {
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
         HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
-        add(fragmentLine);
+        return fragmentLine;
       }
       if (tag.getValue("template") != null) {
         String id = tag.getId();
         if (id == null) {
-          throw new LocatedSiteCreationException("A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
+          throw new LocatedSiteCreationException("HTMLTemplateSourceFile:getProcessedLine:A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
         }
         HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
-        add(fragmentLine);
+        return fragmentLine;
       }
     }
 
@@ -271,12 +275,12 @@ class HTMLTemplateSourceFile implements SofiaSource {
 
   @Override
   public Lines getCascadingStyleSheetLines() {
-    Lines newLines = new Lines();
-    newLines.add(css.getCascadingStyleSheetLines());
-    for (Line line : getLines()) {
-      newLines.add(line.getCascadingStyleSheetLines());
+    Lines codeLines = new Lines();
+    codeLines.add(css.getCascadingStyleSheetLines());
+    for (Line line : this.lines) {
+      codeLines.add(line.getCascadingStyleSheetLines());
     }
-    return newLines;
+    return codeLines;
   }
 
   @Override

@@ -1,7 +1,12 @@
 {
   "site": {
     "name": "Manager de Sofía",
-    "shortName": "Sofia"
+    "shortName": "Sofia",
+    "socialMedia": {
+      "twitter": {
+        "url": ""
+      }
+    }
   },
   "themeName": "basic"
 }
