@@ -4,24 +4,25 @@
  */
 
 .button {
-  margin: 0 8px;
-  -moz-appearance: none;
-  -webkit-appearance: none;
   align-items: center;
   border: 1px solid transparent;
   border-radius: 4px;
   box-shadow: none;
-  display: inline-flex;
-  line-height: 12px;
-  padding: 10px 24px;
-  vertical-align: top;
+  color: #fff;
   cursor: default;
+  display: inline-flex;
+  flex-grow: 1;
   font-size: 18px;
   font-weight: 500;
   justify-content: center;
+  line-height: 12px;
+  margin: 0 0 10px 0;
+  padding: 10px 24px;
   text-align: center;
+  vertical-align: top;
   white-space: nowrap;
-  color: #fff;
+  -moz-appearance: none;
+  -webkit-appearance: none;
 }
 
 .button:active, button:focus {
@@ -65,8 +66,16 @@
 }
 
 @media all and ( min-width: 480px ) {
+  .button {
+    margin: 10px;
+    width: 50%;
+  }
 }
 @media all and ( min-width: 750px ) {
+  .button {
+    width: auto;
+    flex: 0;
+  }
 }
 @media all and ( min-width: 1024px ) {
 }

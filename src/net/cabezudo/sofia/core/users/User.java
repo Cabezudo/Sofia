@@ -35,6 +35,11 @@ public class User {
     this.passwordRecoveryDate = passwordRecoveryDate;
   }
 
+  @Override
+  public String toString() {
+    return "[ id = " + id + ", email = " + eMail + ", siteId = " + siteId + " ]";
+  }
+
   public int getId() {
     return id;
   }

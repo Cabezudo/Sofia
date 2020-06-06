@@ -55,4 +55,9 @@ class Lines implements Iterable<Line> {
     }
     return sb.toString();
   }
+
+  @Override
+  public String toString() {
+    return getCode();
+  }
 }

@@ -197,4 +197,9 @@ class CSSSourceFile implements SofiaSource {
     }
     return sb;
   }
+
+  @Override
+  public String toString() {
+    return lines.toString();
+  }
 }

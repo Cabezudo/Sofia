@@ -108,6 +108,7 @@ public class SiteCreator {
   }
 
   private void createPagePermissions(Site site, HTMLSourceFile htmlSourceFile, String requestURI) throws SQLException {
+    Logger.debug("Create permission for request %s of site %s.", requestURI, site.getId());
     // TODO Borrar los permisos para esta pagina en este sitio en la base de datos.
     AuthorizationManager.getInstance().delete(requestURI, site);
     // Search and add permission for the page
@@ -118,6 +119,8 @@ public class SiteCreator {
         permissionType = PermissionTypeManager.getInstance().create("read", site);
       }
       AuthorizationManager.getInstance().add(profiles, requestURI, permissionType, site);
+    } else {
+      Logger.debug("Profiles is empty for request %s of site %s.", requestURI, site.getId());
     }
   }
 }

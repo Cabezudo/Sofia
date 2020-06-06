@@ -55,6 +55,7 @@ public class PermissionTypeManager {
   }
 
   public PermissionType create(Connection connection, String name, Site site) throws SQLException {
+    Logger.debug("Create permission %s of site %s.", name, site.getId());
     String query = "INSERT INTO " + PermissionTypesTable.NAME + " (name, site) VALUES (?, ?)";
     PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
     ps.setString(1, name);

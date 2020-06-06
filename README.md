@@ -402,5 +402,4 @@ Funciones de configuración de página
 - para setear valores por defecto
 
 
-
 Se puede colocar un mensaje que será mostrado en la siguiente página que se cargue usando Core.setSessionMessage(message)
