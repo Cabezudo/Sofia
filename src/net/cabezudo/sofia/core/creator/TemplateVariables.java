@@ -11,7 +11,6 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.core.sites.Site;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -20,13 +19,9 @@ import net.cabezudo.sofia.core.sites.Site;
 public class TemplateVariables {
 
   private final JSONObject jsonObject;
-  private final Site site;
-  private final String partialVoidPathName;
 
-  public TemplateVariables(Site site, String partialVoidPathName) {
+  public TemplateVariables() {
     jsonObject = new JSONObject();
-    this.site = site;
-    this.partialVoidPathName = partialVoidPathName;
   }
 
   public void add(Path basePath, String fileName) throws FileNotFoundException, IOException, JSONParseException, UndefinedLiteralException {
@@ -51,10 +46,10 @@ public class TemplateVariables {
         JSONObject idObject = new JSONObject();
         JSONPair idPair = new JSONPair(id, newJSONObject);
         idObject.add(idPair);
-        jsonObject.merge(idObject);
+        merge(idObject);
       } else {
         JSONObject newJSONObject = new JSONObject(sb.toString());
-        jsonObject.merge(newJSONObject);
+        merge(newJSONObject);
       }
     } else {
       Logger.debug("Template literals file to add to template variables NOT FOUND: %s", fullPath);
@@ -86,7 +81,6 @@ public class TemplateVariables {
       } catch (PropertyNotExistException e) {
         throw new UndefinedLiteralException(name, i + 3, e);
       }
-      Logger.debug("Replace %s with %s.", name, value);
       sb.append(value);
     }
     sb.append(line.substring(last));
@@ -103,6 +97,13 @@ public class TemplateVariables {
   }
 
   void merge(JSONObject jsonData) {
+
+    if (jsonData.getNullString("menu") != null) {
+      throw new RuntimeException();
+    }
+    if (jsonData == null) {
+      throw new RuntimeException("Merge with null parameter.");
+    }
     jsonObject.merge(jsonData);
   }
 

@@ -2,7 +2,7 @@
 {
   "menu": {
     "name": "#{site.name}",
-    "description": "the<br>description",
+    "description": "site description",
     "color": "#{theme.application.color.main}",
     "font": {
       "size": {

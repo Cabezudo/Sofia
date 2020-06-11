@@ -1,5 +1,5 @@
 {
-  "template": "pages/login/login",
+  "page": "pages/login/login",
   "login": {
     "afterLoginSucessfullPage": "/manager/index.html"
   },

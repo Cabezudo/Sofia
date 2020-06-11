@@ -8,6 +8,8 @@ import java.nio.file.Path;
  */
 public class LocatedSiteCreationException extends SiteCreationException {
 
+  private static final long serialVersionUID = 1L;
+
   private final Path filePath;
   private final Position position;
 

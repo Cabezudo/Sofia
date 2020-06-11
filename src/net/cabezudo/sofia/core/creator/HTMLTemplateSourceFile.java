@@ -1,18 +1,8 @@
 package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.sql.SQLException;
-import java.util.List;
-import net.cabezudo.json.JSON;
-import net.cabezudo.json.JSONPair;
-import net.cabezudo.json.exceptions.JSONParseException;
-import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.html.HTMLTagFactory;
-import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
@@ -20,284 +10,35 @@ import net.cabezudo.sofia.core.sites.Site;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.12.04
  */
-class HTMLTemplateSourceFile implements SofiaSource {
+abstract class HTMLTemplateSourceFile extends HTMLSourceFile {
 
-  private final Site site;
-  private final Path basePath;
-  private final Path partialPath;
-  private final TemplateVariables templateVariables;
-  private final Caller caller;
-  private final Lines lines;
-  protected final CSSImports cssImports;
-  protected final Libraries libraries;
-  private final CSSSourceFile css;
-  private final JSSourceFile js;
-  private final String id;
-
-  HTMLTemplateSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
-    this.site = site;
-    this.basePath = basePath;
-    this.partialPath = partialPath;
-    this.templateVariables = templateVariables;
-    this.caller = caller;
-    this.lines = new Lines();
-    this.cssImports = new CSSImports();
-    this.libraries = new Libraries();
-    this.id = id;
-
-    String cssPartialFileName = getVoidPartialPathName() + ".css";
-    Path cssPartialPath = Paths.get(cssPartialFileName);
-    css = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
-    css.load(basePath, cssPartialFileName, caller);
-
-    Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
-    js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
-    js.loadFile();
-  }
-
-  Site getSite() {
-    return site;
-  }
-
-  Path getBasePath() {
-    return basePath;
-  }
-
-  Path getPartialPath() {
-    return partialPath;
-  }
-
-  TemplateVariables getTemplateVariables() {
-    return templateVariables;
-  }
-
-  Caller getCaller() {
-    return caller;
+  HTMLTemplateSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller)
+          throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+    super(site, basePath, partialPath, id, templateVariables, caller);
   }
 
   @Override
-  public final String getVoidPartialPathName() {
-    String partialPathName = getPartialPath().toString();
-    return partialPathName.substring(0, partialPathName.length() - 5);
-  }
-
-  void loadJSONConfigurationFile() throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
-    Path jsonPartialPath = Paths.get(getVoidPartialPathName() + ".json");
-    Path jsonSourceFilePath = getBasePath().resolve(jsonPartialPath);
-    if (Files.isRegularFile(jsonSourceFilePath)) {
-      Logger.debug("FOUND HTML template configuration file %s for template %s.", jsonPartialPath, getPartialPath());
-      List<String> jsonLines = Files.readAllLines(jsonSourceFilePath);
-      StringBuilder sb = new StringBuilder();
-      int lineNumber = 1;
-      for (String line : jsonLines) {
-        try {
-          sb.append(getTemplateVariables().replace(line, lineNumber, jsonSourceFilePath));
-        } catch (UndefinedLiteralException e) {
-          Position position = new Position(lineNumber, e.getRow());
-          throw new LocatedSiteCreationException(e.getMessage(), jsonPartialPath, position);
-        }
-        lineNumber++;
-      }
-      JSONObject jsonObject;
-      try {
-        jsonObject = JSON.parse(sb.toString()).toJSONObject();
-      } catch (JSONParseException e) {
-        throw new SiteCreationException("Can't parse " + jsonSourceFilePath + ". " + e.getMessage());
-      }
-
-      JSONPair configurationPair = new JSONPair(id, jsonObject);
-      JSONObject newJSONObject = new JSONObject();
-      newJSONObject.add(configurationPair);
-      getTemplateVariables().merge(newJSONObject);
-
-      String templateName = jsonObject.getNullString("template");
-      if (templateName != null) {
-        // Read template from template files
-        Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        Path templatePath = Paths.get(templateName + ".html");
-
-        Logger.debug("Load template %s from file %s in HTML template source file.", templatePath, jsonPartialPath);
-        jsonObject.remove("template");
-        HTMLSourceFile templateFile = new HTMLSourceFile(getSite(), commonsComponentsTemplatePath, templatePath, getTemplateVariables(), null);
-        templateFile.loadJSONConfigurationFile();
-        templateFile.loadHTMLFile();
-
-        Lines linesFromTemplateFile = templateFile.getLines();
-        getLines().add(linesFromTemplateFile);
-      }
-    }
-  }
-
-  void loadHTMLFile() throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException {
-    SofiaSource actual = this;
-
-    Path htmlSourceFilePath = getBasePath().resolve(getPartialPath());
-    Logger.debug("Load template HTML source file %s.", getPartialPath());
-    List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
-    int lineNumber = 1;
-    for (String l : linesFromFile) {
-      try {
-        String newLine = getTemplateVariables().replace(id, l, lineNumber, htmlSourceFilePath);
-        String trimmedNewLine = newLine.trim();
-
-        do {
-          searchHTMLTag(actual, trimmedNewLine, lineNumber);
-          if (trimmedNewLine.startsWith("<script lib=\"") && trimmedNewLine.endsWith("\"></script>")) {
-            String libraryReference = trimmedNewLine.substring(13, trimmedNewLine.length() - 11);
-            Logger.debug("Library reference name found: %s.", libraryReference);
-
-            Caller newCaller = new Caller(getBasePath(), getPartialPath(), lineNumber, getCaller());
-            Library library = new Library(getSite(), libraryReference, getTemplateVariables(), newCaller);
-            libraries.add(library);
-            break;
-          }
-          switch (trimmedNewLine) {
-            case "<style>":
-              actual = css;
-              if (getCaller() == null) {
-                actual.add(new CodeLine("/* created by system using content from " + getPartialPath() + ":" + lineNumber + " */", lineNumber));
-              } else {
-                actual.add(new CodeLine("/* created by system using " + getPartialPath() + ":" + lineNumber + " called from " + getCaller() + " */", lineNumber));
-              }
-              break;
-            case "<script>":
-            case "<script class=\"test\">":
-              actual = js;
-              if (getCaller() == null) {
-                actual.add(new CodeLine("// created by system using " + getPartialPath() + ":" + lineNumber + ".", lineNumber));
-              } else {
-                actual.add(new CodeLine("// created by system using " + getPartialPath() + ":" + lineNumber + " called from " + getCaller(), lineNumber));
-              }
-              break;
-            case "</html>":
-              if (getCaller() != null) {
-                actual.add(new CodeLine("</html>\n", lineNumber));
-              }
-              actual = this;
-              break;
-            case "</style>":
-            case "</script>":
-              actual = this;
-              break;
-            default:
-              if (actual == this) {
-                Line processedLine = getProcessedLine(newLine, lineNumber);
-                if (processedLine != null) {
-                  actual.add(processedLine);
-                  libraries.add(processedLine.getLibraries());
-                }
-                break;
-              }
-              actual.add(new CodeLine(newLine, lineNumber));
-              break;
-          }
-        } while (false);
-      } catch (UndefinedLiteralException e) {
-        Position position = new Position(lineNumber, e.getRow());
-        throw new LocatedSiteCreationException(e.getMessage(), getPartialPath(), position);
-      }
-      lineNumber++;
-    }
-  }
-
-  private Line getProcessedLine(String line, int lineNumber) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException {
-    Tag tag = HTMLTagFactory.get(line);
-    if (tag != null && tag.isSection()) {
-      if (tag.getValue("file") != null) {
-        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
-        return fragmentLine;
-      }
-      if (tag.getValue("template") != null) {
-        String id = tag.getId();
-        if (id == null) {
-          throw new LocatedSiteCreationException("HTMLTemplateSourceFile:getProcessedLine:A template call must have an id", getPartialPath(), new Position(lineNumber, 0));
-        }
-        HTMLTemplateLine fragmentLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialPath(), getTemplateVariables(), tag, lineNumber, getCaller());
-        return fragmentLine;
-      }
-    }
-
-    return new CodeLine(line, lineNumber);
-  }
-
-  @Override
-  public boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
     if (line.startsWith("<html")) {
-      throw new InvalidFragmentTag("A HTML template can't have the <html> tag: " + getPartialPath(), 0);
+      throw new InvalidFragmentTag("A HTML template can't have the <html> tag.", getPartialFilePath(), new Position(lineNumber, 0));
     }
     return false;
   }
 
   @Override
-  public Lines getLines() {
-    Lines newLines = new Lines();
-    newLines.add(js.getJavaScriptLines());
-    for (Line line : lines) {
-      newLines.add(line.getJavaScriptLines());
+  Path getSourceFilePath(Caller caller) throws SiteCreationException {
+    Path htmlSourceFilePath = getBasePath().resolve(getPartialFilePath());
+    Logger.debug("HTMLTemplateSourceFile:getSourceFilePath:Load template HTML source file %s.", htmlSourceFilePath);
+    return htmlSourceFilePath;
+  }
+
+  @Override
+  String replaceTemplateVariables(String line, int lineNumber, Path htmlSourceFilePath) throws LocatedSiteCreationException {
+    try {
+      return getTemplateVariables().replace(getId(), line, lineNumber, htmlSourceFilePath);
+    } catch (UndefinedLiteralException e) {
+      Position position = new Position(lineNumber, e.getRow());
+      throw new LocatedSiteCreationException(e.getMessage(), getPartialFilePath(), position);
     }
-    return newLines;
-  }
-
-  @Override
-  public void add(CSSImport cssImport) {
-    cssImports.add(cssImport);
-  }
-
-  @Override
-  public void add(CSSImports newCSSImports) {
-    for (CSSImport cssImport : newCSSImports) {
-      cssImports.add(cssImport);
-    }
-  }
-
-  @Override
-  public void add(Line line) {
-    if (line == null) {
-      return;
-    }
-    lines.add(line);
-  }
-
-  @Override
-  public void add(Lines lines) {
-    lines.add(lines);
-  }
-
-  @Override
-  public CSSImports getCascadingStyleSheetImports() {
-    CSSImports imports = new CSSImports();
-    imports.add(css.getCascadingStyleSheetImports());
-    for (Line line : getLines()) {
-      imports.add(line.getCascadingStyleSheetImports());
-    }
-    return imports;
-  }
-
-  @Override
-  public Lines getCascadingStyleSheetLines() {
-    Lines codeLines = new Lines();
-    codeLines.add(css.getCascadingStyleSheetLines());
-    for (Line line : this.lines) {
-      codeLines.add(line.getCascadingStyleSheetLines());
-    }
-    return codeLines;
-  }
-
-  @Override
-  public Lines getJavaScriptLines() {
-    Lines codeLines = new Lines();
-    codeLines.add(js.getJavaScriptLines());
-    for (Line line : this.lines) {
-      codeLines.add(line.getJavaScriptLines());
-    }
-    return codeLines;
-  }
-
-  Libraries getLibraries() {
-    return libraries;
-  }
-
-  String getCode() {
-    return lines.getCode();
   }
 }

@@ -110,20 +110,16 @@ class CSSSourceFile implements SofiaSource {
     }
     code.append(cssImports.toString());
 
-    for (Library library : libraries) {
-      Logger.debug("Search files in library %s.", library);
-      for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
-        Logger.debug("Add lines from file %s.", file.getPartialPath());
-        code.append(file.getCascadingStyleSheetCode()).append('\n');
-      }
-    }
-
+//    for (Library library : libraries) {
+//      Logger.debug("Search files in library %s.", library);
+//      for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
+//        Logger.debug("Add lines from file %s.", file.getPartialPath());
+//
+//        code.append(file.getCascadingStyleSheetLines().getCode()).append('\n');
+//      }
+//    }
     code.append(lines.getCode());
     Files.write(filePath, code.toString().getBytes(Configuration.getInstance().getEncoding()));
-  }
-
-  String getCascadingStyleSheetCode() {
-    return lines.getCode();
   }
 
   @Override
@@ -137,7 +133,7 @@ class CSSSourceFile implements SofiaSource {
   }
 
   @Override
-  public boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
@@ -146,18 +142,14 @@ class CSSSourceFile implements SofiaSource {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  void load(String partialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
-    load(null, partialFileName, newCaller);
-  }
-
   void load(Path loadFileBasePath, String partialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
     Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(loadFileBasePath, getBasePath(), partialFileName, newCaller);
-
-    Logger.debug("Load Cascading Style Sheet source file %s.", partialFileName);
 
     if (!Files.exists(cssFullSourceFilePath)) {
       Logger.debug("File %s NOT FOUND.", getPartialPath());
       return;
+    } else {
+      Logger.debug("Cascading Style Sheet file %s FOUND.", getPartialPath());
     }
 
     add(new CodeLine("/* " + getPartialPath() + " addeded by " + getCaller() + " */"));

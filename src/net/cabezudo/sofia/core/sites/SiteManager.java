@@ -152,7 +152,7 @@ public class SiteManager {
       Site site = new Site(siteId, name, baseDomainName, domainNames, DEFAULT_VERSION);
       SiteManager.getInstance().update(connection, site);
 
-      Path siteSourcesBasePath = site.getSourcesPath();
+      Path siteSourcesBasePath = site.getVersionedSourcesPath();
       if (!Files.exists(siteSourcesBasePath)) {
         Files.createDirectories(siteSourcesBasePath);
       }
@@ -345,8 +345,8 @@ public class SiteManager {
   }
 
   private synchronized void changeBasePath(Site site, DomainName domainName) throws IOException {
-    Path oldSourceBasePath = site.getSourcesPath().getParent();
-    Path newSourceBasePath = site.getSourcesPath(domainName).getParent();
+    Path oldSourceBasePath = site.getVersionedSourcesPath().getParent();
+    Path newSourceBasePath = site.getVersionedSourcesPath(domainName).getParent();
     Logger.debug("Moving source path from %s to %s.", oldSourceBasePath, newSourceBasePath);
     Files.move(oldSourceBasePath, newSourceBasePath, ATOMIC_MOVE);
     Path oldBasePath = site.getBasePath();

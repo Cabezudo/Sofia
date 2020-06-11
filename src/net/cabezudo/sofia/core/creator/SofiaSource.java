@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.creator;
 
+import java.nio.file.Path;
 import java.sql.SQLException;
 
 /**
@@ -26,6 +27,6 @@ interface SofiaSource {
 
   String getVoidPartialPathName();
 
-  boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag;
+  boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag;
 
 }
