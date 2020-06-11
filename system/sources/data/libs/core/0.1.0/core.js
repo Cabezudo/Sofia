@@ -395,6 +395,7 @@ window.onload = () => {
   if (Core.pageParameters.has('section')) {
     Core.changeSection(Core.pageParameters.get('section'));
   }
+  console.log(templateVariables);
   Core.testFunctions.forEach(func => {
     func();
   });

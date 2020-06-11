@@ -57,11 +57,12 @@ class JSSourceFile implements SofiaSource {
 
   void loadFile() throws IOException, LocatedSiteCreationException {
     Path jsSourceFilePath = getBasePath().resolve(getPartialPath());
-    Logger.debug("Load JavaScript source file %s.", getPartialPath());
 
     if (!Files.exists(jsSourceFilePath)) {
       Logger.debug("File %s NOT FOUND.", getPartialPath());
       return;
+    } else {
+      Logger.debug("JavaScript file %s FOUND.", getPartialPath());
     }
 
     List<String> linesFromFile = Files.readAllLines(jsSourceFilePath);
@@ -139,7 +140,7 @@ class JSSourceFile implements SofiaSource {
   }
 
   @Override
-  public boolean searchHTMLTag(SofiaSource actual, String line, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

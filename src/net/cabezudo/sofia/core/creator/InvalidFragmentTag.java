@@ -1,19 +1,16 @@
 package net.cabezudo.sofia.core.creator;
 
+import java.nio.file.Path;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.06.15
  */
-public class InvalidFragmentTag extends Exception {
+public class InvalidFragmentTag extends LocatedSiteCreationException {
 
-  private final int col;
+  private static final long serialVersionUID = 1L;
 
-  public InvalidFragmentTag(String message, int col) {
-    super(message);
-    this.col = col;
-  }
-
-  public int getRow() {
-    return col;
+  InvalidFragmentTag(String message, Path filePath, Position position) {
+    super(message, filePath, position);
   }
 }

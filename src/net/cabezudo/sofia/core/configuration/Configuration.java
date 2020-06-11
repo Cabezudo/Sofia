@@ -188,10 +188,6 @@ public final class Configuration {
     return commonsLibsPath;
   }
 
-  public Path getCommonsTemplatesPath() {
-    return commonsTemplatesPath;
-  }
-
   public Path getCommonsComponentsTemplatesPath() {
     return commonsComponentsTemplatesPath;
   }
@@ -214,6 +210,10 @@ public final class Configuration {
 
   public Path getSitesPath() {
     return sitesPath;
+  }
+
+  public Path getCommonsTemplatesPath() {
+    return commonsTemplatesPath;
   }
 
   public Path getSitesDataPath() {

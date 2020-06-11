@@ -54,9 +54,9 @@ public class SiteCreator {
     Files.createDirectories(site.getCSSPath());
     Files.createDirectories(site.getImagesPath());
 
-    TemplateVariables templateVariables = new TemplateVariables(site, voidPartialPath.toString());
+    TemplateVariables templateVariables = new TemplateVariables();
     try {
-      templateVariables.add(site.getSourcesPath(), "commons.json");
+      templateVariables.add(site.getVersionedSourcesPath(), "commons.json");
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e.getMessage());
     }
@@ -75,31 +75,27 @@ public class SiteCreator {
       Logger.warning("Image directory not found: %s", site.getSourcesImagesPath());
     }
 
-    Path basePath = site.getSourcesPath();
+    Path basePath = site.getVersionedSourcesPath();
 
-    HTMLSourceFile baseFile = new HTMLSourceFile(site, basePath, htmlPartialPath, templateVariables, null);
-
-    baseFile.loadJSONConfigurationFile();
+    HTMLSourceFile baseFile = new HTMLPageSourceFile(site, basePath, htmlPartialPath, templateVariables, null);
     baseFile.loadHTMLFile();
 
-    if (Environment.getInstance().isDevelopment()) {
-      Logger.debug(templateVariables.toJSON());
-    }
-
+    Caller baseFileCaller = new Caller(baseFile, 0);
     createPagePermissions(site, baseFile, requestURI);
 
-    JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, null);
+    JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, baseFileCaller);
     jsFile.add(baseFile.getLibraries());
     jsFile.add(baseFile.getJavaScriptLines());
     Path jsFilePath = site.getJSPath().resolve(jsPartialPath);
     jsFile.save(jsFilePath);
 
-    CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, null);
+    CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, baseFileCaller);
     cssFile.add(themeSourceFile.getCascadingStyleSheetImports());
     cssFile.add(themeSourceFile.getCascadingStyleSheetLines());
     cssFile.add(baseFile.getLibraries());
     cssFile.add(baseFile.getCascadingStyleSheetImports());
     cssFile.add(baseFile.getCascadingStyleSheetLines());
+    // Read all the CSS files from the CSS path
     Path cssFilePath = site.getCSSPath().resolve(cssPartialPath);
     cssFile.save(cssFilePath);
 

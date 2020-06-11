@@ -66,7 +66,7 @@ public class FileHelper {
       } else {
         Path parent;
         if (basePath == null) {
-          parent = caller.getFilePath().getParent();
+          parent = caller.getBasePath().resolve(caller.getRelativePath()).getParent();
         } else {
           parent = basePath;
         }

@@ -99,20 +99,24 @@ public class Site implements Comparable<Integer> {
     return getVersionPath().resolve("images");
   }
 
-  public Path getSourcesPath() {
-    return getSourcesPath(baseDomainName, version);
-  }
-
   public Path getSourcesPath(DomainName domainName) {
-    return getSourcesPath(domainName, version);
+    return Configuration.getInstance().getSitesSourcesPath().resolve(domainName.getName());
   }
 
-  public Path getSourcesPath(DomainName domainName, int version) {
-    return Configuration.getInstance().getSitesSourcesPath().resolve(domainName.getName()).resolve(Integer.toString(version));
+  public Path getVersionedSourcesPath() {
+    return Site.this.getVersionedSourcesPath(baseDomainName, version);
+  }
+
+  public Path getVersionedSourcesPath(DomainName domainName) {
+    return Site.this.getVersionedSourcesPath(domainName, version);
+  }
+
+  public Path getVersionedSourcesPath(DomainName domainName, int version) {
+    return getSourcesPath(domainName).resolve(Integer.toString(version));
   }
 
   public Path getSourcesImagesPath() {
-    return getSourcesPath().resolve("images");
+    return Site.this.getVersionedSourcesPath().resolve("images");
   }
 
   @Override

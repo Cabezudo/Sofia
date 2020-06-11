@@ -6,6 +6,8 @@ package net.cabezudo.sofia.core.creator;
  */
 public class SiteCreationException extends Exception {
 
+  private static final long serialVersionUID = 1L;
+
   SiteCreationException(String message) {
     super(message);
   }
