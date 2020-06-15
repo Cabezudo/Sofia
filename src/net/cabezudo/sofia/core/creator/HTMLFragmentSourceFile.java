@@ -26,8 +26,13 @@ class HTMLFragmentSourceFile extends HTMLSourceFile {
 
   @Override
   Path getSourceFilePath(Caller caller) throws SiteCreationException {
-    Path htmlSourceFilePath = getSite().getVersionedSourcesPath().resolve(getPartialFilePath());
-    Logger.debug("HTMLFragmentSourceFile:getSourceFilePath:Load fragment HTML source file %s.", htmlSourceFilePath);
+    Path htmlSourceFilePath;
+    if (getPartialFilePath().startsWith("/")) {
+      htmlSourceFilePath = getSite().getVersionedSourcesPath().resolve(getPartialFilePath().toString().substring(1));
+    } else {
+      htmlSourceFilePath = getSite().getVersionedSourcesPath().resolve(getPartialFilePath());
+    }
+    Logger.debug("[HTMLFragmentSourceFile:getSourceFilePath] Full HTML fragment source file path %s.", htmlSourceFilePath);
     return htmlSourceFilePath;
   }
 

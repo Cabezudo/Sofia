@@ -121,6 +121,11 @@ class JSSourceFile implements SofiaSource {
       }
     }
     code.append(lines.getCode());
+
+    Path parentFile = filePath.getParent();
+    if (!Files.exists(parentFile)) {
+      Files.createDirectories(parentFile);
+    }
     Files.write(filePath, code.toString().getBytes(Configuration.getInstance().getEncoding()));
   }
 

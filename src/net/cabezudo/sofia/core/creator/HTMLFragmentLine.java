@@ -29,7 +29,7 @@ public class HTMLFragmentLine extends HTMLFileLine {
           throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     Path fullFileBasePath;
     String partialFilePathString = getFilePath().toString();
-    if (partialFilePathString.startsWith("/")) {
+    if (partialFilePathString.startsWith("/") || caller == null) {
       fullFileBasePath = getSite().getVersionedSourcesPath().resolve(partialFilePathString.substring(1));
     } else {
       fullFileBasePath = caller.getBasePath().resolve(partialFilePathString);

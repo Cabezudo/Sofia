@@ -1,7 +1,5 @@
 package net.cabezudo.sofia.core.logger;
 
-import java.io.FileWriter;
-import java.io.IOException;
 import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,12 +33,12 @@ public class Logger {
       fullMessage = sdf.format(date) + " [" + metadata + "] " + String.format(message, parameters);
     }
     System.out.println(fullMessage);
-    try (FileWriter writer = new FileWriter("output.txt", true)) {
-      writer.write(fullMessage);
-      writer.write('\n');
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+//    try (FileWriter writer = new FileWriter("output.txt", true)) {
+//      writer.write(fullMessage);
+//      writer.write('\n');
+//    } catch (IOException e) {
+//      throw new RuntimeException(e);
+//    }
   }
 
   public static void log(Level level, Throwable cause) {
