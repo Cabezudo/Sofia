@@ -101,6 +101,7 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   flex-direction: column;
   padding: 30px 20px;
   width: auto;
+  flex-grow: 1;
 }
 
 .title:not(:last-child) {

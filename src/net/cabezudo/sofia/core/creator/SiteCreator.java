@@ -8,7 +8,6 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Environment;
-import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
@@ -52,7 +51,6 @@ public class SiteCreator {
     Files.createDirectories(site.getVersionPath());
     Files.createDirectories(site.getJSPath());
     Files.createDirectories(site.getCSSPath());
-    Files.createDirectories(site.getImagesPath());
 
     TemplateVariables templateVariables = new TemplateVariables();
     try {
@@ -68,12 +66,6 @@ public class SiteCreator {
     // TODO Read all the theme style sheets after the entire site
     ThemeSourceFile themeSourceFile = new ThemeSourceFile(site, themeName, templateVariables);
     themeSourceFile.loadFile();
-
-    try {
-      FileHelper.copyDirectory(site.getSourcesImagesPath(), site.getImagesPath());
-    } catch (FileNotFoundException e) {
-      Logger.warning("Image directory not found: %s", site.getSourcesImagesPath());
-    }
 
     Path basePath = site.getVersionedSourcesPath();
 

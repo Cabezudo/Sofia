@@ -2,6 +2,7 @@ package net.cabezudo.sofia.core;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -24,6 +25,7 @@ import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.HTMLFilter;
+import net.cabezudo.sofia.core.server.images.ImageServlet;
 import net.cabezudo.sofia.core.server.js.JSServlet;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteList;
@@ -138,6 +140,9 @@ public class WebServer {
     ServletHolder fontsHolder = new ServletHolder("fonts", FontHolder.class);
     context.addServlet(fontsHolder, "/fonts/*");
 
+    ServletHolder imageHolder = new ServletHolder("image", ImageServlet.class);
+    context.addServlet(imageHolder, "/images/*");
+
     ServletHolder qrImageHolder = new ServletHolder("qrImage", QRImageServlet.class);
     context.addServlet(qrImageHolder, "/images/upload/qr.png");
 
@@ -151,6 +156,9 @@ public class WebServer {
     for (String vh : context.getVirtualHosts()) {
       Logger.debug("Virtual host: " + vh);
     }
+
+    // Check and create mandatory directories
+    Files.createDirectories(site.getSourcesImagesPath().resolve("generated"));
 
     return context;
   }

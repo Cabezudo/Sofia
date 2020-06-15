@@ -95,10 +95,6 @@ public class Site implements Comparable<Integer> {
     return getVersionPath().resolve("js");
   }
 
-  public Path getImagesPath() {
-    return getVersionPath().resolve("images");
-  }
-
   public Path getSourcesPath(DomainName domainName) {
     return Configuration.getInstance().getSitesSourcesPath().resolve(domainName.getName());
   }
