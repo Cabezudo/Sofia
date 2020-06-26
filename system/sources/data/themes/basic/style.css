@@ -79,7 +79,12 @@ input:disabled, textarea:disabled {
   box-sizing: inherit;
 }
 
-body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
+body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.application p {
   margin: 0;
   padding: 0;
 }
@@ -90,21 +95,21 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   height: 100vh;
 }
 
-.container {
-  display: flex;
-  overflow: auto;
-  flex-grow: 2;
-}
-
 .content {
   display: flex;
   flex-direction: column;
+  flex-grow: 1;
+  overflow: auto;
   padding: 30px 20px;
   width: auto;
-  flex-grow: 1;
 }
 
-.title:not(:last-child) {
+.container {
+  display: flex;
+  flex-grow: 2;
+}
+
+.application .title:not(:last-child) {
   margin-bottom: 12px;
   font-size: 26px;
   text-align: center;
@@ -112,7 +117,7 @@ body, dd, dl, dt, h1, h2, h3, hr, html, li, p, textarea, ul {
   line-height: 26px;
 }
 
-.subtitle:not(:last-child) {
+.application .subtitle:not(:last-child) {
   margin-bottom: 6px;
   font-size: 22px;
   text-align: left;
@@ -207,7 +212,7 @@ footer {
     padding: 40px 30px;
   }
 
-  .title:not(:last-child) {
+  .application .title:not(:last-child) {
     margin-bottom: 15px;
     text-align: left;
     font-size: 26px;

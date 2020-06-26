@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html profiles="all">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sofia Server</title>
+    <link rel="stylesheet" type="text/css" href="/css/docs/imageCND.css">
+    <script src="/js/variables.js"></script>
+    <script src="/js/docs/imageCND.js"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="simpleSICEditor/0.1.0"></script>
+    <script>
+      {
+        const createGUI = () => {
+          simpleSICEditor({
+            id: 'firstProgram',
+            height: '60px'
+          });
+        };
+        Core.addOnloadFunction(createGUI);
+      }
+      ;
+    </script>
+    <style file="documentation.css"></style>
+  </head>
+  <body>
+    <section id="application">
+      <section id="header" template="headers/menu/simple/menu" configurationFile="menu.json"></section>
+      <section class="content">
+        <section class="container">
+          <div class="documentation">
+            <section id="introducingSofia" class="documentation">
+
+
+
+              <div id="firstProgram">resize(width=1200,height=800)</div>
+
+
+              <span class="title">Image CND and SIC</span>
+              <h1>What's an image CDN?</h1>
+              <p>Image CDN specialize in the transformation, optimization, and delivery of images. You can also think of them as APIs for accessing and manipulating the images used on your site.</p>
+              <h1>Why use an image CDN?</h1>
+              <p>Image content delivery networks (CDNs) are excellent at optimizing images.</p>
+              <h1>What's SIC?</h1>
+              <p>SIC stand for Sofia Image Code. Is a functional language for WS API image manipulation.</p>
+              <h1>How does it work?</h1>
+              <p>You have one image upladed on the server. In the string query, you manipulate it with SIC in order to get a diferent image. For responsive sites, you upload one image, a big image, and manipulete it in order to get a diferent image accord your device, for example smaller.</p>
+              <p>How do you do that? Just add the SIC code in the URL query string.</p>
+              <p>The folow is an example of SIC code used to resize an image.</p>
+              <pre>main(
+  loadImage(
+    name=/home/esteban/images/test.jpg
+  ),
+  resize(
+    width = 1200,
+    height = 800
+  )
+)</pre>
+              <p>But using the CDN some code disapear and is addeded by the server. So, the URL query string look like this:</p>
+              <pre>test.jpg?resize(width=1200,height=800)</pre>
+              <p>Let's test the code directly on the server.</p>
+              <textarea id="_firstProgram">resize(
+  width = 1200,
+  height = 800
+)</textarea>
+            </section>
+            <br><br><br><br><br><br><br><br><br><br><br><br>
+          </div>
+        </section>
+      </section>
+      <section id="footer" file="footer.html"></section>
+    </section>
+  </body>
+</html>

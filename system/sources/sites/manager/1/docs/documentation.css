@@ -2,57 +2,101 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap');
 
-html {
-  font-family: 'Open Sans';
+@font-face{
+  font-family: "Lava Std";
+  src: url(/fonts/LavaStd-Regular.otf) format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal
+}
+@font-face{
+  font-family:"Lava Std";
+  src: url(/fonts/LavaStd-RegularItalic.otf) format("opentype");
+  font-weight: 400;
+  font-style: italic;
+  font-stretch: normal
+}
+@font-face{
+  font-family: "GT America";
+  src: url(/fonts/GT-America-Standard-Regular.woff) format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal
+}
+@font-face{
+  font-family: "GT America";
+  src: url(/fonts/GT-America-Standard-Bold.woff) format("woff");
+  font-weight: 900;
+  font-style: normal;
+  font-stretch: normal
 }
 
-#documentation {
+.documentation {
   display: flex;
   flex-direction: column;
 }
 
-#container {
-  margin: auto;
-  padding: 20px;
-}
-
-.documentation .title {
-  font-family: 'Lato';
-  font-size: 42px;
-  font-weight: 700;
-  margin: 30px 0 10px 0;
-  width: 100%;
-  display: block;
-}
-
-.documentation h1 {
-  font-size: 28px;
-  font-weight: bolder;
-}
-
-.documentation h2 {
-  font-size: 18px;
-  font-weight: bolder;
-}
-
-.documentation p {
-  font-size: 16px;
-  margin: 8px 0;
-}
-
-.documentation p.titleDescription {
-  font-size: 20px;
-  color: #656086;
-}
-
 .documentation span.code {
   font-family: 'Source Code Pro';
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .documentation pre {
   font-family: 'Source Code Pro';
-  font-size: 14px;
+  font-size: 12px;
   background-color: #F8F8F8;
   padding: 15px;
+  overflow: hidden;
 }
+
+.documentation .title {
+  color: black;
+  display: block;
+  margin: 0 0 20px 0;
+  font-family: 'GT America';
+  font-size: 24px;
+  font-weight: 900;
+}
+
+.documentation h1 {
+  color: black;
+  margin: 0 0 10px 0 ;
+  font-family: 'GT America';
+  font-size: 18px;
+  font-weight: 900;
+}
+
+.documentation p {
+  color: #282828;
+  font-family: 'Lava Std';
+  font-size: 20px;
+  margin: 0 0 20px 0;
+  letter-spacing: -.5px;
+  line-height: 29px;
+  text-align: left;
+}
+
+.documentation textarea {
+  height: auto;
+  width: auto;
+  font-family: 'Source Code Pro';
+  font-size: 12px;
+}
+
+
+@media all and ( min-width: 480px ) {
+}
+
+@media all and ( min-width: 750px ) {
+}
+
+@media all and ( min-width: 1024px ) {
+}
+
+@media all and ( min-width: 1250px ) {
+}
+
+@media all and ( min-width: 1800px ) {
+}
+
+

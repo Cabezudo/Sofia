@@ -1,0 +1,34 @@
+/*
+ * Created on: 18/06/2020
+ * Author:     Esteban Cabezudo
+ */
+
+.simpleSICEditor {
+  padding: 10px;
+  overflow: auto;
+}
+
+.simpleSICEditor > div[contenteditable] {
+  outline: 0px solid transparent;
+  font-family: 'Source Code Pro';
+  font-size: 12px;
+  white-space: pre;
+}
+
+.simpleSICEditor span.function {
+  color: #0F840F;
+}
+
+.simpleSICEditor span.value {
+  color: #D6912B;
+}
+
+.simpleSICEditor span.parameter {
+  color: #0909FF;
+}
+
+.simpleSICEditor > div > span.error {
+  background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAAJ0lEQVQI1wXBIRIAEBAAwGUEVfH/71GuKpzdkiTsOA2vrDgV5ugXPsVXCdK5qtZCAAAAAElFTkSuQmCC');
+  background-position-y: bottom;
+  background-repeat: repeat-x;
+}
