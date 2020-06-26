@@ -100,8 +100,6 @@ abstract class HTMLSourceFile implements SofiaSource {
     JSONObject jsonConfiguration = jsonSourceConfiguration.load(this);
     Path jsonPartialPath = jsonSourceConfiguration.getJSONPartialPath();
 
-    System.out.println(jsonSourceConfiguration.getOriginalContent());
-
     String templateReference = null;
     String pageReference = null;
     if (jsonConfiguration != null) {
@@ -202,13 +200,6 @@ abstract class HTMLSourceFile implements SofiaSource {
                 actual.add(new CodeLine("/* created by system using content from " + getPartialFilePath() + ":" + lineNumber + " */", lineNumber));
               } else {
                 CodeLine codeLine = new CodeLine("/* created by system using " + getPartialFilePath() + ":" + lineNumber + " called from " + getCaller() + " */", lineNumber);
-                if (codeLine.toString().equals("/* created by system using headers/menu/simple/menu.html:1 called from passwordRecovery.html */")) {
-                  System.out.println(codeLine);
-                  StackTraceElement[] trace = Thread.currentThread().getStackTrace();
-                  for (StackTraceElement item : trace) {
-                    System.out.println(item);
-                  }
-                }
                 actual.add(codeLine);
               }
               break;
@@ -233,7 +224,7 @@ abstract class HTMLSourceFile implements SofiaSource {
               break;
             default:
               if (actual == this) {
-                Line processedLine = getProcessedLine(newLine, lineNumber);
+                Line processedLine = getProcessedLine(htmlSourceFilePath, newLine, lineNumber);
                 if (processedLine != null) {
                   actual.add(processedLine);
                   libraries.add(processedLine.getLibraries());
@@ -253,9 +244,10 @@ abstract class HTMLSourceFile implements SofiaSource {
 
   abstract String replaceTemplateVariables(String line, int lineNumber, Path htmlSourceFilePath) throws LocatedSiteCreationException;
 
-  Line getProcessedLine(String line, int lineNumber)
+  Line getProcessedLine(Path htmlSourceFilePath, String line, int lineNumber)
           throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     Tag tag = HTMLTagFactory.get(line);
+    Path actualPath = htmlSourceFilePath.getParent();
 
     // If the tag is a section we search for a file or template in order to load the file
     if (tag != null && tag.isSection()) {
@@ -273,21 +265,21 @@ abstract class HTMLSourceFile implements SofiaSource {
         Path templateBasePath;
         String configurationFile;
 
-        String configurationAttribute = tag.getValue("configurationFile");
-        if (configurationAttribute == null) {
+        String configurationFileAttribute = tag.getValue("configurationFile");
+        if (configurationFileAttribute == null) {
           if (getPartialPath() == null) {
             configurationFile = tagId + ".json";
           } else {
             configurationFile = getPartialPath().resolve(tagId + ".json").toString();
           }
         } else {
-          configurationFile = configurationAttribute;
+          configurationFile = configurationFileAttribute;
         }
         if (configurationFile.startsWith("/")) {
           configurationFile = configurationFile.substring(1);
           templateBasePath = site.getVersionedSourcesPath();
         } else {
-          templateBasePath = getBasePath();
+          templateBasePath = actualPath;
         }
         Logger.info("Load configuration file %s used for template with id %s.", configurationFile, tagId);
         try {
@@ -364,6 +356,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   @Override
   public final String getVoidPartialPathName() {
     String partialPathName = getPartialFilePath().toString();
+    System.out.println("partialPathName: " + partialPathName);
     return partialPathName.substring(0, partialPathName.length() - 5);
   }
 

@@ -8,3 +8,4 @@ sofia.configuration.properties
 **/.DS_Store
 varios/
 sql.tests.txt
+**/images/generated

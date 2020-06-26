@@ -1,0 +1,28 @@
+{
+  "menu": {
+    "name": "#{site.shortName}",
+    "description": "web for people",
+    "items": [
+      {
+        "name": {
+          "en": "Home"
+        },
+        "url": "/"
+      },
+      {
+        "name": {
+          "en": "Logout"
+        },
+        "logged": true,
+        "url": "/logout"
+      },
+      {
+        "template": {
+          "name": "twitter",
+          "url": "#{site.socialMedia.twitter.url}"
+        }
+      }
+    ]
+  }
+}
+

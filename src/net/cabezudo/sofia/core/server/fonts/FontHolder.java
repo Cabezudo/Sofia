@@ -26,20 +26,40 @@ public class FontHolder extends HttpServlet {
 
     Path fontsPath = Configuration.getInstance().getCommonsFontsPath();
     Path fontPath = fontsPath.resolve(fontName);
+    int i = fontName.lastIndexOf('.');
+    if (i == -1) {
+      throw new ServletException("A font must have an extension in order to locate the MIME type.");
+    }
+    String fontType = fontName.substring(i + 1);
 
-    do {
-      if (fontName.endsWith("woff")) {
+    switch (fontType) {
+      case "eot":
+        response.setContentType("application/vnd.ms-fontobject");
+        break;
+      case "otf":
+        response.setContentType("application/x-font-opentype");
+        break;
+      case "sfnt":
+        response.setContentType("application/font-sfnt");
+        break;
+      case "svg":
+        response.setContentType("image/svg+xml");
+        break;
+      case "ttf":
+        response.setContentType("application/x-font-ttf");
+        break;
+      case "woff":
         response.setContentType("application/x-font-woff");
         break;
-      }
-      if (fontName.endsWith("woff2")) {
+      case "woff2":
         response.setContentType("application/x-font-woff2");
         break;
-      }
-      throw new ServletException("Can't find the MIME for file: " + fontName);
-    } while (false);
+      default:
+        throw new ServletException("Can't find the MIME " + fontType + " for file: " + fontName);
+    }
 
-    try (FileInputStream in = new FileInputStream(fontPath.toFile()); OutputStream out = response.getOutputStream();) {
+    try (FileInputStream in = new FileInputStream(fontPath.toFile());
+            OutputStream out = response.getOutputStream();) {
       byte[] buffer = new byte[1024];
       int count;
       while ((count = in.read(buffer)) >= 0) {

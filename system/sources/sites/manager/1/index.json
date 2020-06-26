@@ -24,6 +24,12 @@
           "url": "/logout"
         },
         {
+          "name": {
+            "en": "Documentation"
+          },
+          "url": "/docs/"
+        },
+        {
           "template": {
             "name": "twitter",
             "url": "#{site.socialMedia.twitter.url}"

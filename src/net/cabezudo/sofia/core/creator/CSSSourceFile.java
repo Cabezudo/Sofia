@@ -139,7 +139,7 @@ class CSSSourceFile implements SofiaSource {
 
   @Override
   public boolean searchHTMLTag(SofiaSource actual, String line,
-           Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
+          Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
@@ -148,9 +148,8 @@ class CSSSourceFile implements SofiaSource {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  void load(Path loadFileBasePath, String partialFileName,
-           Caller newCaller) throws IOException, LocatedSiteCreationException {
-    Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(loadFileBasePath, getBasePath(), partialFileName, newCaller);
+  void load(Path fileBasePath, String partialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
+    Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(fileBasePath, getBasePath(), partialFileName, newCaller);
 
     if (!Files.exists(cssFullSourceFilePath)) {
       Logger.debug("File %s NOT FOUND.", getPartialPath());
@@ -159,7 +158,7 @@ class CSSSourceFile implements SofiaSource {
       Logger.debug("Cascading Style Sheet file %s FOUND.", getPartialPath());
     }
 
-    add(new CodeLine("/* " + getPartialPath() + " addeded by " + getCaller() + " */"));
+    add(new CodeLine("/* " + getPartialPath() + " addeded by " + newCaller + " */"));
     List<String> linesFromFile = Files.readAllLines(cssFullSourceFilePath);
     int lineNumber = 1;
     Logger.debug("Replace template variables on source file %s.", cssFullSourceFilePath);

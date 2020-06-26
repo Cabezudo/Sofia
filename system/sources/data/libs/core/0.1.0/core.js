@@ -3,9 +3,14 @@
  * Author:     Esteban Cabezudo
  */
 
+/* global Core */
 /* global fetch */
 /* global postData */
 /* global variables */
+/* global Node */
+
+
+
 
 'use strict';
 const Core = {
@@ -40,6 +45,89 @@ const Core = {
   cleanMessagesContainer: () => {
     if (Core.messagesContainer) {
       Core.trigger(Core.messagesContainer, 'cleanMessages');
+    }
+  },
+  ContentEditable: {
+    getRange: () => {
+      if (window.getSelection) {
+        let selection = window.getSelection();
+        if (selection.rangeCount) {
+          selection = document.getSelection();
+          return {
+            selection,
+            range: selection.getRangeAt(0)
+          };
+        }
+      }
+      return {};
+    },
+    getOffsets: () => {
+      const {selection, range} = Core.ContentEditable.getRange();
+      if (range) {
+        console.log(range);
+        return {
+          selection,
+          startOffset: range.startOffset,
+          endOffset: range.endOffset
+        };
+      }
+      return {};
+    },
+    getCaretOffset: element => {
+      var caretOffset = 0;
+      var doc = element.ownerDocument || element.document;
+      var win = doc.defaultView || doc.parentWindow;
+      var selection;
+      if (typeof win.getSelection !== "undefined") {
+        selection = win.getSelection();
+        if (selection.rangeCount > 0) {
+          var range = win.getSelection().getRangeAt(0);
+          var preCaretRange = range.cloneRange();
+          preCaretRange.selectNodeContents(element);
+          preCaretRange.setEnd(range.endContainer, range.endOffset);
+          caretOffset = preCaretRange.toString().length;
+        }
+      } else if ((selection = doc.selection) && selection.type !== "Control") {
+        var textRange = selection.createRange();
+        var preCaretTextRange = doc.body.createTextRange();
+        preCaretTextRange.moveToElementText(element);
+        preCaretTextRange.setEndPoint("EndToEnd", textRange);
+        caretOffset = preCaretTextRange.text.length;
+      }
+      return {selection, caretOffset};
+    },
+    setCaretOffset: (node, chars) => {
+      const createRangeFragment = (node, offset, range) => {
+        if (!range) {
+          range = document.createRange();
+          range.selectNode(node);
+          range.setStart(node, 0);
+        }
+
+        if (offset.chars === 0) {
+          range.setEnd(node, offset.chars);
+        } else {
+          if (node && offset.chars > 0) {
+            if (node.nodeType === Node.TEXT_NODE) {
+              if (node.textContent.length < offset.chars) {
+                offset.chars -= node.textContent.length;
+              } else {
+                range.setEnd(node, offset.chars);
+                offset.chars = 0;
+              }
+            } else {
+              for (var lp = 0; lp < node.childNodes.length; lp++) {
+                range = createRangeFragment(node.childNodes[lp], offset, range);
+                if (offset.chars === 0) {
+                  break;
+                }
+              }
+            }
+          }
+        }
+        return range;
+      };
+      return createRangeFragment(node, {chars});
     }
   },
   disable: element => {
