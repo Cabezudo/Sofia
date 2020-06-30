@@ -1,11 +1,7 @@
 package net.cabezudo.sofia.core.sic.objects;
 
+import net.cabezudo.sofia.core.sic.SICCompilerMessages;
 import net.cabezudo.sofia.core.sic.elements.SICParameters;
-import net.cabezudo.sofia.core.sic.objects.ResizeFunctionObject;
-import net.cabezudo.sofia.core.sic.exceptions.SICCompilerException;
-import net.cabezudo.sofia.core.sic.objects.LoadImageFunctionObject;
-import net.cabezudo.sofia.core.sic.objects.MainFunctionObject;
-import net.cabezudo.sofia.core.sic.objects.SICObjectFunction;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,17 +9,16 @@ import net.cabezudo.sofia.core.sic.objects.SICObjectFunction;
  */
 public class ObjectFactory {
 
-  public static SICObjectFunction get(String name, SICParameters parameters) throws SICCompilerException {
+  public static SICObjectFunction get(String name, SICParameters parameters, SICCompilerMessages messages) {
     switch (name) {
       case "main":
-        return new MainFunctionObject(parameters);
+        return new MainFunctionObject(parameters, messages);
       case "loadImage":
-        return new LoadImageFunctionObject(parameters);
+        return new LoadImageFunctionObject(parameters, messages);
       case "resize":
-        return new ResizeFunctionObject(parameters);
+        return new ResizeFunctionObject(parameters, messages);
       default:
         throw new RuntimeException("[ObjectFactory:SICObjectFunction] Invalid name for a function object: " + name);
     }
   }
-
 }

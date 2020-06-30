@@ -15,4 +15,13 @@ public class CloseParenthesesToken extends Token {
     return true;
   }
 
+  @Override
+  public String getCSSClass() {
+    return "none";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.CLOSE_PARENTHESES;
+  }
 }

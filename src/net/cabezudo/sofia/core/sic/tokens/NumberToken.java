@@ -14,4 +14,14 @@ public class NumberToken extends Token {
   public boolean isNumber() {
     return true;
   }
+
+  @Override
+  public String getCSSClass() {
+    return "number";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.NUMBER;
+  }
 }

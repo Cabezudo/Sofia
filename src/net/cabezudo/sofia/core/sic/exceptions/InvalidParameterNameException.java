@@ -11,7 +11,6 @@ public class InvalidParameterNameException extends SICParseException {
   private static final long serialVersionUID = 1L;
 
   public InvalidParameterNameException(Token token) {
-    super("Invalid parameter " + token.getValue() + ".", token.getPosition());
+    super("Invalid parameter nema " + token.getValue() + ".", token.getPosition());
   }
-
 }

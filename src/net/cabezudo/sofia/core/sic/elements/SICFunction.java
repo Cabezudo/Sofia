@@ -1,7 +1,7 @@
 package net.cabezudo.sofia.core.sic.elements;
 
 import net.cabezudo.sofia.core.Utils;
-import net.cabezudo.sofia.core.sic.exceptions.SICCompilerException;
+import net.cabezudo.sofia.core.sic.SICCompilerMessages;
 import net.cabezudo.sofia.core.sic.objects.ObjectFactory;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 import net.cabezudo.sofia.core.sic.objects.SICObjectFunction;
@@ -30,7 +30,7 @@ public class SICFunction extends SICParameterOrFunction {
     sb.append(Utils.repeat(' ', newDeep * 2));
     sb.append(getName()).append("(\n");
     newDeep++;
-    for (SICParameterOrFunction parameter : parameters) {
+    for (SICElement parameter : parameters) {
       sb.append(parameter.toString(newDeep));
       sb.append(",\n");
     }
@@ -44,13 +44,13 @@ public class SICFunction extends SICParameterOrFunction {
     return sb.toString();
   }
 
-  public void add(SICParameterOrFunction sicParameterOrFunction) {
+  public void add(SICElement sicParameterOrFunction) {
     parameters.add(sicParameterOrFunction);
   }
 
   @Override
-  public SICObject compile() throws SICCompilerException {
-    SICObjectFunction sicObjectFunction = ObjectFactory.get(getName(), parameters);
+  public SICObject compile(SICCompilerMessages messages) {
+    SICObjectFunction sicObjectFunction = ObjectFactory.get(getName(), parameters, messages);
     return sicObjectFunction;
   }
 }

@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.sic.elements;
 
-import net.cabezudo.sofia.core.sic.exceptions.SICCompilerException;
+import net.cabezudo.sofia.core.sic.SICCompilerMessages;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 import net.cabezudo.sofia.core.sic.tokens.Position;
 
@@ -22,5 +22,13 @@ public abstract class SICElement {
 
   public abstract String toString(int i);
 
-  public abstract SICObject compile() throws SICCompilerException;
+  public abstract SICObject compile(SICCompilerMessages messages);
+
+  public boolean isFunction() {
+    return false;
+  }
+
+  public boolean isParameter() {
+    return false;
+  }
 }

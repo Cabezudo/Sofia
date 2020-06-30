@@ -1,7 +1,4 @@
-package net.cabezudo.sofia.core.sic.tokens.functions;
-
-import net.cabezudo.sofia.core.sic.tokens.Position;
-import net.cabezudo.sofia.core.sic.tokens.Token;
+package net.cabezudo.sofia.core.sic.tokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -16,6 +13,16 @@ public class FunctionToken extends Token {
   @Override
   public boolean isFunction() {
     return true;
+  }
+
+  @Override
+  public String getCSSClass() {
+    return "function";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.FUNCTION;
   }
 
 }

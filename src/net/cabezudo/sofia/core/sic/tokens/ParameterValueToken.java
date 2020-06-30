@@ -9,4 +9,14 @@ public class ParameterValueToken extends Token {
   public ParameterValueToken(String value, Position position) {
     super(value, position);
   }
+
+  @Override
+  public String getCSSClass() {
+    return "parameterValue";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.PARAMETER_VALUE;
+  }
 }

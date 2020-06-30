@@ -1,5 +1,8 @@
 package net.cabezudo.sofia.core.sic.tokens;
 
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONObject;
+
 public class Position {
 
   public static final Position INITIAL = new Position(1, 1);
@@ -48,5 +51,14 @@ public class Position {
     hash = 67 * hash + this.row;
     hash = 67 * hash + this.line;
     return hash;
+  }
+
+  public JSONObject toJSON() {
+    JSONObject jsonPosition = new JSONObject();
+    JSONPair jsonLinePair = new JSONPair("line", line);
+    jsonPosition.add(jsonLinePair);
+    JSONPair jsonRowPair = new JSONPair("row", row);
+    jsonPosition.add(jsonRowPair);
+    return jsonPosition;
   }
 }

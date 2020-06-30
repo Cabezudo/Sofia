@@ -19,10 +19,12 @@ public abstract class SICParameterOrFunction extends SICElement {
     return name;
   }
 
+  @Override
   public boolean isParameter() {
     return this instanceof SICParameter;
   }
 
+  @Override
   public boolean isFunction() {
     return this instanceof SICFunction;
   }

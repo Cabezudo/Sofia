@@ -5,11 +5,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.server.images.SofiaImage;
+import net.cabezudo.sofia.core.sic.SICCompilerMessages;
+import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICFunction;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
-import net.cabezudo.sofia.core.sic.elements.SICParameterOrFunction;
 import net.cabezudo.sofia.core.sic.elements.SICParameters;
-import net.cabezudo.sofia.core.sic.exceptions.SICCompilerException;
 import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
@@ -20,21 +20,21 @@ public class LoadImageFunctionObject extends SICObjectFunction {
 
   private final Token nameTokenValue;
 
-  public LoadImageFunctionObject(SICParameters parameters) throws SICCompilerException {
-    SICParameterOrFunction parameterOrFunction = parameters.consume();
+  public LoadImageFunctionObject(SICParameters parameters, SICCompilerMessages messages) {
+    SICElement parameterOrFunction = parameters.consume();
     if (parameterOrFunction.isFunction()) {
       SICFunction functionParameter = (SICFunction) parameterOrFunction;
-      throw new SICCompilerException("Unexpected function parameter " + functionParameter.getName() + ". Expect a name parameter.", functionParameter.getPosition());
+      messages.add("Unexpected function parameter " + functionParameter.getName() + ". Expect a name parameter.", functionParameter.getPosition());
     }
     SICParameter parameter = (SICParameter) parameterOrFunction;
     if (!parameter.isNameParameter()) {
-      throw new SICCompilerException("Unexpected function parameter " + parameter.getName() + ". Expect a name parameter.", parameter.getPosition());
+      messages.add("Unexpected function parameter " + parameter.getName() + ". Expect a name parameter.", parameter.getPosition());
     }
     nameTokenValue = parameter.getValueToken();
 
     parameterOrFunction = parameters.consume();
     if (parameterOrFunction != null) {
-      throw new SICCompilerException("Unexpected parameter " + parameter.getName() + ".", parameter.getPosition());
+      messages.add("Unexpected parameter " + parameter.getName() + ".", parameter.getPosition());
     }
   }
 

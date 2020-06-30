@@ -4,19 +4,14 @@ package net.cabezudo.sofia.core.sic.tokens;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.06.13
  */
-public class NewLineToken extends Token {
+public class TabulationToken extends Token {
 
-  public NewLineToken(Position position) {
-    super("\n", position);
+  public TabulationToken(Position position) {
+    super(" ", position);
   }
 
   @Override
-  public String getJSONValue() {
-    return "\\n";
-  }
-
-  @Override
-  public boolean isNewLine() {
+  public boolean isTabulation() {
     return true;
   }
 
@@ -27,6 +22,6 @@ public class NewLineToken extends Token {
 
   @Override
   public TokenType getType() {
-    return TokenType.NEW_LINE;
+    return TokenType.TABULATION;
   }
 }
