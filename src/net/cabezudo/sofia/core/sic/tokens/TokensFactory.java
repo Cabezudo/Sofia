@@ -1,8 +1,6 @@
 package net.cabezudo.sofia.core.sic.tokens;
 
 import java.math.BigDecimal;
-import net.cabezudo.sofia.core.sic.StringToken;
-import net.cabezudo.sofia.core.sic.exceptions.UnexpectedTokenException;
 import net.cabezudo.sofia.core.sic.tokens.functions.CreateImageFunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.functions.MainFunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.functions.ResizeFunctionToken;
@@ -13,15 +11,17 @@ import net.cabezudo.sofia.core.sic.tokens.functions.ResizeFunctionToken;
  */
 public class TokensFactory {
 
-  public static Token get(StringBuilder sb, Position position) throws UnexpectedTokenException {
-    return get(sb.toString(), position);
+  public static Token get(StringBuilder sb, Position position) {
+    Token token = get(sb.toString(), position);
+    return token;
   }
 
-  public static Token get(char c, Position position) throws UnexpectedTokenException {
-    return get(Character.toString(c), position);
+  public static Token get(char c, Position position) {
+    Token token = get(Character.toString(c), position);
+    return token;
   }
 
-  public static Token get(String s, Position position) throws UnexpectedTokenException {
+  public static Token get(String s, Position position) {
     switch (s.length()) {
       case 0:
         throw new RuntimeException("Zero length token.");
@@ -32,6 +32,8 @@ public class TokensFactory {
           case " ":
           case "\u00A0":
             return new SpaceToken(position);
+          case "\t":
+            return new TabulationToken(position);
           case ",":
             return new CommaToken(position);
           case "=":
@@ -60,8 +62,8 @@ public class TokensFactory {
             return new StringToken(s.substring(1, s.length() - 1), position);
           }
           try {
-            BigDecimal number = new BigDecimal(s);
-            return new NumberToken(number.toString(), position);
+            new BigDecimal(s);
+            return new NumberToken(s, position);
           } catch (NumberFormatException e) {
             switch (s) {
               case "main":

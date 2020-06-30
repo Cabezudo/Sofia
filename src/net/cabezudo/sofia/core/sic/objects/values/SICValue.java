@@ -1,5 +1,7 @@
 package net.cabezudo.sofia.core.sic.objects.values;
 
+import net.cabezudo.sofia.core.sic.tokens.Token;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.06.14
@@ -7,9 +9,11 @@ package net.cabezudo.sofia.core.sic.objects.values;
  */
 public abstract class SICValue<T> {
 
+  private final Token token;
   private final T value;
 
-  public SICValue(T value) {
+  public SICValue(Token token, T value) {
+    this.token = token;
     this.value = value;
   }
 

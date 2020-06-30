@@ -19,16 +19,22 @@
   color: #0F840F;
 }
 
-.simpleSICEditor span.value {
+.simpleSICEditor span.parameterValue {
   color: #D6912B;
 }
 
-.simpleSICEditor span.parameter {
+.simpleSICEditor span.parameterName {
   color: #0909FF;
 }
 
-.simpleSICEditor > div > span.error {
+.simpleSICEditor span.error {
   background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAAJ0lEQVQI1wXBIRIAEBAAwGUEVfH/71GuKpzdkiTsOA2vrDgV5ugXPsVXCdK5qtZCAAAAAElFTkSuQmCC');
   background-position-y: bottom;
   background-repeat: repeat-x;
+}
+
+.simpleSICEditor .messages {
+  font-size: 14px;
+  color: darkred;
+  padding: 10px 0;
 }

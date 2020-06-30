@@ -1,13 +1,15 @@
 package net.cabezudo.sofia.core.sic.objects.values;
 
+import net.cabezudo.sofia.core.sic.tokens.Token;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.06.14
  */
 public class SICInteger extends SICNumber<Integer> {
 
-  public SICInteger(Integer value) {
-    super(value);
+  public SICInteger(Token token, Integer value) {
+    super(token, value);
   }
 
   @Override

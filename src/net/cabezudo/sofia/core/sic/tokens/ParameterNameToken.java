@@ -14,4 +14,15 @@ public class ParameterNameToken extends Token {
   public boolean isParameterName() {
     return true;
   }
+
+  @Override
+  public String getCSSClass() {
+    return "parameterName";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.PARAMETER_NAME;
+  }
+
 }

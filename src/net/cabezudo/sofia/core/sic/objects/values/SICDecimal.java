@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.sic.objects.values;
 
 import java.math.BigDecimal;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -8,8 +9,8 @@ import java.math.BigDecimal;
  */
 public class SICDecimal extends SICNumber<BigDecimal> {
 
-  public SICDecimal(BigDecimal bd) {
-    super(bd);
+  public SICDecimal(Token token, BigDecimal bd) {
+    super(token, bd);
   }
 
   @Override

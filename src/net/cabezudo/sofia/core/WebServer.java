@@ -52,7 +52,7 @@ public class WebServer {
   private final Server server;
 
   public static void main(String... args) throws SQLException, EMailMaxSizeException, PasswordMaxSizeException, IOException, InterruptedException {
-    List arguments = Arrays.asList(args);
+    List<String> arguments = Arrays.asList(args);
     System.out.println("Sofia 0.1 (http://sofia.systems)");
 
     StartOptions startOptions = new StartOptions(arguments);

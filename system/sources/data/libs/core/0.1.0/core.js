@@ -47,89 +47,6 @@ const Core = {
       Core.trigger(Core.messagesContainer, 'cleanMessages');
     }
   },
-  ContentEditable: {
-    getRange: () => {
-      if (window.getSelection) {
-        let selection = window.getSelection();
-        if (selection.rangeCount) {
-          selection = document.getSelection();
-          return {
-            selection,
-            range: selection.getRangeAt(0)
-          };
-        }
-      }
-      return {};
-    },
-    getOffsets: () => {
-      const {selection, range} = Core.ContentEditable.getRange();
-      if (range) {
-        console.log(range);
-        return {
-          selection,
-          startOffset: range.startOffset,
-          endOffset: range.endOffset
-        };
-      }
-      return {};
-    },
-    getCaretOffset: element => {
-      var caretOffset = 0;
-      var doc = element.ownerDocument || element.document;
-      var win = doc.defaultView || doc.parentWindow;
-      var selection;
-      if (typeof win.getSelection !== "undefined") {
-        selection = win.getSelection();
-        if (selection.rangeCount > 0) {
-          var range = win.getSelection().getRangeAt(0);
-          var preCaretRange = range.cloneRange();
-          preCaretRange.selectNodeContents(element);
-          preCaretRange.setEnd(range.endContainer, range.endOffset);
-          caretOffset = preCaretRange.toString().length;
-        }
-      } else if ((selection = doc.selection) && selection.type !== "Control") {
-        var textRange = selection.createRange();
-        var preCaretTextRange = doc.body.createTextRange();
-        preCaretTextRange.moveToElementText(element);
-        preCaretTextRange.setEndPoint("EndToEnd", textRange);
-        caretOffset = preCaretTextRange.text.length;
-      }
-      return {selection, caretOffset};
-    },
-    setCaretOffset: (node, chars) => {
-      const createRangeFragment = (node, offset, range) => {
-        if (!range) {
-          range = document.createRange();
-          range.selectNode(node);
-          range.setStart(node, 0);
-        }
-
-        if (offset.chars === 0) {
-          range.setEnd(node, offset.chars);
-        } else {
-          if (node && offset.chars > 0) {
-            if (node.nodeType === Node.TEXT_NODE) {
-              if (node.textContent.length < offset.chars) {
-                offset.chars -= node.textContent.length;
-              } else {
-                range.setEnd(node, offset.chars);
-                offset.chars = 0;
-              }
-            } else {
-              for (var lp = 0; lp < node.childNodes.length; lp++) {
-                range = createRangeFragment(node.childNodes[lp], offset, range);
-                if (offset.chars === 0) {
-                  break;
-                }
-              }
-            }
-          }
-        }
-        return range;
-      };
-      return createRangeFragment(node, {chars});
-    }
-  },
   disable: element => {
     Core.trigger(element, 'disabled');
   },
@@ -171,6 +88,9 @@ const Core = {
   },
   isEnter: event => {
     return event.key === 'Enter';
+  },
+  isTab: event => {
+    return event.key === 'Tab';
   },
   isFunction: v => {
     return Object.prototype.toString.call(v) === '[object Function]';
@@ -336,8 +256,15 @@ const Core = {
     return {requestId}
     ;
   },
-  sendPost: (url, origin, formObject) => {
+  sendPost: (url, origin, data) => {
     const requestId = Core.getNextRequestId();
+    let body;
+    if (typeof data === 'object') {
+      body = JSON.stringify(data);
+    } else {
+      body = data;
+    }
+
     fetch(url, {
       method: "POST",
       cache: "no-cache",
@@ -347,7 +274,7 @@ const Core = {
         "RequestId": requestId
       },
       redirect: "follow",
-      body: JSON.stringify(formObject)
+      body
     })
             .then(function (response) {
               if (response.status === 200) {

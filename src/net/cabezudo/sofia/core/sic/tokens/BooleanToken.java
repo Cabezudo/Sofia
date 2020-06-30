@@ -14,4 +14,14 @@ public class BooleanToken extends Token {
   public boolean isBoolean() {
     return true;
   }
+
+  @Override
+  public String getCSSClass() {
+    return "boolean";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.BOOLEAN;
+  }
 }

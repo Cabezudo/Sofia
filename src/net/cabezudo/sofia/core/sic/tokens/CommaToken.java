@@ -14,4 +14,14 @@ public class CommaToken extends Token {
   public boolean isComma() {
     return true;
   }
+
+  @Override
+  public String getCSSClass() {
+    return "none";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.COMMA;
+  }
 }

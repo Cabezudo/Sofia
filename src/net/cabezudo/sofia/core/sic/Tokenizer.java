@@ -1,7 +1,5 @@
 package net.cabezudo.sofia.core.sic;
 
-import net.cabezudo.sofia.core.sic.exceptions.UnexpectedElementException;
-import net.cabezudo.sofia.core.sic.exceptions.UnexpectedTokenException;
 import net.cabezudo.sofia.core.sic.tokens.Position;
 import net.cabezudo.sofia.core.sic.tokens.Token;
 import net.cabezudo.sofia.core.sic.tokens.TokensFactory;
@@ -12,7 +10,8 @@ import net.cabezudo.sofia.core.sic.tokens.TokensFactory;
  */
 public class Tokenizer {
 
-  public static Tokens tokenize(String code) throws UnexpectedElementException, UnexpectedTokenException {
+  @SuppressWarnings("fallthrough")
+  public static Tokens tokenize(String code, SICCompilerMessages messages) {
     char[] chars = code.toCharArray();
     Tokens tokens = new Tokens();
     boolean isString = false;
@@ -55,11 +54,9 @@ public class Tokenizer {
           case '\n':
             line++;
             row = 1;
-            break;
           case ' ':
           case '\u00A0':
-            sb = new StringBuilder();
-            break;
+          case '\t':
           case ',':
           case '(':
           case ')':

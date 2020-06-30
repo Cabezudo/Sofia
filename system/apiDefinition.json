@@ -63,6 +63,10 @@
   ],
   "post": [
     {
+      "path": "/api/v1/sic/tokens/compile",
+      "class": "net.cabezudo.sofia.core.sic.CompilerService"
+    },
+    {
       "path": "/api/v1/messages/session",
       "class": "net.cabezudo.sofia.core.session.services.AddMessageService"
     },

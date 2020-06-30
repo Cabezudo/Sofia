@@ -21,24 +21,24 @@ public class ValueFactory {
       value = Utils.chop(value, 1);
       try {
         BigDecimal bd = new BigDecimal(value);
-        return new SICPercentage(bd);
+        return new SICPercentage(valueToken, bd);
       } catch (NumberFormatException e) {
-        return new SICString(value);
+        return new SICString(valueToken, value);
       }
     }
 
     try {
       Integer integer = Integer.parseInt(value);
-      return new SICInteger(integer);
+      return new SICInteger(valueToken, integer);
     } catch (NumberFormatException e) {
       // We can't parse an integer. Continue trying
     }
 
     try {
       BigDecimal bd = new BigDecimal(value);
-      return new SICDecimal(bd);
+      return new SICDecimal(valueToken, bd);
     } catch (NumberFormatException e) {
-      return new SICString(value);
+      return new SICString(valueToken, value);
     }
   }
 }

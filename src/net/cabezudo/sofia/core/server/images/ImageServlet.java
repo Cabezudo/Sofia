@@ -12,10 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sic.SofiaImageCode;
-import net.cabezudo.sofia.core.sic.exceptions.EmptyQueueException;
-import net.cabezudo.sofia.core.sic.exceptions.SICException;
-import net.cabezudo.sofia.core.sic.exceptions.SICParseException;
-import net.cabezudo.sofia.core.sic.exceptions.UnexpectedTokenException;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 import net.cabezudo.sofia.core.sic.objects.SICRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
@@ -56,18 +52,10 @@ public class ImageServlet extends HttpServlet {
     Logger.debug("[ImageServlet:doGet] %s", code);
 
     SofiaImageCode sofiaImageCode;
-    try {
-      sofiaImageCode = new SofiaImageCode(code);
-    } catch (SICParseException | UnexpectedTokenException e) {
-      throw new ServletException(e);
-    }
+    sofiaImageCode = new SofiaImageCode(code);
 
     SICObject sicObject;
-    try {
-      sicObject = sofiaImageCode.compile();
-    } catch (EmptyQueueException | SICException e) {
-      throw new ServletException(e);
-    }
+    sicObject = sofiaImageCode.compile();
 
     SofiaImage image;
     try {
@@ -76,7 +64,7 @@ public class ImageServlet extends HttpServlet {
       throw new ServletException(e);
     }
 
-    String sofiaImageCodeString = sofiaImageCode.getCode();
+    String sofiaImageCodeString = sofiaImageCode.getShortCode();
     String id = sofiaImageCodeString.substring(0, sofiaImageCodeString.length() - 1).substring(commonStartCode.length());
 
     Path outputImagePath = imageManager.save(image, imagePath, id);

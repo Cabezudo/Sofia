@@ -7,11 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.server.images.SofiaImage;
+import net.cabezudo.sofia.core.sic.SICCompilerMessages;
+import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICFunction;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
-import net.cabezudo.sofia.core.sic.elements.SICParameterOrFunction;
 import net.cabezudo.sofia.core.sic.elements.SICParameters;
-import net.cabezudo.sofia.core.sic.exceptions.SICCompilerException;
 import net.cabezudo.sofia.core.sic.objects.values.SICInteger;
 import net.cabezudo.sofia.core.sic.objects.values.SICNumber;
 import net.cabezudo.sofia.core.sic.objects.values.SICPercentage;
@@ -30,10 +30,10 @@ public class ResizeFunctionObject extends SICObjectFunction {
   private SICNumber<?> heightParameter;
   private SICNumber<?> scaleParameter;
 
-  public ResizeFunctionObject(SICParameters parameters) throws SICCompilerException {
+  public ResizeFunctionObject(SICParameters parameters, SICCompilerMessages messages) {
     this.list = new ArrayList<>();
 
-    SICParameterOrFunction parameterOrFunction = parameters.consume();
+    SICElement parameterOrFunction = parameters.consume();
     while (parameterOrFunction != null) {
       if (parameterOrFunction.isParameter()) {
         SICParameter parameter = (SICParameter) parameterOrFunction;
@@ -41,45 +41,45 @@ public class ResizeFunctionObject extends SICObjectFunction {
         String parameterName = parameter.getName();
         switch (parameterName) {
           case "width":
-            widthParameter = getPixelsOrPercentage(widthParameter, parameter);
+            widthParameter = getPixelsOrPercentage(widthParameter, parameter, messages);
             Logger.debug("Set the width parameter to %s.", widthParameter);
             if (scaleParameter != null) {
-              throw new SICCompilerException("You can't set the width parameter with the scale parameter.", parameterNameToken.getPosition());
+              messages.add("You can't set the width parameter with the scale parameter.", parameterNameToken.getPosition());
             }
             if (widthParameter.isZero()) {
-              throw new SICCompilerException("You can't set the width parameter to zero.", parameterNameToken.getPosition());
+              messages.add("You can't set the width parameter to zero.", parameterNameToken.getPosition());
             }
             break;
           case "height":
-            heightParameter = getPixelsOrPercentage(heightParameter, parameter);
+            heightParameter = getPixelsOrPercentage(heightParameter, parameter, messages);
             Logger.debug("Set the height parameter to %s.", heightParameter);
             if (scaleParameter != null) {
-              throw new SICCompilerException("You can't set the height parameter with the scale parameter.", parameterNameToken.getPosition());
+              messages.add("You can't set the height parameter with the scale parameter.", parameterNameToken.getPosition());
             }
             if (heightParameter.isZero()) {
-              throw new SICCompilerException("You can't set the height parameter to zero.", parameterNameToken.getPosition());
+              messages.add("You can't set the height parameter to zero.", parameterNameToken.getPosition());
             }
             break;
           case "scale":
             SICValue<?> value = ValueFactory.get(parameter.getValueToken());
             if (!value.isDecimal() && !value.isInteger()) {
-              throw new SICCompilerException("Invalid value " + value + " for a scale.", parameterNameToken.getPosition());
+              messages.add("Invalid value " + value + " for a scale.", parameterNameToken.getPosition());
             }
             scaleParameter = (SICNumber) value;
             Logger.debug("Set the scale parameter to %s.", scaleParameter);
             if (widthParameter != null) {
-              throw new SICCompilerException("You can't set the scale parameter with the width parameter.", parameterNameToken.getPosition());
+              messages.add("You can't set the scale parameter with the width parameter.", parameterNameToken.getPosition());
             }
             if (heightParameter != null) {
-              throw new SICCompilerException("You can't set the scale parameter with the height parameter.", parameterNameToken.getPosition());
+              messages.add("You can't set the scale parameter with the height parameter.", parameterNameToken.getPosition());
             }
             break;
           default:
-            throw new SICCompilerException("Unexpected parameter " + parameterName + ".", parameterNameToken.getPosition());
+            messages.add("Unexpected parameter " + parameterName + ".", parameterNameToken.getPosition());
         }
       } else {
         SICFunction functionParameter = (SICFunction) parameterOrFunction;
-        SICObject sicObject = functionParameter.compile();
+        SICObject sicObject = functionParameter.compile(messages);
         list.add(sicObject);
       }
       parameterOrFunction = parameters.consume();
@@ -127,27 +127,31 @@ public class ResizeFunctionObject extends SICObjectFunction {
     return newSofiaImage;
   }
 
-  private SICNumber<?> getPixelsOrPercentage(SICNumber<?> v, SICParameter parameter) throws SICCompilerException {
+  private SICNumber<?> getPixelsOrPercentage(SICNumber<?> v, SICParameter parameter, SICCompilerMessages messages) {
     String name = parameter.getNameToken().getValue();
     if (v != null) {
-      throw new SICCompilerException("Value " + name + " was already asigned with a " + v.getValue() + ".", parameter.getValueToken().getPosition());
+      messages.add("Value " + name + " was already asigned with a " + v.getValue() + ".", parameter.getValueToken().getPosition());
     }
     SICValue<?> value = ValueFactory.get(parameter.getValueToken());
     if (value.isNumber()) {
       SICNumber<?> number = (SICNumber) value;
       if (number.isInteger()) {
-        return new SICPixels((SICInteger) value);
+        return new SICPixels(parameter.getValueToken(), (SICInteger) value);
       }
       if (number.isPercentage()) {
-        return new SICPercentage((BigDecimal) value.getValue());
+        return new SICPercentage(parameter.getValueToken(), (BigDecimal) value.getValue());
       }
       if (!value.isPixels() && !value.isPercentage()) {
         Position position = parameter.getValueToken().getPosition();
         String type = value.getTypeName();
-        throw new SICCompilerException("A " + name + " must be a number or percentage but have a " + type + ".", position);
+        messages.add("A " + name + " must be a number or percentage but have a " + type + ".", position);
+        parameter.getValueToken().setError(true);
+        return new SICInvalidValue(parameter.getValueToken());
       }
     }
     Logger.debug("[ResizeFunctionObject:getPixelsOrPercentage] Value type: %s", value.getClass().getName());
-    throw new SICCompilerException("Invalid value " + parameter.getValueToken().getValue() + " for " + name + ".", parameter.getValueToken().getPosition());
+    messages.add("Invalid value " + parameter.getValueToken().getValue() + " for " + name + ".", parameter.getValueToken().getPosition());
+    parameter.getValueToken().setError(true);
+    return new SICInvalidValue(parameter.getValueToken());
   }
 }

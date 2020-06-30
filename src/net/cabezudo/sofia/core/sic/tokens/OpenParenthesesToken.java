@@ -14,4 +14,14 @@ public class OpenParenthesesToken extends Token {
   public boolean isOpenParentheses() {
     return true;
   }
+
+  @Override
+  public String getCSSClass() {
+    return "none";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.OPEN_PARENTHESES;
+  }
 }

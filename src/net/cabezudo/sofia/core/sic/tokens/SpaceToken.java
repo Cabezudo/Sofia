@@ -14,4 +14,14 @@ public class SpaceToken extends Token {
   public boolean isSpace() {
     return true;
   }
+
+  @Override
+  public String getCSSClass() {
+    return "none";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.SPACE;
+  }
 }

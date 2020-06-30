@@ -72,7 +72,7 @@ public abstract class Service<T extends Response> {
   private String readPayload() throws ServletException {
     String body;
     try {
-      body = request.getReader().lines().reduce("", (partialBody, line) -> partialBody + line);
+      body = request.getReader().lines().reduce("", (partialBody, line) -> partialBody + (line + "\n"));
     } catch (IOException e) {
       throw new ServletException(e);
     }

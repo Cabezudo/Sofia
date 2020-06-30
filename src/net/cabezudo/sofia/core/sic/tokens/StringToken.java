@@ -1,7 +1,4 @@
-package net.cabezudo.sofia.core.sic;
-
-import net.cabezudo.sofia.core.sic.tokens.Position;
-import net.cabezudo.sofia.core.sic.tokens.Token;
+package net.cabezudo.sofia.core.sic.tokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,4 +10,13 @@ public class StringToken extends Token {
     super(string, position);
   }
 
+  @Override
+  public String getCSSClass() {
+    return "string";
+  }
+
+  @Override
+  public TokenType getType() {
+    return TokenType.STRING;
+  }
 }

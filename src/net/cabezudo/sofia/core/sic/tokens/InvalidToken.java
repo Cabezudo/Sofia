@@ -2,17 +2,12 @@ package net.cabezudo.sofia.core.sic.tokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
- * @version 0.01.00, 2020.06.13
+ * @version 0.01.00, 2020.06.26
  */
-public class EqualToken extends Token {
+public class InvalidToken extends Token {
 
-  public EqualToken(Position position) {
-    super("=", position);
-  }
-
-  @Override
-  public boolean isEqual() {
-    return true;
+  public InvalidToken(String value, Position position) {
+    super(value, position);
   }
 
   @Override
@@ -22,6 +17,7 @@ public class EqualToken extends Token {
 
   @Override
   public TokenType getType() {
-    return TokenType.EQUAL;
+    return TokenType.INVALID;
   }
+
 }

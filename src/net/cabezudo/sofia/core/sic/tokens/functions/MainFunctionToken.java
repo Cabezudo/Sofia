@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sic.tokens.functions;
 
+import net.cabezudo.sofia.core.sic.tokens.FunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.Position;
 
 /**
