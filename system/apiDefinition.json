@@ -67,6 +67,10 @@
       "class": "net.cabezudo.sofia.core.sic.CompilerService"
     },
     {
+      "path": "/api/v1/sic/tokens/format",
+      "class": "net.cabezudo.sofia.core.sic.FormatService"
+    },
+    {
       "path": "/api/v1/messages/session",
       "class": "net.cabezudo.sofia.core.session.services.AddMessageService"
     },

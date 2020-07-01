@@ -17,9 +17,9 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.10.09
  */
-public class CompilerService extends Service<ValidationResponse> {
+public class FormatService extends Service<ValidationResponse> {
 
-  public CompilerService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
+  public FormatService(HttpServletRequest request, HttpServletResponse response, Tokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -38,13 +38,13 @@ public class CompilerService extends Service<ValidationResponse> {
     } catch (PropertyNotExistException e) {
       throw new ServletException(e);
     }
-    SofiaImageCode sofiaImageCode = new SofiaImageCode(code);
+    SofiaImageCode sofiaImageCode = new SofiaImageCode(code, true);
 
     SICCompilerMessages sicCompilerMessages = sofiaImageCode.getCompilerMessages();
 
     JSONObject jsonResponse = new JSONObject();
 
-    JSONPair jsonTypePair = new JSONPair("type", "CODE");
+    JSONPair jsonTypePair = new JSONPair("type", "FORMATED_CODE");
     jsonResponse.add(jsonTypePair);
 
     JSONArray jsonMessages = sicCompilerMessages.toJSON();
