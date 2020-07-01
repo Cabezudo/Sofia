@@ -33,7 +33,7 @@ public class SICFactory {
       consumeSpaces(tokens);
       Token remainToken = tokens.peek();
       if (remainToken != null) {
-        messages.add("Unexpected token '" + remainToken.getValue() + "'.", remainToken.getPosition());
+        messages.add("Unexpected token '" + remainToken.getValue() + "'. Extra token in code.", remainToken.getPosition());
         remainToken.setInvalidClass(true);
         remainToken.setError(true);
       }
@@ -83,6 +83,7 @@ public class SICFactory {
     do {
       consumeSpaces(tokens);
       Token parameterNameOrFunction = tokens.consume();
+
       if (parameterNameOrFunction.isParameterName()) {
         consumeSpaces(tokens);
         Token equal = tokens.consume();
@@ -96,7 +97,7 @@ public class SICFactory {
         consumeSpaces(tokens);
         separatorOrCloseParentheses = tokens.consume();
         if (!separatorOrCloseParentheses.isComma() && !separatorOrCloseParentheses.isCloseParentheses()) {
-          messages.add("Unexpected token '" + separatorOrCloseParentheses.getDescription() + "'. Must be a comma or close parentheses.", separatorOrCloseParentheses.getPosition());
+          messages.add("Unexpected token '" + separatorOrCloseParentheses.getDescription() + "'. Must be a comma or close parentheses after a parameter.", separatorOrCloseParentheses.getPosition());
           separatorOrCloseParentheses.setError(true);
           return new SICInvalidElement(parameterNameOrFunction);
         }
@@ -109,19 +110,24 @@ public class SICFactory {
           parameterNameOrFunction.setError(true);
           return new SICInvalidElement(parameterNameOrFunction);
         }
+        // Go to the next iteracion searching other parameter or token
         continue;
       }
+
       if (parameterNameOrFunction.isFunction()) {
         SICElement newSICFunction = createSICFunction(parameterNameOrFunction, tokens, messages);
         sicFunction.add(newSICFunction);
+        consumeSpaces(tokens);
         separatorOrCloseParentheses = tokens.consume();
         if (!separatorOrCloseParentheses.isComma() && !separatorOrCloseParentheses.isCloseParentheses()) {
-          messages.add("Invalid token " + separatorOrCloseParentheses + ". Must be a comma or close parentheses.", separatorOrCloseParentheses.getPosition());
+          messages.add("Invalid token " + separatorOrCloseParentheses + ". Must be a comma or close parentheses after a function.", separatorOrCloseParentheses.getPosition());
           separatorOrCloseParentheses.setError(true);
           return new SICInvalidElement(parameterNameOrFunction);
         }
+        // Go to the next iteracion searching other parameter or token
         continue;
       }
+
       messages.add("Invalid token " + parameterNameOrFunction.getValue() + ". Must be a parameter or function.", parameterNameOrFunction.getPosition());
       parameterNameOrFunction.setInvalidClass(true);
       parameterNameOrFunction.setError(true);

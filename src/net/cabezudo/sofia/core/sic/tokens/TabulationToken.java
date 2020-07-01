@@ -7,7 +7,7 @@ package net.cabezudo.sofia.core.sic.tokens;
 public class TabulationToken extends Token {
 
   public TabulationToken(Position position) {
-    super(" ", position);
+    super("  ", position);
   }
 
   @Override

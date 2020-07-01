@@ -8,12 +8,35 @@
 
 
 
-const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat = true } = {}) => {
+const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat = true, focus = false } = {}) => {
+  const TAB_SIZE = 2;
   let editor, messages;
   const validateOptions = () => {
     if (element === null && id === null) {
       throw Error('You must define a property id or a property element.');
     }
+  };
+  const calculateIdent = node => {
+    const offset = getCaretOffset(node);
+    const code = toText(node);
+    let tabs = 0;
+    for (let i = 0; i < code.length; i++) {
+      const char = code.charAt(i);
+      console.log(char);
+      if (char === '(') {
+        tabs++;
+      }
+      if (char === ')') {
+        tabs--;
+        if (tabs < 0) {
+          tabs = 0;
+        }
+      }
+      if (i >= offset) {
+        break;
+      }
+    }
+    return tabs * TAB_SIZE;
   };
   const getCaretOffset = node => {
     let length = 0;
@@ -88,6 +111,10 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       }
     };
 
+    const text = toText(node);
+    if (chars > text.length) {
+      chars = text.length;
+    }
     let lastChild;
     let remaining = chars;
     const doc = node.ownerDocument || node.document;
@@ -116,7 +143,7 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       if (selection.rangeCount) {
         const range = selection.getRangeAt(0);
         range.deleteContents();
-        const node = document.createTextNode('  ');
+        const node = document.createTextNode(text);
         range.insertNode(node);
         range.collapse(false);
       }
@@ -148,6 +175,8 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
     Core.sendPost('/api/v1/sic/tokens/compile', editor, {code});
   };
   const format = () => {
+    const code = toText(editor);
+    Core.sendPost('/api/v1/sic/tokens/format', editor, {code});
   }
   ;
   const createGUI = () => {
@@ -169,7 +198,11 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
 
     if (autoFormat) {
       format();
+    } else {
       highligth();
+    }
+    if (focus) {
+      editor.focus();
     }
   };
 
@@ -189,7 +222,7 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
         } else {
           let clazz;
           if (token.error) {
-            if (token.class === 'none') {
+            if (!token.class || token.class === 'none') {
               clazz = `error`;
             } else {
               clazz = `${token.class} error`;
@@ -204,6 +237,9 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
           }
         }
       });
+      if (line !== '') {
+        html += `<div>${line}</div>`;
+      }
       const offset = getCaretOffset(editor);
 
       editor.innerHTML = html;
@@ -218,6 +254,7 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
         messageContainer.innerHTML = `${item.message} Line ${item.position.line}, row ${item.position.row}`;
         messages.appendChild(messageContainer);
       });
+      editor.focus();
     });
     element.addEventListener("keydown", event => {
       if (Core.isTab(event)) {
@@ -227,13 +264,26 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
         return;
       }
+      if (event.ctrlKey) {
+        if (event.key === 'f') {
+          format();
+          event.preventDefault();
+          return false;
+        }
+      }
     });
     element.addEventListener("keyup", event => {
       if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
         return;
       }
+      if (Core.isEnter(event)) {
+        const ident = calculateIdent(editor);
+        console.log(`ident: ${ident}`);
+        writeOnRange(editor, ' '.repeat(ident));
+        event.preventDefault();
+        return false;
+      }
       highligth();
-//      format();
     });
   };
   validateOptions();
