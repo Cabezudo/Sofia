@@ -1,8 +1,11 @@
 package net.cabezudo.sofia.core.sic;
 
+import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.sofia.core.Utils;
+import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICFactory;
+import net.cabezudo.sofia.core.sic.exceptions.EmptyQueueException;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 
 /**
@@ -13,16 +16,15 @@ public class SofiaImageCode {
 
   private String plainCode;
   private Tokens tokens;
-  private final SICElement sicElement;
+  private SICElement sicElement;
   private final String code;
-  private final SICCompilerMessages messages;
+  private Messages messages = new Messages();
 
   public SofiaImageCode(String plainCode) {
     this(plainCode, false);
   }
 
   public SofiaImageCode(String plainCode, boolean formatCode) {
-    this.messages = new SICCompilerMessages();
     if (plainCode == null) {
       throw new RuntimeException("null string parameter.");
     }
@@ -34,18 +36,24 @@ public class SofiaImageCode {
     } else {
       code = plainCode;
     }
-    tokens = Tokenizer.tokenize(code, messages);
+    tokens = Tokenizer.tokenize(code);
 
     SICFactory sicFactory = new SICFactory();
-    sicElement = sicFactory.get(tokens, messages);
+    try {
+      sicElement = sicFactory.get(tokens);
+    } catch (SICCompileTimeException e) {
+      messages.add(new Message(e.getMessage(), e.getPosition()));
+    } catch (EmptyQueueException e) {
+      messages.add(new Message(e.getMessage()));
+    }
   }
 
   public Tokens getTokens() {
     return tokens;
   }
 
-  public SICObject compile() {
-    SICObject sicObject = sicElement.compile(messages);
+  public SICObject compile() throws SICCompileTimeException {
+    SICObject sicObject = sicElement.compile();
     return sicObject;
   }
 
@@ -55,10 +63,6 @@ public class SofiaImageCode {
 
   public String getFormatedCode() {
     return sicElement.toString(0);
-  }
-
-  public SICCompilerMessages getCompilerMessages() {
-    return messages;
   }
 
   private String formatCode(String plainCode) {
@@ -101,5 +105,9 @@ public class SofiaImageCode {
       }
     }
     return sb;
+  }
+
+  JSONArray getJSONMessages() {
+    return messages.toJSON();
   }
 }

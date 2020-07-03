@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.server.images.SofiaImage;
-import net.cabezudo.sofia.core.sic.SICCompilerMessages;
+import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICFunction;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
@@ -20,21 +20,21 @@ public class LoadImageFunctionObject extends SICObjectFunction {
 
   private final Token nameTokenValue;
 
-  public LoadImageFunctionObject(SICParameters parameters, SICCompilerMessages messages) {
+  public LoadImageFunctionObject(SICParameters parameters) throws SICCompileTimeException {
     SICElement parameterOrFunction = parameters.consume();
     if (parameterOrFunction.isFunction()) {
       SICFunction functionParameter = (SICFunction) parameterOrFunction;
-      messages.add("Unexpected function parameter " + functionParameter.getName() + ". Expect a name parameter.", functionParameter.getPosition());
+      throw new SICCompileTimeException("Unexpected function parameter " + functionParameter.getName() + ". Expect a name parameter.", functionParameter.getPosition());
     }
     SICParameter parameter = (SICParameter) parameterOrFunction;
     if (!parameter.isNameParameter()) {
-      messages.add("Unexpected function parameter " + parameter.getName() + ". Expect a name parameter.", parameter.getPosition());
+      throw new SICCompileTimeException("Unexpected function parameter " + parameter.getName() + ". Expect a name parameter.", parameter.getPosition());
     }
     nameTokenValue = parameter.getValueToken();
 
     parameterOrFunction = parameters.consume();
     if (parameterOrFunction != null) {
-      messages.add("Unexpected parameter " + parameter.getName() + ".", parameter.getPosition());
+      throw new SICCompileTimeException("Unexpected parameter " + parameter.getName() + ".", parameter.getPosition());
     }
   }
 

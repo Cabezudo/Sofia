@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sic.SofiaImageCode;
+import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 import net.cabezudo.sofia.core.sic.objects.SICRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
@@ -55,7 +56,11 @@ public class ImageServlet extends HttpServlet {
     sofiaImageCode = new SofiaImageCode(code);
 
     SICObject sicObject;
-    sicObject = sofiaImageCode.compile();
+    try {
+      sicObject = sofiaImageCode.compile();
+    } catch (SICCompileTimeException e) {
+      throw new ServletException(e);
+    }
 
     SofiaImage image;
     try {
@@ -65,7 +70,8 @@ public class ImageServlet extends HttpServlet {
     }
 
     String sofiaImageCodeString = sofiaImageCode.getShortCode();
-    String id = sofiaImageCodeString.substring(0, sofiaImageCodeString.length() - 1).substring(commonStartCode.length());
+    String preId = sofiaImageCodeString.substring(commonStartCode.length() - 1);
+    String id = preId.substring(0, preId.length() - commonEndCode.length());
 
     Path outputImagePath = imageManager.save(image, imagePath, id);
 

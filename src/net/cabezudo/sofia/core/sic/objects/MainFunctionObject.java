@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.server.images.SofiaImage;
-import net.cabezudo.sofia.core.sic.SICCompilerMessages;
+import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICFunction;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
@@ -18,16 +18,16 @@ public class MainFunctionObject extends SICObjectFunction {
 
   private final List<SICObject> list;
 
-  public MainFunctionObject(SICParameters parameters, SICCompilerMessages messages) {
+  public MainFunctionObject(SICParameters parameters) throws SICCompileTimeException {
     this.list = new ArrayList<>();
     SICElement parameterOrFunction = parameters.consume();
     while (parameterOrFunction != null) {
       if (parameterOrFunction.isParameter()) {
         SICParameter parameter = (SICParameter) parameterOrFunction;
-        messages.add("Unexpected function parameter " + parameter.getName() + ".", parameter.getPosition());
+        throw new SICCompileTimeException("Unexpected function parameter " + parameter.getName() + ".", parameter.getPosition());
       }
       SICFunction functionParameter = (SICFunction) parameterOrFunction;
-      SICObject sicObject = functionParameter.compile(messages);
+      SICObject sicObject = functionParameter.compile();
       list.add(sicObject);
       parameterOrFunction = parameters.consume();
     }

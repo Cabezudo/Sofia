@@ -11,7 +11,7 @@ import net.cabezudo.sofia.core.sic.tokens.TokensFactory;
 public class Tokenizer {
 
   @SuppressWarnings("fallthrough")
-  public static Tokens tokenize(String code, SICCompilerMessages messages) {
+  public static Tokens tokenize(String code) {
     char[] chars = code.toCharArray();
     Tokens tokens = new Tokens();
     boolean isString = false;
@@ -53,7 +53,7 @@ public class Tokenizer {
             break;
           case '\n':
             line++;
-            row = 1;
+            row = 0;
           case ' ':
           case '\u00A0':
           case '\t':
