@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.sic.elements;
 
-import net.cabezudo.sofia.core.sic.SICCompilerMessages;
 import net.cabezudo.sofia.core.sic.Tokens;
 import net.cabezudo.sofia.core.sic.exceptions.EmptyQueueException;
 import net.cabezudo.sofia.core.sic.exceptions.InvalidParameterNameException;
@@ -14,52 +13,44 @@ import net.cabezudo.sofia.core.sic.tokens.parameters.ParameterFactory;
  */
 public class SICFactory {
 
-  public SICElement get(Tokens tokens, SICCompilerMessages messages) {
+  public SICElement get(Tokens tokens) throws SICCompileTimeException, EmptyQueueException {
     Token token;
     Position position = Position.INITIAL;
     try {
       consumeSpaces(tokens);
       token = tokens.consume();
     } catch (EmptyQueueException e) {
-      messages.add("Unexpected end of code.", e.getPosition());
-      return null;
+      throw new SICCompileTimeException("Unexpected end of code.", e.getPosition());
     }
     if (!token.isFunction()) {
-      messages.add(token.getValue() + " is not a function.", position);
       token.setError(true);
+      throw new SICCompileTimeException(token.getValue() + " is not a function.", position);
     }
-    SICElement mainFunction = get(token, tokens, messages);
+    SICElement mainFunction = get(token, tokens);
     try {
       consumeSpaces(tokens);
       Token remainToken = tokens.peek();
       if (remainToken != null) {
-        messages.add("Unexpected token '" + remainToken.getValue() + "'. Extra token in code.", remainToken.getPosition());
         remainToken.setInvalidClass(true);
         remainToken.setError(true);
+        throw new SICCompileTimeException("Unexpected token '" + remainToken.getValue() + "'. Extra token in code.", remainToken.getPosition());
       }
     } catch (EmptyQueueException e) {
-      messages.add("Unexpected end of code.", e.getPosition());
-      return null;
+      throw new SICCompileTimeException("Unexpected end of code.", e.getPosition());
     }
     return mainFunction;
   }
 
-  private SICElement get(Token token, Tokens tokens, SICCompilerMessages messages) {
+  private SICElement get(Token token, Tokens tokens) throws SICCompileTimeException, EmptyQueueException {
 
     Position position;
 
     if (token.isFunction()) {
-      try {
-        return createSICFunction(token, tokens, messages);
-      } catch (EmptyQueueException e) {
-        messages.add("Unexpected end of function.", e.getPosition());
-        return new SICUnfinishedFunction(token.getValue(), token.getPosition());
-      }
+      return createSICFunction(token, tokens);
     }
     position = token.getPosition();
-    messages.add("Unexpected value " + token.getValue() + ".", position);
     token.setError(true);
-    return new SICInvalidElement(token);
+    throw new SICCompileTimeException("Unexpected value " + token.getValue() + ".", position);
   }
 
   private void consumeSpaces(Tokens tokens) throws EmptyQueueException {
@@ -70,13 +61,12 @@ public class SICFactory {
     }
   }
 
-  private SICElement createSICFunction(Token token, Tokens tokens, SICCompilerMessages messages) throws EmptyQueueException {
+  private SICElement createSICFunction(Token token, Tokens tokens) throws SICCompileTimeException, EmptyQueueException {
     SICFunction sicFunction = new SICFunction(token);
     Token openParentheses = tokens.consume();
     if (!openParentheses.isOpenParentheses()) {
-      messages.add("Unexpected token '" + openParentheses.getDescription() + "'. Must be a open parentheses.", openParentheses.getPosition());
       openParentheses.setError(true);
-      return new SICInvalidElement(token);
+      throw new SICCompileTimeException("Unexpected token '" + openParentheses.getDescription() + "'. Must be a open parentheses.", openParentheses.getPosition());
     }
 
     Token separatorOrCloseParentheses;
@@ -88,50 +78,45 @@ public class SICFactory {
         consumeSpaces(tokens);
         Token equal = tokens.consume();
         if (!equal.isEqual()) {
-          messages.add("Unexpected token '" + equal.getDescription() + "'. Must be a equal.", equal.getPosition());
           equal.setError(true);
-          return new SICInvalidElement(parameterNameOrFunction);
+          throw new SICCompileTimeException("Unexpected token '" + equal.getDescription() + "'. Must be a equal.", equal.getPosition());
         }
         consumeSpaces(tokens);
         Token parameterValue = tokens.consume();
         consumeSpaces(tokens);
         separatorOrCloseParentheses = tokens.consume();
         if (!separatorOrCloseParentheses.isComma() && !separatorOrCloseParentheses.isCloseParentheses()) {
-          messages.add("Unexpected token '" + separatorOrCloseParentheses.getDescription() + "'. Must be a comma or close parentheses after a parameter.", separatorOrCloseParentheses.getPosition());
+
           separatorOrCloseParentheses.setError(true);
-          return new SICInvalidElement(parameterNameOrFunction);
+          throw new SICCompileTimeException("Unexpected '" + separatorOrCloseParentheses.getValue() + "'. Must be a comma or close parentheses after a parameter.", separatorOrCloseParentheses.getPosition());
         }
         SICParameter sicParameter;
         try {
           sicParameter = ParameterFactory.get(parameterNameOrFunction, parameterValue);
           sicFunction.add(sicParameter);
         } catch (InvalidParameterNameException e) {
-          messages.add(e.getMessage(), e.getPosition());
           parameterNameOrFunction.setError(true);
-          return new SICInvalidElement(parameterNameOrFunction);
+          throw new SICCompileTimeException(e.getMessage(), separatorOrCloseParentheses.getPosition());
         }
         // Go to the next iteracion searching other parameter or token
         continue;
       }
 
       if (parameterNameOrFunction.isFunction()) {
-        SICElement newSICFunction = createSICFunction(parameterNameOrFunction, tokens, messages);
+        SICElement newSICFunction = createSICFunction(parameterNameOrFunction, tokens);
         sicFunction.add(newSICFunction);
         consumeSpaces(tokens);
         separatorOrCloseParentheses = tokens.consume();
         if (!separatorOrCloseParentheses.isComma() && !separatorOrCloseParentheses.isCloseParentheses()) {
-          messages.add("Invalid token " + separatorOrCloseParentheses + ". Must be a comma or close parentheses after a function.", separatorOrCloseParentheses.getPosition());
           separatorOrCloseParentheses.setError(true);
-          return new SICInvalidElement(parameterNameOrFunction);
+          throw new SICCompileTimeException("Invalid token " + separatorOrCloseParentheses.getDescription() + ". Must be a comma or close parentheses after a function.", separatorOrCloseParentheses.getPosition());
         }
         // Go to the next iteracion searching other parameter or token
         continue;
       }
-
-      messages.add("Invalid token " + parameterNameOrFunction.getValue() + ". Must be a parameter or function.", parameterNameOrFunction.getPosition());
       parameterNameOrFunction.setInvalidClass(true);
       parameterNameOrFunction.setError(true);
-      return new SICInvalidElement(parameterNameOrFunction);
+      throw new SICCompileTimeException("Invalid token " + parameterNameOrFunction.getValue() + ". Must be a parameter or function.", parameterNameOrFunction.getPosition());
     } while (separatorOrCloseParentheses != null && separatorOrCloseParentheses.isComma());
 
     return sicFunction;

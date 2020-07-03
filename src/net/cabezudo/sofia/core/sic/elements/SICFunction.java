@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.sic.elements;
 
 import net.cabezudo.sofia.core.Utils;
-import net.cabezudo.sofia.core.sic.SICCompilerMessages;
 import net.cabezudo.sofia.core.sic.objects.ObjectFactory;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 import net.cabezudo.sofia.core.sic.objects.SICObjectFunction;
@@ -49,8 +48,8 @@ public class SICFunction extends SICParameterOrFunction {
   }
 
   @Override
-  public SICObject compile(SICCompilerMessages messages) {
-    SICObjectFunction sicObjectFunction = ObjectFactory.get(getName(), parameters, messages);
+  public SICObject compile() throws SICCompileTimeException {
+    SICObjectFunction sicObjectFunction = ObjectFactory.get(getName(), parameters);
     return sicObjectFunction;
   }
 }

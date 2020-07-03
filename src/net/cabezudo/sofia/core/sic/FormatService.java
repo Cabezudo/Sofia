@@ -38,16 +38,14 @@ public class FormatService extends Service<ValidationResponse> {
     } catch (PropertyNotExistException e) {
       throw new ServletException(e);
     }
-    SofiaImageCode sofiaImageCode = new SofiaImageCode(code, true);
-
-    SICCompilerMessages sicCompilerMessages = sofiaImageCode.getCompilerMessages();
-
+    SofiaImageCode sofiaImageCode;
+    sofiaImageCode = new SofiaImageCode(code, true);
+    JSONArray jsonMessages = sofiaImageCode.getJSONMessages();
     JSONObject jsonResponse = new JSONObject();
 
     JSONPair jsonTypePair = new JSONPair("type", "FORMATED_CODE");
     jsonResponse.add(jsonTypePair);
 
-    JSONArray jsonMessages = sicCompilerMessages.toJSON();
     JSONPair jsonMessagesPair = new JSONPair("messages", jsonMessages);
     jsonResponse.add(jsonMessagesPair);
 

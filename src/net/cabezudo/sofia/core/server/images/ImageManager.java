@@ -33,7 +33,7 @@ class ImageManager {
     String formatName = imageName.substring(imageName.lastIndexOf(".") + 1);
 
     Path path;
-    if (code == null) {
+    if (code == null || code.length() == 0) {
       path = imagePath;
     } else {
       String fileName = imagePath.getFileName().toString();

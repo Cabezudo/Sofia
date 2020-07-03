@@ -39,18 +39,14 @@ public class CompilerService extends Service<ValidationResponse> {
       throw new ServletException(e);
     }
     SofiaImageCode sofiaImageCode = new SofiaImageCode(code);
-
-    SICCompilerMessages sicCompilerMessages = sofiaImageCode.getCompilerMessages();
+    JSONArray jsonMessages = sofiaImageCode.getJSONMessages();
 
     JSONObject jsonResponse = new JSONObject();
-
     JSONPair jsonTypePair = new JSONPair("type", "CODE");
     jsonResponse.add(jsonTypePair);
 
-    JSONArray jsonMessages = sicCompilerMessages.toJSON();
     JSONPair jsonMessagesPair = new JSONPair("messages", jsonMessages);
     jsonResponse.add(jsonMessagesPair);
-
     JSONArray jsonTokens = sofiaImageCode.getTokens().toJSON();
     JSONPair jsonTokensPair = new JSONPair("tokens", jsonTokens);
     jsonResponse.add(jsonTokensPair);

@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.sic.tokens.parameters;
 
-import net.cabezudo.sofia.core.sic.SICCompilerMessages;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 import net.cabezudo.sofia.core.sic.tokens.Token;
@@ -21,7 +20,7 @@ public class WidthParameter extends SICParameter {
   }
 
   @Override
-  public SICObject compile(SICCompilerMessages messages) {
+  public SICObject compile() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

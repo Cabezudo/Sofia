@@ -8,12 +8,23 @@
 
 
 
-const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat = true, focus = false } = {}) => {
+const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat = true, focus = false, onCompile = null, onError = null, onMessage = null } = {}) => {
   const TAB_SIZE = 2;
-  let editor, messages;
+  let editor, messages, lastRequestId, requestHighLigthTimer, waitForResponse = false, contentModified = false, waitingForFormat = false, messageTimer;
   const validateOptions = () => {
     if (element === null && id === null) {
       throw Error('You must define a property id or a property element.');
+    }
+  };
+  const setMessage = (message, messageTime) => {
+    if (Core.isFunction(onMessage)) {
+      onMessage(message);
+      if (messageTimer) {
+        clearTimeout(messageTimer);
+      }
+      messageTimer = setTimeout(() => {
+        onMessage('');
+      }, messageTime ? messageTime : 1000);
     }
   };
   const calculateIdent = node => {
@@ -149,7 +160,6 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       }
     }
   };
-
   const toText = node => {
     const getText = (node, tabs) => {
       tabs++;
@@ -172,11 +182,22 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
   };
   const highligth = () => {
     const code = toText(editor);
-    Core.sendPost('/api/v1/sic/tokens/compile', editor, {code});
+    if (requestHighLigthTimer) {
+      clearTimeout(requestHighLigthTimer);
+    }
+    requestHighLigthTimer = setTimeout(() => {
+      waitForResponse = true;
+      contentModified = false;
+      setMessage(`Send data to compile...`);
+      lastRequestId = Core.sendPost('/api/v1/sic/tokens/compile', editor, {code});
+    }, 1000);
   };
   const format = () => {
     const code = toText(editor);
-    Core.sendPost('/api/v1/sic/tokens/format', editor, {code});
+    waitForResponse = true;
+    contentModified = false;
+    setMessage(`Send data to format...`);
+    lastRequestId = Core.sendPost('/api/v1/sic/tokens/format', editor, {code});
   }
   ;
   const createGUI = () => {
@@ -184,7 +205,9 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       element = Core.validateById(id);
     }
     element.className = 'simpleSICEditor';
-    element.style.height = height;
+    if (height !== null) {
+      element.style.height = height;
+    }
     editor = document.createElement('div');
     editor.innerHTML = `<div>${element.innerHTML}</div>`;
     editor.setAttribute('spellcheck', "false");
@@ -205,10 +228,35 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       editor.focus();
     }
   };
-
+  const setFunctions = () => {
+    element.getURLCode = () => {
+      const getInternalURLCode = node => {
+        let text = '';
+        const childs = node.childNodes;
+        childs.forEach(node => {
+          if (node.nodeType === Node.TEXT_NODE) {
+            text += node.nodeValue;
+          } else {
+            text += getInternalURLCode(node, 0);
+          }
+        });
+        text = text.split(' ').join('');
+        return text;
+      };
+      const lastCode = getInternalURLCode(editor);
+      const urlCode = lastCode.replace('main(loadImage(name=/images/test.jsp),', '').slice(0, -1);
+      return urlCode;
+    };
+  };
   const assignTriggers = () => {
     editor.addEventListener('response', event => {
+      for (let i = 0; waitForResponse && i < 100000; i++)
+        ;
       const data = event.detail;
+      if (data.requestId < lastRequestId || contentModified) {
+        return;
+      }
+      setMessage(`Get response from the server.`);
       const tokens = data.tokens;
       let html = '';
       let line = '';
@@ -249,27 +297,40 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       }
 
       Core.removeChilds(messages);
-      data.messages.forEach(item => {
-        const messageContainer = document.createElement('div');
-        messageContainer.innerHTML = `${item.message} Line ${item.position.line}, row ${item.position.row}`;
-        messages.appendChild(messageContainer);
-      });
+      if (data.messages.length === 0) {
+        if (Core.isFunction(onCompile)) {
+          onCompile();
+        }
+      } else {
+        data.messages.forEach(item => {
+          const messageContainer = document.createElement('div');
+          messageContainer.innerHTML = `${item.message} Line ${item.position.line}, row ${item.position.row}`;
+          messages.appendChild(messageContainer);
+        });
+        if (Core.isFunction(onError)) {
+          onError();
+        }
+      }
+      waitForResponse = false;
+      waitingForFormat = false;
       editor.focus();
     });
     element.addEventListener("keydown", event => {
-      if (Core.isTab(event)) {
-        writeOnRange(editor, '  ');
-        event.preventDefault();
-      }
       if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
         return;
       }
       if (event.ctrlKey) {
         if (event.key === 'f') {
           format();
+          waitingForFormat = true;
           event.preventDefault();
           return false;
         }
+      }
+      contentModified = true;
+      if (Core.isTab(event)) {
+        writeOnRange(editor, '  ');
+        event.preventDefault();
       }
     });
     element.addEventListener("keyup", event => {
@@ -278,16 +339,18 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       }
       if (Core.isEnter(event)) {
         const ident = calculateIdent(editor);
-        console.log(`ident: ${ident}`);
         writeOnRange(editor, ' '.repeat(ident));
         event.preventDefault();
         return false;
       }
-      highligth();
+      if (!waitingForFormat) {
+        highligth();
+      }
     });
   };
   validateOptions();
   createGUI();
+  setFunctions();
   assignTriggers();
 }
 ;
