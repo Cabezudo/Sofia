@@ -46,5 +46,8 @@
 .simpleSICEditor .messages {
   font-size: 14px;
   color: darkred;
-  padding: 10px 0;
 }
+.simpleSICEditor .messages > div {
+  padding: 5px;
+}
+

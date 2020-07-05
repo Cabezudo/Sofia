@@ -8,8 +8,8 @@ import net.cabezudo.sofia.core.sic.tokens.Token;
  */
 public class SICString extends SICValue<String> {
 
-  public SICString(Token token, String value) {
-    super(token, value);
+  public SICString(Token token) {
+    super(token);
   }
 
   @Override
@@ -20,5 +20,10 @@ public class SICString extends SICValue<String> {
   @Override
   public boolean isString() {
     return true;
+  }
+
+  @Override
+  public String getValue() {
+    return getToken().getValue();
   }
 }

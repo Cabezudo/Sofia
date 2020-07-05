@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.sic.exceptions;
 
-import net.cabezudo.sofia.core.sic.tokens.Position;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,7 +10,7 @@ public class EOSException extends SICParseException {
 
   private static final long serialVersionUID = 1L;
 
-  public EOSException(Position position) {
-    super("Unexpected end of string", position);
+  public EOSException(Token token) {
+    super("Unexpected end of string", token);
   }
 }

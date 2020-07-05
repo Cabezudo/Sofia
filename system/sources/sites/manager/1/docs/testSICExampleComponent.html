@@ -1,0 +1,112 @@
+<style>
+  .imageContainer {
+    width: content-box;
+    overflow: auto;
+    margin-bottom: 30px;
+    position: relative;
+    -webkit-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+    box-shadow: 0px 0px 1px 0px rgba(0,0,0,0.75);
+  }
+  .buttonContainer {
+    display: flex;
+    align-items: baseline;
+  }
+  .runButton {
+    flex-grow: 0;
+    width: min-content;
+  }
+</style>
+<script>
+  {
+    const imageContainer = ({ id = null, element = null, width = null, height = null, src = null } = {}) => {
+      let image;
+      const validateOptions = () => {
+        if (element === null && id === null) {
+          throw Error('You must define a property id or a property element for the image.');
+        }
+      };
+      const createGUI = () => {
+        if (element === null) {
+          element = Core.validateById(id);
+        }
+        element.className = 'imageContainer';
+        const ratio = width / height;
+        element.style.height = `${element.offsetWidth / ratio}px`;
+        image = document.createElement("IMG");
+        element.appendChild(image);
+        image.src = src;
+      };
+      const setFunctions = () => {
+        element.setSRC = src => {
+          image.src = src;
+        };
+      };
+      const assignTriggers = () => {
+
+      };
+      validateOptions();
+      createGUI();
+      setFunctions();
+      assignTriggers();
+    };
+
+    const createGUI = () => {
+      let image, exampleMessages;
+      ;
+      const createCodeExample = (id) => {
+        const container = Core.validateById(id);
+        const code = container.innerText;
+        Core.removeChilds(container);
+        const editor = document.createElement("DIV");
+        editor.innerText = code;
+        container.appendChild(editor);
+
+        const buttonContainer = document.createElement("DIV");
+        buttonContainer.className = 'buttonContainer';
+        const button = document.createElement("DIV");
+        button.innerText = 'Run';
+        buttonContainer.appendChild(button);
+        exampleMessages = document.createElement("DIV");
+        buttonContainer.appendChild(exampleMessages);
+        container.appendChild(buttonContainer);
+
+        image = document.createElement("DIV");
+        container.appendChild(image);
+        simpleSICEditor({
+          element: editor,
+          focus: true,
+          onError: () => {
+            Core.trigger(button, 'disabled');
+          },
+          onCompile: () => {
+            Core.trigger(button, 'enabled');
+          },
+          onMessage: message => {
+            console.log(message);
+            exampleMessages.innerHTML = message;
+          }
+        });
+        blueButton({
+          element: button,
+          enabled: false,
+          onClick: () => {
+            const code = editor.getURLCode();
+            const src = `/images/test.jpg?${code}`;
+            image.setSRC(src);
+          }
+        });
+        button.classList.add('runButton');
+        imageContainer({
+          element: image,
+          src: "/images/test.jpg",
+          width: 1200,
+          height: 800
+        });
+      };
+      createCodeExample('01');
+    };
+    Core.addOnloadFunction(createGUI);
+  }
+  ;
+</script>

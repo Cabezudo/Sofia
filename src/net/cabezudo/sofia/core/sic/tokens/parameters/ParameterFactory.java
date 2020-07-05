@@ -20,6 +20,8 @@ public class ParameterFactory {
         return new HeightParameter(nameToken, valueToken);
       case "scale":
         return new ScaleParameter(nameToken, valueToken);
+      case "aspect":
+        return new AspectParameter(nameToken, valueToken);
       default:
         throw new InvalidParameterNameException(nameToken);
     }

@@ -1,11 +1,12 @@
 package net.cabezudo.sofia.core.sic;
 
+import java.nio.file.Path;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICFactory;
-import net.cabezudo.sofia.core.sic.exceptions.EmptyQueueException;
+import net.cabezudo.sofia.core.sic.elements.SICUnexpectedEndOfCodeException;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 
 /**
@@ -14,17 +15,18 @@ import net.cabezudo.sofia.core.sic.objects.SICObject;
  */
 public class SofiaImageCode {
 
-  private String plainCode;
   private Tokens tokens;
   private SICElement sicElement;
   private final String code;
   private Messages messages = new Messages();
+  private Path basePath;
 
-  public SofiaImageCode(String plainCode) {
-    this(plainCode, false);
+  public SofiaImageCode(Path basePath, String plainCode) {
+    this(basePath, plainCode, false);
   }
 
-  public SofiaImageCode(String plainCode, boolean formatCode) {
+  public SofiaImageCode(Path basePath, String plainCode, boolean formatCode) {
+    this.basePath = basePath;
     if (plainCode == null) {
       throw new RuntimeException("null string parameter.");
     }
@@ -43,7 +45,7 @@ public class SofiaImageCode {
       sicElement = sicFactory.get(tokens);
     } catch (SICCompileTimeException e) {
       messages.add(new Message(e.getMessage(), e.getPosition()));
-    } catch (EmptyQueueException e) {
+    } catch (SICUnexpectedEndOfCodeException e) {
       messages.add(new Message(e.getMessage()));
     }
   }
@@ -53,7 +55,7 @@ public class SofiaImageCode {
   }
 
   public SICObject compile() throws SICCompileTimeException {
-    SICObject sicObject = sicElement.compile();
+    SICObject sicObject = sicElement.compile(basePath);
     return sicObject;
   }
 
@@ -107,7 +109,7 @@ public class SofiaImageCode {
     return sb;
   }
 
-  JSONArray getJSONMessages() {
+  public JSONArray getJSONMessages() {
     return messages.toJSON();
   }
 }

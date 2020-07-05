@@ -7,9 +7,9 @@ import net.cabezudo.sofia.core.sic.tokens.Position;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.06.13
  */
-public class CreateImageFunctionToken extends FunctionToken {
+public class LoadImageFunctionToken extends FunctionToken {
 
-  public CreateImageFunctionToken(Position position) {
+  public LoadImageFunctionToken(Position position) {
     super("loadImage", position);
   }
 }

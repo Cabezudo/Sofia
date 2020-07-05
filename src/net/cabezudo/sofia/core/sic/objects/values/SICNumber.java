@@ -9,8 +9,8 @@ import net.cabezudo.sofia.core.sic.tokens.Token;
  */
 public abstract class SICNumber<T> extends SICValue<T> {
 
-  public SICNumber(Token token, T value) {
-    super(token, value);
+  public SICNumber(Token token) {
+    super(token);
   }
 
   @Override

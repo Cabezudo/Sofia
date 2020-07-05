@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sic.objects;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.sofia.core.logger.Logger;
@@ -18,16 +19,16 @@ public class MainFunctionObject extends SICObjectFunction {
 
   private final List<SICObject> list;
 
-  public MainFunctionObject(SICParameters parameters) throws SICCompileTimeException {
+  public MainFunctionObject(Path basePath, SICParameters parameters) throws SICCompileTimeException {
     this.list = new ArrayList<>();
     SICElement parameterOrFunction = parameters.consume();
     while (parameterOrFunction != null) {
       if (parameterOrFunction.isParameter()) {
         SICParameter parameter = (SICParameter) parameterOrFunction;
-        throw new SICCompileTimeException("Unexpected function parameter " + parameter.getName() + ".", parameter.getPosition());
+        throw new SICCompileTimeException("Unexpected function parameter " + parameter.getName() + ".", parameter.getToken());
       }
       SICFunction functionParameter = (SICFunction) parameterOrFunction;
-      SICObject sicObject = functionParameter.compile();
+      SICObject sicObject = functionParameter.compile(basePath);
       list.add(sicObject);
       parameterOrFunction = parameters.consume();
     }

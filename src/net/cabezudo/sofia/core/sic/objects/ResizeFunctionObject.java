@@ -2,7 +2,7 @@ package net.cabezudo.sofia.core.sic.objects;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.math.BigDecimal;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.sofia.core.logger.Logger;
@@ -12,12 +12,11 @@ import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICFunction;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
 import net.cabezudo.sofia.core.sic.elements.SICParameters;
-import net.cabezudo.sofia.core.sic.objects.values.SICInteger;
-import net.cabezudo.sofia.core.sic.objects.values.SICNumber;
-import net.cabezudo.sofia.core.sic.objects.values.SICPercentage;
-import net.cabezudo.sofia.core.sic.objects.values.SICPixels;
-import net.cabezudo.sofia.core.sic.objects.values.SICValue;
-import net.cabezudo.sofia.core.sic.tokens.Position;
+import net.cabezudo.sofia.core.sic.objects.values.SICAspect;
+import net.cabezudo.sofia.core.sic.objects.values.SICHeight;
+import net.cabezudo.sofia.core.sic.objects.values.SICScale;
+import net.cabezudo.sofia.core.sic.objects.values.SICWidth;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -26,11 +25,12 @@ import net.cabezudo.sofia.core.sic.tokens.Position;
 public class ResizeFunctionObject extends SICObjectFunction {
 
   private final List<SICObject> list;
-  private SICNumber<?> widthParameter;
-  private SICNumber<?> heightParameter;
-  private SICNumber<?> scaleParameter;
+  private SICWidth widthParameter;
+  private SICHeight heightParameter;
+  private SICScale scaleParameter;
+  private SICAspect aspectParameter;
 
-  public ResizeFunctionObject(SICParameters parameters) throws SICCompileTimeException {
+  public ResizeFunctionObject(Path basePath, Token token, SICParameters parameters) throws SICCompileTimeException {
     this.list = new ArrayList<>();
 
     SICElement parameterOrFunction = parameters.consume();
@@ -39,50 +39,71 @@ public class ResizeFunctionObject extends SICObjectFunction {
         SICParameter parameter = (SICParameter) parameterOrFunction;
         SICParameter parameterNameToken = parameter;
         String parameterName = parameter.getName();
+        Token parameterValue = parameter.getValueToken();
         switch (parameterName) {
           case "width":
-            widthParameter = getPixelsOrPercentage(widthParameter, parameter);
-            Logger.debug("Set the width parameter to %s.", widthParameter);
             if (scaleParameter != null) {
-              throw new SICCompileTimeException("You can't set the width parameter with the scale parameter.", parameterNameToken.getPosition());
+              throw new SICCompileTimeException("You can't use width parameter along height and scale.", parameterNameToken.getToken());
             }
-            if (widthParameter.isZero()) {
-              throw new SICCompileTimeException("You can't set the width parameter to zero.", parameterNameToken.getPosition());
+            if (heightParameter != null && aspectParameter != null) {
+              throw new SICCompileTimeException("You can't use width parameter along height and aspect.", parameterNameToken.getToken());
             }
+            widthParameter = new SICWidth(parameterValue);
+            Logger.debug("Set the width parameter to %s.", widthParameter);
             break;
           case "height":
-            heightParameter = getPixelsOrPercentage(heightParameter, parameter);
-            Logger.debug("Set the height parameter to %s.", heightParameter);
             if (scaleParameter != null) {
-              throw new SICCompileTimeException("You can't set the height parameter with the scale parameter.", parameterNameToken.getPosition());
+              throw new SICCompileTimeException("You can't use height parameter along width and scale.", parameterNameToken.getToken());
             }
-            if (heightParameter.isZero()) {
-              throw new SICCompileTimeException("You can't set the height parameter to zero.", parameterNameToken.getPosition());
+            if (widthParameter != null && aspectParameter != null) {
+              throw new SICCompileTimeException("You can't use height parameter along width and aspect.", parameterNameToken.getToken());
             }
+            heightParameter = new SICHeight(parameterValue);
+            Logger.debug("Set the height parameter to %s.", heightParameter);
             break;
           case "scale":
-            SICValue<?> value = ValueFactory.get(parameter.getValueToken());
-            if (!value.isDecimal() && !value.isInteger()) {
-              throw new SICCompileTimeException("Invalid value " + value + " for a scale.", parameterNameToken.getPosition());
-            }
-            scaleParameter = (SICNumber) value;
-            Logger.debug("Set the scale parameter to %s.", scaleParameter);
             if (widthParameter != null) {
-              throw new SICCompileTimeException("You can't set the scale parameter with the width parameter.", parameterNameToken.getPosition());
+              throw new SICCompileTimeException("You can't use scale parameter along width.", parameterNameToken.getToken());
             }
             if (heightParameter != null) {
-              throw new SICCompileTimeException("You can't set the scale parameter with the height parameter.", parameterNameToken.getPosition());
+              throw new SICCompileTimeException("You can't use scale parameter along height.", parameterNameToken.getToken());
             }
+            if (aspectParameter != null) {
+              throw new SICCompileTimeException("You can't use scale parameter along aspect.", parameterNameToken.getToken());
+            }
+            scaleParameter = new SICScale(parameterValue);
+            Logger.debug("Set the height parameter to %s.", heightParameter);
+            break;
+          case "aspect":
+            if (scaleParameter != null) {
+              throw new SICCompileTimeException("You can't use aspect parameter along scale.", parameterNameToken.getToken());
+            }
+            if (widthParameter != null && heightParameter != null) {
+              throw new SICCompileTimeException("You can't use aspect parameter along width and height.", parameterNameToken.getToken());
+            }
+            aspectParameter = new SICAspect(parameterValue);
+            Logger.debug("Set the height parameter to %s.", heightParameter);
             break;
           default:
-            throw new SICCompileTimeException("Unexpected parameter " + parameterName + ".", parameterNameToken.getPosition());
+            throw new SICCompileTimeException("Unexpected parameter " + parameterName + ".", parameterNameToken.getToken());
         }
       } else {
         SICFunction functionParameter = (SICFunction) parameterOrFunction;
-        SICObject sicObject = functionParameter.compile();
+        SICObject sicObject = functionParameter.compile(basePath);
         list.add(sicObject);
       }
       parameterOrFunction = parameters.consume();
+    }
+    Logger.debug("Width setted to %s", widthParameter);
+    Logger.debug("Height setted to %s", heightParameter);
+    Logger.debug("Scale setted to %s", scaleParameter);
+    Logger.debug("Factor setted to %s", aspectParameter);
+    // Check if we have all we need to calculate
+    if (widthParameter == null && heightParameter == null && aspectParameter == null && scaleParameter == null) {
+      throw new SICCompileTimeException("Can't calculate the size with this parameters.", token);
+    }
+    if (widthParameter == null && heightParameter == null && aspectParameter != null) {
+      throw new SICCompileTimeException("Factor parameter on resize function need a parameter width or height in order to calculate the image size.", token);
     }
   }
 
@@ -90,66 +111,62 @@ public class ResizeFunctionObject extends SICObjectFunction {
   public SofiaImage run(SofiaImage sofiaImage) throws SICRuntimeException {
     Integer width = null;
     Integer height = null;
-    if (scaleParameter == null) {
-      do {
-        if (widthParameter == null && heightParameter == null) {
-          throw new RuntimeException("I don't have width, height nor scale parameters.");
+    do {
+      if (scaleParameter != null) {
+        double scaleValue = scaleParameter.getValue().doubleValue();
+        if (scaleParameter.isPercentage()) {
+          width = (int) (sofiaImage.getWidth() * scaleValue / 100);
+          height = (int) (sofiaImage.getHeight() * scaleValue / 100);
+        } else {
+          width = (int) (sofiaImage.getWidth() * scaleValue);
+          height = (int) (sofiaImage.getHeight() * scaleValue);
         }
+        break;
+      }
+      if (widthParameter != null && heightParameter != null) {
+        if (widthParameter.isPercentage()) {
+          width = sofiaImage.getWidth() * widthParameter.getValue().intValue() / 100;
+        } else {
+          width = widthParameter.getValue().intValue();
+        }
+        if (heightParameter.isPercentage()) {
+          height = sofiaImage.getHeight() * heightParameter.getValue().intValue() / 100;
+        } else {
+          height = heightParameter.getValue().intValue();
+        }
+        break;
+      }
+      if (widthParameter != null) {
         double ratio = sofiaImage.getWidth() / (double) sofiaImage.getHeight();
-        Logger.fine("[ResizeFunctionObject:run] Ratio: %s.", ratio);
-        if (widthParameter == null) {
-          height = getPixels(heightParameter, sofiaImage.getHeight());
-          width = (int) (ratio * height);
-          break;
+        if (aspectParameter != null) {
+          ratio = aspectParameter.getValue().doubleValue();
+          Logger.debug("[ResizeFunctionObject:run] Resize image using width %s and aspect %s", widthParameter, aspectParameter);
         }
-        if (heightParameter == null) {
-          width = getPixels(widthParameter, sofiaImage.getWidth());
-          height = (int) (width / ratio);
-          break;
+        width = widthParameter.getValue().intValue();
+        height = (int) (width / ratio);
+        break;
+      }
+      if (heightParameter != null) {
+        double ratio = sofiaImage.getWidth() / (double) sofiaImage.getHeight();
+        if (aspectParameter != null) {
+          ratio = aspectParameter.getValue().doubleValue();
+          Logger.debug("[ResizeFunctionObject:run] Resize image using height %s and aspect %s", heightParameter, aspectParameter);
         }
-        width = getPixels(widthParameter, sofiaImage.getWidth());
-        height = getPixels(heightParameter, sofiaImage.getHeight());
-      } while (false);
-      Logger.info("[ResizeFunctionObject:run] Resize image using a width of %spx and a height of %spx", width, height);
-    } else {
-      BigDecimal scale = new BigDecimal(scaleParameter.getValue().toString());
-      width = (int) (sofiaImage.getWidth() * scale.doubleValue());
-      height = (int) (sofiaImage.getHeight() * scale.doubleValue());
-      Logger.info("[ResizeFunctionObject:run] Resize image using a scale of %s to width of %spx and a height of %spx", scale, width, height);
-    }
+        height = heightParameter.getValue().intValue();
+        width = (int) (height * ratio);
+      }
+    } while (false);
 
+    Logger.debug("[ResizeFunctionObject:run] Resize image to width of %s and a height of %s", width, height);
     BufferedImage newImage = new BufferedImage(width, height, sofiaImage.getImage().getType());
     Graphics2D g2d = newImage.createGraphics();
+
     g2d.drawImage(sofiaImage.getImage(), 0, 0, width, height, null);
     g2d.dispose();
 
     SofiaImage newSofiaImage = new SofiaImage(sofiaImage.getImagePath(), newImage);
     return newSofiaImage;
+
   }
 
-  private SICNumber<?> getPixelsOrPercentage(SICNumber<?> v, SICParameter parameter) throws SICCompileTimeException {
-    String name = parameter.getNameToken().getValue();
-    if (v != null) {
-      throw new SICCompileTimeException("Value " + name + " was already asigned with a " + v.getValue() + ".", parameter.getValueToken().getPosition());
-    }
-    SICValue<?> value = ValueFactory.get(parameter.getValueToken());
-    if (value.isNumber()) {
-      SICNumber<?> number = (SICNumber) value;
-      if (number.isInteger()) {
-        return new SICPixels(parameter.getValueToken(), (SICInteger) value);
-      }
-      if (number.isPercentage()) {
-        return new SICPercentage(parameter.getValueToken(), (BigDecimal) value.getValue());
-      }
-      if (!value.isPixels() && !value.isPercentage()) {
-        Position position = parameter.getValueToken().getPosition();
-        String type = value.getTypeName();
-        parameter.getValueToken().setError(true);
-        throw new SICCompileTimeException("A " + name + " must be a number or percentage but have a " + type + ".", position);
-      }
-    }
-    Logger.debug("[ResizeFunctionObject:getPixelsOrPercentage] Value type: %s", value.getClass().getName());
-    parameter.getValueToken().setError(true);
-    throw new SICCompileTimeException("Invalid value " + parameter.getValueToken().getValue() + " for " + name + ".", parameter.getValueToken().getPosition());
-  }
 }

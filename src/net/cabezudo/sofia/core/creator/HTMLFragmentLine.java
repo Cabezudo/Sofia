@@ -29,6 +29,7 @@ public class HTMLFragmentLine extends HTMLFileLine {
           throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     Path fullFileBasePath;
     String partialFilePathString = getFilePath().toString();
+    // FIX This fail with relative paths like file="this.html". Take the root site path
     if (partialFilePathString.startsWith("/") || caller == null) {
       fullFileBasePath = getSite().getVersionedSourcesPath().resolve(partialFilePathString.substring(1));
     } else {

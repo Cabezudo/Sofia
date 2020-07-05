@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sic.tokens.parameters;
 
+import java.nio.file.Path;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
 import net.cabezudo.sofia.core.sic.tokens.Token;
@@ -20,8 +21,8 @@ public class NameParameter extends SICParameter {
   }
 
   @Override
-  public SICObject compile() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public SICObject compile(Path basePath) {
+    throw new RuntimeException("Nothing to compile here.");
   }
 
 }

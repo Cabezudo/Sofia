@@ -13,7 +13,7 @@ public abstract class SICParameter extends SICParameterOrFunction {
   private final Token value;
 
   public SICParameter(Token name, Token value) {
-    super(name.getValue(), name.getPosition());
+    super(name.getValue(), name);
     this.name = name;
     this.value = value;
   }
@@ -23,12 +23,8 @@ public abstract class SICParameter extends SICParameterOrFunction {
     return Utils.repeat(' ', deep * 2) + name.getValue() + "=" + value.getValue();
   }
 
-  public Token getNameToken() {
-    return name;
-  }
-
-  public Token getValueToken() {
-    return value;
+  public boolean isFactorParameter() {
+    return false;
   }
 
   public boolean isHeightParameter() {
@@ -41,6 +37,14 @@ public abstract class SICParameter extends SICParameterOrFunction {
 
   public boolean isScaleParameter() {
     return false;
+  }
+
+  public Token getNameToken() {
+    return name;
+  }
+
+  public Token getValueToken() {
+    return value;
   }
 
   public boolean isWidthParameter() {

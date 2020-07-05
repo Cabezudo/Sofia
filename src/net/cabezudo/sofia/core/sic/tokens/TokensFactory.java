@@ -1,7 +1,8 @@
 package net.cabezudo.sofia.core.sic.tokens;
 
 import java.math.BigDecimal;
-import net.cabezudo.sofia.core.sic.tokens.functions.CreateImageFunctionToken;
+import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.core.sic.tokens.functions.LoadImageFunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.functions.MainFunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.functions.ResizeFunctionToken;
 
@@ -62,20 +63,22 @@ public class TokensFactory {
             return new StringToken(s.substring(1, s.length() - 1), position);
           }
           try {
-            new BigDecimal(s);
+            BigDecimal value = new BigDecimal(s);
+            Logger.debug("Found number %s in factory.", value);
             return new NumberToken(s, position);
           } catch (NumberFormatException e) {
             switch (s) {
               case "main":
                 return new MainFunctionToken(position);
               case "loadImage":
-                return new CreateImageFunctionToken(position);
+                return new LoadImageFunctionToken(position);
               case "resize":
                 return new ResizeFunctionToken(position);
               case "name":
               case "width":
               case "height":
               case "scale":
+              case "aspect":
                 return new ParameterNameToken(s, position);
               default:
                 return new ParameterValueToken(s, position);

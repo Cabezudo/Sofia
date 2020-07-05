@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sic.elements;
 
+import java.nio.file.Path;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.sic.objects.ObjectFactory;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
@@ -15,7 +16,7 @@ public class SICFunction extends SICParameterOrFunction {
   private final SICParameters parameters = new SICParameters();
 
   public SICFunction(Token token) {
-    super(token.getValue(), token.getPosition());
+    super(token.getValue(), token);
   }
 
   public SICParameters getParameter() {
@@ -48,8 +49,8 @@ public class SICFunction extends SICParameterOrFunction {
   }
 
   @Override
-  public SICObject compile() throws SICCompileTimeException {
-    SICObjectFunction sicObjectFunction = ObjectFactory.get(getName(), parameters);
+  public SICObject compile(Path basePath) throws SICCompileTimeException {
+    SICObjectFunction sicObjectFunction = ObjectFactory.get(basePath, getToken(), parameters);
     return sicObjectFunction;
   }
 }

@@ -244,8 +244,8 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
         return text;
       };
       const lastCode = getInternalURLCode(editor);
-      const urlCode = lastCode.replace('main(loadImage(name=/images/test.jsp),', '').slice(0, -1);
-      return urlCode;
+      const urlCode = lastCode.replace('main(loadImage(name=images/test.jsp),', '').slice(0, -1);
+      return encodeURI(urlCode);
     };
   };
   const assignTriggers = () => {

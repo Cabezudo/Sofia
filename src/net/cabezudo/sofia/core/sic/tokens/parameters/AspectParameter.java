@@ -9,14 +9,14 @@ import net.cabezudo.sofia.core.sic.tokens.Token;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.06.13
  */
-public class HeightParameter extends SICParameter {
+public class AspectParameter extends SICParameter {
 
-  public HeightParameter(Token name, Token value) {
+  public AspectParameter(Token name, Token value) {
     super(name, value);
   }
 
   @Override
-  public boolean isHeightParameter() {
+  public boolean isFactorParameter() {
     return true;
   }
 
