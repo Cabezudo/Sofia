@@ -10,124 +10,16 @@
     <script lib="core/0.1.0"></script>
     <script lib="simpleSICEditor/0.1.0"></script>
     <script lib="button/0.1.0"></script>
-    <style>
-      .imageContainer {
-        width: content-box;
-        overflow: auto;
-        position: relative;
-      }
-      .buttonContainer {
-        display: flex;
-        align-items: baseline;
-      }
-      .runButton {
-        flex-grow: 0;
-        width: min-content;
-      }
-    </style>
-    <script>
-      {
-        const imageContainer = ({ id = null, element = null, width = null, height = null, src = null } = {}) => {
-          let image;
-          const validateOptions = () => {
-            if (element === null && id === null) {
-              throw Error('You must define a property id or a property element for the image.');
-            }
-          };
-          const createGUI = () => {
-            if (element === null) {
-              element = Core.validateById(id);
-            }
-            element.className = 'imageContainer';
-            const ratio = width / height;
-            element.style.height = `${element.offsetWidth / ratio}px`;
-            image = document.createElement("IMG");
-            element.appendChild(image);
-            image.src = src;
-          };
-          const setFunctions = () => {
-            element.setSRC = src => {
-              image.src = src;
-            };
-          };
-          const assignTriggers = () => {
-
-          };
-          validateOptions();
-          createGUI();
-          setFunctions();
-          assignTriggers();
-        };
-
-        const createGUI = () => {
-          let image, exampleMessages;
-          ;
-          const createCodeExample = (id) => {
-            const container = Core.validateById(id);
-            const code = container.innerText;
-            Core.removeChilds(container);
-            const editor = document.createElement("DIV");
-            editor.innerText = code;
-            container.appendChild(editor);
-
-            const buttonContainer = document.createElement("DIV");
-            buttonContainer.className = 'buttonContainer';
-            const button = document.createElement("DIV");
-            button.innerText = 'Run';
-            buttonContainer.appendChild(button);
-            exampleMessages = document.createElement("DIV");
-            buttonContainer.appendChild(exampleMessages);
-            container.appendChild(buttonContainer);
-
-            image = document.createElement("DIV");
-            container.appendChild(image);
-            simpleSICEditor({
-              element: editor,
-              focus: true,
-              onError: () => {
-                Core.trigger(button, 'disabled');
-              },
-              onCompile: () => {
-                Core.trigger(button, 'enabled');
-              },
-              onMessage: message => {
-                console.log(message);
-                exampleMessages.innerHTML = message;
-              }
-            });
-            blueButton({
-              element: button,
-              enabled: false,
-              onClick: () => {
-                const code = editor.getURLCode();
-                const src = `/images/test.jpg?${code}`;
-                image.setSRC(src);
-              }
-            });
-            button.classList.add('runButton');
-            imageContainer({
-              element: image,
-              src: "/images/test.jpg",
-              width: 1200,
-              height: 800
-            });
-          };
-          createCodeExample('01');
-        };
-        Core.addOnloadFunction(createGUI);
-      }
-      ;
-    </script>
     <style file="documentation.css"></style>
   </head>
   <body>
+    <section file="docs/testSICExampleComponent.html"></section>
     <section id="application">
       <section id="header" template="headers/menu/simple/menu" configurationFile="menu.json"></section>
       <section class="content">
         <section class="container">
           <div class="documentation">
             <section id="introducingSofia" class="documentation">
-              <div id="01">main(loadImage(name=/images/test.jsp),resize(width=600,height=400))</div>
               <span class="title">Image CND and SIC</span>
               <h1>What's an image CDN?</h1>
               <p>Image CDN specialize in the transformation, optimization, and delivery of images. You can also think of them as APIs for accessing and manipulating the images used on your site.</p>
@@ -137,26 +29,70 @@
               <p>SIC stand for Sofia Image Code. Is a functional language for WS API image manipulation.</p>
               <h1>How does it work?</h1>
               <p>You have one image upladed on the server. In the string query, you manipulate it with SIC in order to get a diferent image. For responsive sites, you upload one image, a big image, and manipulete it in order to get a diferent image accord your device, for example smaller.</p>
-              <p>How do you do that? Just add the SIC code in the URL query string.</p>
-              <p>The folow is an example of SIC code used to resize an image.</p>
-              <pre>main(
-  loadImage(
-    name=/home/esteban/images/test.jpg
-  ),
-  resize(
-    width = 1200,
-    height = 800
-  )
-)</pre>
-              <p>But using the CDN some code disapear and is addeded by the server. So, the URL query string look like this:</p>
-              <pre>test.jpg?resize(width=1200,height=800)</pre>
-              <p>Let's test the code directly on the server.</p>
-              <textarea id="_firstProgram">resize(
-  width = 1200,
-  height = 800
-)</textarea>
+              <p>How do you do that? Just add the SIC code in the URL query string. The next URL is an example of image with some code to manipulate the result.</p>
+              <pre>http://manager:8080/images/test.jpg?resize(width=300,height=200)</pre>
+              <p>The original image has 1200 pixels width and 800 pixel height, but now, is smaller and can be used in a movile devices with a data connection.</p>
             </section>
-            <br><br><br><br><br><br><br><br><br><br><br><br>
+            <section>
+              <h1>SIC grammar</h1>
+              <p>The SIC code has a very simple grammar:</p>
+              <pre>
+code:
+  function
+
+parameter:
+  name = value
+
+name:
+  string
+
+value:
+  string
+
+function:
+  string ( )
+  string ( parameterOrFunction )
+
+parameterOrFunction:
+  parameter
+  function
+  parameter , parameterOfFunction
+  function , parameterOrFunction</pre>
+              <p>Los espacios no tienen efecto en ninguna parte por lo que no es posible colocar nombres de archivos con espacios.</p>
+            </section>
+            <section>
+              <h1>First program</h1>
+              <p>The follow is an example of the full SIC code we can compile it in the SIC web editor. The code is used to resize the image.</p>
+              <div id="01">main(loadImage(name=images/test.jsp),resize(width=300,height=200))</div>
+              <p>Note that using the CDN server, some code disapear and is addeded later by the server. In that way the URL is more clean and small.
+              <h2>Code explained</h2>
+              <p>The code start with a function <span class="code">main()</span> where we put all the stuff. Inside this function we going to specify the tasks. The first parameter a is function <span class="code">loadImage()</span>. This function load an image in order to have something to manipulate. Is the first task because SIC language work like filters. The first parameter do something with an image an pass image to the input of the next parameter. The parameters for the main function are almost all functions.</p>
+              <p>So, our program fistr load an image an the result of the load is passed to the <span class="code">resize()</span> function. The resize function take two parameter in this case <span class="code">width</span> and <span class="code">height</span> used to specify the finle size of the image.</p>
+            </section>
+            <section>
+              <h1>Use code files</h1>
+              <p>Is posible use a file with code in order to manipulate the image. The URL is more clear if we use code files.</p>
+            </section>
+            <section>
+              <h1>Functions</h1>
+              <h2>main()</h2>
+              <p></p>
+              <h2>script()</h2>
+              <p></p>
+              <h2>loadImage</h2>
+              <p>Load an image from the hard disk using the default base path defined in the server or code. This function take only one parameter <span class="code">name</span> for the image path.</p>
+              <p>name - The path of the image to load. For web images, the base path is defined in the server configuration and the request path for the image. If you are using a script, the base path is the path defined in the server configuration. When the code is using in an application you can define any base path.</p>
+              <h2>resize</h2>
+              <p>Change the size of image. This function cat take four parameters. width, height, scale and aspect.</p>
+              <p>width</p>
+              <p>height</p>
+              <p>scale</p>
+              <p>aspect - A value decimal or aspect ratio.</p>
+              <p>You can specify the width in pixel or percentage relative to the original image. If you specify only width, height, or scale, the new image maintains the original image proportions. You can specify width and height in order to change the proportions. We can also use width or height together with scale or aspect. If you use with scale the new image maintains the original image proportions. Using aspect you can change the image proportions.</p>
+              <h2></h2>
+              <p></p>
+              <p></p>
+            </section>
           </div>
         </section>
       </section>

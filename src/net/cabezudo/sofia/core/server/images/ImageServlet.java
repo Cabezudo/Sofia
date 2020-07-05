@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +35,7 @@ public class ImageServlet extends HttpServlet {
     String imageName = requestURI.substring(imageNameStartIndex + 1);
 
     Site site = (Site) request.getAttribute("site");
-    Path imagePath = site.getSourcesImagesPath().resolve(imageName);
+    Path imagePath = Paths.get(imageName);
 
     String queryString = request.getQueryString();
     String code;
@@ -53,7 +54,8 @@ public class ImageServlet extends HttpServlet {
     Logger.debug("[ImageServlet:doGet] %s", code);
 
     SofiaImageCode sofiaImageCode;
-    sofiaImageCode = new SofiaImageCode(code);
+    Path basePath = site.getSourcesImagesPath();
+    sofiaImageCode = new SofiaImageCode(basePath, code);
 
     SICObject sicObject;
     try {
@@ -73,7 +75,7 @@ public class ImageServlet extends HttpServlet {
     String preId = sofiaImageCodeString.substring(commonStartCode.length() - 1);
     String id = preId.substring(0, preId.length() - commonEndCode.length());
 
-    Path outputImagePath = imageManager.save(image, imagePath, id);
+    Path outputImagePath = imageManager.save(image, basePath.resolve(imagePath), id);
 
     Logger.info("[ImageServlet:doGet] Image path %s.", outputImagePath);
     try (FileInputStream in = new FileInputStream(outputImagePath.toFile()); OutputStream out = response.getOutputStream();) {

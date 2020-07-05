@@ -61,7 +61,15 @@
   color: black;
   margin: 0 0 10px 0 ;
   font-family: 'GT America';
-  font-size: 18px;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.documentation h2 {
+  color: black;
+  margin: 0 0 8px 0 ;
+  font-family: 'GT America';
+  font-size: 16px;
   font-weight: 900;
 }
 

@@ -1,7 +1,8 @@
 package net.cabezudo.sofia.core.sic.elements;
 
+import java.nio.file.Path;
 import net.cabezudo.sofia.core.sic.objects.SICObject;
-import net.cabezudo.sofia.core.sic.tokens.Position;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -9,19 +10,19 @@ import net.cabezudo.sofia.core.sic.tokens.Position;
  */
 public abstract class SICElement {
 
-  private final Position position;
+  private final Token token;
 
-  public SICElement(Position position) {
-    this.position = position;
+  public SICElement(Token token) {
+    this.token = token;
   }
 
-  public Position getPosition() {
-    return position;
+  public Token getToken() {
+    return token;
   }
 
   public abstract String toString(int i);
 
-  public abstract SICObject compile() throws SICCompileTimeException;
+  public abstract SICObject compile(Path basePath) throws SICCompileTimeException;
 
   public boolean isFunction() {
     return false;

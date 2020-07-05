@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sic;
 
+import java.nio.file.Path;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +10,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -27,6 +29,8 @@ public class FormatService extends Service<ValidationResponse> {
   public void execute() throws ServletException {
 //    try {
     JSONObject jsonPayload;
+    Site site = (Site) request.getAttribute("site");
+
     try {
       jsonPayload = JSON.parse(getPayload()).toJSONObject();
     } catch (JSONParseException e) {
@@ -39,7 +43,8 @@ public class FormatService extends Service<ValidationResponse> {
       throw new ServletException(e);
     }
     SofiaImageCode sofiaImageCode;
-    sofiaImageCode = new SofiaImageCode(code, true);
+    Path basePath = site.getSourcesImagesPath();
+    sofiaImageCode = new SofiaImageCode(basePath, code, true);
     JSONArray jsonMessages = sofiaImageCode.getJSONMessages();
     JSONObject jsonResponse = new JSONObject();
 

@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.sic.exceptions;
 
 import net.cabezudo.sofia.core.sic.tokens.Position;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,20 +11,24 @@ public abstract class SICException extends Exception {
 
   private static final long serialVersionUID = 1L;
 
-  private final Position position;
+  private final Token token;
 
-  public SICException(String message, Position position) {
+  public SICException(String message, Token token) {
     super(message);
-    this.position = position;
+    this.token = token;
   }
 
-  public SICException(String message, Throwable cause, Position position) {
+  public SICException(String message, Throwable cause, Token token) {
     super(message, cause);
-    this.position = position;
+    this.token = token;
+  }
+
+  public String getValue() {
+    return token.getValue();
   }
 
   public Position getPosition() {
-    return position;
+    return token.getPosition();
   }
 
 }

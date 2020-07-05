@@ -1,7 +1,9 @@
 package net.cabezudo.sofia.core.sic.objects;
 
+import java.nio.file.Path;
 import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.elements.SICParameters;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -9,16 +11,16 @@ import net.cabezudo.sofia.core.sic.elements.SICParameters;
  */
 public class ObjectFactory {
 
-  public static SICObjectFunction get(String name, SICParameters parameters) throws SICCompileTimeException {
-    switch (name) {
+  public static SICObjectFunction get(Path basePath, Token token, SICParameters parameters) throws SICCompileTimeException {
+    switch (token.getValue()) {
       case "main":
-        return new MainFunctionObject(parameters);
+        return new MainFunctionObject(basePath, parameters);
       case "loadImage":
-        return new LoadImageFunctionObject(parameters);
+        return new LoadImageFunctionObject(basePath, parameters);
       case "resize":
-        return new ResizeFunctionObject(parameters);
+        return new ResizeFunctionObject(basePath, token, parameters);
       default:
-        throw new RuntimeException("[ObjectFactory:SICObjectFunction] Invalid name for a function object: " + name);
+        throw new RuntimeException("[ObjectFactory:SICObjectFunction] Invalid name for a function object: " + token.getValue());
     }
   }
 }

@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.sic.elements;
 
-import net.cabezudo.sofia.core.sic.tokens.Position;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,8 +10,8 @@ public abstract class SICParameterOrFunction extends SICElement {
 
   private final String name;
 
-  public SICParameterOrFunction(String name, Position position) {
-    super(position);
+  public SICParameterOrFunction(String name, Token token) {
+    super(token);
     this.name = name;
   }
 

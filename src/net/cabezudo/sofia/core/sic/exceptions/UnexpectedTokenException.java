@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.sic.exceptions;
 
-import net.cabezudo.sofia.core.sic.tokens.Position;
+import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,15 +10,15 @@ public class UnexpectedTokenException extends SICException {
 
   private static final long serialVersionUID = 1L;
 
-  public UnexpectedTokenException(String value, Position position) {
-    super("Unexpected: " + value, position);
+  public UnexpectedTokenException(String value, Token token) {
+    super("Unexpected: " + value, token);
   }
 
-  public UnexpectedTokenException(String expected, String value, Throwable cause, Position position) {
-    super("Unexpected " + value + ". Waiting for a " + expected + ".", cause, position);
+  public UnexpectedTokenException(String expected, String value, Throwable cause, Token token) {
+    super("Unexpected " + value + ". Waiting for a " + expected + ".", cause, token);
   }
 
-  public UnexpectedTokenException(String expected, String value, Position position) {
-    this(expected, value, null, position);
+  public UnexpectedTokenException(String expected, String value, Token token) {
+    this(expected, value, null, token);
   }
 }

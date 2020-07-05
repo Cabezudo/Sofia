@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sic.objects.values;
 
+import net.cabezudo.sofia.core.sic.tokens.Position;
 import net.cabezudo.sofia.core.sic.tokens.Token;
 
 /**
@@ -10,15 +11,28 @@ import net.cabezudo.sofia.core.sic.tokens.Token;
 public abstract class SICValue<T> {
 
   private final Token token;
-  private final T value;
+  private T value;
 
-  public SICValue(Token token, T value) {
+  public SICValue(Token token) {
     this.token = token;
-    this.value = value;
   }
 
-  public T getValue() {
-    return value;
+  public Token getToken() {
+    return token;
+  }
+
+  public abstract T getValue();
+
+  public boolean isAspect() {
+    return false;
+  }
+
+  public boolean isDecimal() {
+    return false;
+  }
+
+  public boolean isImageFilePath() {
+    return false;
   }
 
   public boolean isNumber() {
@@ -29,11 +43,11 @@ public abstract class SICValue<T> {
     return false;
   }
 
-  public boolean isDecimal() {
+  public boolean isPercentage() {
     return false;
   }
 
-  public boolean isPercentage() {
+  public boolean isPixels() {
     return false;
   }
 
@@ -45,10 +59,10 @@ public abstract class SICValue<T> {
 
   @Override
   public String toString() {
-    return value.toString();
+    return token.getValue();
   }
 
-  public boolean isPixels() {
-    return false;
+  public Position getPosition() {
+    return token.getPosition();
   }
 }
