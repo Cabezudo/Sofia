@@ -43,10 +43,10 @@ public class FormatService extends Service<ValidationResponse> {
       throw new ServletException(e);
     }
     SofiaImageCode sofiaImageCode;
+    JSONObject jsonResponse = new JSONObject();
     Path basePath = site.getSourcesImagesPath();
     sofiaImageCode = new SofiaImageCode(basePath, code, true);
-    JSONArray jsonMessages = sofiaImageCode.getJSONMessages();
-    JSONObject jsonResponse = new JSONObject();
+    JSONArray jsonMessages = sofiaImageCode.getMessages().toJSON();
 
     JSONPair jsonTypePair = new JSONPair("type", "FORMATED_CODE");
     jsonResponse.add(jsonTypePair);
@@ -57,10 +57,6 @@ public class FormatService extends Service<ValidationResponse> {
     JSONArray jsonTokens = sofiaImageCode.getTokens().toJSON();
     JSONPair jsonTokensPair = new JSONPair("tokens", jsonTokens);
     jsonResponse.add(jsonTokensPair);
-
     out.print(jsonResponse.toString());
-//    } catch (JSONParseException e) {
-//      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-//    }
   }
 }

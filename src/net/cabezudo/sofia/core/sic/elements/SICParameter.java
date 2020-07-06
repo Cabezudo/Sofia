@@ -39,6 +39,10 @@ public abstract class SICParameter extends SICParameterOrFunction {
     return false;
   }
 
+  public boolean isValueParameter() {
+    return false;
+  }
+
   public Token getNameToken() {
     return name;
   }

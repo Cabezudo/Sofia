@@ -1,10 +1,8 @@
 package net.cabezudo.sofia.core.server.images;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.regex.Pattern;
 import javax.imageio.ImageIO;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.logger.Logger;
@@ -25,33 +23,27 @@ class ImageManager {
     return INSTANCE;
   }
 
-  Path save(SofiaImage sofiaImage, Path imagePath, String code) throws IOException {
-    Path generatedBasePath = imagePath.getParent().resolve("generated");
-
-    Path imageFileNamePath = imagePath.getFileName();
-    String imageName = imageFileNamePath.toString();
-    String formatName = imageName.substring(imageName.lastIndexOf(".") + 1);
-
-    Path path;
-    if (code == null || code.length() == 0) {
-      path = imagePath;
+  Path save(Path imagePath, SofiaImage sofiaImage) {
+    if (Files.exists(imagePath)) {
+      if (Environment.getInstance().isProduction()) {
+        Logger.debug("[SofiaImage:save] The file %s already exist. Don't save.", imagePath);
+      } else {
+        Logger.debug("[SofiaImage:save] The file %s already exist but IS NOT production. Don't save.", imagePath);
+      }
+      return imagePath;
     } else {
-      String fileName = imagePath.getFileName().toString();
-      Pattern pattern = Pattern.compile(File.separator);
-      String scapedCode = code.replaceAll(pattern.toString(), "_");
-      path = generatedBasePath.resolve(fileName + "?" + scapedCode);
+      Logger.debug("[SofiaImage:save] The file %s DO NOT exist. Save.", imagePath);
     }
 
-    if (Files.exists(path) && Environment.getInstance().isProduction()) {
-      Logger.debug("[SofiaImage:save] The file %s already exist. Don't save.", path);
-      return path;
-    } else {
-      Logger.debug("[SofiaImage:save] The file %s DO NOT exist. Save.", path);
+    String imagePathName = imagePath.toString();
+    String formatName = imagePathName.substring(imagePathName.lastIndexOf(".") + 1);
+    System.out.println(imagePath);
+    try {
+      ImageIO.write(sofiaImage.getImage(), formatName, imagePath.toFile());
+    } catch (IOException ex) {
+      ex.printStackTrace();
     }
-
-    ImageIO.write(sofiaImage.getImage(), formatName, path.toFile());
-
-    return path;
+    return imagePath;
   }
 
   SofiaImage runCode(SofiaImage sofiaImage) {

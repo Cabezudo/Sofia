@@ -22,6 +22,8 @@ public class ParameterFactory {
         return new ScaleParameter(nameToken, valueToken);
       case "aspect":
         return new AspectParameter(nameToken, valueToken);
+      case "value":
+        return new ValueParameter(nameToken, valueToken);
       default:
         throw new InvalidParameterNameException(nameToken);
     }
