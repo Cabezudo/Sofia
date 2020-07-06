@@ -48,6 +48,32 @@ name:
 
 value:
   string
+  number
+  percentage
+
+string
+  any character
+
+number
+  integer
+  decimal
+
+decimal
+  digit . digit(op) e(op) exponent signedInteger
+
+exponent :: one of
+  e E
+
+signedInteger
+  decimal
+  + decimal
+  - decimal
+
+integer
+ digit
+
+digit :: one of
+  0 1 2 3 4 5 6 7 8 9
 
 function:
   string ( )
@@ -58,12 +84,12 @@ parameterOrFunction:
   function
   parameter , parameterOfFunction
   function , parameterOrFunction</pre>
-              <p>Los espacios no tienen efecto en ninguna parte por lo que no es posible colocar nombres de archivos con espacios.</p>
+              <p>The spaces don't have any effect in the code therefore you can't use file names with spaces.</p>
             </section>
             <section>
               <h1>First program</h1>
               <p>The follow is an example of the full SIC code we can compile it in the SIC web editor. The code is used to resize the image.</p>
-              <div id="01">main(loadImage(name=images/test.jsp),resize(width=300,height=200))</div>
+              <div id="01">main(loadImage(name=images/test.jpg),resize(width=300,height=200))</div>
               <p>Note that using the CDN server, some code disapear and is addeded later by the server. In that way the URL is more clean and small.
               <h2>Code explained</h2>
               <p>The code start with a function <span class="code">main()</span> where we put all the stuff. Inside this function we going to specify the tasks. The first parameter a is function <span class="code">loadImage()</span>. This function load an image in order to have something to manipulate. Is the first task because SIC language work like filters. The first parameter do something with an image an pass image to the input of the next parameter. The parameters for the main function are almost all functions.</p>
@@ -84,11 +110,14 @@ parameterOrFunction:
               <p>name - The path of the image to load. For web images, the base path is defined in the server configuration and the request path for the image. If you are using a script, the base path is the path defined in the server configuration. When the code is using in an application you can define any base path.</p>
               <h2>resize</h2>
               <p>Change the size of image. This function cat take four parameters. width, height, scale and aspect.</p>
-              <p>width</p>
-              <p>height</p>
-              <p>scale</p>
-              <p>aspect - A value decimal or aspect ratio.</p>
-              <p>You can specify the width in pixel or percentage relative to the original image. If you specify only width, height, or scale, the new image maintains the original image proportions. You can specify width and height in order to change the proportions. We can also use width or height together with scale or aspect. If you use with scale the new image maintains the original image proportions. Using aspect you can change the image proportions.</p>
+              <p>width - An integer with the final width size of the image or a percentage value.</p>
+              <p>height - An integer with the final height size of the image or a percentage value.</p>
+              <p>scale - A decimal value or percentage to specify the scale for the image.</p>
+              <p>aspect - A decimal value or aspect ratio in the form w:h.</p>
+              <p>You can specify the width or height in absoulute pixels or percentages relatives to the original image. If you specify only width ,height, or scale, the new image maintains the original image aspect ratio. You can specify both width and height or the aspect parameter along width and height in order to change the proportions.</p>
+              <p>If you specify </p>
+              <p></p>
+              <p></p>
               <h2></h2>
               <p></p>
               <p></p>

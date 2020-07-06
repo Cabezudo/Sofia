@@ -200,7 +200,7 @@ public final class QrCode {
   public final int size;
 
   /**
-   * The error correction level used in this QR Code, which is not {@code null}.
+   * The error correction level used in this QR Code, which IS NOT {@code null}.
    */
   public final Ecc errorCorrectionLevel;
 

@@ -16,12 +16,11 @@ public class Messages {
     list.add(message);
   }
 
-  JSONArray toJSON() {
+  public JSONArray toJSON() {
     JSONArray jsonArray = new JSONArray();
     list.forEach((message) -> {
       jsonArray.add(message.toJSON());
     });
     return jsonArray;
   }
-
 }

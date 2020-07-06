@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.sic;
 
 import java.nio.file.Path;
-import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.elements.SICElement;
@@ -18,8 +17,8 @@ public class SofiaImageCode {
   private Tokens tokens;
   private SICElement sicElement;
   private final String code;
-  private Messages messages = new Messages();
   private Path basePath;
+  private Messages messages = new Messages();
 
   public SofiaImageCode(Path basePath, String plainCode) {
     this(basePath, plainCode, false);
@@ -55,6 +54,9 @@ public class SofiaImageCode {
   }
 
   public SICObject compile() throws SICCompileTimeException {
+    if (sicElement == null) {
+      return null;
+    }
     SICObject sicObject = sicElement.compile(basePath);
     return sicObject;
   }
@@ -109,7 +111,7 @@ public class SofiaImageCode {
     return sb;
   }
 
-  public JSONArray getJSONMessages() {
-    return messages.toJSON();
+  public Messages getMessages() {
+    return messages;
   }
 }

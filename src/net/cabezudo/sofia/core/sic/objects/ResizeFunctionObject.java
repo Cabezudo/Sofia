@@ -97,13 +97,13 @@ public class ResizeFunctionObject extends SICObjectFunction {
     Logger.debug("Width setted to %s", widthParameter);
     Logger.debug("Height setted to %s", heightParameter);
     Logger.debug("Scale setted to %s", scaleParameter);
-    Logger.debug("Factor setted to %s", aspectParameter);
+    Logger.debug("Aspect setted to %s", aspectParameter);
     // Check if we have all we need to calculate
     if (widthParameter == null && heightParameter == null && aspectParameter == null && scaleParameter == null) {
       throw new SICCompileTimeException("Can't calculate the size with this parameters.", token);
     }
     if (widthParameter == null && heightParameter == null && aspectParameter != null) {
-      throw new SICCompileTimeException("Factor parameter on resize function need a parameter width or height in order to calculate the image size.", token);
+      throw new SICCompileTimeException("Aspect parameter on resize function need a parameter width or height in order to calculate the image size.", token);
     }
   }
 
@@ -142,7 +142,11 @@ public class ResizeFunctionObject extends SICObjectFunction {
           ratio = aspectParameter.getValue().doubleValue();
           Logger.debug("[ResizeFunctionObject:run] Resize image using width %s and aspect %s", widthParameter, aspectParameter);
         }
-        width = widthParameter.getValue().intValue();
+        if (widthParameter.isPercentage()) {
+          width = sofiaImage.getWidth() * widthParameter.getValue().intValue() / 100;
+        } else {
+          width = widthParameter.getValue().intValue();
+        }
         height = (int) (width / ratio);
         break;
       }
@@ -152,7 +156,11 @@ public class ResizeFunctionObject extends SICObjectFunction {
           ratio = aspectParameter.getValue().doubleValue();
           Logger.debug("[ResizeFunctionObject:run] Resize image using height %s and aspect %s", heightParameter, aspectParameter);
         }
-        height = heightParameter.getValue().intValue();
+        if (heightParameter.isPercentage()) {
+          height = sofiaImage.getHeight() * heightParameter.getValue().intValue() / 100;
+        } else {
+          height = heightParameter.getValue().intValue();
+        }
         width = (int) (height * ratio);
       }
     } while (false);

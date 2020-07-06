@@ -19,6 +19,8 @@ public class ObjectFactory {
         return new LoadImageFunctionObject(basePath, parameters);
       case "resize":
         return new ResizeFunctionObject(basePath, token, parameters);
+      case "brightness":
+        return new BrightnessFunctionObject(basePath, token, parameters);
       default:
         throw new RuntimeException("[ObjectFactory:SICObjectFunction] Invalid name for a function object: " + token.getValue());
     }

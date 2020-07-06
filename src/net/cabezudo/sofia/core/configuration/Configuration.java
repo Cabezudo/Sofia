@@ -251,7 +251,7 @@ public final class Configuration {
 
   private void checkPath(Path path) {
     if (!Files.isDirectory(path)) {
-      throw new ConfigurationException("The file " + path + " is not a directory.");
+      throw new ConfigurationException("The file " + path + " IS NOT a directory.");
     }
   }
 

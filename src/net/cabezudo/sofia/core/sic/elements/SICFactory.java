@@ -23,7 +23,7 @@ public class SICFactory {
     }
     if (!token.isFunction()) {
       token.setError(true);
-      throw new SICCompileTimeException(token.getValue() + " is not a function.", token);
+      throw new SICCompileTimeException(token.getValue() + " IS NOT a function.", token);
     }
     SICElement mainFunction;
     try {

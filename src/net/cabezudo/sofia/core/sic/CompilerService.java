@@ -10,6 +10,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
@@ -27,7 +28,6 @@ public class CompilerService extends Service<ValidationResponse> {
 
   @Override
   public void execute() throws ServletException {
-//    try {
     JSONObject jsonPayload;
     try {
       jsonPayload = JSON.parse(getPayload()).toJSONObject();
@@ -41,11 +41,18 @@ public class CompilerService extends Service<ValidationResponse> {
       throw new ServletException(e);
     }
     Site site = (Site) request.getAttribute("site");
-    Path basePath = site.getSourcesImagesPath();
-    SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code);
-    JSONArray jsonMessages = sofiaImageCode.getJSONMessages();
-
+    Path basePath = site.getVersionedSourcesPath();
     JSONObject jsonResponse = new JSONObject();
+    SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code);
+    Messages messages = sofiaImageCode.getMessages();
+    try {
+      sofiaImageCode.compile();
+    } catch (SICCompileTimeException e) {
+      messages.add(new Message(e.getMessage(), e.getPosition()));
+    }
+
+    JSONArray jsonMessages = messages.toJSON();
+
     JSONPair jsonTypePair = new JSONPair("type", "CODE");
     jsonResponse.add(jsonTypePair);
 
@@ -54,10 +61,6 @@ public class CompilerService extends Service<ValidationResponse> {
     JSONArray jsonTokens = sofiaImageCode.getTokens().toJSON();
     JSONPair jsonTokensPair = new JSONPair("tokens", jsonTokens);
     jsonResponse.add(jsonTokensPair);
-
     out.print(jsonResponse.toString());
-//    } catch (JSONParseException e) {
-//      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-//    }
   }
 }

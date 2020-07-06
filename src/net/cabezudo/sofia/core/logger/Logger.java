@@ -91,6 +91,10 @@ public class Logger {
     log(Level.SEVERE, e);
   }
 
+  public static void severe(String message, Object... parameters) {
+    log(Level.SEVERE, message, parameters);
+  }
+
   public static void severe(String message) {
     log(Level.SEVERE, message);
   }

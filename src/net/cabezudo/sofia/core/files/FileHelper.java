@@ -30,7 +30,7 @@ public class FileHelper {
     if (Files.exists(src, LinkOption.NOFOLLOW_LINKS)) {
       if (!Files.isDirectory(src)) {
         if (Files.isRegularFile(src)) {
-          throw new IllegalArgumentException("src " + src + " is not a directory.");
+          throw new IllegalArgumentException("src " + src + " IS NOT a directory.");
         } else {
           throw new FileNotFoundException(src + " not found.");
         }
