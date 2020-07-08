@@ -25,7 +25,7 @@ public class Main {
 //    String code = json.getString("code");
 //    String code = "main(loadImage(name=/home/esteban/NetBeansProjects/sofia.cabezudo.net/system/sources/sites/manager/1/images/test.jpg),resize(height=300))";
 //    String code = "main(loadImage(name=/home/esteban/NetBeansProjects/sofia.cabezudo.net/system/sources/sites/manager/1/images/test.jpg),resize(width=300,height=300))";
-    String code = "main(loadImage(name=images/test.jpg)resize(height=20%))";
+    String code = "main(loadImage(name=/images/test.jpg),resize(width=600,height=400),brightness(value=50))";
 
     Path basePath = Paths.get("/home/esteban/NetBeansProjects/sofia.cabezudo.net/system/sources/sites/manager/1/");
     SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code, true);

@@ -12,18 +12,20 @@ public class ParameterFactory {
 
   public static SICParameter get(Token nameToken, Token valueToken) throws InvalidParameterNameException {
     switch (nameToken.getValue()) {
-      case "name":
-        return new NameParameter(nameToken, valueToken);
-      case "width":
-        return new WidthParameter(nameToken, valueToken);
-      case "height":
-        return new HeightParameter(nameToken, valueToken);
-      case "scale":
-        return new ScaleParameter(nameToken, valueToken);
       case "aspect":
         return new AspectParameter(nameToken, valueToken);
+      case "height":
+        return new HeightParameter(nameToken, valueToken);
+      case "model":
+        return new NameParameter(nameToken, valueToken);
+      case "name":
+        return new NameParameter(nameToken, valueToken);
+      case "scale":
+        return new ScaleParameter(nameToken, valueToken);
       case "value":
         return new ValueParameter(nameToken, valueToken);
+      case "width":
+        return new WidthParameter(nameToken, valueToken);
       default:
         throw new InvalidParameterNameException(nameToken);
     }
