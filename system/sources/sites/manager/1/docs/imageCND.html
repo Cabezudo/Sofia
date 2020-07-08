@@ -89,7 +89,7 @@ parameterOrFunction:
             <section>
               <h1>First program</h1>
               <p>The follow is an example of the full SIC code we can compile it in the SIC web editor. The code is used to resize the image.</p>
-              <div id="01">main(loadImage(name=images/test.jpg),resize(width=300,height=200))</div>
+              <div id="01">main(loadImage(name=/images/test.jpg),resize(width=300,height=200))</div>
               <p>Note that using the CDN server, some code disapear and is addeded later by the server. In that way the URL is more clean and small.
               <h2>Code explained</h2>
               <p>The code start with a function <span class="code">main()</span> where we put all the stuff. Inside this function we going to specify the tasks. The first parameter a is function <span class="code">loadImage()</span>. This function load an image in order to have something to manipulate. Is the first task because SIC language work like filters. The first parameter do something with an image an pass image to the input of the next parameter. The parameters for the main function are almost all functions.</p>
@@ -105,21 +105,29 @@ parameterOrFunction:
               <p></p>
               <h2>script()</h2>
               <p></p>
-              <h2>loadImage</h2>
+              <h2>loadImage()</h2>
               <p>Load an image from the hard disk using the default base path defined in the server or code. This function take only one parameter <span class="code">name</span> for the image path.</p>
               <p>name - The path of the image to load. For web images, the base path is defined in the server configuration and the request path for the image. If you are using a script, the base path is the path defined in the server configuration. When the code is using in an application you can define any base path.</p>
-              <h2>resize</h2>
+              <h2>resize()</h2>
               <p>Change the size of image. This function cat take four parameters. width, height, scale and aspect.</p>
-              <p>width - An integer with the final width size of the image or a percentage value.</p>
-              <p>height - An integer with the final height size of the image or a percentage value.</p>
-              <p>scale - A decimal value or percentage to specify the scale for the image.</p>
-              <p>aspect - A decimal value or aspect ratio in the form w:h.</p>
+              <ul>
+                <li><p><span class="code">width</span> - An integer with the final width size of the image or a percentage value.</p></li>
+                <li><p><span class="code">height</span> - An integer with the final height size of the image or a percentage value.</p></li>
+                <li><p><span class="code">scale</span> - A decimal value or percentage to specify the scale for the image.</p></li>
+                <li><p><span class="code">aspect</span> - A decimal value or aspect ratio in the form w:h.</p></li>
+              </ul>
               <p>You can specify the width or height in absoulute pixels or percentages relatives to the original image. If you specify only width ,height, or scale, the new image maintains the original image aspect ratio. You can specify both width and height or the aspect parameter along width and height in order to change the proportions.</p>
-              <p>If you specify </p>
-              <p></p>
-              <p></p>
-              <h2></h2>
-              <p></p>
+              <h2>brightness()</h2>
+              <p>The brightness function change the brightness of the image. Accept two parameter, one optional for the model used to change the brigh and a value that depends on the model used.</p>
+              <ul>
+                <li><p><span class="code">value</span> - value for the bright change.</p></li>
+                <li><p><span class="code">model</span> - the model use for the bright change algorithm. The default model is the tv model. You can use:
+                  <ul>
+                    <li><p><span class="code">hsb</span> - for HSB color space algotithm</p></li>
+                    <li><p><span class="code">tv</span> - for tv based algorithm. The values for this model are from -255 to 255.</p></li>
+                  </ul>
+                </li>
+              </ul>
               <p></p>
             </section>
           </div>

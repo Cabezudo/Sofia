@@ -77,12 +77,13 @@ public class TokensFactory {
                 return new ResizeFunctionToken(position);
               case "brightness":
                 return new BrightnessFunctionToken(position);
-              case "name":
-              case "width":
-              case "height":
-              case "scale":
               case "aspect":
+              case "height":
+              case "model":
+              case "name":
+              case "scale":
               case "value":
+              case "width":
                 return new ParameterNameToken(s, position);
               default:
                 return new ParameterValueToken(s, position);

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sic.SofiaImageCode;
 import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
@@ -57,7 +58,7 @@ public class ImageServlet extends HttpServlet {
     Logger.debug("Image full path: %s.", imagePath);
 
     try {
-      if (!Files.exists(imagePath)) {
+      if (!Files.exists(imagePath) || Environment.getInstance().isProduction()) {
         try {
           SofiaImage sofiaImage = createFile(basePath, imagePath, imagePartialPathName, queryString, response);
           BufferedImage image = sofiaImage.getImage();

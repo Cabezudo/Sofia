@@ -20,6 +20,16 @@ public class SICInteger extends SICNumber<Integer> {
     }
   }
 
+  public SICInteger(Token token, int min, int max) throws SICCompileTimeException {
+    this(token);
+    if (value < min) {
+      throw new SICCompileTimeException("Parameter value too small. Must be greater or equal than " + min + ".", getToken());
+    }
+    if (value > max) {
+      throw new SICCompileTimeException("Parameter value too big. Must be less or equal than " + max + ".", getToken());
+    }
+  }
+
   @Override
   public String getTypeName() {
     return "integer";

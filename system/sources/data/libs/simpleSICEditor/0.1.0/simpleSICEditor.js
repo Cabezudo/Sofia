@@ -244,7 +244,7 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
         return text;
       };
       const lastCode = getInternalURLCode(editor);
-      let urlCode = lastCode.replace('main(loadImage(name=images/test.jpg)', '').slice(0, -1);
+      let urlCode = lastCode.replace('main(loadImage(name=/images/test.jpg)', '').slice(0, -1);
       if (urlCode.charAt(0) === ',') {
         urlCode = urlCode.substring(1);
       }

@@ -18,6 +18,9 @@ public class SICPercentage extends SICInteger {
     } catch (NumberFormatException e) {
       throw new SICCompileTimeException("Invalid parameter value.", getToken());
     }
+    if (value < 0 || value > 100) {
+      throw new SICCompileTimeException("The value must be a percentage.", getToken());
+    }
   }
 
   @Override
