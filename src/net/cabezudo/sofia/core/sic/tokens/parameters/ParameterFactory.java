@@ -16,12 +16,16 @@ public class ParameterFactory {
         return new AspectParameter(nameToken, valueToken);
       case "height":
         return new HeightParameter(nameToken, valueToken);
+      case "method":
+        return new MethodParameter(nameToken, valueToken);
       case "model":
-        return new NameParameter(nameToken, valueToken);
+        return new ModelParameter(nameToken, valueToken);
       case "name":
         return new NameParameter(nameToken, valueToken);
       case "scale":
         return new ScaleParameter(nameToken, valueToken);
+      case "type":
+        return new TypeParameter(nameToken, valueToken);
       case "value":
         return new ValueParameter(nameToken, valueToken);
       case "width":

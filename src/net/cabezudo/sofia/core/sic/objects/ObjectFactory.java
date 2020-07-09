@@ -21,6 +21,8 @@ public class ObjectFactory {
         return new ResizeFunctionObject(basePath, token, parameters);
       case "brightness":
         return new BrightnessFunctionObject(basePath, token, parameters);
+      case "gray":
+        return new GrayFunctionObject(basePath, token, parameters);
       default:
         throw new RuntimeException("[ObjectFactory:SICObjectFunction] Invalid name for a function object: " + token.getValue());
     }
