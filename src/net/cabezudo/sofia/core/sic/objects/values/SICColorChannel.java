@@ -7,31 +7,29 @@ import net.cabezudo.sofia.core.sic.tokens.Token;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.06.14
  */
-public class SICColorModel extends SICString {
+public class SICColorChannel extends SICString {
 
-  public SICColorModel(Token token) throws SICCompileTimeException {
+  public static final String TYPE_NAME = "colorChannel";
+
+  public SICColorChannel(Token token) throws SICCompileTimeException {
     super(token);
     switch (token.getValue()) {
-      case "tv":
-      case "hsb":
+      case "red":
+      case "green":
+      case "blue":
         break;
       default:
-        throw new SICCompileTimeException("Invalid model " + token.getValue() + " for brightness function.", token);
+        throw new SICCompileTimeException("The value must be red, green, or blue.", getToken());
     }
   }
 
   @Override
   public String getTypeName() {
-    return "colorModel";
+    return TYPE_NAME;
   }
 
   @Override
-  public boolean isString() {
+  public boolean isColorChannel() {
     return true;
-  }
-
-  @Override
-  public String getValue() {
-    return getToken().getValue();
   }
 }

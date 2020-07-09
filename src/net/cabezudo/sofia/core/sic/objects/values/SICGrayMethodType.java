@@ -9,20 +9,25 @@ import net.cabezudo.sofia.core.sic.tokens.Token;
  */
 public class SICGrayMethodType extends SICString {
 
-  public SICGrayMethodType(Token grayMethodToken, Token grayMethodTypeToken) throws SICCompileTimeException {
+  public SICGrayMethodType(Token functionToken, SICString grayMethodToken, Token grayMethodTypeToken) throws SICCompileTimeException {
     super(grayMethodTypeToken);
     switch (grayMethodToken.getValue()) {
       case "luma":
-        switch (grayMethodTypeToken.getValue()) {
-          case "basic":
-          case "bt709":
-          case "bt601":
-            break;
-          default:
-            throw new SICCompileTimeException("Invalid method type for Luma model.", grayMethodTypeToken);
+        if (grayMethodTypeToken != null) {
+          switch (grayMethodTypeToken.getValue()) {
+            case "basic":
+            case "bt709":
+            case "bt601":
+              break;
+            default:
+              throw new SICCompileTimeException("Invalid method type for Luma model.", grayMethodTypeToken);
+          }
         }
         break;
       case "decomposition":
+        if (grayMethodTypeToken == null) {
+          throw new SICCompileTimeException("You MUST specify the type of decomposition.", functionToken);
+        }
         switch (grayMethodTypeToken.getValue()) {
           case "maximum":
           case "minimum":
@@ -32,6 +37,9 @@ public class SICGrayMethodType extends SICString {
         }
         break;
       case "colorChannel":
+        if (grayMethodTypeToken == null) {
+          throw new SICCompileTimeException("You MUST specify the type of decomposition.", functionToken);
+        }
         switch (grayMethodTypeToken.getValue()) {
           case "red":
           case "green":
@@ -46,7 +54,7 @@ public class SICGrayMethodType extends SICString {
       case "desaturation":
         break;
       default:
-        throw new SICCompileTimeException("Invalid model for brightness.", grayMethodToken);
+        throw new SICCompileTimeException("Invalid model " + grayMethodToken.getValue() + " for gray function.", grayMethodToken.getToken());
     }
   }
 

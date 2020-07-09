@@ -25,23 +25,48 @@ public class Main {
 //    String code = json.getString("code");
 //    String code = "main(loadImage(name=/home/esteban/NetBeansProjects/sofia.cabezudo.net/system/sources/sites/manager/1/images/test.jpg),resize(height=300))";
 //    String code = "main(loadImage(name=/home/esteban/NetBeansProjects/sofia.cabezudo.net/system/sources/sites/manager/1/images/test.jpg),resize(width=300,height=300))";
-    String code = "main(loadImage(name=/images/test.jpg),resize(width=600,height=400),brightness(value=50))";
+//    test("main(loadImage(name=/images/test.jpg),resize(width=600,height=400)");
 
+// Test for JUnit for the new proyect
+//    test("main(loadImage(name=/images/test.600.400.jpg),resize(width=60,height=40))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),resize(width=60,height=40),gray(method=luma))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=averaging))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=luma))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=luma,type=basic))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=luma,type=bt709))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=luma,type=bt601))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=desaturation))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=decomposition,type=maximum))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=decomposition,type=minimum))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=colorChannel))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=colorChannel,channel=yellow))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=colorChannel,type=red))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=colorChannel,type=green))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=colorChannel,type=blue))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=grayShades,value=30))");
+//    test("main(loadImage(name=/images/test.600.400.jpg),gray(method=grayShades))");
+  }
+
+  private static void test(String code) {
+    System.out.println("*** " + code);
     Path basePath = Paths.get("/home/esteban/NetBeansProjects/sofia.cabezudo.net/system/sources/sites/manager/1/");
-    SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code, true);
-
-    Tokens tokens = sofiaImageCode.getTokens();
-    for (Token token : tokens) {
-      System.out.print(token.getValue());
-    }
-    System.out.println();
     try {
-      SICObject object = sofiaImageCode.compile();
-      object.run();
+      SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code, true);
+
+      if (sofiaImageCode.getMessages().size() == 0) {
+        Tokens tokens = sofiaImageCode.getTokens();
+        for (Token token : tokens) {
+          System.out.print(token.getValue());
+        }
+
+        SICObject object = sofiaImageCode.compile();
+        object.run();
+      } else {
+        System.out.println(sofiaImageCode.getMessages().toJSON());
+      }
     } catch (SICCompileTimeException | SICRuntimeException e) {
       System.out.println(e.getMessage() + " " + e.getPosition());
       e.printStackTrace();
     }
-
   }
 }

@@ -16,11 +16,11 @@ public class SICGrayMethod extends SICString {
       case "luma":
       case "desaturation":
       case "decomposition":
-      case "colorChanel":
+      case "colorChannel":
       case "grayShades":
         break;
       default:
-        throw new SICCompileTimeException("Invalid model for brightness.", token);
+        throw new SICCompileTimeException("Invalid model " + token.getValue() + " for gray function.", token);
     }
   }
 

@@ -9,6 +9,7 @@ import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sic.elements.SICElement;
 import net.cabezudo.sofia.core.sic.elements.SICParameter;
 import net.cabezudo.sofia.core.sic.elements.SICParameters;
+import net.cabezudo.sofia.core.sic.objects.values.SICColorChannel;
 import net.cabezudo.sofia.core.sic.objects.values.SICGrayMethod;
 import net.cabezudo.sofia.core.sic.objects.values.SICGrayMethodType;
 import net.cabezudo.sofia.core.sic.objects.values.SICGrayShades;
@@ -26,6 +27,7 @@ public class GrayFunctionObject extends SICObjectFunction {
   private SICGrayMethod methodParameter;
   private SICString methodTypeParameter;
   private SICInteger valueParameter;
+  private SICString channelValueParameter;
 
   public GrayFunctionObject(Path basePath, Token token, SICParameters parameters) throws SICCompileTimeException {
     this.list = new ArrayList<>();
@@ -47,6 +49,9 @@ public class GrayFunctionObject extends SICObjectFunction {
           case "value":
             valueParameter = new SICInteger(parameterValue);
             break;
+          case "channel":
+            channelValueParameter = new SICString(parameterValue);
+            break;
           default:
             throw new SICCompileTimeException("Unexpected parameter " + parameterName + ".", parameterNameToken.getToken());
         }
@@ -56,12 +61,23 @@ public class GrayFunctionObject extends SICObjectFunction {
       parameterOrFunction = parameters.consume();
     }
     if (methodParameter != null && methodTypeParameter != null) {
-      methodTypeParameter = new SICGrayMethodType(methodParameter.getToken(), methodTypeParameter.getToken());
+      methodTypeParameter = new SICGrayMethodType(token, methodParameter, methodTypeParameter.getToken());
     }
-    if (methodParameter != null && SICGrayShades.TYPE_NAME.equals(methodParameter.getValue())) {
-      if (valueParameter == null) {
-        throw new SICCompileTimeException("A " + SICGrayShades.TYPE_NAME + " method must have a value for the number of shadows.", token);
+    if (methodParameter != null) {
+      switch (methodParameter.getValue()) {
+        case SICColorChannel.TYPE_NAME:
+          if (channelValueParameter == null) {
+            throw new SICCompileTimeException("A " + SICColorChannel.TYPE_NAME + " method must have a channel parameter.", token);
+          }
+          channelValueParameter = new SICColorChannel(token);
+          break;
+        case SICGrayShades.TYPE_NAME:
+          if (valueParameter == null) {
+            throw new SICCompileTimeException("A " + SICGrayShades.TYPE_NAME + " method must have a value for the number of shadows.", token);
+          }
+          break;
       }
+
       valueParameter = new SICGrayShades(valueParameter.getToken());
     }
   }
@@ -77,16 +93,16 @@ public class GrayFunctionObject extends SICObjectFunction {
     if (methodParameter != null) {
       methodName = methodParameter.getValue();
     }
-    String methodTypeName = "bt601";
-    if (methodTypeParameter != null) {
-      methodTypeName = methodTypeParameter.getValue();
-    }
     switch (methodName) {
       case "averaging":
         applyGrayshades(bi, new Average());
         break;
       case "luma":
-        switch (methodTypeName) {
+        String lumaMethodTypeName = "bt601";
+        if (methodTypeParameter != null) {
+          lumaMethodTypeName = methodTypeParameter.getValue();
+        }
+        switch (lumaMethodTypeName) {
           case "basic":
             applyGrayshades(bi, new BasicLuma());
             break;
@@ -97,14 +113,46 @@ public class GrayFunctionObject extends SICObjectFunction {
             applyGrayshades(bi, new BT601Luma());
             break;
           default:
-            throw new RuntimeException("Invalid method type name " + methodTypeName + ".");
+            throw new RuntimeException("Invalid method type name " + lumaMethodTypeName + ".");
         }
         break;
       case "desaturation":
+        applyGrayshades(bi, new Desaturation());
         break;
       case "decomposition":
+        String decompositionMethodTypeName = "";
+        if (methodTypeParameter != null) {
+          decompositionMethodTypeName = methodTypeParameter.getValue();
+        }
+        switch (decompositionMethodTypeName) {
+          case "maximum":
+            applyGrayshades(bi, new MaximumDecomposition());
+            break;
+          case "minimum":
+            applyGrayshades(bi, new MinimumDecomposition());
+            break;
+          default:
+            throw new RuntimeException("Invalid method type name " + decompositionMethodTypeName + ".");
+        }
         break;
       case "colorChannel":
+        if (methodTypeParameter == null) {
+          throw new RuntimeException("Color chanel MUST have a type parameter.");
+        }
+        String colorChannelMethodTypeName = methodTypeParameter.getValue();
+        switch (colorChannelMethodTypeName) {
+          case "red":
+            applyGrayshades(bi, new RedColorChannel());
+            break;
+          case "green":
+            applyGrayshades(bi, new GreenColorChannel());
+            break;
+          case "blue":
+            applyGrayshades(bi, new BlueColorChannel());
+            break;
+          default:
+            throw new RuntimeException("Invalid method type " + colorChannelMethodTypeName + " for colorChannel.");
+        }
         break;
       case "grayShades":
         int value = valueParameter.getValue();
@@ -128,6 +176,103 @@ public class GrayFunctionObject extends SICObjectFunction {
         int[] newPixel = method.getPixel(pixel, value);
         bi.getRaster().setPixel(x, y, newPixel);
       }
+    }
+  }
+
+  private static class Desaturation implements GrayshadeMethod {
+
+    @Override
+    public int[] getPixel(int[] pixel, int value) {
+      int red = pixel[0];
+      int green = pixel[0];
+      int blue = pixel[0];
+      int alpha = pixel[0];
+      int newValue = (Math.max(Math.max(red, green), blue) + Math.min(Math.min(red, green), blue)) / 2;
+      int[] newPixel = new int[4];
+      newPixel[0] = newValue;
+      newPixel[1] = newValue;
+      newPixel[2] = newValue;
+      newPixel[3] = alpha;
+      return newPixel;
+    }
+  }
+
+  private static class MaximumDecomposition implements GrayshadeMethod {
+
+    @Override
+    public int[] getPixel(int[] pixel, int value) {
+      int red = pixel[0];
+      int green = pixel[0];
+      int blue = pixel[0];
+      int alpha = pixel[0];
+      int newValue = Math.max(Math.max(red, green), blue);
+      int[] newPixel = new int[4];
+      newPixel[0] = newValue;
+      newPixel[1] = newValue;
+      newPixel[2] = newValue;
+      newPixel[3] = alpha;
+      return newPixel;
+    }
+
+  }
+
+  private static class MinimumDecomposition implements GrayshadeMethod {
+
+    @Override
+    public int[] getPixel(int[] pixel, int value) {
+      int red = pixel[0];
+      int green = pixel[0];
+      int blue = pixel[0];
+      int alpha = pixel[0];
+      int newValue = Math.min(Math.min(red, green), blue);
+      int[] newPixel = new int[4];
+      newPixel[0] = newValue;
+      newPixel[1] = newValue;
+      newPixel[2] = newValue;
+      newPixel[3] = alpha;
+      return newPixel;
+    }
+
+  }
+
+  private abstract class ColorChannel implements GrayshadeMethod {
+
+    public abstract int getColorPixelId();
+
+    @Override
+    public int[] getPixel(int[] pixel, int value) {
+      int newValue = pixel[getColorPixelId()];
+      int alpha = pixel[0];
+      int[] newPixel = new int[4];
+      newPixel[0] = newValue;
+      newPixel[1] = newValue;
+      newPixel[2] = newValue;
+      newPixel[3] = alpha;
+      return newPixel;
+    }
+  }
+
+  private class RedColorChannel extends ColorChannel {
+
+    @Override
+    public int getColorPixelId() {
+      return 0;
+    }
+  }
+
+  private class GreenColorChannel extends ColorChannel {
+
+    @Override
+    public int getColorPixelId() {
+      return 1;
+    }
+  }
+
+  private class BlueColorChannel extends ColorChannel {
+
+    @Override
+    public int getColorPixelId() {
+      return 2;
     }
   }
 

@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sic.objects.values;
 
+import net.cabezudo.sofia.core.InvalidParameterException;
 import net.cabezudo.sofia.core.sic.tokens.Position;
 import net.cabezudo.sofia.core.sic.tokens.Token;
 
@@ -14,6 +15,9 @@ public abstract class SICValue<T> {
   private T value;
 
   public SICValue(Token token) {
+    if (token == null) {
+      throw new InvalidParameterException("Invalid null parameter.");
+    }
     this.token = token;
   }
 
@@ -24,6 +28,10 @@ public abstract class SICValue<T> {
   public abstract T getValue();
 
   public boolean isAspect() {
+    return false;
+  }
+
+  public boolean isColorChannel() {
     return false;
   }
 

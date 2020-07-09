@@ -158,7 +158,7 @@ public class WebServer {
     }
 
     // Check and create mandatory directories
-    Files.createDirectories(site.getSourcesImagesPath().resolve("generated"));
+    Files.createDirectories(site.getSourcesImagesPath().resolve("cache"));
 
     return context;
   }

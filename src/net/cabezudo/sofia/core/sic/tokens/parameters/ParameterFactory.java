@@ -14,8 +14,10 @@ public class ParameterFactory {
     switch (nameToken.getValue()) {
       case "aspect":
         return new AspectParameter(nameToken, valueToken);
-      case "height":
+      case "channel":
         return new HeightParameter(nameToken, valueToken);
+      case "height":
+        return new ChannelParameter(nameToken, valueToken);
       case "method":
         return new MethodParameter(nameToken, valueToken);
       case "model":

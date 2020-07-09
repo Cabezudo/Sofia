@@ -150,7 +150,7 @@ public class ImageServlet extends HttpServlet {
     Path imagePath = basePath.resolve(imagePartialPath);
     int i = imagePartialPath.lastIndexOf(".");
     String fileType = imagePartialPath.substring(i + 1);
-    Path generatedBasePath = imagePath.getParent().resolve("generated");
+    Path generatedBasePath = imagePath.getParent().resolve("cache");
 
     String unencodedCacheId = generatedBasePath + imagePartialPath + queryString;
     String cacheId = Base64.getEncoder().encodeToString(unencodedCacheId.getBytes());
