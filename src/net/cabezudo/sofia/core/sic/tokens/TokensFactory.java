@@ -70,21 +70,23 @@ public class TokensFactory {
             return new NumberToken(s, position);
           } catch (NumberFormatException e) {
             switch (s) {
-              case "main":
-                return new MainFunctionToken(position);
-              case "loadImage":
-                return new LoadImageFunctionToken(position);
-              case "resize":
-                return new ResizeFunctionToken(position);
               case "brightness":
                 return new BrightnessFunctionToken(position);
               case "gray":
                 return new GrayFunctionToken(position);
+              case "loadImage":
+                return new LoadImageFunctionToken(position);
+              case "main":
+                return new MainFunctionToken(position);
+              case "resize":
+                return new ResizeFunctionToken(position);
               case "aspect":
+              case "channel":
               case "height":
               case "model":
               case "name":
               case "scale":
+              case "type":
               case "value":
               case "width":
               case "method":

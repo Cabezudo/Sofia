@@ -23,4 +23,8 @@ public class Messages {
     });
     return jsonArray;
   }
+
+  public int size() {
+    return list.size();
+  }
 }
