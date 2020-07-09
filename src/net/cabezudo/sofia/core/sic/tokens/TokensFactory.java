@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.sic.tokens;
 import java.math.BigDecimal;
 import net.cabezudo.sofia.core.logger.Logger;
 import net.cabezudo.sofia.core.sic.tokens.functions.BrightnessFunctionToken;
+import net.cabezudo.sofia.core.sic.tokens.functions.GrayFunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.functions.LoadImageFunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.functions.MainFunctionToken;
 import net.cabezudo.sofia.core.sic.tokens.functions.ResizeFunctionToken;
@@ -77,6 +78,8 @@ public class TokensFactory {
                 return new ResizeFunctionToken(position);
               case "brightness":
                 return new BrightnessFunctionToken(position);
+              case "gray":
+                return new GrayFunctionToken(position);
               case "aspect":
               case "height":
               case "model":
@@ -84,6 +87,7 @@ public class TokensFactory {
               case "scale":
               case "value":
               case "width":
+              case "method":
                 return new ParameterNameToken(s, position);
               default:
                 return new ParameterValueToken(s, position);

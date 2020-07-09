@@ -118,6 +118,10 @@ public class SICFactory {
         // Go to the next iteracion searching other parameter or token
         continue;
       }
+      if (parameterNameOrFunction.isCloseParentheses()) {
+        separatorOrCloseParentheses = parameterNameOrFunction;
+        continue;
+      }
       parameterNameOrFunction.setInvalidClass(true);
       parameterNameOrFunction.setError(true);
       throw new SICCompileTimeException("Invalid token " + parameterNameOrFunction.getValue() + ". Must be a parameter or function.", parameterNameOrFunction);

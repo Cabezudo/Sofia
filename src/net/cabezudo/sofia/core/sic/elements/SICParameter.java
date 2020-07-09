@@ -35,7 +35,19 @@ public abstract class SICParameter extends SICParameterOrFunction {
     return false;
   }
 
+  public boolean isMethodParameter() {
+    return false;
+  }
+
+  public boolean isModelParameter() {
+    return false;
+  }
+
   public boolean isScaleParameter() {
+    return false;
+  }
+
+  public boolean isTypeParameter() {
     return false;
   }
 
