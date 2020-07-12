@@ -21,14 +21,15 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.SofiaImage;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
-import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.core.sic.SofiaImageCode;
-import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
-import net.cabezudo.sofia.core.sic.objects.SICObject;
-import net.cabezudo.sofia.core.sic.objects.SICRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.sic.SofiaImageCode;
+import net.cabezudo.sofia.sic.elements.SICCompileTimeException;
+import net.cabezudo.sofia.sic.objects.SICObject;
+import net.cabezudo.sofia.sic.objects.SICRuntimeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

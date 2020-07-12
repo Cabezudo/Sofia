@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.sic;
+package net.cabezudo.core.sofia.sic;
 
 import java.nio.file.Path;
 import javax.servlet.ServletException;
@@ -10,11 +10,14 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.ws.parser.tokens.Tokens;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.sic.Message;
+import net.cabezudo.sofia.sic.Messages;
+import net.cabezudo.sofia.sic.SofiaImageCode;
+import net.cabezudo.sofia.sic.elements.SICCompileTimeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

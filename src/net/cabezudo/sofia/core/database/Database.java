@@ -12,7 +12,7 @@ import net.cabezudo.sofia.addresses.AddressesTable;
 import net.cabezudo.sofia.cities.CitiesTable;
 import net.cabezudo.sofia.clients.ClientTable;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.SitesTable;
 import net.cabezudo.sofia.core.users.UsersTable;
 import net.cabezudo.sofia.core.users.permission.PermissionTypesTable;

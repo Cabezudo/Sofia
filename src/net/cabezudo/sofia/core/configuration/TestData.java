@@ -14,7 +14,7 @@ import net.cabezudo.sofia.clients.Client;
 import net.cabezudo.sofia.clients.ClientManager;
 import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;

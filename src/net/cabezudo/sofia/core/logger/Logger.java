@@ -4,6 +4,7 @@ import java.sql.PreparedStatement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import net.cabezudo.sofia.logger.Level;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

@@ -3,7 +3,7 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**

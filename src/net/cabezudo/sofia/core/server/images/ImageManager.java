@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import javax.imageio.ImageIO;
+import net.cabezudo.sofia.SofiaImage;
 import net.cabezudo.sofia.core.configuration.Environment;
-import net.cabezudo.sofia.core.logger.Logger;
-import net.cabezudo.sofia.core.sic.SofiaImageCode;
+import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.sic.SofiaImageCode;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

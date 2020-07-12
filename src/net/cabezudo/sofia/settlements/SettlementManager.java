@@ -9,7 +9,7 @@ import net.cabezudo.sofia.cities.CitiesTable;
 import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.countries.CountriesTable;
 import net.cabezudo.sofia.countries.Country;

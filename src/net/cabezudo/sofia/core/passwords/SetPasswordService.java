@@ -9,7 +9,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.HashTooOldException;
