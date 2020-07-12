@@ -23,7 +23,7 @@ import net.cabezudo.sofia.core.api.options.list.Offset;
 import net.cabezudo.sofia.core.api.options.list.Sort;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;

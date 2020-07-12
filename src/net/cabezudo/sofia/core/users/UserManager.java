@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.mail.Message;
 import net.cabezudo.sofia.core.passwords.Hash;

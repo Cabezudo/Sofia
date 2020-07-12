@@ -12,7 +12,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.html.Tag;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**

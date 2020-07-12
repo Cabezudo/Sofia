@@ -9,7 +9,7 @@ import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**

@@ -1,6 +1,6 @@
 package net.cabezudo.logger;
 
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 

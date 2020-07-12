@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.creator.Caller;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

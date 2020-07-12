@@ -2,7 +2,7 @@ package net.cabezudo.sofia.core.websocket;
 
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketConnect;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;

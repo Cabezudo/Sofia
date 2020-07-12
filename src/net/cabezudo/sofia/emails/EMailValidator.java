@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.emails;
 
-import net.cabezudo.sofia.core.logger.Logger;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameValidationException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameValidator;
