@@ -9,3 +9,5 @@ sofia.configuration.properties
 varios/
 sql.tests.txt
 **/images/generated
+nbactions.xml
+/target/
