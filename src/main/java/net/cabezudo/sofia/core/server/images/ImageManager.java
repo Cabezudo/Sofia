@@ -38,7 +38,6 @@ class ImageManager {
 
     String imagePathName = imagePath.toString();
     String formatName = imagePathName.substring(imagePathName.lastIndexOf(".") + 1);
-    System.out.println(imagePath);
     try {
       ImageIO.write(sofiaImage.getImage(), formatName, imagePath.toFile());
     } catch (IOException ex) {

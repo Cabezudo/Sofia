@@ -13,9 +13,9 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.passwords.Password;
+import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
-import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.emails.EMail;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
@@ -175,7 +175,6 @@ public class WebServicesTest {
       // Test for too long
       HttpGet get = new HttpGet("http://localhost:8080/api/v1/mail/validate/" + eMail);
       String response = httpclient.execute(get, responseHandler);
-      System.out.println(response);
     }
   }
 

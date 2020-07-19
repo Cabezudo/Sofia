@@ -14,7 +14,6 @@ import net.cabezudo.sofia.clients.Client;
 import net.cabezudo.sofia.clients.ClientManager;
 import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
@@ -26,6 +25,7 @@ import net.cabezudo.sofia.countries.CountryManager;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailManager;
 import net.cabezudo.sofia.emails.EMailNotExistException;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.municipalities.Municipality;
 import net.cabezudo.sofia.municipalities.MunicipalityManager;
 import net.cabezudo.sofia.people.EMailAddressAlreadyAssignedException;
@@ -51,7 +51,7 @@ public class TestData {
   private static final boolean CREATE_LESS_DATA = true;
   private static final boolean RESTORE_DATABASE = false;
 
-  public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException {
+  public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException, ConfigurationException {
     try {
       Logger.info("Load the JDBC driver %s.", Configuration.getInstance().getDatabaseDriver());
       Class.forName(Configuration.getInstance().getDatabaseDriver());

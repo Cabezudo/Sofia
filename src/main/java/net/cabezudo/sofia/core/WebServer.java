@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
@@ -15,13 +16,10 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
-import net.cabezudo.sofia.core.configuration.ConfigurationFileNotFoundException;
 import net.cabezudo.sofia.core.configuration.DefaultData;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
-import net.cabezudo.sofia.logger.Level;
-import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.HTMLFilter;
@@ -30,11 +28,14 @@ import net.cabezudo.sofia.core.server.js.JSServlet;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
-import net.cabezudo.sofia.emails.EMailMaxSizeException;
+import net.cabezudo.sofia.emails.EMailNotExistException;
+import net.cabezudo.sofia.logger.Level;
+import net.cabezudo.sofia.logger.Logger;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -48,10 +49,10 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class WebServer {
 
-  private static WebServer INSTANCE;
+  private static WebServer instance;
   private final Server server;
 
-  public static void main(String... args) throws SQLException, EMailMaxSizeException, PasswordMaxSizeException, IOException, InterruptedException {
+  public static void main(String... args) {
     List<String> arguments = Arrays.asList(args);
     System.out.println("Sofia 0.1 (http://sofia.systems)");
 
@@ -71,12 +72,7 @@ public class WebServer {
     }
 
     Logger.info("Starting server...");
-    try {
-      Configuration.searchFile();
-    } catch (ConfigurationFileNotFoundException e) {
-      Logger.severe(e);
-      System.exit(1);
-    }
+    checkAndCreateConfigurationFile();
     int port = Configuration.getInstance().getServerPort();
 
     try {
@@ -90,10 +86,7 @@ public class WebServer {
     try {
       DefaultData.create(startOptions);
       WebServer.getInstance().start();
-    } catch (PortAlreadyInUseException e) {
-      Logger.severe(e);
-      System.exit(1);
-    } catch (Exception e) {
+    } catch (FileNotFoundException | PortAlreadyInUseException | ConfigurationException | ServerException | UserNotExistException | EMailNotExistException e) {
       if (Environment.getInstance().isDevelopment()) {
         e.printStackTrace();
       } else {
@@ -102,22 +95,49 @@ public class WebServer {
     }
   }
 
-  public static WebServer getInstance() throws Exception {
-    if (INSTANCE == null) {
-      INSTANCE = new WebServer();
+  private static void checkAndCreateConfigurationFile() {
+    if (Configuration.getConfigurationFilePath() == null) {
+      if (System.console() != null) {
+        System.out.print("Create configuration file example? [Y/n]: ");
+        String createConfigurationFile = System.console().readLine();
+        if (createConfigurationFile.isBlank() || "y".equalsIgnoreCase(createConfigurationFile)) {
+          try {
+            Path configurationFilePath = Configuration.createFile();
+            System.out.println("Configure the file " + configurationFilePath + " and run the server again.");
+            System.exit(0);
+          } catch (ConfigurationException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+          }
+        }
+      }
+      Logger.severe("Configuration file not found.");
+      System.exit(1);
     }
-    return INSTANCE;
   }
 
-  private Handler setServer(Site site) throws SQLException, JSONParseException, IOException, PropertyNotExistException {
+  public static WebServer getInstance() throws ServerException, PortAlreadyInUseException, ConfigurationException {
+    if (instance == null) {
+      instance = new WebServer();
+    }
+    return instance;
+  }
+
+  private Handler setServer(Site site) throws ServerException, ConfigurationException {
     Path apiConfigurationFilePath = Configuration.getInstance().getAPIConfigurationFile();
-    System.out.println(System.getProperties().get("java.class.path"));
     Logger.debug("Load API configuration file: %s", apiConfigurationFilePath);
-    JSONObject apiConfiguration = JSON.parse(apiConfigurationFilePath, Configuration.getInstance().getEncoding().name()).toJSONObject();
+    JSONObject apiConfiguration;
+    try {
+      apiConfiguration = JSON.parse(apiConfigurationFilePath, Configuration.getInstance().getEncoding().name()).toJSONObject();
+    } catch (JSONParseException e) {
+      throw new ConfigurationException("Error in api configuration file " + apiConfigurationFilePath + ". " + e.getMessage(), e);
+    } catch (IOException e) {
+      throw new ServerException(e);
+    }
     try {
       WebServicesUniverse.getInstance().add(apiConfiguration);
-    } catch (ClassNotFoundException e) {
-      throw new ConfigurationException(e);
+    } catch (ClassNotFoundException | PropertyNotExistException e) {
+      throw new ConfigurationException("Configuration error." + e.getMessage(), e);
     }
 
     Logger.debug("Create handler for host %s", site.getBaseDomainName().getName());
@@ -125,7 +145,12 @@ public class WebServer {
     context.setContextPath("/");
     String sitePath = site.getVersionPath().toString();
     context.setResourceBase(sitePath);
-    String[] virtualHosts = site.getDomainNames().toStringArray();
+    String[] virtualHosts;
+    try {
+      virtualHosts = site.getDomainNames().toStringArray();
+    } catch (SQLException e) {
+      throw new ServerException(e);
+    }
     context.setVirtualHosts(virtualHosts);
 
     context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -158,12 +183,17 @@ public class WebServer {
     }
 
     // Check and create mandatory directories
-    Files.createDirectories(site.getSourcesImagesPath().resolve("cache"));
+    Path cacheImagesPath = site.getSourcesImagesPath().resolve("cache");
+    try {
+      Files.createDirectories(cacheImagesPath);
+    } catch (IOException e) {
+      throw new ServerException("Can't create the cache image path: " + cacheImagesPath, e);
+    }
 
     return context;
   }
 
-  private Handler setAPI(Site site) throws SQLException {
+  private Handler setAPI(Site site) {
     Logger.debug("Create API handler for host %s", site.getBaseDomainName().getName());
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
@@ -180,11 +210,16 @@ public class WebServer {
     return context;
   }
 
-  private WebServer() throws Exception {
+  private WebServer() throws ServerException, ConfigurationException, PortAlreadyInUseException {
     server = new Server(Configuration.getInstance().getServerPort());
     HandlerCollection handler = new HandlerCollection();
 
-    SiteList siteList = SiteManager.getInstance().list();
+    SiteList siteList;
+    try {
+      siteList = SiteManager.getInstance().list();
+    } catch (SQLException e) {
+      throw new ServerException("Can't start server. " + e.getMessage(), e);
+    }
 
     for (Site site : siteList) {
       handler.addHandler(setServer(site));
@@ -195,22 +230,31 @@ public class WebServer {
 
     try {
       server.start();
-    } catch (java.io.IOException e) {
+      server.join();
+    } catch (Exception e) {
       if (e.getCause() instanceof java.net.BindException && "Address already in use".equals(e.getCause().getMessage())) {
         throw new PortAlreadyInUseException("Port " + Configuration.getInstance().getServerPort() + " already in use.");
       }
+      throw new ServerException("Can't start server. " + e.getMessage(), e);
     }
-    server.join();
   }
 
-  public void start() throws Exception {
-    server.start();
-    server.join();
-    Logger.info("Server started.");
+  public void start() throws ServerException {
+    try {
+      server.start();
+      server.join();
+      Logger.info("Server started.");
+    } catch (Exception e) {
+      throw new ServerException(e);
+    }
   }
 
-  public void stop() throws Exception {
-    server.stop();
+  public void stop() throws ServerException {
+    try {
+      server.stop();
+    } catch (Exception e) {
+      throw new ServerException(e);
+    }
     Logger.info("Server stoped.");
   }
 }

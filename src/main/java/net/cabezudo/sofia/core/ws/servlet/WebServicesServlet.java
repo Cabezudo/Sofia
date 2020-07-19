@@ -8,11 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.core.exceptions.InternalRuntimeException;
 import net.cabezudo.sofia.core.ws.WebServiceNotFoundException;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.parser.URLPathTokenizer;
 import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -38,9 +39,8 @@ public class WebServicesServlet extends HttpServlet {
     try {
       WebServicesUniverse.getInstance().runGET(request, response, tokens);
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new RuntimeException(e);
+      throw new InternalRuntimeException(e);
     } catch (WebServiceNotFoundException e) {
-      System.out.println(e.getMessage());
       response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }
   }
