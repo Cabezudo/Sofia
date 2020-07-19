@@ -9,7 +9,7 @@ public class Environment {
   public static final String DEVELOPMENT = "development";
   public static final String PRODUCTION = "production";
 
-  private static Environment INSTANCE;
+  private static Environment instance;
   private final String name;
 
   private Environment() {
@@ -20,15 +20,15 @@ public class Environment {
         this.name = environmentName;
         break;
       default:
-        throw new ConfigurationException("Invalid enviroment name: " + environmentName);
+        throw new RuntimeConfigurationException("Invalid enviroment name: " + environmentName);
     }
   }
 
   public static Environment getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new Environment();
+    if (instance == null) {
+      instance = new Environment();
     }
-    return INSTANCE;
+    return instance;
   }
 
   public boolean isDevelopment() {

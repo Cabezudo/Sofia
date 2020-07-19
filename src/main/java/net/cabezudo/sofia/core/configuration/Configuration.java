@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.configuration;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -26,7 +27,7 @@ public final class Configuration {
       try {
         INSTANCE = new Configuration();
       } catch (IOException e) {
-        throw new ConfigurationException(e);
+        throw new RuntimeConfigurationException(e);
       }
     }
     return INSTANCE;
@@ -73,6 +74,7 @@ public final class Configuration {
       Properties properties = new Properties();
       properties.load(is);
 
+      // TODO Validate configuration data
       environment = getProperty(properties, "environment");
       databaseDriver = getProperty(properties, "database.driver");
       databaseHostname = getProperty(properties, "database.hostname");
@@ -82,11 +84,7 @@ public final class Configuration {
       databasePassword = getProperty(properties, "database.password");
       serverPort = Integer.parseInt(getProperty(properties, "server.port"));
       String sofiaBasePath = getProperty(properties, "system.home");
-      if (sofiaBasePath.isEmpty()) {
-        systemPath = Paths.get(System.getProperty("user.home")).resolve("system");
-      } else {
-        systemPath = Paths.get(sofiaBasePath).resolve("system");
-      }
+      systemPath = Paths.get(sofiaBasePath).resolve("system");
       checkPath(systemPath);
       systemDataPath = systemPath.resolve("data");
       Files.createDirectories(systemDataPath);
@@ -118,7 +116,7 @@ public final class Configuration {
   private String getProperty(Properties properties, String propertyName) {
     String propertyValue = properties.getProperty(propertyName);
     if (propertyValue == null) {
-      throw new ConfigurationException("Property not found: " + propertyName);
+      throw new RuntimeConfigurationException("Property not found: " + propertyName);
     }
     Logger.info("%s: %s", propertyName, propertyValue);
     return propertyValue;
@@ -242,17 +240,17 @@ public final class Configuration {
       case "mail.server.mailJet.secret.key":
         return "f30eb6ff628984df69a6ce3000a8d912";
       default:
-        throw new ConfigurationException("Configuration value not found: " + name);
+        throw new RuntimeConfigurationException("Configuration value not found: " + name);
     }
   }
 
   private void checkPath(Path path) {
     if (!Files.isDirectory(path)) {
-      throw new ConfigurationException("The file " + path + " IS NOT a directory.");
+      throw new RuntimeConfigurationException("The file " + path + " IS NOT a directory.");
     }
   }
 
-  private static String getConfigurationFilePath() {
+  public static String getConfigurationFilePath() {
     String path;
     path = searchOn(System.getProperty("user.dir") + System.getProperty("file.separator") + CONFIGURATION_FILENAME);
     if (path != null) {
@@ -271,6 +269,39 @@ public final class Configuration {
       return path;
     }
     return null;
+  }
+
+  public static Path createFile() throws ConfigurationException {
+    String directoryName = System.getProperty("user.home");
+    Path basePath = Paths.get(directoryName);
+    Path filePath = basePath.resolve(CONFIGURATION_FILENAME);
+    if (Files.exists(filePath)) {
+      throw new RuntimeConfigurationException("The file " + filePath + " already exists.");
+    }
+    if (Files.isWritable(basePath)) {
+      try {
+        Files.createFile(filePath);
+      } catch (IOException e) {
+        throw new ConfigurationException("Can't create the file. " + e.getMessage());
+      }
+      try {
+        try (FileWriter out = new FileWriter(filePath.toFile())) {
+          out.write("environment=production\n");
+          out.write("database.driver=com.mysql.cj.jdbc.Driver\n");
+          out.write("database.hostname=localhost\n");
+          out.write("database.port=3306\n");
+          out.write("database.name=sofia\n");
+          out.write("database.username=root\n");
+          out.write("database.password=[rootPassword]\n");
+          out.write("server.port=80\n");
+          out.write("system.home=/home/sofia\n");
+        }
+      } catch (IOException e) {
+        throw new ConfigurationException("Can't write on the file. " + e.getMessage());
+      }
+      return filePath;
+    }
+    throw new ConfigurationException("The " + basePath + " is not writable.");
   }
 
   public String getLoginURL() {

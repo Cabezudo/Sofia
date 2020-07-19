@@ -52,7 +52,7 @@ public class DefaultData {
       Logger.info("Load the JDBC driver %s.", Configuration.getInstance().getDatabaseDriver());
       Class.forName(Configuration.getInstance().getDatabaseDriver());
     } catch (ClassNotFoundException e) {
-      throw new ConfigurationException(e);
+      throw new RuntimeConfigurationException(e);
     }
 
     String host = Configuration.getInstance().getDatabaseHostname();
@@ -61,7 +61,7 @@ public class DefaultData {
     try {
       new Socket(host, port).close();
     } catch (IOException e) {
-      throw new ConfigurationException("Can't find the database in " + host + ":" + port + ".", e);
+      throw new RuntimeConfigurationException("Can't find the database in " + host + ":" + port + ".", e);
     }
 
     try {
@@ -77,7 +77,7 @@ public class DefaultData {
         createData(owner);
       }
     } catch (SQLException | IOException e) {
-      throw new RuntimeException("Problem configurating system in system configuration listener.", e);
+      throw new RuntimeConfigurationException("Error in system configuration listener.", e);
     }
   }
 
@@ -177,7 +177,7 @@ public class DefaultData {
           }
         }
       } catch (IOException e) {
-        throw new RuntimeException(e);
+        throw new RuntimeConfigurationException(e);
       }
     }
   }

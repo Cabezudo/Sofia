@@ -3,10 +3,10 @@ package net.cabezudo.sofia.core.mail;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.exceptions.InternalRuntimeException;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -23,13 +23,13 @@ import org.apache.http.util.EntityUtils;
  */
 public class MailServer {
 
-  private static MailServer INSTANCE;
+  private static MailServer instance;
 
   public static MailServer getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new MailServer();
+    if (instance == null) {
+      instance = new MailServer();
     }
-    return INSTANCE;
+    return instance;
   }
 
   public void send(Messages messages) throws MailServerException {
@@ -60,11 +60,11 @@ public class MailServer {
       HttpEntity httpEntity = response.getEntity();
       String body = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
     } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
+      throw new InternalRuntimeException(e);
     } catch (IOException e) {
       throw new MailServerException(e);
     } catch (org.apache.http.auth.AuthenticationException e) {
-      throw new ConfigurationException("Incorrect MailJet credentials on configuration.", e);
+      throw new MailServerException("Incorrect MailJet credentials on configuration.");
     }
   }
 }

@@ -9,4 +9,8 @@ public class MailServerException extends Exception {
   public MailServerException(Throwable cause) {
     super(cause);
   }
+
+  public MailServerException(String message) {
+    super(message);
+  }
 }
