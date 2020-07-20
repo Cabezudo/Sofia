@@ -14,6 +14,7 @@ import net.cabezudo.sofia.clients.Client;
 import net.cabezudo.sofia.clients.ClientManager;
 import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
@@ -226,7 +227,7 @@ public class TestData {
           city = CityManager.getInstance().add(state, cityName, owner);
         }
 
-        try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+        try (Connection connection = Database.getConnection()) {
 
           SettlementType settlementType = SettlementTypeManager.getInstance().add(connection, settlementTypeName);
 
@@ -240,7 +241,7 @@ public class TestData {
         }
       }
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new SofiaRuntimeException(e);
     }
   }
 }

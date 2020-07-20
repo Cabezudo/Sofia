@@ -10,7 +10,6 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.mail.MailServerException;
@@ -49,7 +48,7 @@ public class AddUserService extends Service {
     User owner = super.getUser();
     Site site = super.getSite();
 
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       String payload = getPayload();
       JSONObject jsonPayload = JSON.parse(payload).toJSONObject();
 

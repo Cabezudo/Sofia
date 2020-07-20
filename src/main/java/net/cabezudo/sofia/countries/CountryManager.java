@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -25,7 +24,7 @@ public class CountryManager {
   }
 
   public Country get(String name) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, name);
     }
   }
@@ -46,7 +45,7 @@ public class CountryManager {
   }
 
   public Country add(String name, int phoneCode, String twoLettersCountryCode) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return add(connection, name, phoneCode, twoLettersCountryCode);
     }
   }

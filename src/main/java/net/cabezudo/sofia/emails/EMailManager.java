@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -25,7 +24,7 @@ public class EMailManager {
   }
 
   public EMail get(String address) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, address);
     }
   }
@@ -48,7 +47,7 @@ public class EMailManager {
   }
 
   public EMail get(int id) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, id);
     }
   }
@@ -70,7 +69,7 @@ public class EMailManager {
   }
 
   public EMails getByPersonId(int personId) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return getByPersonId(connection, personId);
     }
   }
@@ -95,7 +94,7 @@ public class EMailManager {
   }
 
   public EMail create(int personId, String address) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return create(connection, personId, address);
     }
   }

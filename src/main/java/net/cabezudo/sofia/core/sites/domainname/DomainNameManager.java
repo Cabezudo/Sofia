@@ -11,11 +11,10 @@ import net.cabezudo.sofia.core.api.options.list.Filters;
 import net.cabezudo.sofia.core.api.options.list.Limit;
 import net.cabezudo.sofia.core.api.options.list.Offset;
 import net.cabezudo.sofia.core.api.options.list.Sort;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -33,7 +32,7 @@ public class DomainNameManager {
   }
 
   public DomainNameList get(Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, site);
     }
   }
@@ -77,7 +76,7 @@ public class DomainNameManager {
   }
 
   public DomainName get(int domainNameId) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, domainNameId);
     }
   }
@@ -134,7 +133,7 @@ public class DomainNameManager {
   }
 
   public DomainName getByDomainNameName(String domainNameName) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return getByDomainNameName(connection, domainNameName);
     }
   }
@@ -159,7 +158,7 @@ public class DomainNameManager {
   }
 
   public DomainName update(Site site, DomainName domainName, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return update(connection, site, domainName);
     }
   }
@@ -175,7 +174,7 @@ public class DomainNameManager {
   }
 
   public void delete(int hostId) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       delete(connection, hostId);
     }
   }

@@ -5,9 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.exceptions.InternalRuntimeException;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.states.State;
@@ -32,7 +31,7 @@ public class CityManager {
   }
 
   public City add(State state, String name, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return add(connection, state, name, owner);
     }
   }
@@ -67,7 +66,7 @@ public class CityManager {
         ps.close();
       }
     }
-    throw new InternalRuntimeException("Can't get the generated key");
+    throw new SofiaRuntimeException("Can't get the generated key");
   }
 
   private City get(Connection connection, State state, String name, User owner) throws SQLException {

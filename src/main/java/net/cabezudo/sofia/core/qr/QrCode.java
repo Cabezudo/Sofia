@@ -568,7 +568,7 @@ public final class QrCode {
           default:
             throw new AssertionError();
         }
-        modules[y][x] ^= invert & !isFunction[y][x];
+        modules[y][x] ^= invert && !isFunction[y][x];
       }
     }
   }

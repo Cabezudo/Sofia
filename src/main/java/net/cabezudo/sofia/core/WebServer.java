@@ -72,7 +72,12 @@ public class WebServer {
     }
 
     Logger.info("Starting server...");
-    checkAndCreateConfigurationFile();
+    try {
+      checkAndCreateConfigurationFile();
+    } catch (ConfigurationException e) {
+      Logger.severe(e);
+      System.exit(1);
+    }
     int port = Configuration.getInstance().getServerPort();
 
     try {
@@ -95,8 +100,10 @@ public class WebServer {
     }
   }
 
-  private static void checkAndCreateConfigurationFile() {
+  private static void checkAndCreateConfigurationFile() throws ConfigurationException {
+    System.out.print("Check configuration file path. ");
     if (Configuration.getConfigurationFilePath() == null) {
+      System.out.println("Missing.");
       if (System.console() != null) {
         System.out.print("Create configuration file example? [Y/n]: ");
         String createConfigurationFile = System.console().readLine();
@@ -114,6 +121,8 @@ public class WebServer {
       Logger.severe("Configuration file not found.");
       System.exit(1);
     }
+    System.out.println("OK");
+    Configuration.validateConfiguration();
   }
 
   public static WebServer getInstance() throws ServerException, PortAlreadyInUseException, ConfigurationException {

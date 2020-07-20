@@ -11,7 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.SQLException;
 import java.util.Properties;
+import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -42,6 +44,18 @@ public final class Configuration {
 
   private static final String CONFIGURATION_FILENAME = "sofia.configuration.properties";
 
+  private static final String ENVIRONMENT_PROPERTY_NAME = "environment";
+  private static final String PRODUCTION_ENVIRONMENT = "production";
+  private static final String DEVELOPMENT_ENVIRONMENT = "development";
+  private static final String DATABASE_DRIVER_PROPERTY_NAME = "database.driver";
+  private static final String DATABASE_HOSTNAME_PROPERTY_NAME = "database.hostname";
+  private static final String DATABASE_PORT_PROPERTY_NAME = "database.port";
+  private static final String DATABASE_NAME_PROPERTY_NAME = "database.name";
+  private static final String DATABASE_USERNAME_PROPERTY_NAME = "database.username";
+  private static final String DATABASE_PASSWORD_PROPERTY_NAME = "database.password";
+  private static final String SERVER_PORT_PROPERTY_NAME = "server.port";
+  private static final String SYSTEM_HOME_PROPERTY_NAME = "system.home";
+
   private final String environment;
   private final String databaseDriver;
   private final String databaseHostname;
@@ -63,6 +77,17 @@ public final class Configuration {
   private final Path commonSourcesPath;
   private final Path sitesPath;
 
+  public static void validateConfiguration() throws ConfigurationException {
+    System.out.println("Validate environment configuration.");
+    if (!DEVELOPMENT_ENVIRONMENT.equals(Configuration.getInstance().environment) && !PRODUCTION_ENVIRONMENT.equals(Configuration.getInstance().environment)) {
+      throw new ConfigurationException(
+              "Invalid value " + Configuration.getInstance().environment + " for environment. MUST BE " + DEVELOPMENT_ENVIRONMENT + " or " + PRODUCTION_ENVIRONMENT);
+    }
+    System.out.print("Test connection.");
+    Configuration.getInstance().testConnection();
+    System.out.println("OK");
+  }
+
   private Configuration() throws IOException {
     System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tH:%1$tM:%1$tS.%1$tL [%4$s] %2$s : %5$s%n");
     String path = getConfigurationFilePath();
@@ -74,16 +99,15 @@ public final class Configuration {
       Properties properties = new Properties();
       properties.load(is);
 
-      // TODO Validate configuration data
-      environment = getProperty(properties, "environment");
-      databaseDriver = getProperty(properties, "database.driver");
-      databaseHostname = getProperty(properties, "database.hostname");
-      databasePort = getProperty(properties, "database.port");
-      databaseName = getProperty(properties, "database.name");
-      databaseUsername = getProperty(properties, "database.username");
-      databasePassword = getProperty(properties, "database.password");
-      serverPort = Integer.parseInt(getProperty(properties, "server.port"));
-      String sofiaBasePath = getProperty(properties, "system.home");
+      environment = getProperty(properties, ENVIRONMENT_PROPERTY_NAME);
+      databaseDriver = getProperty(properties, DATABASE_DRIVER_PROPERTY_NAME);
+      databaseHostname = getProperty(properties, DATABASE_HOSTNAME_PROPERTY_NAME);
+      databasePort = getProperty(properties, DATABASE_PORT_PROPERTY_NAME);
+      databaseName = getProperty(properties, DATABASE_NAME_PROPERTY_NAME);
+      databaseUsername = getProperty(properties, DATABASE_USERNAME_PROPERTY_NAME);
+      databasePassword = getProperty(properties, DATABASE_PASSWORD_PROPERTY_NAME);
+      serverPort = Integer.parseInt(getProperty(properties, SERVER_PORT_PROPERTY_NAME));
+      String sofiaBasePath = getProperty(properties, SYSTEM_HOME_PROPERTY_NAME);
       systemPath = Paths.get(sofiaBasePath).resolve("system");
       checkPath(systemPath);
       systemDataPath = systemPath.resolve("data");
@@ -118,7 +142,9 @@ public final class Configuration {
     if (propertyValue == null) {
       throw new RuntimeConfigurationException("Property not found: " + propertyName);
     }
-    Logger.info("%s: %s", propertyName, propertyValue);
+    if (!DATABASE_PASSWORD_PROPERTY_NAME.equals(propertyName)) {
+      Logger.info("%s: %s", propertyName, propertyValue);
+    }
     return propertyValue;
   }
 
@@ -291,8 +317,8 @@ public final class Configuration {
           out.write("database.hostname=localhost\n");
           out.write("database.port=3306\n");
           out.write("database.name=sofia\n");
-          out.write("database.username=root\n");
-          out.write("database.password=[rootPassword]\n");
+          out.write("database.username=juan\n");
+          out.write("database.password=tenorio2017\n");
           out.write("server.port=80\n");
           out.write("system.home=/home/sofia\n");
         }
@@ -310,5 +336,13 @@ public final class Configuration {
 
   public Path getAPIConfigurationFile() {
     return systemPath.resolve("apiDefinition.json");
+  }
+
+  private void testConnection() throws ConfigurationException {
+    try {
+      Database.getConnection(null, 1);
+    } catch (SQLException e) {
+      throw new ConfigurationException("Invalid configuration for database. " + e.getMessage(), e);
+    }
   }
 }

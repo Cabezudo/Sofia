@@ -113,6 +113,7 @@ public final class BitBuffer implements Cloneable {
    *
    * @return a new copy of this buffer (not {@code null})
    */
+  @Override
   public BitBuffer clone() {
     try {
       BitBuffer result = (BitBuffer) super.clone();

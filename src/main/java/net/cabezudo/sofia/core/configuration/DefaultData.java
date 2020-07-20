@@ -168,7 +168,7 @@ public class DefaultData {
             city = CityManager.getInstance().add(state, cityName, owner);
           }
 
-          try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+          try (Connection connection = Database.getConnection()) {
             SettlementType settlementType = SettlementTypeManager.getInstance().add(connection, settlementTypeName);
             Municipality municipality = MunicipalityManager.getInstance().add(connection, state, municipalityName, owner);
             Zone zone = ZoneManager.getInstance().add(connection, zoneName);

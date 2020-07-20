@@ -5,11 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.profiles.PermissionType;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -28,28 +28,38 @@ public class PermissionTypeManager {
 
   // TODO colocar una cache aquí.
   public PermissionType get(String name, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, name, site);
     }
   }
 
   private PermissionType get(Connection connection, String name, Site site) throws SQLException {
     String query = "SELECT id, name FROM " + PermissionTypesTable.NAME + " WHERE name = ? AND site = ?";
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, name);
+      ps.setInt(2, site.getId());
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setString(1, name);
-    ps.setInt(2, site.getId());
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-
-    if (rs.next()) {
-      return new PermissionType(rs.getInt("id"), rs.getString("name"));
+      if (rs.next()) {
+        return new PermissionType(rs.getInt("id"), rs.getString("name"));
+      }
+      return null;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    return null;
   }
 
   public PermissionType create(String name, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return create(connection, name, site);
     }
   }
@@ -57,17 +67,28 @@ public class PermissionTypeManager {
   public PermissionType create(Connection connection, String name, Site site) throws SQLException {
     Logger.debug("Create permission %s of site %s.", name, site.getId());
     String query = "INSERT INTO " + PermissionTypesTable.NAME + " (name, site) VALUES (?, ?)";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setString(1, name);
-    ps.setInt(2, site.getId());
-    Logger.fine(ps);
-    ps.executeUpdate();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, name);
+      ps.setInt(2, site.getId());
+      Logger.fine(ps);
+      ps.executeUpdate();
 
-    ResultSet rs = ps.getGeneratedKeys();
-    if (rs.next()) {
-      int id = rs.getInt(1);
-      return new PermissionType(id, name);
+      rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        int id = rs.getInt(1);
+        return new PermissionType(id, name);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    throw new RuntimeException("Can't get the generated key");
+    throw new SofiaRuntimeException("Can't get the generated key");
   }
 }

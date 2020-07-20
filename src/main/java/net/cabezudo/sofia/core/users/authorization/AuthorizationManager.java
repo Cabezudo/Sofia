@@ -4,9 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
@@ -19,6 +17,7 @@ import net.cabezudo.sofia.core.users.profiles.PermissionType;
 import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.ProfileManager;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -48,7 +47,7 @@ public class AuthorizationManager {
 
   public boolean hasAuthorization(String requestURI, User user, PermissionType permissionType, Site site) throws NotLoggedException, SQLException {
     Logger.debug("Looking for authorization for uri %s, user %s, permissionType %s and site %s", requestURI, user, permissionType.getName(), site.getBaseDomainName().getName());
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       Profiles profiles;
       if (user == null) {
         Profile profile = ProfileManager.getInstance().get(connection, "all", site);
@@ -99,7 +98,7 @@ public class AuthorizationManager {
   }
 
   public void delete(String requestURI, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       delete(connection, requestURI, site);
     }
   }
