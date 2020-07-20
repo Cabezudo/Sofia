@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 import java.util.Date;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.mail.Message;
 import net.cabezudo.sofia.core.passwords.Hash;
@@ -34,6 +33,7 @@ import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.emails.EMailValidator;
 import net.cabezudo.sofia.emails.EMailsTable;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.people.PeopleList;
 import net.cabezudo.sofia.people.PeopleManager;
 import net.cabezudo.sofia.people.PeopleTable;
@@ -102,7 +102,7 @@ public class UserManager {
   }
 
   public void createAdministrator(String name, String lastName, String address, Password password) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       Site site = SiteManager.getInstance().getById(1, null);
       Person person = addPerson(connection, name, lastName, 1);
       EMail eMail = EMailManager.getInstance().create(connection, person.getId(), address);
@@ -141,12 +141,12 @@ public class UserManager {
   }
 
   public User login(Site site, String address, Password password) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       String query
-          = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-          + "FROM " + UsersTable.NAME + " AS u "
-          + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-          + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
+              = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+              + "FROM " + UsersTable.NAME + " AS u "
+              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+              + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
       PreparedStatement ps = connection.prepareStatement(query);
       ps.setString(1, address);
       ps.setInt(2, site.getId());
@@ -171,7 +171,7 @@ public class UserManager {
   }
 
   public Message getRecoveryEMailData(Site site, String address, Hash hash) throws SQLException, IOException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       updateHash(connection, address, hash);
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, site, address);
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordRecoveryTemplate(person.getLocale());
@@ -191,21 +191,21 @@ public class UserManager {
       EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-          site.getNoReplyName(),
-          from,
-          person.getName() + ' ' + person.getLastName(),
-          to,
-          emailRecoveryTemplate.getSubject(),
-          emailRecoveryTemplate.getPlainText(),
-          emailRecoveryTemplate.getHtmlText());
+              site.getNoReplyName(),
+              from,
+              person.getName() + ' ' + person.getLastName(),
+              to,
+              emailRecoveryTemplate.getSubject(),
+              emailRecoveryTemplate.getPlainText(),
+              emailRecoveryTemplate.getHtmlText());
     }
   }
 
   private void updateHash(Connection connection, String address, Hash hash) throws SQLException {
     String query
-        = "UPDATE " + UsersTable.NAME + " "
-        + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
-        + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
+            = "UPDATE " + UsersTable.NAME + " "
+            + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
+            + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, hash.toString());
     Timestamp timestamp = new Timestamp(new Date().getTime());
@@ -216,7 +216,7 @@ public class UserManager {
   }
 
   public Message getPasswordChangedEMailData(Site site, String address) throws SQLException, IOException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, site, address);
 
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordChangedTemplate(person.getLocale());
@@ -229,18 +229,18 @@ public class UserManager {
       EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-          site.getNoReplyName(),
-          from,
-          person.getName() + ' ' + person.getLastName(),
-          to,
-          emailRecoveryTemplate.getSubject(),
-          emailRecoveryTemplate.getPlainText(),
-          emailRecoveryTemplate.getHtmlText());
+              site.getNoReplyName(),
+              from,
+              person.getName() + ' ' + person.getLastName(),
+              to,
+              emailRecoveryTemplate.getSubject(),
+              emailRecoveryTemplate.getPlainText(),
+              emailRecoveryTemplate.getHtmlText());
     }
   }
 
   public void set(Site site, String address, Password password) throws SQLException, EMailAddressNotExistException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       set(connection, site, address, password);
     }
   }
@@ -280,12 +280,12 @@ public class UserManager {
 
   public User getByEMail(String address, Site site) throws SQLException {
 
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       String query
-          = "SELECT u.id AS id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-          + "FROM " + UsersTable.NAME + " AS u "
-          + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-          + "WHERE address = ? AND site = ?";
+              = "SELECT u.id AS id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+              + "FROM " + UsersTable.NAME + " AS u "
+              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+              + "WHERE address = ? AND site = ?";
       PreparedStatement ps = connection.prepareStatement(query);
       ps.setString(1, address);
       ps.setInt(2, site.getId());
@@ -309,17 +309,17 @@ public class UserManager {
   }
 
   public User getByPersonId(int personId) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return getByPersonId(connection, personId);
     }
   }
 
   public User getByPersonId(Connection connection, int personId) throws SQLException {
     String query
-        = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-        + "FROM " + UsersTable.NAME + " AS u "
-        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-        + "WHERE personId = ?";
+            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+            + "FROM " + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "WHERE personId = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, personId);
     Logger.fine(ps);
@@ -341,17 +341,17 @@ public class UserManager {
   }
 
   public User get(int id) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, id);
     }
   }
 
   public User get(Connection connection, int id) throws SQLException {
     String query
-        = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-        + "FROM " + UsersTable.NAME + " AS u "
-        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-        + "WHERE u.id = ?";
+            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+            + "FROM " + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "WHERE u.id = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, id);
     Logger.fine(ps);
@@ -373,10 +373,10 @@ public class UserManager {
 
   public User getByHash(Connection connection, Hash hash) throws SQLException {
     String query
-        = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
-        + "FROM " + UsersTable.NAME + " AS u "
-        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-        + "WHERE passwordRecoveryUUID = ?";
+            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+            + "FROM " + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "WHERE passwordRecoveryUUID = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, hash.toString());
     Logger.fine(ps);
@@ -398,7 +398,7 @@ public class UserManager {
   }
 
   public void changePassword(Site site, Hash hash, Password password) throws SQLException, MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       User user = UserManager.getInstance().getByHash(connection, hash);
       if (user == null) {
         throw new UserNotFoundByHashException("change.password.user.not.found.by.hash");
@@ -433,7 +433,7 @@ public class UserManager {
   }
 
   public Message getRegistrationRetryAlertEMailData(Site site, String address) throws SQLException, IOException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
 
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, site, address);
 
@@ -448,20 +448,20 @@ public class UserManager {
       EMail to = EMailManager.getInstance().get(connection, address);
 
       return new Message(
-          Configuration.getInstance().get("no.reply.name"),
-          from,
-          person.getName() + ' ' + person.getLastName(),
-          to,
-          emailRegistrationRetryAlertTemplate.getSubject(),
-          emailRegistrationRetryAlertTemplate.getPlainText(),
-          emailRegistrationRetryAlertTemplate.getHtmlText());
+              Configuration.getInstance().get("no.reply.name"),
+              from,
+              person.getName() + ' ' + person.getLastName(),
+              to,
+              emailRegistrationRetryAlertTemplate.getSubject(),
+              emailRegistrationRetryAlertTemplate.getPlainText(),
+              emailRegistrationRetryAlertTemplate.getHtmlText());
     }
   }
 
   public Profiles getProfiles(User user) throws SQLException {
     Logger.fine("User profile list for %s.", user);
 
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       String query = "SELECT p.id, p.name, p.site FROM usersProfiles AS up LEFT JOIN profiles AS p ON up.profile = p.id WHERE up.user = ?";
       PreparedStatement ps = connection.prepareStatement(query);
       ps.setInt(1, user.getId());

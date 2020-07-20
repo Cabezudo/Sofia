@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.exceptions.InternalRuntimeException;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import org.apache.http.HttpEntity;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -60,7 +60,7 @@ public class MailServer {
       HttpEntity httpEntity = response.getEntity();
       String body = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
     } catch (UnsupportedEncodingException e) {
-      throw new InternalRuntimeException(e);
+      throw new SofiaRuntimeException(e);
     } catch (IOException e) {
       throw new MailServerException(e);
     } catch (org.apache.http.auth.AuthenticationException e) {

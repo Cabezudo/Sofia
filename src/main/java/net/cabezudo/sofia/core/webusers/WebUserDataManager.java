@@ -9,11 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -150,14 +149,16 @@ public class WebUserDataManager {
   }
 
   public ClientData get(String sessionId) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try (Connection connection = Database.getConnection()) {
       String query = "SELECT "
-          + "`failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
-          + "FROM " + WebUserDataTable.NAME + " WHERE sessionId = ?";
-      PreparedStatement ps = connection.prepareStatement(query);
+              + "`failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
+              + "FROM " + WebUserDataTable.NAME + " WHERE sessionId = ?";
+      ps = connection.prepareStatement(query);
       ps.setString(1, sessionId);
       Logger.fine(ps);
-      ResultSet rs = ps.executeQuery();
+      rs = ps.executeQuery();
       if (rs.next()) {
         Logger.fine("Client data FOUND using " + sessionId + ".");
         long failLoginResponseTime = rs.getLong("failLoginResponseTime");
@@ -169,13 +170,21 @@ public class WebUserDataManager {
       }
       Logger.fine("Client data NOT FOUND using " + sessionId + ".");
       return null;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
   }
 
   private void insert(ClientData clientData) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    PreparedStatement ps = null;
+    try (Connection connection = Database.getConnection()) {
       String query = "INSERT INTO " + WebUserDataTable.NAME + " (`sessionId`, `failLoginResponseTime`, `languageCode`, `languageCountryCode`) VALUES (?, ?, ?, ?)";
-      PreparedStatement ps = connection.prepareStatement(query);
+      ps = connection.prepareStatement(query);
       ps.setString(1, clientData.sessionId);
       ps.setLong(2, clientData.failLoginResponseTime);
       ps.setString(3, clientData.languageCode);
@@ -183,16 +192,25 @@ public class WebUserDataManager {
 
       Logger.fine(ps);
       ps.executeUpdate();
+    } finally {
+      if (ps != null) {
+        ps.close();
+      }
     }
   }
 
   private void update(String column, Object o) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    PreparedStatement ps = null;
+    try (Connection connection = Database.getConnection()) {
       String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ?";
-      PreparedStatement ps = connection.prepareStatement(query);
+      ps = connection.prepareStatement(query);
       ps.setObject(1, o);
       Logger.fine(ps);
       ps.executeUpdate();
+    } finally {
+      if (ps != null) {
+        ps.close();
+      }
     }
   }
 }

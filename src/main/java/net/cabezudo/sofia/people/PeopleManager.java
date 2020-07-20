@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
@@ -16,6 +14,7 @@ import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailManager;
 import net.cabezudo.sofia.emails.EMails;
 import net.cabezudo.sofia.emails.EMailsTable;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -37,7 +36,7 @@ public class PeopleManager {
   }
 
   public Person create(String name, String lastName, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return create(connection, name, lastName, owner);
     }
   }
@@ -80,7 +79,7 @@ public class PeopleManager {
   }
 
   public Person getByEMailAddress(Site site, String address) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return getByEMailAddress(connection, site, address);
     }
   }
@@ -89,10 +88,10 @@ public class PeopleManager {
     Logger.fine("Get person using the email address'" + address + "'.");
 
     String query
-        = "SELECT p.id, name, lastName, primaryEMailId, owner "
-        + "FROM " + PeopleTable.NAME + " AS p "
-        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
-        + "WHERE address = ?";
+            = "SELECT p.id, name, lastName, primaryEMailId, owner "
+            + "FROM " + PeopleTable.NAME + " AS p "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
+            + "WHERE address = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setString(1, address);
     Logger.fine(ps);
@@ -113,7 +112,7 @@ public class PeopleManager {
   }
 
   public Person get(int id) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, id);
     }
   }
@@ -122,10 +121,10 @@ public class PeopleManager {
     Logger.fine("Get person using the id " + id + ".");
 
     String query
-        = "SELECT p.id, name, lastName, primaryEMailId, owner "
-        + "FROM " + PeopleTable.NAME + " AS p "
-        + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
-        + "WHERE p.id = ?";
+            = "SELECT p.id, name, lastName, primaryEMailId, owner "
+            + "FROM " + PeopleTable.NAME + " AS p "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
+            + "WHERE p.id = ?";
     PreparedStatement ps = connection.prepareStatement(query);
     ps.setInt(1, id);
     Logger.fine(ps);
@@ -145,7 +144,7 @@ public class PeopleManager {
   }
 
   public EMail addEMailAddress(Person person, String address) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return EMailManager.getInstance().create(connection, person.getId(), address);
     }
   }

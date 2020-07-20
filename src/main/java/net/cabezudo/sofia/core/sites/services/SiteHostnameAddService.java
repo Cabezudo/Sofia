@@ -11,7 +11,6 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
@@ -59,7 +58,7 @@ public class SiteHostnameAddService extends Service {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");
         return;
       }
-      Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName());
+      Connection connection = Database.getConnection();
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();
       String hostname = jsonData.getString("name");

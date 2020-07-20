@@ -5,13 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.profiles.PermissionType;
 import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.ProfilesTable;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -29,7 +28,7 @@ public class PermissionManager {
   }
 
   public Permission get(String path, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, path, site);
     }
   }
@@ -52,7 +51,7 @@ public class PermissionManager {
   }
 
   public Permission get(String path, PermissionType permissionType, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, path, permissionType, site);
     }
   }
@@ -79,7 +78,7 @@ public class PermissionManager {
   }
 
   public PermissionType getPermissionType(String name) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return getPermissionType(connection, name);
     }
   }
@@ -100,7 +99,7 @@ public class PermissionManager {
   }
 
   public PermissionType createPermissionType(String name) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return createPermissionType(connection, name);
     }
   }
@@ -121,7 +120,7 @@ public class PermissionManager {
   }
 
   public Permission create(String uri, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return create(connection, uri, site);
     }
   }
@@ -143,7 +142,7 @@ public class PermissionManager {
   }
 
   public boolean has(Profile profile, String requestURI, PermissionType permissionType, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return has(connection, profile, requestURI, permissionType, site);
     }
   }
@@ -171,7 +170,7 @@ public class PermissionManager {
   }
 
   public void add(Permission permission, PermissionType permissionType, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       add(connection, permission, permissionType, site);
     }
   }
@@ -187,7 +186,7 @@ public class PermissionManager {
   }
 
   public boolean hasRelation(Permission permission, PermissionType permissionType, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return hasRelation(connection, permission, permissionType, site);
     }
   }

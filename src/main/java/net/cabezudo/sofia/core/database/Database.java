@@ -42,18 +42,25 @@ import net.cabezudo.sofia.zones.ZonesTable;
  */
 public class Database {
 
-  public static Connection getConnection() throws SQLException {
-    return getConnection(null);
+  private Database() {
+    // Nothing to do here. Utility classes should not have public constructors.
   }
 
-  public static Connection getConnection(String databaseName) throws SQLException {
+  public static Connection getConnection() throws SQLException {
+    return getConnection(null, 20);
+  }
+
+  public static Connection getConnection(String databaseName, int maxReconnects) throws SQLException {
+    if (maxReconnects == 0) {
+      maxReconnects = 20;
+    }
     String databaseHostname = Configuration.getInstance().getDatabaseHostname();
     String databasePort = Configuration.getInstance().getDatabasePort();
     String username = Configuration.getInstance().getDatabaseUser();
     String password = Configuration.getInstance().getDatabasePassword();
 
     String url;
-    String queryString = "?verifyServerCertificate=false&useSSL=false&characterEncoding=utf8&useUnicode=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=100";
+    String queryString = "?verifyServerCertificate=false&useSSL=false&characterEncoding=utf8&useUnicode=true&serverTimezone=UTC&allowPublicKeyRetrieval=true&autoReconnect=true&failOverReadOnly=false&maxReconnects=" + maxReconnects;
     if (databaseName == null) {
       url = "jdbc:mysql://" + databaseHostname + ":" + databasePort + queryString;
     } else {
@@ -79,7 +86,7 @@ public class Database {
       }
     }
 
-    try (Connection connection = getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = getConnection()) {
       createTables(connection);
     }
 
@@ -95,7 +102,7 @@ public class Database {
   }
 
   public static void restoreData() throws SQLException, FileNotFoundException {
-    Connection connection = getConnection(Configuration.getInstance().getDatabaseName());
+    Connection connection = getConnection();
     File in = new File(Configuration.getInstance().get("database.backup.file.name"));
     Statement statement = null;
     try (Scanner scanner = new Scanner(in)) {

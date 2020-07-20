@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.exceptions.InternalRuntimeException;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.ws.WebServiceNotFoundException;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.parser.URLPathTokenizer;
@@ -39,7 +39,7 @@ public class WebServicesServlet extends HttpServlet {
     try {
       WebServicesUniverse.getInstance().runGET(request, response, tokens);
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new InternalRuntimeException(e);
+      throw new SofiaRuntimeException(e);
     } catch (WebServiceNotFoundException e) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }

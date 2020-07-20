@@ -7,6 +7,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.creator.Caller;
 import net.cabezudo.sofia.logger.Logger;
@@ -16,6 +17,10 @@ import net.cabezudo.sofia.logger.Logger;
  * @version 0.01.00, 2019.03.06
  */
 public class FileHelper {
+
+  private FileHelper() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 
   public static void copyDirectory(Path src, Path dest) throws IOException {
     Path systemPath = Configuration.getInstance().getSystemPath();
@@ -35,8 +40,13 @@ public class FileHelper {
           throw new FileNotFoundException(src + " not found.");
         }
       }
+      realDirectoryCopy(src, dest);
+    }
+  }
 
-      List<Path> list = Files.walk(src).collect(Collectors.toList());
+  private static void realDirectoryCopy(Path src, Path dest) throws IOException {
+    try (Stream<Path> stream = Files.walk(src)) {
+      List<Path> list = stream.collect(Collectors.toList());
 
       for (Path path : list) {
         Path destPath = dest.resolve(src.relativize(path));

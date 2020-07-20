@@ -7,12 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import net.cabezudo.sofia.cities.CitiesTable;
 import net.cabezudo.sofia.cities.City;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.countries.CountriesTable;
 import net.cabezudo.sofia.countries.Country;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.municipalities.MunicipalitiesTable;
 import net.cabezudo.sofia.municipalities.Municipality;
 import net.cabezudo.sofia.states.State;
@@ -36,7 +35,7 @@ public class SettlementManager {
   }
 
   public Settlement get(SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, settlementType, municipality, zone, name, owner);
     }
   }
@@ -94,7 +93,7 @@ public class SettlementManager {
   }
 
   public Settlement add(SettlementType settlementType, City city, Municipality municipality, Zone zone, String settlementName, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return add(connection, settlementType, city, municipality, zone, settlementName, owner);
     }
   }

@@ -5,8 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -25,7 +25,7 @@ public class ZoneManager {
   }
 
   public Zone add(String name) throws SQLException {
-    try (Connection connection = Database.getConnection(Configuration.getInstance().getDatabaseName())) {
+    try (Connection connection = Database.getConnection()) {
       return add(connection, name);
     }
   }
@@ -36,18 +36,29 @@ public class ZoneManager {
       return zone;
     }
     String query = "INSERT INTO " + ZonesTable.NAME + " (name) VALUES (?)";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setString(1, name);
-    Logger.fine(ps);
-    ps.executeUpdate();
-    connection.setAutoCommit(true);
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, name);
+      Logger.fine(ps);
+      ps.executeUpdate();
+      connection.setAutoCommit(true);
 
-    ResultSet rs = ps.getGeneratedKeys();
-    if (rs.next()) {
-      int id = rs.getInt(1);
-      return new Zone(id, name);
+      rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        int id = rs.getInt(1);
+        return new Zone(id, name);
+      }
+    } finally {
+      if (ps != null) {
+        ps.close();
+      }
+      if (rs != null) {
+        rs.close();
+      }
     }
-    throw new RuntimeException("Can't get the generated key");
+    throw new SofiaRuntimeException("Can't get the generated key");
   }
 
   private Zone get(Connection connection, String name) throws SQLException {
