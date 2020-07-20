@@ -14,13 +14,13 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class EMailManager {
 
-  private static EMailManager INSTANCE;
+  private static EMailManager instance;
 
   public static EMailManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new EMailManager();
+    if (instance == null) {
+      instance = new EMailManager();
     }
-    return INSTANCE;
+    return instance;
   }
 
   public EMail get(String address) throws SQLException {
@@ -32,16 +32,26 @@ public class EMailManager {
   public EMail get(Connection connection, String address) throws SQLException {
 
     String query = "SELECT id, personId FROM " + EMailsTable.NAME + " WHERE address = ?";
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, address);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setString(1, address);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-
-    if (rs.next()) {
-      int id = rs.getInt("id");
-      int personId = rs.getInt("personId");
-      return new EMail(id, personId, address);
+      if (rs.next()) {
+        int id = rs.getInt("id");
+        int personId = rs.getInt("personId");
+        return new EMail(id, personId, address);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
     return null;
   }
@@ -54,16 +64,26 @@ public class EMailManager {
 
   public EMail get(Connection connection, int id) throws SQLException {
     String query = "SELECT id, personId, address FROM " + EMailsTable.NAME + " WHERE id = ?";
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setLong(1, id);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setLong(1, id);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-
-    if (rs.next()) {
-      int personId = rs.getInt("personId");
-      String address = rs.getString("address");
-      return new EMail(id, personId, address);
+      if (rs.next()) {
+        int personId = rs.getInt("personId");
+        String address = rs.getString("address");
+        return new EMail(id, personId, address);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
     return null;
   }
@@ -77,20 +97,30 @@ public class EMailManager {
   public EMails getByPersonId(Connection connection, int personId) throws SQLException {
 
     String query = "SELECT id, address FROM " + EMailsTable.NAME + " WHERE personId = ?";
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setInt(1, personId);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setInt(1, personId);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
+      EMails eMails = new EMails();
 
-    EMails eMails = new EMails();
-
-    while (rs.next()) {
-      int id = rs.getInt("id");
-      String address = rs.getString("address");
-      eMails.add(new EMail(id, personId, address));
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        String address = rs.getString("address");
+        eMails.add(new EMail(id, personId, address));
+      }
+      return eMails;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    return eMails;
   }
 
   public EMail create(int personId, String address) throws SQLException {
@@ -102,15 +132,26 @@ public class EMailManager {
   public EMail create(Connection connection, int personId, String address) throws SQLException {
     String query = "INSERT INTO " + EMailsTable.NAME + " (personId, address) VALUES (?, ?)";
 
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setInt(1, personId);
-    ps.setString(2, address);
-    Logger.fine(ps);
-    ps.executeUpdate();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setInt(1, personId);
+      ps.setString(2, address);
+      Logger.fine(ps);
+      ps.executeUpdate();
 
-    ResultSet rs = ps.getGeneratedKeys();
-    rs.next();
-    int id = rs.getInt(1);
-    return new EMail(id, personId, address);
+      rs = ps.getGeneratedKeys();
+      rs.next();
+      int id = rs.getInt(1);
+      return new EMail(id, personId, address);
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
+    }
   }
 }

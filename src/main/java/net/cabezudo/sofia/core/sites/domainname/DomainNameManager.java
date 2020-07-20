@@ -12,6 +12,7 @@ import net.cabezudo.sofia.core.api.options.list.Limit;
 import net.cabezudo.sofia.core.api.options.list.Offset;
 import net.cabezudo.sofia.core.api.options.list.Sort;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.logger.Logger;
@@ -40,39 +41,61 @@ public class DomainNameManager {
   public DomainNameList get(Connection connection, Site site) throws SQLException {
     String query = "SELECT id, name FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setInt(1, site.getId());
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setInt(1, site.getId());
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    DomainNameList list = new DomainNameList(0);
+      DomainNameList list = new DomainNameList(0);
 
-    while (rs.next()) {
-      int id = rs.getInt("id");
-      int siteId = rs.getInt("siteId");
-      String name = rs.getString("name");
-      DomainName domainName = new DomainName(id, siteId, name);
-      list.add(domainName);
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        int siteId = rs.getInt("siteId");
+        String name = rs.getString("name");
+        DomainName domainName = new DomainName(id, siteId, name);
+        list.add(domainName);
+      }
+      return list;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    return list;
   }
 
   public DomainName add(Connection connection, int siteId, String domainName) throws SQLException {
 
     String query = "INSERT INTO " + DomainNamesTable.NAME + " (siteId, name) VALUES (?, ?)";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setInt(1, siteId);
-    ps.setString(2, domainName);
-    Logger.fine(ps);
-    ps.executeUpdate();
-    connection.setAutoCommit(true);
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setInt(1, siteId);
+      ps.setString(2, domainName);
+      Logger.fine(ps);
+      ps.executeUpdate();
+      connection.setAutoCommit(true);
 
-    ResultSet rs = ps.getGeneratedKeys();
-    if (rs.next()) {
-      int id = rs.getInt(1);
-      return new DomainName(id, siteId, domainName);
+      rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        int id = rs.getInt(1);
+        return new DomainName(id, siteId, domainName);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    throw new RuntimeException("Can't get the generated key");
+    throw new SofiaRuntimeException("Can't get the generated key");
   }
 
   public DomainName get(int domainNameId) throws SQLException {
@@ -84,19 +107,29 @@ public class DomainNameManager {
   public DomainName get(Connection connection, int domainNameId) throws SQLException {
     String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + " WHERE id = ?";
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setInt(1, domainNameId);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setInt(1, domainNameId);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    if (rs.next()) {
-      int id = rs.getInt("id");
-      int siteId = rs.getInt("siteId");
-      String name = rs.getString("name");
-      DomainName domainName = new DomainName(id, siteId, name);
-      return domainName;
+      if (rs.next()) {
+        int id = rs.getInt("id");
+        int siteId = rs.getInt("siteId");
+        String name = rs.getString("name");
+        return new DomainName(id, siteId, name);
+      }
+      return null;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    return null;
   }
 
   public void validate(String domainName) throws DomainNameMaxSizeException, EmptyDomainNameException, InvalidCharacterException, MissingDotException, DomainNameNotExistsException {
@@ -141,36 +174,46 @@ public class DomainNameManager {
   public DomainName getByDomainNameName(Connection connection, String domainNameName) throws SQLException {
     // TODO agregar una cache aquí. No olvidar modificar los registros que se modifiquen.
     String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + " WHERE name = ?";
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, domainNameName);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setString(1, domainNameName);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
+      if (rs.next()) {
+        int id = rs.getInt("id");
+        int siteId = rs.getInt("siteId");
+        String name = rs.getString(2);
+        return new DomainName(id, siteId, name);
+      }
+      return null;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
+    }
+  }
 
-    if (rs.next()) {
-      int id = rs.getInt("id");
-      int siteId = rs.getInt("siteId");
-      String name = rs.getString(2);
-      DomainName domainName = new DomainName(id, siteId, name);
+  public DomainName update(DomainName domainName, User owner) throws SQLException {
+    try (Connection connection = Database.getConnection()) {
+      return update(connection, domainName);
+    }
+  }
+
+  public DomainName update(Connection connection, DomainName domainName) throws SQLException {
+    String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+      ps.setString(1, domainName.getName());
+      ps.setInt(2, domainName.getId());
+      Logger.fine(ps);
+      ps.executeUpdate();
       return domainName;
     }
-    return null;
-  }
-
-  public DomainName update(Site site, DomainName domainName, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
-      return update(connection, site, domainName);
-    }
-  }
-
-  public DomainName update(Connection connection, Site site, DomainName domainName) throws SQLException {
-    String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setString(1, domainName.getName());
-    ps.setInt(2, domainName.getId());
-    Logger.fine(ps);
-    ps.executeUpdate();
-    return domainName;
   }
 
   public void delete(int hostId) throws SQLException {
@@ -181,9 +224,10 @@ public class DomainNameManager {
 
   public void delete(Connection connection, int hostId) throws SQLException {
     String query = "DELETE FROM " + DomainNamesTable.NAME + " WHERE id = ?";
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setInt(1, hostId);
-    Logger.fine(ps);
-    ps.executeUpdate();
+    try (PreparedStatement ps = connection.prepareStatement(query)) {
+      ps.setInt(1, hostId);
+      Logger.fine(ps);
+      ps.executeUpdate();
+    }
   }
 }

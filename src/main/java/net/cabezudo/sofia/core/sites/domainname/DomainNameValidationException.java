@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class DomainNameValidationException extends ParametrizedException {
 
-  public DomainNameValidationException(String message, Object... parameters) {
+  public DomainNameValidationException(String message, String... parameters) {
     super(message, parameters);
   }
 }

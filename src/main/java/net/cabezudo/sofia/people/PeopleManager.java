@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -22,17 +22,17 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class PeopleManager {
 
-  private static PeopleManager INSTANCE;
+  private static PeopleManager instance;
 
   private PeopleManager() {
     // Nothing to do here
   }
 
   public static PeopleManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new PeopleManager();
+    if (instance == null) {
+      instance = new PeopleManager();
     }
-    return INSTANCE;
+    return instance;
   }
 
   public Person create(String name, String lastName, User owner) throws SQLException {
@@ -43,22 +43,31 @@ public class PeopleManager {
 
   public Person create(Connection connection, String name, String lastName, User owner) throws SQLException {
     String query = "INSERT INTO " + PeopleTable.NAME + " (name, lastName, owner) VALUES (?, ?, ?)";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setString(1, name);
-    ps.setString(2, lastName);
-    ps.setInt(3, owner.getId());
-    Logger.fine(ps);
-    ps.executeUpdate();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, name);
+      ps.setString(2, lastName);
+      ps.setInt(3, owner.getId());
+      Logger.fine(ps);
+      ps.executeUpdate();
 
-    ResultSet rs = ps.getGeneratedKeys();
-    if (rs.next()) {
-      int id = rs.getInt(1);
-      Person person;
-      EMails eMails = new EMails();
-      person = new Person(id, name, lastName, eMails, owner);
-      return person;
-    } else {
-      throw new RuntimeException("Key not generated.");
+      rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        int id = rs.getInt(1);
+        EMails eMails = new EMails();
+        return new Person(id, name, lastName, eMails, owner);
+      } else {
+        throw new SofiaRuntimeException("Key not generated.");
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
   }
 
@@ -67,24 +76,25 @@ public class PeopleManager {
       return;
     }
     if (eMail.getId() == 0) {
-      throw new RuntimeException("The email id is 0.");
+      throw new SofiaRuntimeException("The email id is 0.");
     }
     String query = "UPDATE " + PeopleTable.NAME + " SET primaryEMailId = ? WHERE id = ?";
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setLong(1, eMail.getId());
-    ps.setLong(2, person.getId());
-    Logger.fine(ps);
-    ps.executeUpdate();
+    try (PreparedStatement ps = connection.prepareStatement(query)) {
+      ps.setLong(1, eMail.getId());
+      ps.setLong(2, person.getId());
+      Logger.fine(ps);
+      ps.executeUpdate();
+    }
 
   }
 
-  public Person getByEMailAddress(Site site, String address) throws SQLException {
+  public Person getByEMailAddress(String address) throws SQLException {
     try (Connection connection = Database.getConnection()) {
-      return getByEMailAddress(connection, site, address);
+      return getByEMailAddress(connection, address);
     }
   }
 
-  public Person getByEMailAddress(Connection connection, Site site, String address) throws SQLException {
+  public Person getByEMailAddress(Connection connection, String address) throws SQLException {
     Logger.fine("Get person using the email address'" + address + "'.");
 
     String query
@@ -92,21 +102,31 @@ public class PeopleManager {
             + "FROM " + PeopleTable.NAME + " AS p "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
             + "WHERE address = ?";
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setString(1, address);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, address);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    if (rs.next()) {
-      int id = rs.getInt("id");
-      String name = rs.getString("name");
-      String lastName = rs.getString("lastName");
-      int primaryEMailId = rs.getInt("primaryEMailId");
-      int owner = rs.getInt("owner");
-      EMails eMails = EMailManager.getInstance().getByPersonId(id);
-      eMails.setPrimaryEMailById(primaryEMailId);
-      Person person = new Person(id, name, lastName, eMails, owner);
-      return person;
+      if (rs.next()) {
+        int id = rs.getInt("id");
+        String name = rs.getString("name");
+        String lastName = rs.getString("lastName");
+        int primaryEMailId = rs.getInt("primaryEMailId");
+        int owner = rs.getInt("owner");
+        EMails eMails = EMailManager.getInstance().getByPersonId(id);
+        eMails.setPrimaryEMailById(primaryEMailId);
+        return new Person(id, name, lastName, eMails, owner);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
     return null;
   }
@@ -125,20 +145,30 @@ public class PeopleManager {
             + "FROM " + PeopleTable.NAME + " AS p "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
             + "WHERE p.id = ?";
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setInt(1, id);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setInt(1, id);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    if (rs.next()) {
-      String name = rs.getString("name");
-      String lastName = rs.getString("lastName");
-      int primaryEMailId = rs.getInt("primaryEMailId");
-      EMails eMails = EMailManager.getInstance().getByPersonId(id);
-      eMails.setPrimaryEMailById(primaryEMailId);
-      User owner = UserManager.getInstance().get(connection, id);
-      Person person = new Person(id, name, lastName, eMails, owner);
-      return person;
+      if (rs.next()) {
+        String name = rs.getString("name");
+        String lastName = rs.getString("lastName");
+        int primaryEMailId = rs.getInt("primaryEMailId");
+        EMails eMails = EMailManager.getInstance().getByPersonId(id);
+        eMails.setPrimaryEMailById(primaryEMailId);
+        User owner = UserManager.getInstance().get(connection, id);
+        return new Person(id, name, lastName, eMails, owner);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
     return null;
   }

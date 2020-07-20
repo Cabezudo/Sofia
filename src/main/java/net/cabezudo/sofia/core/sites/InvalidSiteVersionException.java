@@ -9,15 +9,15 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class InvalidSiteVersionException extends ParametrizedException {
 
-  private final Object[] values;
+  private final String[] values;
 
-  public InvalidSiteVersionException(String message, Object... values) {
+  public InvalidSiteVersionException(String message, String... values) {
     super(message + ": " + Arrays.toString(values));
     this.values = values;
   }
 
   @Override
-  public Object[] getParameters() {
+  public String[] getParameters() {
     return values;
   }
 }

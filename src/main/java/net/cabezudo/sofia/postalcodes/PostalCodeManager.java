@@ -6,8 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.settlements.Settlement;
 
 /**
@@ -37,6 +38,7 @@ public class PostalCodeManager {
       return state;
     }
     String query = "INSERT INTO " + PostalCodesTable.NAME + " (settlement, postalCode, owner) VALUES (?, ?, ?)";
+    ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlement.getId());
       ps.setInt(2, postalCode);
@@ -45,30 +47,37 @@ public class PostalCodeManager {
       ps.executeUpdate();
       connection.setAutoCommit(true);
 
-      ResultSet rs = ps.getGeneratedKeys();
+      rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
         return new PostalCode(id, settlement, postalCode);
       }
-      throw new RuntimeException("Can't get the generated key");
+      throw new SofiaRuntimeException("Can't get the generated key");
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
     }
   }
 
   private PostalCode get(Connection connection, Settlement settlement, int postalCode, User owner) throws SQLException {
     String query = "SELECT id, settlement, postalCode FROM " + PostalCodesTable.NAME + " WHERE settlement = ? AND postalCode = ? AND (owner = ? OR owner = 1)";
-
+    ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, settlement.getId());
       ps.setInt(2, postalCode);
       ps.setInt(3, owner.getId());
       Logger.fine(ps);
-      ResultSet rs = ps.executeQuery();
+      rs = ps.executeQuery();
 
       if (rs.next()) {
         return new PostalCode(rs.getInt("id"), settlement, postalCode);
       }
       return null;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
     }
   }
-
 }

@@ -21,7 +21,7 @@ public class HostnameValidator {
     } catch (EmptyHostnameException e) {
       throw new HostnameValidationException("hostname.empty", hostname);
     } catch (InvalidCharacterException e) {
-      throw new HostnameValidationException("hostname.invalidCharacter", e.getChar(), hostname);
+      throw new HostnameValidationException("hostname.invalidCharacter", e.getChar().toString(), hostname);
     } catch (HostnameNotExistsException e) {
       throw new HostnameValidationException("hostname.notExists", hostname);
     }

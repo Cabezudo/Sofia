@@ -1,15 +1,19 @@
 package net.cabezudo.sofia.emails;
 
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameValidationException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameValidator;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.14
  */
 public class EMailValidator {
+
+  private EMailValidator() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 
   public static String validate(String address) throws EMailMaxSizeException, DomainNameMaxSizeException, EMailAddressValidationException {
     Logger.finest("Validate address %s for email.", address);

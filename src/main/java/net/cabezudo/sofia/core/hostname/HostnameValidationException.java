@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class HostnameValidationException extends ParametrizedException {
 
-  public HostnameValidationException(String message, Object... parameters) {
+  public HostnameValidationException(String message, String... parameters) {
     super(message, parameters);
   }
 }
