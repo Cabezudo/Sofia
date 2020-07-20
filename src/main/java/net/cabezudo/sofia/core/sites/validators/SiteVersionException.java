@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class SiteVersionException extends ParametrizedException {
 
-  public SiteVersionException(String message, Object... parameters) {
+  public SiteVersionException(String message, String... parameters) {
     super(message, parameters);
   }
 

@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class EMailAddressValidationException extends ParametrizedException {
 
-  public EMailAddressValidationException(String messageKey, Object... os) {
+  public EMailAddressValidationException(String messageKey, String... os) {
     super(messageKey, os);
   }
 }

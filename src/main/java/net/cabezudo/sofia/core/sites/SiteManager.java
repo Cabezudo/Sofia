@@ -228,6 +228,7 @@ public class SiteManager {
 
       PreparedStatement ps = null;
       ResultSet rs = null;
+      SiteList list;
       try {
         ps = connection.prepareStatement(query);
         setSiteFilters(filters, ps);
@@ -235,7 +236,7 @@ public class SiteManager {
         Logger.fine(ps);
         rs = ps.executeQuery();
 
-        SiteList list = new SiteList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
+        list = new SiteList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
         Map<Integer, SiteHelper> map = new HashMap<>();
 
         while (rs.next()) {
@@ -259,7 +260,15 @@ public class SiteManager {
           Site site = siteHelper.getSite();
           list.add(site);
         }
-
+      } finally {
+        if (rs != null) {
+          rs.close();
+        }
+        if (ps != null) {
+          ps.close();
+        }
+      }
+      try {
         query = "SELECT FOUND_ROWS() AS total";
         ps = connection.prepareStatement(query);
         Logger.fine(ps);
@@ -301,17 +310,11 @@ public class SiteManager {
         throw new InvalidParameterException("Invalid parameter value: " + field);
     }
     String query = "UPDATE " + SitesTable.NAME + " SET " + field + " = ? WHERE id = ?";
-    PreparedStatement ps = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, value);
       ps.setInt(2, siteId);
       Logger.fine(ps);
       ps.executeUpdate();
-    } finally {
-      if (ps != null) {
-        ps.close();
-      }
     }
   }
 
@@ -411,13 +414,13 @@ public class SiteManager {
 
   public synchronized void update(Site site, DomainName domainName, User owner) throws SQLException {
     DomainName baseDomainName = site.getBaseDomainName();
-    DomainNameManager.getInstance().update(site, domainName, owner);
+    DomainNameManager.getInstance().update(domainName, owner);
     if (baseDomainName.getId() == domainName.getId()) {
       try {
         SiteManager.getInstance().changeBasePath(site, domainName);
       } catch (IOException e) {
         Logger.severe(e);
-        DomainNameManager.getInstance().update(site, baseDomainName, owner);
+        DomainNameManager.getInstance().update(baseDomainName, owner);
       }
     }
   }
@@ -535,13 +538,13 @@ public class SiteManager {
     StringBuilder sb = new StringBuilder(" WHERE 1 = 1");
     if (filter != null) {
       List<OptionValue> values = filter.getValues();
-      for (OptionValue value : values) {
+      values.forEach(value -> {
         if (value.isPositive()) {
           sb.append(" AND (name LIKE ?)");
         } else {
           sb.append(" AND name NOT LIKE ?");
         }
-      }
+      });
     }
     return sb.toString();
   }
@@ -559,6 +562,8 @@ public class SiteManager {
   public int getHostsTotal(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site host list total");
 
+    PreparedStatement ps = null;
+    ResultSet rs = null;
     try (Connection connection = Database.getConnection()) {
       String where = getHostWhere(filters);
 
@@ -576,14 +581,15 @@ public class SiteManager {
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query = "SELECT count(*) AS total FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
-      PreparedStatement ps = connection.prepareStatement(query);
+      ps = connection.prepareStatement(query);
 
-      ps.setInt(1, site.getId());
+      int i = 1;
+      ps.setInt(i, site.getId());
 
       setHostFilters(filters, ps);
 
       Logger.fine(ps);
-      ResultSet rs = ps.executeQuery();
+      rs = ps.executeQuery();
 
       if (rs.next()) {
         int total = rs.getInt("total");
@@ -591,7 +597,15 @@ public class SiteManager {
       } else {
         throw new RuntimeException("Column expected.");
       }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
+
   }
 
   private String getHostWhere(Filters filter) {
@@ -639,34 +653,55 @@ public class SiteManager {
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
-      PreparedStatement ps = connection.prepareStatement(query);
-      ps.setInt(1, site.getId());
-      setHostFilters(filters, ps);
+      PreparedStatement ps = null;
+      ResultSet rs = null;
+      DomainNameList list;
+      int i = 1;
+      try {
+        ps = connection.prepareStatement(query);
+        ps.setInt(i, site.getId());
+        setHostFilters(filters, ps);
 
-      Logger.fine(ps);
-      ResultSet rs = ps.executeQuery();
+        Logger.fine(ps);
+        rs = ps.executeQuery();
 
-      DomainNameList list = new DomainNameList(offset == null ? 0 : offset.getValue());
-      while (rs.next()) {
-        int id = rs.getInt("id");
-        int siteId = rs.getInt("siteId");
-        String name = rs.getString("name");
+        list = new DomainNameList(offset == null ? 0 : offset.getValue());
+        while (rs.next()) {
+          int id = rs.getInt("id");
+          int siteId = rs.getInt("siteId");
+          String name = rs.getString("name");
 
-        DomainName domainName = new DomainName(id, siteId, name);
-
-        list.add(domainName);
+          DomainName domainName = new DomainName(id, siteId, name);
+          list.add(domainName);
+        }
+      } finally {
+        if (rs != null) {
+          rs.close();
+        }
+        if (ps != null) {
+          ps.close();
+        }
       }
 
       query = "SELECT FOUND_ROWS() AS total";
-      ps = connection.prepareStatement(query);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-      if (!rs.next()) {
-        throw new RuntimeException("The select to count the number of sites fail.");
-      }
-      int total = rs.getInt("total");
+      try {
+        ps = connection.prepareStatement(query);
+        Logger.fine(ps);
+        rs = ps.executeQuery();
+        if (!rs.next()) {
+          throw new RuntimeException("The select to count the number of sites fail.");
+        }
+        int total = rs.getInt("total");
 
-      list.setTotal(total);
+        list.setTotal(total);
+      } finally {
+        if (rs != null) {
+          rs.close();
+        }
+        if (ps != null) {
+          ps.close();
+        }
+      }
 
       return list;
     }

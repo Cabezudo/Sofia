@@ -37,14 +37,6 @@ public class AuthorizationManager {
   private AuthorizationManager() {
   }
 
-  public boolean hasAuthorization(Class theClass, User user) throws NotLoggedException {
-    // TODO tomar los permisos de la base de datos. Si la clase no está registrada no dar acceso. El valor por defecto es la negación
-    if (user == null) {
-      throw new NotLoggedException();
-    }
-    return false;
-  }
-
   public boolean hasAuthorization(String requestURI, User user, PermissionType permissionType, Site site) throws NotLoggedException, SQLException {
     Logger.debug("Looking for authorization for uri %s, user %s, permissionType %s and site %s", requestURI, user, permissionType.getName(), site.getBaseDomainName().getName());
     try (Connection connection = Database.getConnection()) {
@@ -105,12 +97,11 @@ public class AuthorizationManager {
 
   public void delete(Connection connection, String requestURI, Site site) throws SQLException {
     String query = "DELETE FROM " + ProfilesPermissionsTable.NAME + " WHERE permission = (SELECT id FROM " + PermissionsTable.NAME + " WHERE uri = ? AND site = ?)";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setString(1, requestURI);
-    ps.setInt(2, site.getId());
-    Logger.fine(ps);
-    ps.executeUpdate();
-
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+      ps.setString(1, requestURI);
+      ps.setInt(2, site.getId());
+      Logger.fine(ps);
+      ps.executeUpdate();
+    }
   }
-
 }

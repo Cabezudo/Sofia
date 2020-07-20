@@ -6,13 +6,13 @@ package net.cabezudo.sofia.addresses;
  */
 public class AddressManager {
 
-  private static AddressManager INSTANCE;
+  private static AddressManager instance;
 
   public static AddressManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new AddressManager();
+    if (instance == null) {
+      instance = new AddressManager();
     }
-    return INSTANCE;
+    return instance;
   }
 
   public AddressDataList list(String streetName, Integer postalCode, String settlementName, String cityName, String municipalityName, String stateName) {

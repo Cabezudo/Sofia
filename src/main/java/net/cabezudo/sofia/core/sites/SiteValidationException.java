@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class SiteValidationException extends ParametrizedException {
 
-  public SiteValidationException(String message, Object... parameters) {
+  public SiteValidationException(String message, String... parameters) {
     super(message, parameters);
   }
 }

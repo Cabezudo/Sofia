@@ -165,7 +165,7 @@ public class TestData {
       String name = names[n];
       String lastName = lastNames[l];
       String address = getEMail(name, lastName);
-      Person person = PeopleManager.getInstance().getByEMailAddress(site, address);
+      Person person = PeopleManager.getInstance().getByEMailAddress(address);
       if (person == null) {
         Client client = ClientManager.getInstance().create(name, lastName, owner);
         int m = (int) (Math.random() * 3);

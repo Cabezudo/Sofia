@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -14,13 +15,13 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class SettlementTypeManager {
 
-  private static SettlementTypeManager INSTANCE;
+  private static SettlementTypeManager instance;
 
   public static SettlementTypeManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new SettlementTypeManager();
+    if (instance == null) {
+      instance = new SettlementTypeManager();
     }
-    return INSTANCE;
+    return instance;
   }
 
   public SettlementType add(String name) throws SQLException {
@@ -35,30 +36,51 @@ public class SettlementTypeManager {
       return settlementType;
     }
     String query = "INSERT INTO " + SettlementTypesTable.NAME + " (name) VALUES (?)";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setString(1, name);
-    Logger.fine(ps);
-    ps.executeUpdate();
-    connection.setAutoCommit(true);
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, name);
+      Logger.fine(ps);
+      ps.executeUpdate();
+      connection.setAutoCommit(true);
 
-    ResultSet rs = ps.getGeneratedKeys();
-    if (rs.next()) {
-      int id = rs.getInt(1);
-      return new SettlementType(id, name);
+      rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        int id = rs.getInt(1);
+        return new SettlementType(id, name);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    throw new RuntimeException("Can't get the generated key");
+    throw new SofiaRuntimeException("Can't get the generated key");
   }
 
   private SettlementType get(Connection connection, String name) throws SQLException {
     String query = "SELECT id, name FROM " + SettlementTypesTable.NAME + " WHERE name = ?";
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, name);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setString(1, name);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-
-    if (rs.next()) {
-      return new SettlementType(rs.getInt("id"), rs.getString("name"));
+      if (rs.next()) {
+        return new SettlementType(rs.getInt("id"), rs.getString("name"));
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
     return null;
   }

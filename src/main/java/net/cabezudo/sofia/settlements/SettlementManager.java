@@ -8,6 +8,7 @@ import java.sql.Statement;
 import net.cabezudo.sofia.cities.CitiesTable;
 import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.countries.CountriesTable;
 import net.cabezudo.sofia.countries.Country;
@@ -66,28 +67,37 @@ public class SettlementManager {
             + "LEFT JOIN " + CountriesTable.NAME + " AS o ON t.country = o.id "
             + "LEFT JOIN " + ZonesTable.NAME + " AS z ON s.zone = z.id "
             + "WHERE st.id = ? AND m.id = ? AND z.id = ? AND s.name = ? AND (s.owner = ? OR s.owner = 1)";
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setInt(1, settlementType.getId());
+      ps.setInt(2, municipality.getId());
+      ps.setInt(3, zone.getId());
+      ps.setString(4, name);
+      ps.setInt(5, owner.getId());
+      Logger.fine(ps);
+      rs = ps.executeQuery();
 
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setInt(1, settlementType.getId());
-    ps.setInt(2, municipality.getId());
-    ps.setInt(3, zone.getId());
-    ps.setString(4, name);
-    ps.setInt(5, owner.getId());
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-
-    if (rs.next()) {
-      settlementType = new SettlementType(rs.getInt("typeId"), rs.getString("typeName"));
-      Country country = new Country(rs.getInt("countryId"), rs.getString("countryName"), rs.getInt("countryPhoneCode"), rs.getString("countryTwoLettersCountryCode"));
-      State state = new State(rs.getInt("stateId"), country, rs.getString("stateName"));
-      City city = null;
-      if (rs.getInt("cityId") != 0) {
-        city = new City(rs.getInt("cityId"), state, rs.getString("cityName"));
+      if (rs.next()) {
+        settlementType = new SettlementType(rs.getInt("typeId"), rs.getString("typeName"));
+        Country country = new Country(rs.getInt("countryId"), rs.getString("countryName"), rs.getInt("countryPhoneCode"), rs.getString("countryTwoLettersCountryCode"));
+        State state = new State(rs.getInt("stateId"), country, rs.getString("stateName"));
+        City city = null;
+        if (rs.getInt("cityId") != 0) {
+          city = new City(rs.getInt("cityId"), state, rs.getString("cityName"));
+        }
+        municipality = new Municipality(rs.getInt("municipalityId"), state, rs.getString("municipalityName"));
+        zone = new Zone(rs.getInt("zoneId"), rs.getString("zoneName"));
+        return new Settlement(rs.getInt("id"), settlementType, city, municipality, zone, rs.getString("name"));
       }
-      municipality = new Municipality(rs.getInt("municipalityId"), state, rs.getString("municipalityName"));
-      zone = new Zone(rs.getInt("zoneId"), rs.getString("zoneName"));
-      Settlement settlement = new Settlement(rs.getInt("id"), settlementType, city, municipality, zone, rs.getString("name"));
-      return settlement;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
     return null;
   }
@@ -105,6 +115,7 @@ public class SettlementManager {
     }
 
     String query = "INSERT INTO " + SettlementsTable.NAME + " (type, city, municipality, zone, name, owner) VALUES (?, ?, ?, ?, ?, ?)";
+    ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlementType.getId());
       if (city == null) {
@@ -120,13 +131,17 @@ public class SettlementManager {
       ps.executeUpdate();
       connection.setAutoCommit(true);
 
-      ResultSet rs = ps.getGeneratedKeys();
+      rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
         return new Settlement(id, settlementType, city, municipality, zone, name);
       }
-      throw new RuntimeException("Can't get the generated key");
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
     }
+    throw new SofiaRuntimeException("Can't get the generated key");
   }
 
 }

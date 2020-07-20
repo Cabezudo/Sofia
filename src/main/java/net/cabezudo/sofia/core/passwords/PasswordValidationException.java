@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class PasswordValidationException extends ParametrizedException {
 
-  public PasswordValidationException(String message, Object... parameters) {
+  public PasswordValidationException(String message, String... parameters) {
     super(message, parameters);
   }
 }

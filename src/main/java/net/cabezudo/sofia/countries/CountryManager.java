@@ -31,17 +31,25 @@ public class CountryManager {
 
   public Country get(Connection connection, String name) throws SQLException {
     String query = "SELECT id, name, phoneCode, twoLettersCountryCode FROM " + CountriesTable.NAME + " WHERE name =  ?";
-
-    PreparedStatement ps = connection.prepareStatement(query);
-    ps.setString(1, name);
-    Logger.fine(ps);
-    ResultSet rs = ps.executeQuery();
-
-    if (rs.next()) {
-      Country country = new Country(rs.getInt("id"), rs.getString("name"), rs.getInt("phoneCode"), rs.getString("twoLettersCountryCode"));
-      return country;
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, name);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
+      if (rs.next()) {
+        return new Country(rs.getInt("id"), rs.getString("name"), rs.getInt("phoneCode"), rs.getString("twoLettersCountryCode"));
+      }
+      return null;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
-    return null;
   }
 
   public Country add(String name, int phoneCode, String twoLettersCountryCode) throws SQLException {
@@ -52,19 +60,31 @@ public class CountryManager {
 
   public Country add(Connection connection, String name, int phoneCode, String twoLettersCountryCode) throws SQLException {
     String query = "INSERT INTO " + CountriesTable.NAME + " (name, phoneCode, twoLettersCountryCode) VALUES (?, ?, ?)";
-    PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-    ps.setString(1, name);
-    ps.setInt(2, phoneCode);
-    ps.setString(3, twoLettersCountryCode);
-    Logger.fine(ps);
-    ps.executeUpdate();
-    connection.setAutoCommit(true);
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, name);
+      ps.setInt(2, phoneCode);
+      ps.setString(3, twoLettersCountryCode);
+      Logger.fine(ps);
+      ps.executeUpdate();
+      connection.setAutoCommit(true);
 
-    ResultSet rs = ps.getGeneratedKeys();
-    if (rs.next()) {
-      Integer id = rs.getInt(1);
-      return new Country(id, name, phoneCode, twoLettersCountryCode);
+      rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        Integer id = rs.getInt(1);
+        return new Country(id, name, phoneCode, twoLettersCountryCode);
+      }
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
     }
+
     throw new SQLException("Can't get the generated key");
   }
 }

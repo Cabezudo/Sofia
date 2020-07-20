@@ -9,12 +9,10 @@ import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
-import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
-import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
 import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
-import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -33,14 +31,13 @@ public class ListClientsService extends ListService {
     try {
       clientData = getClientData();
     } catch (SQLException e) {
-      e.printStackTrace();
+      Logger.severe(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
       return;
     }
 
     try {
       User owner = clientData.getUser();
-      AuthorizationManager.getInstance().hasAuthorization(ListClientsService.class, owner);
 
       ClientList list = ClientManager.getInstance().list(getFilters(), getSort(), getOffset(), getLimit(), owner);
 
@@ -99,12 +96,10 @@ public class ListClientsService extends ListService {
         out.print(jsonObject.toJSON());
       }
     } catch (SQLException e) {
-      e.printStackTrace();
+      Logger.severe(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     } catch (UserNotExistException e) {
       sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
-    } catch (NotLoggedException e) {
-      sendResponse(new Response(Response.Status.NOT_LOGGED, Response.Type.DATA, "user.notLogged"));
     }
   }
 }
