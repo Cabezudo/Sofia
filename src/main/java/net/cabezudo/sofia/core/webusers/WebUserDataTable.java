@@ -18,4 +18,8 @@ public class WebUserDataTable {
           + "PRIMARY KEY (`sessionId`)"
           + ") "
           + "CHARACTER SET=UTF8";
+
+  private WebUserDataTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

@@ -9,8 +9,8 @@ import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -60,7 +60,7 @@ final class ThemeSourceFile implements SofiaSource {
     int lineNumber = 1;
     for (String line : linesFromFile) {
       try {
-        String newLine = getTemplateVariables().replace(line, lineNumber, partialStyleFilePath);
+        String newLine = getTemplateVariables().replace(line);
         add(new CodeLine(newLine, lineNumber));
       } catch (UndefinedLiteralException e) {
         Position position = new Position(lineNumber, e.getRow());

@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.files.FileHelper;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -104,19 +104,18 @@ class CSSSourceFile implements SofiaSource {
     StringBuilder code = new StringBuilder();
 
     for (Library library : libraries) {
-      for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
-        cssImports.add(file.getCascadingStyleSheetImports());
-      }
+      library.getCascadingStyleSheetFiles().forEach(file -> cssImports.add(file.getCascadingStyleSheetImports()));
     }
     code.append(cssImports.toString());
 
     for (Library library : libraries) {
       Logger.debug("Search files in library %s.", library);
-      for (CSSSourceFile file : library.getCascadingStyleSheetFiles()) {
+      library.getCascadingStyleSheetFiles().stream().map(file -> {
         Logger.debug("Add lines from file %s.", file.getPartialPath());
-
+        return file;
+      }).forEachOrdered(file -> {
         code.append(file.getCascadingStyleSheetLines().getCode()).append('\n');
-      }
+      });
     }
     code.append(lines.getCode());
 
@@ -164,7 +163,7 @@ class CSSSourceFile implements SofiaSource {
     Logger.debug("Replace template variables on source file %s.", cssFullSourceFilePath);
     for (String line : linesFromFile) {
       try {
-        String newLine = getTemplateVariables().replace(line, lineNumber, cssFullSourceFilePath);
+        String newLine = getTemplateVariables().replace(line);
         add(new CodeLine(newLine, lineNumber));
       } catch (UndefinedLiteralException e) {
         Position position = new Position(lineNumber, e.getRow());
@@ -178,7 +177,7 @@ class CSSSourceFile implements SofiaSource {
     Path htmlPartialPath = site.getVersionPath().relativize(filePath);
     Path cssBasePath = site.getCSSPath().resolve(htmlPartialPath).getParent();
     String htmlFileName = filePath.getFileName().toString();
-    int i = htmlFileName.lastIndexOf(".");
+    int i = htmlFileName.lastIndexOf('.');
     if (i == -1) {
       return null;
     }
@@ -190,9 +189,7 @@ class CSSSourceFile implements SofiaSource {
     }
     StringBuilder sb = new StringBuilder((int) Files.size(cssFilePath));
     List<String> linesFromFile = Files.readAllLines(cssFilePath);
-    for (String line : linesFromFile) {
-      sb.append(line).append('\n');
-    }
+    linesFromFile.forEach(line -> sb.append(line).append('\n'));
     return sb;
   }
 

@@ -1,15 +1,14 @@
 package net.cabezudo.sofia.core.creator;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -24,22 +23,19 @@ public class TemplateVariables {
     jsonObject = new JSONObject();
   }
 
-  public void add(Path basePath, String fileName) throws FileNotFoundException, IOException, JSONParseException, UndefinedLiteralException {
+  public void add(Path basePath, String fileName) throws IOException, JSONParseException, UndefinedLiteralException {
     add(basePath, fileName, null);
   }
 
-  public void add(Path basePath, String fileName, String id) throws FileNotFoundException, IOException, JSONParseException, UndefinedLiteralException {
-    Path partialFilePath = Paths.get(fileName);
+  public void add(Path basePath, String fileName, String id) throws IOException, JSONParseException, UndefinedLiteralException {
     Path fullPath = basePath.resolve(fileName);
     Logger.debug("Search template literals file: %s", fullPath);
     if (Files.exists(fullPath)) {
       Logger.debug("Template literals file FOUND: %s", fullPath);
       List<String> lines = Files.readAllLines(fullPath);
       StringBuilder sb = new StringBuilder();
-      int lineNumber = 1;
       for (String line : lines) {
-        sb.append(replace(line, lineNumber, partialFilePath));
-        lineNumber++;
+        sb.append(replace(line));
       }
       if (id != null) {
         JSONObject newJSONObject = new JSONObject(sb.toString());
@@ -56,18 +52,18 @@ public class TemplateVariables {
     }
   }
 
-  String replace(String line, int lineNumber, Path partialFilePath) throws UndefinedLiteralException {
-    return replace(null, line, lineNumber, partialFilePath);
+  String replace(String line) throws UndefinedLiteralException {
+    return replace(null, line);
   }
 
-  String replace(String id, String line, int lineNumber, Path partialFilePath) throws UndefinedLiteralException {
+  String replace(String id, String line) throws UndefinedLiteralException {
     StringBuilder sb = new StringBuilder();
     int i;
     int last = 0;
 
     while ((i = line.indexOf("#{", last)) != -1) {
       sb.append(line.substring(last, i));
-      last = line.indexOf("}", i);
+      last = line.indexOf('}', i);
       String name;
       if (id == null) {
         name = line.substring(i + 2, last);
@@ -97,18 +93,14 @@ public class TemplateVariables {
   }
 
   void merge(JSONObject jsonData) {
-
-    if (jsonData.getNullString("menu") != null) {
-      throw new RuntimeException();
-    }
     if (jsonData == null) {
-      throw new RuntimeException("Merge with null parameter.");
+      throw new SofiaRuntimeException("Merge with null parameter.");
     }
     jsonObject.merge(jsonData);
   }
 
   public String get(String themeName) {
-    return jsonObject.getNullString("themeName");
+    return jsonObject.getNullString(themeName);
   }
 
   String digString(String name) throws PropertyNotExistException {

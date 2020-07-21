@@ -6,6 +6,10 @@ package net.cabezudo.sofia.core.passwords;
  */
 public class PasswordValidator {
 
+  private PasswordValidator() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static String validate(Password password) throws PasswordMaxSizeException, PasswordValidationException {
 
     if (password.isEmpty()) {

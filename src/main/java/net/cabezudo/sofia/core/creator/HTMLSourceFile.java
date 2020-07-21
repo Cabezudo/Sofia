@@ -10,11 +10,12 @@ import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.html.HTMLTagFactory;
 import net.cabezudo.sofia.core.html.Tag;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -328,7 +329,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   @Override
   public void add(CSSImport cssImport) {
     if (cssImport == null) {
-      throw new RuntimeException("Null parameter");
+      throw new SofiaRuntimeException("Null parameter");
     }
     lines.add(cssImport);
   }

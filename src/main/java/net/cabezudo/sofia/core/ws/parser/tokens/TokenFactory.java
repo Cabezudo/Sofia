@@ -6,6 +6,10 @@ package net.cabezudo.sofia.core.ws.parser.tokens;
  */
 public class TokenFactory {
 
+  private TokenFactory() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static WSToken get(char c) {
     return get(Character.toString(c));
   }

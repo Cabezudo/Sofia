@@ -18,4 +18,8 @@ public class CountriesTable {
           + "UNIQUE INDEX `iName` (`name`)"
           + ") "
           + "CHARACTER SET = UTF8";
+
+  private CountriesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

@@ -6,10 +6,14 @@ package net.cabezudo.sofia.core.html;
  */
 public class HTMLTagFactory {
 
+  private HTMLTagFactory() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static Tag get(String line) {
     int s = line.indexOf("<section");
     if (s >= 0 && line.endsWith("</section>")) {
-      int e = line.indexOf(">");
+      int e = line.indexOf('>');
       if (e == -1) {
         return null;
       }

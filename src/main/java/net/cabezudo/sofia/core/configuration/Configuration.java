@@ -317,8 +317,8 @@ public final class Configuration {
           out.write("database.hostname=localhost\n");
           out.write("database.port=3306\n");
           out.write("database.name=sofia\n");
-          out.write("database.username=juan\n");
-          out.write("database.password=tenorio2017\n");
+          out.write("database.username=santiago\n");
+          out.write("database.password=nasar1930\n");
           out.write("server.port=80\n");
           out.write("system.home=/home/sofia\n");
         }

@@ -47,6 +47,10 @@ import net.cabezudo.sofia.zones.ZoneManager;
  */
 public class DefaultData {
 
+  private DefaultData() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException {
     try {
       Logger.info("Load the JDBC driver %s.", Configuration.getInstance().getDatabaseDriver());
@@ -90,40 +94,43 @@ public class DefaultData {
     Logger.info("Create sites.");
     Site site;
     if (System.console() != null) {
-      String baseDomainName;
-      System.out.println("Crear sitio para el servidor.");
-      System.out.println(
-              "Coloque el nombre del host con el cual desea administrar el sitio en la red. Debe ser un nombre de dominio válido. "
-              + "Si solo va a trabajar de forma local puede dejarlo en blanco y utilizar localhost para acceder a la configuración. "
-              + "Pero si necesita acceder al sitio de forma remota debera colocar un nombre de dominio válido");
-      System.out.print("Dominio base: ");
-      boolean validDomain = false;
-      do {
-        baseDomainName = System.console().readLine();
-        if (baseDomainName.isEmpty()) {
-          break;
-        }
-        try {
-          DomainNameManager.getInstance().validate(baseDomainName);
-          validDomain = true;
-        } catch (EmptyDomainNameException e) {
-          System.out.println("The domain name is empty.");
-        } catch (InvalidCharacterException e) {
-          System.out.println("Invalid character '" + e.getChar() + "' in domain name");
-        } catch (DomainNameNotExistsException e) {
-          System.out.println("The domain name doesn't exist. Don't hava a DNS entry.");
-        } catch (DomainNameMaxSizeException e) {
-          System.out.println("The domain name is too large.");
-        } catch (MissingDotException e) {
-          System.out.println("A domain name must have a dot in it.");
-        }
-      } while (!validDomain);
-      site = SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
+      askUser();
     } else {
-      site = SiteManager.getInstance().create("Manager", "manager", "localhost");
+      SiteManager.getInstance().create("Manager", "manager", "localhost");
     }
-
     SiteManager.getInstance().create("Playground", "playground");
+  }
+
+  private static Site askUser() throws SQLException, IOException {
+    String baseDomainName;
+    System.out.println("Crear sitio para el servidor.");
+    System.out.println(
+            "Coloque el nombre del host con el cual desea administrar el sitio en la red. Debe ser un nombre de dominio válido. "
+            + "Si solo va a trabajar de forma local puede dejarlo en blanco y utilizar localhost para acceder a la configuración. "
+            + "Pero si necesita acceder al sitio de forma remota debera colocar un nombre de dominio válido");
+    System.out.print("Dominio base: ");
+    boolean validDomain = false;
+    do {
+      baseDomainName = System.console().readLine();
+      if (baseDomainName.isEmpty()) {
+        break;
+      }
+      try {
+        DomainNameManager.getInstance().validate(baseDomainName);
+        validDomain = true;
+      } catch (EmptyDomainNameException e) {
+        System.out.println("The domain name is empty.");
+      } catch (InvalidCharacterException e) {
+        System.out.println("Invalid character '" + e.getChar() + "' in domain name");
+      } catch (DomainNameNotExistsException e) {
+        System.out.println("The domain name doesn't exist. Don't hava a DNS entry.");
+      } catch (DomainNameMaxSizeException e) {
+        System.out.println("The domain name is too large.");
+      } catch (MissingDotException e) {
+        System.out.println("A domain name must have a dot in it.");
+      }
+    } while (!validDomain);
+    return SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
   }
 
   private static Country createCountries() throws SQLException {

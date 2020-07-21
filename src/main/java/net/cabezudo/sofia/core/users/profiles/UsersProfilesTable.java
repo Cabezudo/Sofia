@@ -22,4 +22,7 @@ public class UsersProfilesTable {
           + ") "
           + "CHARACTER SET = UTF8";
 
+  private UsersProfilesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

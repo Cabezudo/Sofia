@@ -13,27 +13,36 @@ import net.cabezudo.sofia.core.api.options.list.Sort;
  */
 public class QueryHelper {
 
+  private QueryHelper() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static String getOrderString(Sort sort, String defaultValue, String... validOptions) {
     String sqlSort = " ORDER BY " + defaultValue;
-    if (sort != null) {
-      List<OptionValue> sorters = sort.getValues();
-      Set<String> set = new TreeSet();
-      if (sorters.size() > 0) {
-        sqlSort = " ORDER BY ";
-        for (OptionValue sorter : sorters) {
-          String name = sorter.getValue().toString();
-          if (set.contains(name)) {
-            continue;
-          }
-          List<String> validOptionsList = Arrays.asList(validOptions);
-          if (validOptionsList.contains(name)) {
-            sqlSort += sorter.getValue() + (sorter.isNegative() ? " DESC" : "") + ", ";
-            set.add(name);
-          }
-        }
-        sqlSort = Utils.chop(sqlSort, 2);
-      }
+    if (sort == null) {
+      return sqlSort;
+    }
+    List<OptionValue> sorters = sort.getValues();
+    if (sorters.size() > 0) {
+      return getNewSort(sorters, validOptions);
     }
     return sqlSort;
+  }
+
+  private static String getNewSort(List<OptionValue> sorters, String... validOptions) {
+    String sqlSort = " ORDER BY ";
+    Set<String> set = new TreeSet();
+    for (OptionValue sorter : sorters) {
+      String name = sorter.getValue().toString();
+      if (set.contains(name)) {
+        continue;
+      }
+      List<String> validOptionsList = Arrays.asList(validOptions);
+      if (validOptionsList.contains(name)) {
+        sqlSort += sorter.getValue() + (sorter.isNegative() ? " DESC" : "") + ", ";
+        set.add(name);
+      }
+    }
+    return Utils.chop(sqlSort, 2);
   }
 }

@@ -9,6 +9,10 @@ import net.cabezudo.sofia.states.StatesTable;
  */
 public class CitiesTable {
 
+  private CitiesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static final String NAME = "cities";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "

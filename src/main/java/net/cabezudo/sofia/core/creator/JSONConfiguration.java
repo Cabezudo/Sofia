@@ -36,7 +36,7 @@ class JSONConfiguration {
       int lineNumber = 1;
       for (String line : jsonLines) {
         try {
-          sb.append(htmlSourceFile.getTemplateVariables().replace(line, lineNumber, jsonSourceFilePath));
+          sb.append(htmlSourceFile.getTemplateVariables().replace(line));
           sb.append('\n');
         } catch (UndefinedLiteralException e) {
           Position position = new Position(lineNumber, e.getRow());
