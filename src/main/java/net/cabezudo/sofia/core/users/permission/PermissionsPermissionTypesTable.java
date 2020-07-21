@@ -21,4 +21,8 @@ public class PermissionsPermissionTypesTable {
           + "FOREIGN KEY (`site`) REFERENCES " + SitesTable.NAME + "(`id`)"
           + ") "
           + "CHARACTER SET = UTF8";
+
+  private PermissionsPermissionTypesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

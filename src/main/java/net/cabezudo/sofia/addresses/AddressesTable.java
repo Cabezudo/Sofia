@@ -10,6 +10,10 @@ import net.cabezudo.sofia.streets.StreetsTable;
  */
 public class AddressesTable {
 
+  private AddressesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static final String NAME = "addresses";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "

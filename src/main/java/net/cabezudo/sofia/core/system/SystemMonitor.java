@@ -6,6 +6,10 @@ package net.cabezudo.sofia.core.system;
  */
 public class SystemMonitor {
 
+  private SystemMonitor() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static void log(Throwable cause) {
     // TODO registrar esto en algún lado para mostrar
     cause.printStackTrace(System.out);

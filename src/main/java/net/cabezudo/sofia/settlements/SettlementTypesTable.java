@@ -17,4 +17,7 @@ public class SettlementTypesTable {
           + ") "
           + "CHARACTER SET = UTF8";
 
+  private SettlementTypesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

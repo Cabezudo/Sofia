@@ -37,10 +37,8 @@ public abstract class Tag {
     StringBuilder sb = new StringBuilder();
     sb.append("<").append(name);
     for (Entry<String, Property> entry : properties.entrySet()) {
-      switch (entry.getKey()) {
-        case "template":
-        case "file":
-          continue;
+      if ("template".equals(entry.getKey()) || "file".equals(entry.getKey())) {
+        continue;
       }
       Property property = entry.getValue();
       sb.append(" ").append(entry.getKey()).append("=\"").append(property.getValue()).append("\"");

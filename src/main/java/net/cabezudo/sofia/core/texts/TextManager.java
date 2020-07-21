@@ -9,6 +9,10 @@ import net.cabezudo.sofia.core.sites.Site;
  */
 public class TextManager {
 
+  private TextManager() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static String get(Site site, Locale locale, String messageKey, Object... parameters) {
     switch (messageKey) {
       case "change.password.user.not.found.by.hash":

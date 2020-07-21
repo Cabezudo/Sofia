@@ -29,4 +29,8 @@ public class SettlementsTable {
           + "UNIQUE INDEX `iTypeMunicipalityZoneName` (`type`, `municipality`, `zone`, `name`)"
           + ") "
           + "CHARACTER SET = UTF8";
+
+  private SettlementsTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

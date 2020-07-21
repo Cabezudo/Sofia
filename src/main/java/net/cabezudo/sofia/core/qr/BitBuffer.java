@@ -24,11 +24,12 @@ package net.cabezudo.sofia.core.qr;
 
 import java.util.BitSet;
 import java.util.Objects;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 
 /**
  * An appendable sequence of bits (0s and 1s). Mainly used by {@link QrSegment}.
  */
-public final class BitBuffer implements Cloneable {
+public final class BitBuffer {
 
   /*---- Fields ----*/
   private BitSet data;
@@ -42,6 +43,15 @@ public final class BitBuffer implements Cloneable {
   public BitBuffer() {
     data = new BitSet();
     bitLength = 0;
+  }
+
+  public BitBuffer(BitBuffer data) {
+    try {
+      this.data = (BitSet) data.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new SofiaRuntimeException(e);
+    }
+    this.bitLength = data.bitLength;
   }
 
   /*---- Methods ----*/
@@ -107,21 +117,4 @@ public final class BitBuffer implements Cloneable {
       data.set(bitLength, bb.data.get(i));
     }
   }
-
-  /**
-   * Returns a new copy of this buffer.
-   *
-   * @return a new copy of this buffer (not {@code null})
-   */
-  @Override
-  public BitBuffer clone() {
-    try {
-      BitBuffer result = (BitBuffer) super.clone();
-      result.data = (BitSet) result.data.clone();
-      return result;
-    } catch (CloneNotSupportedException e) {
-      throw new AssertionError(e);
-    }
-  }
-
 }

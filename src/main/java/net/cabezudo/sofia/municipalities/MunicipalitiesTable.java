@@ -22,4 +22,7 @@ public class MunicipalitiesTable {
           + ") "
           + "CHARACTER SET = UTF8";
 
+  private MunicipalitiesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

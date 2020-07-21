@@ -9,6 +9,10 @@ import net.cabezudo.sofia.core.ws.servlet.services.InvalidQueryParameterName;
  */
 public class ListOptionFactory {
 
+  private ListOptionFactory() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static Option get(String parameter) {
     String[] dupla = parameter.split("=");
     switch (dupla[0]) {

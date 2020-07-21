@@ -17,4 +17,7 @@ public class LanguagesTable {
           + ") "
           + "CHARACTER SET = UTF8";
 
+  private LanguagesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

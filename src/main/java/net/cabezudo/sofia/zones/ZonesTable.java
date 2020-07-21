@@ -17,4 +17,7 @@ public class ZonesTable {
           + ") "
           + "CHARACTER SET = UTF8";
 
+  private ZonesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

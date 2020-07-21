@@ -21,4 +21,7 @@ public class StatesTable {
           + ") "
           + "CHARACTER SET = UTF8";
 
+  private StatesTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

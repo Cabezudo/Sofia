@@ -21,4 +21,7 @@ public class PermissionsTable {
           + ") "
           + "CHARACTER SET = UTF8";
 
+  private PermissionsTable() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
 }

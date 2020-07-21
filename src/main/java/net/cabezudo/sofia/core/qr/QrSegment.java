@@ -31,13 +31,13 @@ import java.util.regex.Pattern;
 /**
  * A segment of character/binary/control data in a QR Code symbol. Instances of this class are immutable.
  * <p>
- * The mid-level way to create a segment is to take the payload data and call a static factory function such as {@link QrSegment#makeNumeric(String)}. The low-level way to create a segment is to
- * custom-make the bit buffer and call the {@link
+ * The mid-level way to create a segment is to take the payload data and call a static factory function such as {@link QrSegment#makeNumeric(String)}. The low-level way to create a
+ * segment is to custom-make the bit buffer and call the {@link
  * QrSegment#QrSegment(Mode,int,BitBuffer) constructor} with appropriate values.</p>
  * <p>
- * This segment class imposes no length restrictions, but QR Codes have restrictions. Even in the most favorable conditions, a QR Code can only hold 7089 characters of data. Any segment longer than
- * this is meaningless for the purpose of generating QR Codes. This class can represent kanji mode segments, but provides no help in encoding them - see {@link QrSegmentAdvanced} for full kanji
- * support.</p>
+ * This segment class imposes no length restrictions, but QR Codes have restrictions. Even in the most favorable conditions, a QR Code can only hold 7089 characters of data. Any
+ * segment longer than this is meaningless for the purpose of generating QR Codes. This class can represent kanji mode segments, but provides no help in encoding them - see
+ * {@link QrSegmentAdvanced} for full kanji support.</p>
  */
 public final class QrSegment {
 
@@ -85,8 +85,8 @@ public final class QrSegment {
   }
 
   /**
-   * Returns a segment representing the specified text string encoded in alphanumeric mode. The characters allowed are: 0 to 9, A to Z (uppercase only), space, dollar, percent, asterisk, plus, hyphen,
-   * period, slash, colon.
+   * Returns a segment representing the specified text string encoded in alphanumeric mode. The characters allowed are: 0 to 9, A to Z (uppercase only), space, dollar, percent,
+   * asterisk, plus, hyphen, period, slash, colon.
    *
    * @param text the text (not {@code null}), with only certain characters allowed
    * @return a segment (not {@code null}) containing the text
@@ -114,7 +114,8 @@ public final class QrSegment {
   }
 
   /**
-   * Returns a list of zero or more segments to represent the specified Unicode text string. The result may use various segment modes and switch modes to optimize the length of the bit stream.
+   * Returns a list of zero or more segments to represent the specified Unicode text string. The result may use various segment modes and switch modes to optimize the length of the
+   * bit stream.
    *
    * @param text the text to be encoded, which can be any Unicode string
    * @return a new mutable list (not {@code null}) of segments (not {@code null}) containing the text
@@ -168,8 +169,8 @@ public final class QrSegment {
   public final Mode mode;
 
   /**
-   * The length of this segment's unencoded data. Measured in characters for numeric/alphanumeric/kanji mode, bytes for byte mode, and 0 for ECI mode. Always zero or positive. Not the same as the
-   * data's bit length.
+   * The length of this segment's unencoded data. Measured in characters for numeric/alphanumeric/kanji mode, bytes for byte mode, and 0 for ECI mode. Always zero or positive. Not
+   * the same as the data's bit length.
    */
   public final int numChars;
 
@@ -178,8 +179,8 @@ public final class QrSegment {
 
   /*---- Constructor (low level) ----*/
   /**
-   * Constructs a QR Code segment with the specified attributes and data. The character count (numCh) must agree with the mode and the bit buffer length, but the constraint isn't checked. The
-   * specified bit buffer is cloned and stored.
+   * Constructs a QR Code segment with the specified attributes and data. The character count (numCh) must agree with the mode and the bit buffer length, but the constraint isn't
+   * checked. The specified bit buffer is cloned and stored.
    *
    * @param md the mode (not {@code null})
    * @param numCh the data length in characters or bytes, which is non-negative
@@ -194,7 +195,7 @@ public final class QrSegment {
       throw new IllegalArgumentException("Invalid value");
     }
     numChars = numCh;
-    this.data = data.clone();  // Make defensive copy
+    this.data = new BitBuffer(data);  // Make defensive copy
   }
 
   /*---- Methods ----*/
@@ -204,7 +205,7 @@ public final class QrSegment {
    * @return a new copy of the data bits (not {@code null})
    */
   public BitBuffer getData() {
-    return data.clone();  // Make defensive copy
+    return new BitBuffer(data);  // Make defensive copy
   }
 
   // Calculates the number of bits needed to encode the given segments at the given version.
@@ -229,16 +230,17 @@ public final class QrSegment {
 
   /*---- Constants ----*/
   /**
-   * Describes precisely all strings that are encodable in numeric mode. To test whether a string {@code s} is encodable: {@code boolean ok = NUMERIC_REGEX.matcher(s).matches();}. A string is
-   * encodable iff each character is in the range 0 to 9.
+   * Describes precisely all strings that are encodable in numeric mode. To test whether a string {@code s} is encodable: {@code boolean ok = NUMERIC_REGEX.matcher(s).matches();}.
+   * A string is encodable iff each character is in the range 0 to 9.
    *
    * @see #makeNumeric(String)
    */
   public static final Pattern NUMERIC_REGEX = Pattern.compile("[0-9]*");
 
   /**
-   * Describes precisely all strings that are encodable in alphanumeric mode. To test whether a string {@code s} is encodable: {@code boolean ok = ALPHANUMERIC_REGEX.matcher(s).matches();}. A string
-   * is encodable iff each character is in the following set: 0 to 9, A to Z (uppercase only), space, dollar, percent, asterisk, plus, hyphen, period, slash, colon.
+   * Describes precisely all strings that are encodable in alphanumeric mode. To test whether a string {@code s} is encodable:
+   * {@code boolean ok = ALPHANUMERIC_REGEX.matcher(s).matches();}. A string is encodable iff each character is in the following set: 0 to 9, A to Z (uppercase only), space,
+   * dollar, percent, asterisk, plus, hyphen, period, slash, colon.
    *
    * @see #makeAlphanumeric(String)
    */

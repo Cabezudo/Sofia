@@ -8,6 +8,10 @@ import java.util.Arrays;
  */
 public class Utils {
 
+  private Utils() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   public static String repeat(char c, int length) {
     char[] array = new char[length];
     Arrays.fill(array, c);

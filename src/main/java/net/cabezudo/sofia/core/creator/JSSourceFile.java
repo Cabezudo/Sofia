@@ -6,8 +6,8 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -69,7 +69,7 @@ class JSSourceFile implements SofiaSource {
     int lineNumber = 1;
     for (String line : linesFromFile) {
       try {
-        String newLine = getTemplateVariables().replace(line, lineNumber, jsSourceFilePath);
+        String newLine = getTemplateVariables().replace(line);
         add(new CodeLine(newLine, lineNumber));
       } catch (UndefinedLiteralException e) {
         Position position = new Position(lineNumber, e.getRow());
@@ -114,11 +114,11 @@ class JSSourceFile implements SofiaSource {
 
     for (Library library : libraries) {
       Logger.debug("Search files in library %s.", library);
-      for (JSSourceFile file : library.getJavaScritpFiles()) {
+      library.getJavaScritpFiles().stream().map(file -> {
         code.append("// Library ").append(library.toString()).append(" addeded by system.\n");
         Logger.debug("Add lines from file %s.", file.getPartialPath());
-        code.append(file.getJavaScriptCode()).append('\n');
-      }
+        return file;
+      }).forEachOrdered(file -> code.append(file.getJavaScriptCode()).append('\n'));
     }
     code.append(lines.getCode());
 

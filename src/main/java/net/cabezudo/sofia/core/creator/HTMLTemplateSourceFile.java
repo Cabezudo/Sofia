@@ -3,8 +3,8 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -35,7 +35,7 @@ abstract class HTMLTemplateSourceFile extends HTMLSourceFile {
   @Override
   String replaceTemplateVariables(String line, int lineNumber, Path htmlSourceFilePath) throws LocatedSiteCreationException {
     try {
-      return getTemplateVariables().replace(getId(), line, lineNumber, htmlSourceFilePath);
+      return getTemplateVariables().replace(getId(), line);
     } catch (UndefinedLiteralException e) {
       Position position = new Position(lineNumber, e.getRow());
       throw new LocatedSiteCreationException(e.getMessage(), getPartialFilePath(), position);

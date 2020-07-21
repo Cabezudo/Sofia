@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Random;
 import java.util.regex.Pattern;
 import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
@@ -48,9 +49,14 @@ import net.cabezudo.sofia.zones.ZoneManager;
  */
 public class TestData {
 
+  private TestData() {
+    // Nothing to do here. Utility classes should not have public constructors.
+  }
+
   private static final boolean CREATE_DATABASE = false;
   private static final boolean CREATE_LESS_DATA = true;
   private static final boolean RESTORE_DATABASE = false;
+  private static final Random random = new Random();
 
   public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException, ConfigurationException {
     try {
@@ -62,32 +68,7 @@ public class TestData {
 
     try {
       if (startOptions.hasIDE()) {
-        if ((CREATE_DATABASE || RESTORE_DATABASE) && !startOptions.hasDropDatabase()) {
-          if (Environment.getInstance().isDevelopment()) {
-            Database.drop();
-          }
-        }
-        if (!Database.exist(Configuration.getInstance().getDatabaseName())) {
-          Database.create();
-        }
-        if (CREATE_DATABASE || startOptions.hasDropDatabase()) {
-          createSites();
-
-          if (UserManager.getInstance().getAdministrator() == null) {
-            // TODO colocarlo en un archivo de propiedades solo para desarrollo
-            Logger.debug("Create root user for IDE enviroment.");
-            UserManager.getInstance().createAdministrator("Esteban", "Cabezudo", "esteban@cabezudo.net", Password.createFromPlain("1234"));
-          }
-
-          createPeople();
-
-          User owner = UserManager.getInstance().getAdministrator();
-          createClients(owner);
-          createData(owner);
-        }
-        if (RESTORE_DATABASE) {
-          Database.restoreData();
-        }
+        ideOptions(startOptions);
       } else {
         if (startOptions.hasDropDatabase()) {
           Logger.info("Drop database on demand from the command line.");
@@ -101,9 +82,35 @@ public class TestData {
         createData(owner);
       }
     } catch (SQLException e) {
-      throw new RuntimeException("Problem configurating system in system configuration listener.", e);
+      throw new SofiaRuntimeException("Problem configurating system in system configuration listener.", e);
     } catch (EMailAddressAlreadyAssignedException | IOException e) {
-      throw new RuntimeException(e);
+      throw new SofiaRuntimeException(e);
+    }
+  }
+
+  private static void ideOptions(StartOptions startOptions) throws SQLException, EMailNotExistException, EMailAddressAlreadyAssignedException, IOException, UserNotExistException {
+    if ((CREATE_DATABASE || RESTORE_DATABASE) && !startOptions.hasDropDatabase() && Environment.getInstance().isDevelopment()) {
+      Database.drop();
+    }
+    if (!Database.exist(Configuration.getInstance().getDatabaseName())) {
+      Database.create();
+    }
+    if (CREATE_DATABASE || startOptions.hasDropDatabase()) {
+      createSites();
+
+      if (UserManager.getInstance().getAdministrator() == null) {
+        Logger.debug("Create root user for IDE enviroment.");
+        UserManager.getInstance().createAdministrator("Juan", "Cabezudo", "juan@cabezudo.net", Password.createFromPlain("1234"));
+      }
+
+      createPeople();
+
+      User owner = UserManager.getInstance().getAdministrator();
+      createClients(owner);
+      createData(owner);
+    }
+    if (RESTORE_DATABASE) {
+      Database.restoreData();
     }
   }
 
@@ -119,9 +126,9 @@ public class TestData {
 
     Site site = SiteManager.getInstance().getByHostame("nutricion.digital", owner);
     try {
-      UserManager.getInstance().set(site, "esteban@cabezudo.net", Password.createFromPlain("popo"));
+      UserManager.getInstance().set(site, "santiago@nasar.com", Password.createFromPlain("popo"));
     } catch (EMailAddressNotExistException e) {
-      throw new RuntimeException(e);
+      throw new SofiaRuntimeException(e);
     }
   }
 
@@ -158,17 +165,17 @@ public class TestData {
       "Hernández", "Agüero", "Páez", "Blanco", "Mendoza", "Barrios", "Escobar", "Ávila", "Soria", "Leiva", "Acuña", "Martin", "Maidana", "Moyano", "Campos", "Olivera", "Duarte", "Soto", "Franco",
       "Bravo", "Valdéz", "Toledo", "Andrade", "Montenegro", "Leguizamón", "Chávez", "Arce"};
 
-    Site site = SiteManager.getInstance().getByHostame("nutricion.digital", owner);
+    SiteManager.getInstance().getByHostame("nutricion.digital", owner);
     for (int i = 0; i < 357; i++) {
-      int n = (int) (Math.random() * names.length);
-      int l = (int) (Math.random() * lastNames.length);
+      int n = random.nextInt(names.length);
+      int l = random.nextInt(lastNames.length);
       String name = names[n];
       String lastName = lastNames[l];
       String address = getEMail(name, lastName);
       Person person = PeopleManager.getInstance().getByEMailAddress(address);
       if (person == null) {
         Client client = ClientManager.getInstance().create(name, lastName, owner);
-        int m = (int) (Math.random() * 3);
+        int m = random.nextInt(3);
         for (int j = 0; j < m; j++) {
           address = getEMail(name, lastName);
           if (EMailManager.getInstance().get(address) == null) {
@@ -181,9 +188,9 @@ public class TestData {
 
   private static String getEMail(String name, String lastName) {
     String[] eMailServers = {"gmail.com", "yahoo.com", "cabezudo.net", "mail.mx", "mailserver.com", "mymail.com", "fakemail.com", "freemail.com"};
-    int s = (int) (Math.random() * eMailServers.length);
+    int s = random.nextInt(eMailServers.length);
     String eMailServer = eMailServers[s];
-    return name.toLowerCase().replaceAll(" ", ".") + "." + lastName.toLowerCase().replaceAll(" ", ".") + "@" + eMailServer;
+    return name.toLowerCase() + "." + lastName.toLowerCase() + "@" + eMailServer;
   }
 
   private static Country createCountries() throws SQLException {
