@@ -47,7 +47,7 @@ public class Database {
   }
 
   public static Connection getConnection() throws SQLException {
-    return getConnection(null, 20);
+    return getConnection(Configuration.getInstance().getDatabaseName(), 20);
   }
 
   public static Connection getConnection(String databaseName, int maxReconnects) throws SQLException {
@@ -69,10 +69,10 @@ public class Database {
     return DriverManager.getConnection(url, username, password);
   }
 
-  public static void create() throws SQLException {
+  public static void createDatabase() throws SQLException {
     Logger.info("Create database.");
     Statement statement = null;
-    try (Connection connection = getConnection()) {
+    try (Connection connection = getConnection(null, 5)) {
       statement = connection.createStatement();
 
       String query = "CREATE DATABASE IF NOT EXISTS " + Configuration.getInstance().getDatabaseName();
@@ -177,7 +177,7 @@ public class Database {
   public static boolean exist(String databaseName) throws SQLException {
     ResultSet rs = null;
     boolean next;
-    try (Connection connection = getConnection(); Statement statement = connection.createStatement()) {
+    try (Connection connection = getConnection(null, 5); Statement statement = connection.createStatement()) {
       String query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + databaseName + "'";
       rs = statement.executeQuery(query);
       next = rs.next();

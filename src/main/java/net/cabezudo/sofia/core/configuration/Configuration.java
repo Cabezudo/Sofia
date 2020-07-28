@@ -85,7 +85,7 @@ public final class Configuration {
     }
     System.out.print("Test connection.");
     Configuration.getInstance().testConnection();
-    System.out.println("OK");
+    System.out.println(" OK");
   }
 
   private Configuration() throws IOException {

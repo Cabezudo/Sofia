@@ -101,9 +101,9 @@ public class WebServer {
   }
 
   private static void checkAndCreateConfigurationFile() throws ConfigurationException {
-    System.out.print("Check configuration file path. ");
+    System.out.print("Checking configuration file path... ");
     if (Configuration.getConfigurationFilePath() == null) {
-      System.out.println("Missing.");
+      System.out.println("Not found.");
       if (System.console() != null) {
         System.out.print("Create configuration file example? [Y/n]: ");
         String createConfigurationFile = System.console().readLine();

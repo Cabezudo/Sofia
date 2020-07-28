@@ -11,3 +11,4 @@ sql.tests.txt
 **/images/generated
 nbactions.xml
 /target/
+nb-configuration.xml
