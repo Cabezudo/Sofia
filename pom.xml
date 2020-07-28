@@ -59,9 +59,17 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+        <configuration>
+          <showDeprecation>true</showDeprecation>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
-  <dependencies>
+<dependencies>
     <dependency>
       <groupId>org.junit</groupId>
       <artifactId>junit4-runner</artifactId>
@@ -115,7 +123,7 @@
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-server</artifactId>
-      <version>9.4.17.v20190418</version>
+      <version>9.4.7.v20170914</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jetty</groupId>
@@ -149,16 +157,11 @@
       <version>9.4.26.v20200117</version>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sofia-logger</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.cabezudo</groupId>
-      <artifactId>json-lib</artifactId>
+        <groupId>net.cabezudo</groupId>
+        <artifactId>json-lib</artifactId>
       <version>0.9.4</version>
     </dependency>
-  </dependencies>
+</dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
