@@ -74,7 +74,7 @@ public class DefaultData {
         Database.drop();
       }
       if (!Database.exist(Configuration.getInstance().getDatabaseName())) {
-        Database.create();
+        Database.createDatabase();
         createSites();
         UserManager.getInstance().createAdministrator();
         User owner = UserManager.getInstance().getAdministrator();

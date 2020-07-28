@@ -1,4 +1,4 @@
-package net.cabezudo.core.sofia.sic;
+package net.cabezudo.sofia.core.sic;
 
 import java.nio.file.Path;
 import javax.servlet.ServletException;
@@ -25,17 +25,17 @@ import net.cabezudo.sofia.sic.elements.SICUnexpectedEndOfCodeException;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.10.09
  */
-public class CompilerService extends Service<ValidationResponse> {
+public class FormatService extends Service<ValidationResponse> {
 
-  public CompilerService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public FormatService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
   @Override
   public void execute() throws ServletException {
+    JSONObject jsonPayload;
     Site site = (Site) request.getAttribute("site");
 
-    JSONObject jsonPayload;
     try {
       jsonPayload = JSON.parse(getPayload()).toJSONObject();
     } catch (JSONParseException e) {
@@ -51,7 +51,7 @@ public class CompilerService extends Service<ValidationResponse> {
     Path basePath = site.getVersionedSourcesPath();
     JSONObject jsonResponse = new JSONObject();
     Messages messages = new Messages();
-    SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code);
+    SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code, true);
     try {
       sofiaImageCode.parse();
       sofiaImageCode.compile();
@@ -74,7 +74,7 @@ public class CompilerService extends Service<ValidationResponse> {
       jsonMessages.add(jsonMessage);
     }
 
-    JSONPair jsonTypePair = new JSONPair("type", "CODE");
+    JSONPair jsonTypePair = new JSONPair("type", "FORMATED_CODE");
     jsonResponse.add(jsonTypePair);
 
     JSONPair jsonMessagesPair = new JSONPair("messages", jsonMessages);

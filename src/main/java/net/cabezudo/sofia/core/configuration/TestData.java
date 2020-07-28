@@ -75,7 +75,7 @@ public class TestData {
           Database.drop();
         }
         if (!Database.exist(Configuration.getInstance().getDatabaseName())) {
-          Database.create();
+          Database.createDatabase();
         }
         UserManager.getInstance().createAdministrator();
         User owner = UserManager.getInstance().getAdministrator();
@@ -93,7 +93,7 @@ public class TestData {
       Database.drop();
     }
     if (!Database.exist(Configuration.getInstance().getDatabaseName())) {
-      Database.create();
+      Database.createDatabase();
     }
     if (CREATE_DATABASE || startOptions.hasDropDatabase()) {
       createSites();
