@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.QueryString;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
@@ -26,6 +25,7 @@ import net.cabezudo.sofia.core.users.permission.PermissionTypeManager;
 import net.cabezudo.sofia.core.users.profiles.PermissionType;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -59,7 +59,7 @@ public class HTMLAuthorizationFilter implements Filter {
         if (Environment.getInstance().isDevelopment()) {
           QueryString queryString = new QueryString(request);
           List<String> userParameterList = queryString.get("user");
-          if (userParameterList != null && userParameterList.size() > 0) {
+          if (userParameterList != null && userParameterList.isEmpty()) {
             String email = userParameterList.get(0);
             Logger.fine("User email FOUND in url parameters: " + email);
             user = UserManager.getInstance().getByEMail(email, site);
