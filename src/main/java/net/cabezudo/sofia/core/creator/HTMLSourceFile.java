@@ -357,7 +357,6 @@ abstract class HTMLSourceFile implements SofiaSource {
   @Override
   public final String getVoidPartialPathName() {
     String partialPathName = getPartialFilePath().toString();
-    System.out.println("partialPathName: " + partialPathName);
     return partialPathName.substring(0, partialPathName.length() - 5);
   }
 

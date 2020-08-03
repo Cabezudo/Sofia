@@ -48,7 +48,7 @@ public class SiteManager {
   }
 
   public Site getById(int id, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return getById(connection, id, owner);
     }
   }
@@ -92,6 +92,9 @@ public class SiteManager {
           domainNameList.add(domainName);
         }
       }
+      if (name == null) {
+        return null;
+      }
       return new Site(id, name, baseDomainName, domainNameList, version);
     } finally {
       if (rs != null) {
@@ -104,7 +107,7 @@ public class SiteManager {
   }
 
   public Site getByHostame(String domainName, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return getByHostame(connection, domainName, owner);
     }
   }
@@ -118,7 +121,7 @@ public class SiteManager {
   }
 
   public Site create(String name, String... domainNames) throws SQLException, IOException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       Site site = add(connection, name, domainNames);
       return site;
     }
@@ -187,7 +190,7 @@ public class SiteManager {
   public Site update(Connection connection, Site site) throws SQLException {
     // TODO Update the domain name list
     String query = "UPDATE " + SitesTable.NAME + " SET name = ?, domainName = ? WHERE id = ?";
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, site.getName());
       ps.setInt(2, site.getBaseDomainName().getId());
       ps.setInt(3, site.getId());
@@ -204,7 +207,7 @@ public class SiteManager {
   public SiteList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list");
 
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String where = getSiteWhere(filters);
 
       long sqlOffsetValue = 0;
@@ -293,7 +296,7 @@ public class SiteManager {
   }
 
   public void update(int siteId, String field, String value, User owner) throws SQLException, InvalidSiteVersionException, EmptySiteNameException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       update(connection, siteId, field, value, owner);
     }
   }
@@ -310,7 +313,7 @@ public class SiteManager {
         throw new InvalidParameterException("Invalid parameter value: " + field);
     }
     String query = "UPDATE " + SitesTable.NAME + " SET " + field + " = ? WHERE id = ?";
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, value);
       ps.setInt(2, siteId);
       Logger.fine(ps);
@@ -339,7 +342,7 @@ public class SiteManager {
   }
 
   public Site getByName(String name) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return getByName(connection, name);
     }
   }
@@ -426,7 +429,7 @@ public class SiteManager {
   }
 
   public void delete(int siteId) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       delete(connection, siteId);
     }
   }
@@ -494,7 +497,7 @@ public class SiteManager {
   public int getTotal(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list total");
 
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String where = getSiteWhere(filters);
 
       long sqlOffsetValue = 0;
@@ -564,7 +567,7 @@ public class SiteManager {
 
     PreparedStatement ps = null;
     ResultSet rs = null;
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String where = getHostWhere(filters);
 
       long sqlOffsetValue = 0;
@@ -636,7 +639,7 @@ public class SiteManager {
   public DomainNameList listDomainName(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
     Logger.fine("Site list");
 
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String where = getHostWhere(filters);
 
       long sqlOffsetValue = 0;

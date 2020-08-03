@@ -37,6 +37,14 @@
       "class": "net.cabezudo.sofia.emails.EMailValidatorService"
     },
     {
+      "path": "/api/v1/password/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
+    },
+    {
+      "path": "/api/v1/password/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
+    },
+    {
       "path": "/api/v1/users/logged",
       "class": "net.cabezudo.sofia.core.users.autentication.AuthenticatedService"
     },
@@ -73,6 +81,22 @@
     {
       "path": "/api/v1/messages/session",
       "class": "net.cabezudo.sofia.core.session.services.AddMessageService"
+    },
+    {
+      "path": "/api/v1/password/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
+    },
+    {
+      "path": "/api/v1/password/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
+    },
+    {
+      "path": "/api/v1/password/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
+    },
+    {
+      "path": "/api/v1/password/validate",
+      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
     },
     {
       "path": "/api/v1/password/validate",

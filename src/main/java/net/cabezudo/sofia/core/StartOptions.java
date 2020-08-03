@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core;
 
 import java.util.List;
+import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -25,22 +26,24 @@ public class StartOptions {
           break;
         case "--debug":
         case "-d":
-          Logger.info("Debug activated.");
+          Logger.setLevel(Level.DEBUG);
+          Logger.debug("Debug activated.");
           debug = true;
           break;
         case "--configureRoot":
         case "-cr":
-          Logger.info("Root configuration activated");
+          Logger.debug("Root configuration activated");
           configureRoot = true;
           break;
         case "--dropDatabase":
         case "-dd":
-          Logger.info("Command line drop database activated.");
+          Logger.debug("Command line drop database activated.");
           dropDatabase = true;
           break;
         case "--ide":
         case "-i":
-          Logger.info("IDE mode on");
+          Logger.setLevel(Level.ALL);
+          Logger.all("IDE mode on");
           ide = true;
           break;
         default:

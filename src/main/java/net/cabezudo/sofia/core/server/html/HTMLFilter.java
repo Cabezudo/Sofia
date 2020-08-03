@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.server.html;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.SQLException;
 import javax.servlet.Filter;
@@ -33,7 +32,7 @@ public class HTMLFilter implements Filter {
   }
 
   @Override
-  public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException, FileNotFoundException {
+  public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
 
     if (req instanceof HttpServletRequest) {
       HttpServletRequest request = (HttpServletRequest) req;
