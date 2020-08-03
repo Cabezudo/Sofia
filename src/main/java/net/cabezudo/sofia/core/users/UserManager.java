@@ -103,7 +103,7 @@ public class UserManager {
   }
 
   public void createAdministrator(String name, String lastName, String address, Password password) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       Site site = SiteManager.getInstance().getById(1, null);
       Person person = addPerson(connection, name, lastName, 1);
       EMail eMail = EMailManager.getInstance().create(connection, person.getId(), address);
@@ -140,7 +140,7 @@ public class UserManager {
         Person person = new Person(id, name, lastName, 1);
         return person;
       } else {
-        throw new RuntimeException("Key not generated.");
+        throw new SofiaRuntimeException("Key not generated.");
       }
     } finally {
       if (rs != null) {
@@ -154,7 +154,7 @@ public class UserManager {
   }
 
   public User login(Site site, String address, Password password) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String query
               = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
               + "FROM " + UsersTable.NAME + " AS u "
@@ -195,7 +195,7 @@ public class UserManager {
   }
 
   public Message getRecoveryEMailData(Site site, String address, Hash hash) throws SQLException, IOException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       updateHash(connection, address, hash);
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordRecoveryTemplate(person.getLocale());
@@ -230,7 +230,7 @@ public class UserManager {
             = "UPDATE " + UsersTable.NAME + " "
             + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
             + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
-    try (PreparedStatement ps = connection.prepareStatement(query)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setString(1, hash.toString());
       Timestamp timestamp = new Timestamp(new Date().getTime());
       ps.setTimestamp(2, timestamp);
@@ -241,7 +241,7 @@ public class UserManager {
   }
 
   public Message getPasswordChangedEMailData(Site site, String address) throws SQLException, IOException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
 
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordChangedTemplate(person.getLocale());
@@ -265,7 +265,7 @@ public class UserManager {
   }
 
   public void set(Site site, String address, Password password) throws SQLException, EMailAddressNotExistException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       set(connection, site, address, password);
     }
   }
@@ -308,7 +308,7 @@ public class UserManager {
 
   private void deactivateAllPasswords(Connection connection, EMail eMail) throws SQLException {
     String query = "UPDATE " + UsersTable.NAME + " SET activated = false WHERE eMail = ?";
-    try (PreparedStatement ps = connection.prepareStatement(query)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, eMail.getId());
       Logger.fine(ps);
       ps.executeUpdate();
@@ -318,7 +318,7 @@ public class UserManager {
 
   public User getByEMail(String address, Site site) throws SQLException {
 
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String query
               = "SELECT u.id AS id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
               + "FROM " + UsersTable.NAME + " AS u "
@@ -358,7 +358,7 @@ public class UserManager {
   }
 
   public User getByPersonId(int personId) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return getByPersonId(connection, personId);
     }
   }
@@ -402,7 +402,7 @@ public class UserManager {
   }
 
   public User get(int id) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, id);
     }
   }
@@ -482,7 +482,7 @@ public class UserManager {
   }
 
   public void changePassword(Site site, Hash hash, Password password) throws SQLException, MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       User user = UserManager.getInstance().getByHash(connection, hash);
       if (user == null) {
         throw new UserNotFoundByHashException("change.password.user.not.found.by.hash");
@@ -499,7 +499,7 @@ public class UserManager {
       }
 
       String query = "UPDATE " + UsersTable.NAME + " SET passwordRecoveryUUID = ?, password = ? WHERE site = ? AND passwordRecoveryUUID = ?";
-      try (PreparedStatement ps = connection.prepareStatement(query)) {
+      try ( PreparedStatement ps = connection.prepareStatement(query)) {
         ps.setString(1, hash.toString());
         ps.setBytes(2, password.getBytes());
         ps.setInt(3, site.getId());
@@ -518,7 +518,7 @@ public class UserManager {
   }
 
   public Message getRegistrationRetryAlertEMailData(Site site, String address) throws SQLException, IOException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
 
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
 
@@ -548,7 +548,7 @@ public class UserManager {
 
     PreparedStatement ps = null;
     ResultSet rs = null;
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String query = "SELECT p.id, p.name, p.site FROM usersProfiles AS up LEFT JOIN profiles AS p ON up.profile = p.id WHERE up.user = ?";
       ps = connection.prepareStatement(query);
       ps.setInt(1, user.getId());
@@ -577,7 +577,7 @@ public class UserManager {
 
   private void add(Connection connection, User user, Profile profile, int ownerId) throws SQLException {
     String query = "INSERT INTO " + UsersProfilesTable.NAME + " (user, profile, owner) VALUES (?, ?, ?)";
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setInt(1, user.getId());
       ps.setInt(2, profile.getId());
       ps.setInt(3, ownerId);

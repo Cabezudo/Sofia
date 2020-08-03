@@ -127,13 +127,16 @@ public class WebUserDataManager {
     HttpSession session = request.getSession();
     String sessionId = session.getId();
 
-    ClientData clientData = get(sessionId);
+    try ( Connection connection = Database.getConnection()) {
+      connection.setAutoCommit(false);
+      ClientData clientData = get(connection, sessionId);
 
-    if (clientData == null) {
-      clientData = new ClientData(sessionId);
-      insert(clientData);
+      if (clientData == null) {
+        clientData = new ClientData(sessionId);
+        insert(connection, clientData);
+      }
+      return clientData;
     }
-    return clientData;
   }
 
   public ClientData resetFailLoginResponseTime(ClientData clientData) throws SQLException {
@@ -148,10 +151,10 @@ public class WebUserDataManager {
     return clientData;
   }
 
-  public ClientData get(String sessionId) throws SQLException {
+  public ClientData get(Connection connection, String sessionId) throws SQLException {
     PreparedStatement ps = null;
     ResultSet rs = null;
-    try (Connection connection = Database.getConnection()) {
+    try {
       String query = "SELECT "
               + "`failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
               + "FROM " + WebUserDataTable.NAME + " WHERE sessionId = ?";
@@ -180,9 +183,15 @@ public class WebUserDataManager {
     }
   }
 
-  private void insert(ClientData clientData) throws SQLException {
+  public ClientData get(String sessionId) throws SQLException {
+    try ( Connection connection = Database.getConnection()) {
+      return get(connection, sessionId);
+    }
+  }
+
+  private void insert(Connection connection, ClientData clientData) throws SQLException {
     PreparedStatement ps = null;
-    try (Connection connection = Database.getConnection()) {
+    try {
       String query = "INSERT INTO " + WebUserDataTable.NAME + " (`sessionId`, `failLoginResponseTime`, `languageCode`, `languageCountryCode`) VALUES (?, ?, ?, ?)";
       ps = connection.prepareStatement(query);
       ps.setString(1, clientData.sessionId);
@@ -199,9 +208,15 @@ public class WebUserDataManager {
     }
   }
 
+  public void insert(ClientData clientData) throws SQLException {
+    try ( Connection connection = Database.getConnection()) {
+      insert(connection, clientData);
+    }
+  }
+
   private void update(String column, Object o) throws SQLException {
     PreparedStatement ps = null;
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ?";
       ps = connection.prepareStatement(query);
       ps.setObject(1, o);

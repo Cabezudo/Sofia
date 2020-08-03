@@ -41,8 +41,9 @@ public class HTMLAuthorizationFilter implements Filter {
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
+    Logger.all(Logger.getLevel().name());
     Site site = (Site) req.getAttribute("site");
-
+    Logger.all("Site: %s", site);
     if (req instanceof HttpServletRequest) {
       HttpServletRequest request = (HttpServletRequest) req;
       HttpServletResponse response = (HttpServletResponse) res;
@@ -59,7 +60,7 @@ public class HTMLAuthorizationFilter implements Filter {
         if (Environment.getInstance().isDevelopment()) {
           QueryString queryString = new QueryString(request);
           List<String> userParameterList = queryString.get("user");
-          if (userParameterList != null && userParameterList.isEmpty()) {
+          if (userParameterList != null && !userParameterList.isEmpty()) {
             String email = userParameterList.get(0);
             Logger.fine("User email FOUND in url parameters: " + email);
             user = UserManager.getInstance().getByEMail(email, site);
@@ -80,7 +81,7 @@ public class HTMLAuthorizationFilter implements Filter {
 
       String requestURI = request.getRequestURI();
       Logger.fine("Request path: " + requestURI);
-      Path path = Paths.get(requestURI);;
+      Path path = Paths.get(requestURI);
       if (requestURI.endsWith("/")) {
         path = Paths.get(requestURI + "/index.html");
         Logger.fine("NO FILE FOUND in path, add index.");

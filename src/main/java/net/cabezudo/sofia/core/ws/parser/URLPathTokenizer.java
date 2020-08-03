@@ -35,7 +35,6 @@ public class URLPathTokenizer {
         tokens.add(token);
       } else {
         sb.append(c);
-        break;
       }
     }
     if (sb.length() == 0) {

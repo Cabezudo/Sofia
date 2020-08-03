@@ -53,6 +53,10 @@ public class WebServer {
   private final Server server;
 
   public static void main(String... args) {
+    runServer(args);
+  }
+
+  private static void runServer(String... args) {
     List<String> arguments = Arrays.asList(args);
     System.out.println("Sofia 0.1 (http://sofia.systems)");
 
@@ -65,10 +69,8 @@ public class WebServer {
       System.exit(0);
     }
 
-    if (startOptions.hasIDE() || startOptions.hasDebug()) {
-      Logger.setLevel(Level.FINE);
-    } else {
-      Logger.setLevel(Level.INFO);
+    if (startOptions.hasDebug()) {
+      Logger.setLevel(Level.DEBUG);
     }
 
     Logger.info("Starting server...");

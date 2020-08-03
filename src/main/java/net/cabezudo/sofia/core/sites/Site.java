@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.emails.EMail;
@@ -30,10 +31,10 @@ public class Site implements Comparable<Integer> {
     this.baseDomainName = baseDomainName;
     this.version = version;
     if (baseDomainName == null) {
-      throw new RuntimeException("The base domain name is null");
+      throw new SofiaRuntimeException("The base domain name is null");
     }
     if (domainNames == null) {
-      throw new RuntimeException("The domain name list is null");
+      throw new SofiaRuntimeException("The domain name list is null");
     }
   }
 
