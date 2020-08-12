@@ -27,7 +27,7 @@ public class MunicipalityManager {
   }
 
   public Municipality add(State state, String name, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return add(connection, state, name, owner);
     }
   }
@@ -47,7 +47,6 @@ public class MunicipalityManager {
       ps.setInt(3, owner.getId());
       Logger.fine(ps);
       ps.executeUpdate();
-      connection.setAutoCommit(true);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {

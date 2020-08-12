@@ -16,6 +16,7 @@ import net.cabezudo.sofia.core.EntityList;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.28
  */
+// TODO Extends from Sites, this is a paginated list of sites.
 public class SiteList extends EntityList<Site> {
 
   List<Site> list = new ArrayList<>();

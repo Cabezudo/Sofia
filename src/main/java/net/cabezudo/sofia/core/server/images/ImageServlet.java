@@ -28,6 +28,7 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.sic.SofiaImageCode;
 import net.cabezudo.sofia.sic.elements.SICCompileTimeException;
+import net.cabezudo.sofia.sic.elements.SICUnexpectedEndOfCodeException;
 import net.cabezudo.sofia.sic.objects.SICObject;
 import net.cabezudo.sofia.sic.objects.SICRuntimeException;
 
@@ -60,7 +61,7 @@ public class ImageServlet extends HttpServlet {
 
     if (!Files.exists(imagePath) || Environment.getInstance().isProduction()) {
       try {
-        SofiaImage sofiaImage = createFile(basePath, imagePath, imagePartialPathName, queryString);
+        SofiaImage sofiaImage = createFile(basePath, imagePath, imagePartialPathName, queryString, response);
         BufferedImage image = sofiaImage.getImage();
         ImageIO.write(image, "png", response.getOutputStream());
 
@@ -72,7 +73,7 @@ public class ImageServlet extends HttpServlet {
       }
     } else {
       Logger.info("[ImageServlet:doGet] File %s allready exists.", imagePath);
-      try (FileInputStream in = new FileInputStream(imagePath.toFile()); OutputStream out = response.getOutputStream();) {
+      try ( FileInputStream in = new FileInputStream(imagePath.toFile());  OutputStream out = response.getOutputStream();) {
         byte[] buffer = new byte[1024];
         int count = in.read(buffer);
         while (count >= 0) {
@@ -96,7 +97,7 @@ public class ImageServlet extends HttpServlet {
     Logger.debug("Time: %sms", time);
   }
 
-  private SofiaImage createFile(Path basePath, Path imagePath, String imagePartialPathName, String queryString) throws ServletException, IOException, SICCompileTimeException, SICRuntimeException {
+  private SofiaImage createFile(Path basePath, Path imagePath, String imagePartialPathName, String queryString, HttpServletResponse response) throws ServletException, IOException, SICCompileTimeException, SICRuntimeException {
     ImageManager imageManager = ImageManager.getInstance();
     String code;
     String commonStartCode = "main(loadImage(name=" + imagePartialPathName + ")";
@@ -109,6 +110,12 @@ public class ImageServlet extends HttpServlet {
     }
     SofiaImageCode sofiaImageCode;
     sofiaImageCode = new SofiaImageCode(basePath, code);
+
+    try {
+      sofiaImageCode.parse();
+    } catch (SICUnexpectedEndOfCodeException e) {
+      returnErrorImage(e.getMessage(), response);
+    }
 
     SICObject sicObject;
     sicObject = sofiaImageCode.compile();

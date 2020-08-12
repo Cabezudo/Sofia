@@ -10,6 +10,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
@@ -44,6 +45,7 @@ public class CompilerService extends Service<ValidationResponse> {
     String code;
     try {
       code = jsonPayload.getString("code");
+      Utils.consoleOutLn(code);
     } catch (PropertyNotExistException e) {
       throw new ServletException(e);
     }
@@ -68,7 +70,10 @@ public class CompilerService extends Service<ValidationResponse> {
       JSONPair jsonPairMessage = new JSONPair("message", message.getText());
       jsonMessage.add(jsonPairMessage);
 
-      JSONPair jsonPairPosition = new JSONPair("position", message.getPosition());
+      JSONObject jsonPosition = new JSONObject();
+      jsonPosition.add(new JSONPair("line", message.getPosition().getLine()));
+      jsonPosition.add(new JSONPair("row", message.getPosition().getRow()));
+      JSONPair jsonPairPosition = new JSONPair("position", jsonPosition);
       jsonMessage.add(jsonPairPosition);
 
       jsonMessages.add(jsonMessage);

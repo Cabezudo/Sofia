@@ -11,7 +11,6 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
@@ -27,6 +26,7 @@ import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailValidator;
+import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.names.LastNameManager;
 import net.cabezudo.sofia.names.NameManager;
 import net.cabezudo.sofia.people.PeopleManager;
@@ -48,7 +48,7 @@ public class AddUserService extends Service {
     User owner = super.getUser();
     Site site = super.getSite();
 
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String payload = getPayload();
       JSONObject jsonPayload = JSON.parse(payload).toJSONObject();
 
@@ -108,7 +108,7 @@ public class AddUserService extends Service {
         PeopleManager.getInstance().addEMailAddress(person, address);
       } else {
         try {
-          CustomerService.sendRegistrationRetryAlert(site, address);
+          CustomerService.sendRegistrationRetryAlert(address);
         } catch (MailServerException | IOException su) {
           sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, su.getMessage());
           return;

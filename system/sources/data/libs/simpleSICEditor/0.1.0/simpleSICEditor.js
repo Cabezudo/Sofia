@@ -344,7 +344,6 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
         const ident = calculateIdent(editor);
         writeOnRange(editor, ' '.repeat(ident));
         event.preventDefault();
-        return false;
       }
       if (!waitingForFormat) {
         highligth();

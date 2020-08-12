@@ -11,6 +11,8 @@ import net.cabezudo.sofia.core.users.User;
  */
 public class Profile {
 
+  public static final Profile ADMINISTRATOR = new Profile(1, "administrator", 1);
+
   private final int id;
   private final String name;
   private final int siteId;

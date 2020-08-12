@@ -93,7 +93,7 @@ parameterOrFunction:
               <p>Note that using the CDN server, some code disapear and is addeded later by the server. In that way the URL is more clean and small.
               <h2>Code explained</h2>
               <p>The code start with a function <span class="code">main()</span> where we put all the stuff. Inside this function we going to specify the tasks. The first parameter a is function <span class="code">loadImage()</span>. This function load an image in order to have something to manipulate. Is the first task because SIC language work like filters. The first parameter do something with an image an pass image to the input of the next parameter. The parameters for the main function are almost all functions.</p>
-              <p>So, our program fistr load an image an the result of the load is passed to the <span class="code">resize()</span> function. The resize function take two parameter in this case <span class="code">width</span> and <span class="code">height</span> used to specify the finle size of the image.</p>
+              <p>So, our program first load an image an the result of the load is passed to the <span class="code">resize()</span> function. The resize function take two parameter in this case <span class="code">width</span> and <span class="code">height</span> used to specify the finle size of the image.</p>
             </section>
             <section>
               <h1>Use code files</h1>
@@ -116,18 +116,24 @@ parameterOrFunction:
                 <li><p><span class="code">scale</span> - A decimal value or percentage to specify the scale for the image.</p></li>
                 <li><p><span class="code">aspect</span> - A decimal value or aspect ratio in the form w:h.</p></li>
               </ul>
-              <p>You can specify the width or height in absoulute pixels or percentages relatives to the original image. If you specify only width ,height, or scale, the new image maintains the original image aspect ratio. You can specify both width and height or the aspect parameter along width and height in order to change the proportions.</p>
+              <p>You can specify the width or height in absolute pixels or percentages relatives to the original image. If you specify only width ,height, or scale, the new image maintains the original image aspect ratio. You can specify both width and height or the aspect parameter along width and height in order to change the proportions.</p>
+              <h3>Example</h3>
+              <pre>resize(width=300)
+resize(width=300,height=300)
+resize(scale=5%)</pre>
               <h2>brightness()</h2>
-              <p>The brightness function change the brightness of the image. Accept two parameter, one optional for the model used to change the brigh and a value that depends on the model used.</p>
+              <p>The brightness function change the brightness of the image. Accept two parameter, one optional for the model used to change the bright and a value that depends on the model used.</p>
               <ul>
                 <li><p><span class="code">value</span> - value for the bright change.</p></li>
                 <li><p><span class="code">model</span> - the model use for the bright change algorithm. The default model is the tv model. You can use:
                   <ul>
-                    <li><p><span class="code">hsb</span> - for HSB color space algotithm</p></li>
+                    <li><p><span class="code">hsb</span> - for HSB color space algorithm. The values for this model are from 0 to 3000</p></li>
                     <li><p><span class="code">tv</span> - for tv based algorithm. The values for this model are from -255 to 255.</p></li>
                   </ul>
                 </li>
               </ul>
+              <h3>Example</h3>
+              <pre>brightness(value=200,model=tv)</pre>
               <p></p>
             </section>
           </div>

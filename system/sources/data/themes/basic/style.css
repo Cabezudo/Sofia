@@ -214,7 +214,6 @@ footer {
 
   .application .title:not(:last-child) {
     margin-bottom: 15px;
-    text-align: left;
     font-size: 26px;
     font-weight: 600;
     line-height: 26px;

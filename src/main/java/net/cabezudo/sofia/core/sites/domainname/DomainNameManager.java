@@ -33,7 +33,7 @@ public class DomainNameManager {
   }
 
   public DomainNameList get(Site site) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, site);
     }
   }
@@ -80,7 +80,6 @@ public class DomainNameManager {
       ps.setString(2, domainName);
       Logger.fine(ps);
       ps.executeUpdate();
-      connection.setAutoCommit(true);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
@@ -99,7 +98,7 @@ public class DomainNameManager {
   }
 
   public DomainName get(int domainNameId) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, domainNameId);
     }
   }
@@ -166,7 +165,7 @@ public class DomainNameManager {
   }
 
   public DomainName getByDomainNameName(String domainNameName) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return getByDomainNameName(connection, domainNameName);
     }
   }
@@ -200,14 +199,14 @@ public class DomainNameManager {
   }
 
   public DomainName update(DomainName domainName, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return update(connection, domainName);
     }
   }
 
   public DomainName update(Connection connection, DomainName domainName) throws SQLException {
     String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, domainName.getName());
       ps.setInt(2, domainName.getId());
       Logger.fine(ps);
@@ -217,14 +216,14 @@ public class DomainNameManager {
   }
 
   public void delete(int hostId) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       delete(connection, hostId);
     }
   }
 
   public void delete(Connection connection, int hostId) throws SQLException {
     String query = "DELETE FROM " + DomainNamesTable.NAME + " WHERE id = ?";
-    try (PreparedStatement ps = connection.prepareStatement(query)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, hostId);
       Logger.fine(ps);
       ps.executeUpdate();

@@ -25,7 +25,7 @@ public class SettlementTypeManager {
   }
 
   public SettlementType add(String name) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return add(connection, name);
     }
   }
@@ -43,7 +43,6 @@ public class SettlementTypeManager {
       ps.setString(1, name);
       Logger.fine(ps);
       ps.executeUpdate();
-      connection.setAutoCommit(true);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {

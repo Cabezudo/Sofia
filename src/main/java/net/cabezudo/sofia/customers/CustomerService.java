@@ -36,8 +36,8 @@ public class CustomerService {
     MailServer.getInstance().send(messages);
   }
 
-  public static void sendRegistrationRetryAlert(Site site, String address) throws MailServerException, SQLException, IOException {
-    Message message = UserManager.getInstance().getRegistrationRetryAlertEMailData(site, address);
+  public static void sendRegistrationRetryAlert(String address) throws MailServerException, SQLException, IOException {
+    Message message = UserManager.getInstance().getRegistrationRetryAlertEMailData(address);
     Messages messages = new Messages(message);
     MailServer.getInstance().send(messages);
   }

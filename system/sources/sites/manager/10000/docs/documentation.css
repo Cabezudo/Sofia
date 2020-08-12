@@ -73,6 +73,14 @@
   font-weight: 900;
 }
 
+.documentation h3 {
+  color: black;
+  margin: 0 0 8px 0 ;
+  font-family: 'GT America';
+  font-size: 16px;
+  font-weight: 900;
+}
+
 .documentation p {
   color: #282828;
   font-family: 'Lava Std';

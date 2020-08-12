@@ -8,6 +8,14 @@ import java.util.Arrays;
  */
 public class Utils {
 
+  public static void consoleOut(String message) {
+    System.out.print(message);
+  }
+
+  public static void consoleOutLn(String message) {
+    System.out.println(message);
+  }
+
   private Utils() {
     // Nothing to do here. Utility classes should not have public constructors.
   }
