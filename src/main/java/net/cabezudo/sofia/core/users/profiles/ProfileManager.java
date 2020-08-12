@@ -20,18 +20,15 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class ProfileManager {
 
-  private static ProfileManager INSTANCE;
+  private static final ProfileManager INSTANCE = new ProfileManager();
 
   public static ProfileManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new ProfileManager();
-    }
     return INSTANCE;
   }
 
   public Profiles createFromNames(String[] ps, Site site) throws SQLException {
     Profiles profiles = new Profiles();
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       for (String s : ps) {
         String name = s.trim();
         Logger.debug("Profile name to search or create: " + name);
@@ -48,7 +45,6 @@ public class ProfileManager {
   }
 
   public Profile create(Connection connection, String name, Site site) throws SQLException {
-    connection.setAutoCommit(true);
     String query = "INSERT INTO " + ProfilesTable.NAME + " (name, site) VALUES (?, ?)";
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -76,7 +72,7 @@ public class ProfileManager {
   }
 
   public Profile get(String profileName, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, profileName, site);
     }
   }
@@ -108,7 +104,7 @@ public class ProfileManager {
   }
 
   public boolean has(Profile profile, Permission permission, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return has(connection, profile, permission, site);
     }
   }
@@ -136,14 +132,14 @@ public class ProfileManager {
   }
 
   public void add(Profile profile, Permission permission, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       add(connection, profile, permission, site);
     }
   }
 
   public void add(Connection connection, Profile profile, Permission permission, Site site) throws SQLException {
     String query = "INSERT INTO " + ProfilesPermissionsTable.NAME + " (profile, permission, site) VALUES (?, ?, ?)";
-    try (PreparedStatement ps = connection.prepareStatement(query)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, profile.getId());
       ps.setInt(2, permission.getId());
       ps.setInt(3, site.getId());

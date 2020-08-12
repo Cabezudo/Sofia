@@ -36,7 +36,7 @@ public class SettlementManager {
   }
 
   public Settlement get(SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, settlementType, municipality, zone, name, owner);
     }
   }
@@ -103,7 +103,7 @@ public class SettlementManager {
   }
 
   public Settlement add(SettlementType settlementType, City city, Municipality municipality, Zone zone, String settlementName, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return add(connection, settlementType, city, municipality, zone, settlementName, owner);
     }
   }
@@ -116,7 +116,7 @@ public class SettlementManager {
 
     String query = "INSERT INTO " + SettlementsTable.NAME + " (type, city, municipality, zone, name, owner) VALUES (?, ?, ?, ?, ?, ?)";
     ResultSet rs = null;
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlementType.getId());
       if (city == null) {
         ps.setInt(2, 0);
@@ -129,7 +129,6 @@ public class SettlementManager {
       ps.setInt(6, owner.getId());
       Logger.fine(ps);
       ps.executeUpdate();
-      connection.setAutoCommit(true);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {

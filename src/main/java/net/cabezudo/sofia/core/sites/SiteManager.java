@@ -29,6 +29,9 @@ import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
 import net.cabezudo.sofia.core.sites.validators.EmptySiteNameException;
 import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.users.UsersTable;
+import net.cabezudo.sofia.emails.EMail;
+import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -128,7 +131,6 @@ public class SiteManager {
   }
 
   public Site add(Connection connection, String name, String... domainNameNames) throws SQLException, IOException {
-    connection.setAutoCommit(false);
     if (name == null || name.isEmpty()) {
       throw new InvalidParameterException("Invalid parameter name: " + name);
     }
@@ -158,7 +160,6 @@ public class SiteManager {
       if (ps != null) {
         ps.close();
       }
-      connection.setAutoCommit(true);
     }
   }
 
@@ -459,6 +460,78 @@ public class SiteManager {
       }
       if (dhps != null) {
         dhps.close();
+      }
+    }
+  }
+
+  public Sites getByUserEMail(EMail eMail) throws SQLException {
+    try ( Connection connection = Database.getConnection()) {
+      return getByUserEMail(connection, eMail);
+    }
+  }
+
+  public Sites getByUserEMail(Connection connection, EMail eMail) throws SQLException {
+    String query
+            = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS version, d.id AS domainNameId, d.name AS domainName "
+            + "FROM " + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "LEFT JOIN " + UsersTable.NAME + " AS u ON s.id = u.id "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "WHERE address = ? "
+            + "ORDER BY siteId";
+
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, eMail.getAddress());
+      Logger.fine("SiteManager", "getByUserEMail", ps);
+      rs = ps.executeQuery();
+
+      int lastSiteId = 0;
+      int siteId = 0;
+      Site site = null;
+      String siteName = null;
+      int baseDomainNameId = 0;
+      int version = 0;
+      DomainName baseDomainName = null;
+      // TODO chang for a simple list of domains. DomainNameList is for paginated list
+      DomainNameList domainNameList = new DomainNameList();
+      Sites sites = new Sites();
+
+      while (rs.next()) {
+        siteId = rs.getInt("siteId");
+        if (lastSiteId != 0 && lastSiteId != siteId) {
+          site = new Site(lastSiteId, siteName, baseDomainName, domainNameList, version);
+          sites.add(site);
+
+          baseDomainName = null;
+          domainNameList = new DomainNameList();
+        }
+        siteName = rs.getString("siteName");
+        baseDomainNameId = rs.getInt("baseDomainNameId");
+        version = rs.getInt("version");
+        int domainNameId = rs.getInt("domainNameId");
+        String domainNameName = rs.getString("domainName");
+        DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
+        if (baseDomainNameId == domainNameId) {
+          baseDomainName = domainName;
+        }
+        domainNameList.add(domainName);
+
+        lastSiteId = siteId;
+      }
+      if (domainNameList.getSize() > 0) {
+        site = new Site(siteId, siteName, baseDomainName, domainNameList, version);
+        sites.add(site);
+      }
+      return sites;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
       }
     }
   }

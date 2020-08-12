@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.core.StartOptions;
+import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
@@ -103,12 +104,12 @@ public class DefaultData {
 
   private static Site askUser() throws SQLException, IOException {
     String baseDomainName;
-    System.out.println("Crear sitio para el servidor.");
-    System.out.println(
+    Utils.consoleOutLn("Crear sitio para el servidor.");
+    Utils.consoleOutLn(
             "Coloque el nombre del host con el cual desea administrar el sitio en la red. Debe ser un nombre de dominio válido. "
             + "Si solo va a trabajar de forma local puede dejarlo en blanco y utilizar localhost para acceder a la configuración. "
             + "Pero si necesita acceder al sitio de forma remota debera colocar un nombre de dominio válido");
-    System.out.print("Dominio base: ");
+    Utils.consoleOut("Dominio base: ");
     boolean validDomain = false;
     do {
       baseDomainName = System.console().readLine();
@@ -119,15 +120,15 @@ public class DefaultData {
         DomainNameManager.getInstance().validate(baseDomainName);
         validDomain = true;
       } catch (EmptyDomainNameException e) {
-        System.out.println("The domain name is empty.");
+        Utils.consoleOutLn("The domain name is empty.");
       } catch (InvalidCharacterException e) {
-        System.out.println("Invalid character '" + e.getChar() + "' in domain name");
+        Utils.consoleOutLn("Invalid character '" + e.getChar() + "' in domain name");
       } catch (DomainNameNotExistsException e) {
-        System.out.println("The domain name doesn't exist. Don't hava a DNS entry.");
+        Utils.consoleOutLn("The domain name doesn't exist. Don't hava a DNS entry.");
       } catch (DomainNameMaxSizeException e) {
-        System.out.println("The domain name is too large.");
+        Utils.consoleOutLn("The domain name is too large.");
       } catch (MissingDotException e) {
-        System.out.println("A domain name must have a dot in it.");
+        Utils.consoleOutLn("A domain name must have a dot in it.");
       }
     } while (!validDomain);
     return SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
@@ -141,7 +142,7 @@ public class DefaultData {
     Logger.info("Create postal codes.");
     Path postalCodesPath = Configuration.getInstance().getSystemDataPath().resolve("postalCodes.csv");
     if (Files.exists(postalCodesPath)) {
-      try (BufferedReader br = new BufferedReader(new FileReader(postalCodesPath.toFile()))) {
+      try ( BufferedReader br = new BufferedReader(new FileReader(postalCodesPath.toFile()))) {
         String line;
         boolean headers = true;
         int counter = 0;
@@ -175,7 +176,7 @@ public class DefaultData {
             city = CityManager.getInstance().add(state, cityName, owner);
           }
 
-          try (Connection connection = Database.getConnection()) {
+          try ( Connection connection = Database.getConnection()) {
             SettlementType settlementType = SettlementTypeManager.getInstance().add(connection, settlementTypeName);
             Municipality municipality = MunicipalityManager.getInstance().add(connection, state, municipalityName, owner);
             Zone zone = ZoneManager.getInstance().add(connection, zoneName);

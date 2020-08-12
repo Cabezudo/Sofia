@@ -24,7 +24,7 @@ public class CountryManager {
   }
 
   public Country get(String name) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, name);
     }
   }
@@ -53,7 +53,7 @@ public class CountryManager {
   }
 
   public Country add(String name, int phoneCode, String twoLettersCountryCode) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return add(connection, name, phoneCode, twoLettersCountryCode);
     }
   }
@@ -69,7 +69,6 @@ public class CountryManager {
       ps.setString(3, twoLettersCountryCode);
       Logger.fine(ps);
       ps.executeUpdate();
-      connection.setAutoCommit(true);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {

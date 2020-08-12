@@ -24,7 +24,7 @@ public class EMailManager {
   }
 
   public EMail get(String address) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, address);
     }
   }
@@ -57,7 +57,7 @@ public class EMailManager {
   }
 
   public EMail get(int id) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return get(connection, id);
     }
   }
@@ -89,7 +89,7 @@ public class EMailManager {
   }
 
   public EMails getByPersonId(int personId) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return getByPersonId(connection, personId);
     }
   }
@@ -124,7 +124,7 @@ public class EMailManager {
   }
 
   public EMail create(int personId, String address) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return create(connection, personId, address);
     }
   }

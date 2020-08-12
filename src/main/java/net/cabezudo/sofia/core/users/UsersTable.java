@@ -23,6 +23,7 @@ public class UsersTable extends Table {
           + "`passwordRecoveryUUID` VARCHAR(72) DEFAULT NULL, "
           + "`passwordRecoveryDate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP, "
           + "PRIMARY KEY (`id`), "
+          + "INDEX `iSiteEMail` (`site`, `eMail`), "
           + "UNIQUE INDEX `iSiteEMailPassword` (`site`, `eMail`, `password`), "
           + "UNIQUE INDEX `iPasswordRecoveryUUID` (`passwordRecoveryUUID`), "
           + "FOREIGN KEY (`site`) REFERENCES " + SitesTable.NAME + "(`id`), "

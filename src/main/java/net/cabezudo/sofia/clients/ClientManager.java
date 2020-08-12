@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import net.cabezudo.sofia.core.DatabaseException;
 import net.cabezudo.sofia.core.QueryHelper;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.api.options.list.Filters;
@@ -44,20 +45,27 @@ public class ClientManager {
     return instance;
   }
 
-  public Client create(String name, String lastName, User owner) throws SQLException, UserNotExistException {
-    try (Connection connection = Database.getConnection()) {
-      connection.setAutoCommit(false);
-      Person person = PeopleManager.getInstance().create(connection, name, lastName, owner);
-      Client client = ClientManager.getInstance().create(connection, person);
-      connection.setAutoCommit(true);
+  public Client create(String name, String lastName, User owner) throws DatabaseException, SQLException {
+    try ( Connection connection = Database.getConnection()) {
+      try {
+        connection.setAutoCommit(false);
 
-      return client;
+        Person person;
+        Client client;
+        person = PeopleManager.getInstance().create(connection, name, lastName, owner);
+        client = ClientManager.getInstance().create(connection, person);
+        connection.setAutoCommit(true);
+        return client;
+      } catch (SQLException | UserNotExistException e) {
+        connection.rollback();
+        throw new DatabaseException(e);
+      }
     }
   }
 
   private Client create(Connection connection, Person person) throws SQLException, UserNotExistException {
     String query = "INSERT INTO " + ClientTable.NAME + " (id) VALUES (?)";
-    try (PreparedStatement ps = connection.prepareStatement(query)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, person.getId());
       Logger.fine(ps);
       ps.executeUpdate();
@@ -68,7 +76,7 @@ public class ClientManager {
   public Client get(String address, User owner) throws SQLException {
     Logger.fine("Get client using the email address'" + address + "'.");
 
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String query
               = "SELECT p.id, name, lastName, primaryEMailId, owner "
               + "FROM " + PeopleTable.NAME + " AS p "
@@ -102,7 +110,7 @@ public class ClientManager {
   public Client get(int id) throws SQLException {
     Logger.fine("Get client using the id '" + id + "'.");
 
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       String query
               = "SELECT p.id, name, lastName, primaryEMailId, owner "
               + "FROM " + PeopleTable.NAME + " AS p "
@@ -144,7 +152,7 @@ public class ClientManager {
   }
 
   public EMail add(Client client, String address) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       EMail eMail = EMailManager.getInstance().create(connection, client.getId(), address);
       if (client.getEMails().getPrimaryEMail() == null) {
         PeopleManager.getInstance().setPrimaryEMail(connection, client, eMail);
@@ -169,7 +177,7 @@ public class ClientManager {
   }
 
   public ClientList list(Filters filter, Sort sort, Offset offset, Limit limit, User owner) throws SQLException, UserNotExistException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return list(connection, filter, sort, offset, limit, owner);
     }
   }

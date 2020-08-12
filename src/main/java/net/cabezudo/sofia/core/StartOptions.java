@@ -13,7 +13,8 @@ public class StartOptions {
   private String invalidArgument;
   private boolean help;
   private boolean debug;
-  private boolean configureRoot;
+  private boolean configureAdministrator;
+  private boolean changeUserPassword;
   private boolean dropDatabase;
   private boolean ide;
 
@@ -30,10 +31,15 @@ public class StartOptions {
           Logger.debug("Debug activated.");
           debug = true;
           break;
-        case "--configureRoot":
-        case "-cr":
-          Logger.debug("Root configuration activated");
-          configureRoot = true;
+        case "--createAdministrator":
+        case "-ca":
+          Logger.debug("Administrator configuration activated");
+          configureAdministrator = true;
+          break;
+        case "--change password":
+        case "-cp":
+          Logger.debug("Change user password");
+          changeUserPassword = true;
           break;
         case "--dropDatabase":
         case "-dd":
@@ -57,7 +63,8 @@ public class StartOptions {
     StringBuilder sb = new StringBuilder();
     sb.append("-h, --help - This help.").append('\n');
     sb.append("-d, --debug - Print all the debug information.").append('\n');
-    sb.append("-cr, --configureRoot - Configure the root information.").append('\n');
+    sb.append("-cr, --createAdministrator - Configure a system administrator.").append('\n');
+    sb.append("-cp, --change password - Change a user password.").append('\n');
     sb.append("-dd, --dropDatabase - Drop de database and create a new one.").append('\n');
     sb.append("-i, --ide - Configure the system to work inside an IDE").append('\n');
     return sb.toString();
@@ -71,8 +78,12 @@ public class StartOptions {
     return debug;
   }
 
-  public boolean hasConfigureRoot() {
-    return configureRoot;
+  public boolean hasConfigureAdministrator() {
+    return configureAdministrator;
+  }
+
+  public boolean hasChangeUserPassword() {
+    return changeUserPassword;
   }
 
   public boolean hasDropDatabase() {

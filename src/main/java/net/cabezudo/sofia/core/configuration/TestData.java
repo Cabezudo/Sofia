@@ -13,6 +13,7 @@ import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.clients.Client;
 import net.cabezudo.sofia.clients.ClientManager;
+import net.cabezudo.sofia.core.DatabaseException;
 import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
@@ -58,7 +59,7 @@ public class TestData {
   private static final boolean RESTORE_DATABASE = false;
   private static final Random random = new Random();
 
-  public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException, ConfigurationException {
+  public static void create(StartOptions startOptions) throws EMailNotExistException, FileNotFoundException, UserNotExistException, ConfigurationException, DatabaseException {
     try {
       Logger.info("Load the JDBC driver %s.", Configuration.getInstance().getDatabaseDriver());
       Class.forName(Configuration.getInstance().getDatabaseDriver());
@@ -88,7 +89,7 @@ public class TestData {
     }
   }
 
-  private static void ideOptions(StartOptions startOptions) throws SQLException, EMailNotExistException, EMailAddressAlreadyAssignedException, IOException, UserNotExistException {
+  private static void ideOptions(StartOptions startOptions) throws SQLException, EMailNotExistException, EMailAddressAlreadyAssignedException, IOException, UserNotExistException, DatabaseException {
     if ((CREATE_DATABASE || RESTORE_DATABASE) && !startOptions.hasDropDatabase() && Environment.getInstance().isDevelopment()) {
       Database.drop();
     }
@@ -100,7 +101,7 @@ public class TestData {
 
       if (UserManager.getInstance().getAdministrator() == null) {
         Logger.debug("Create root user for IDE enviroment.");
-        UserManager.getInstance().createAdministrator("Juan", "Cabezudo", "juan@cabezudo.net", Password.createFromPlain("1234"));
+        UserManager.getInstance().createSofiaAdministrator("Juan", "Cabezudo", "juan@cabezudo.net", Password.createFromPlain("1234"));
       }
 
       createPeople();
@@ -149,7 +150,7 @@ public class TestData {
     SiteManager.getInstance().create("Sofia", "sofia.systems", "local.sofia.systems");
   }
 
-  private static void createClients(User owner) throws SQLException, EMailNotExistException, EMailAddressAlreadyAssignedException, UserNotExistException {
+  private static void createClients(User owner) throws SQLException, EMailNotExistException, EMailAddressAlreadyAssignedException, UserNotExistException, DatabaseException {
     Logger.info("Create clients");
     String[] names = {"Juan", "José Luis", "José", "María Guadalupe", "Francisco", "Guadalupe", "María", "Juana", "Antonio", "Jesús", "Miguel Ángel", "Pedro", "Alejandro", "Manuel", "Margarita",
       "María Del Carmen", "Juan Carlos", "Roberto", "Fernando", "Daniel", "Carlos", "Jorge", "Ricardo", "Miguel", "Eduardo", "Javier", "Rafael", "Martín", "Raúl", "David", "Josefina", "José Antonio",
@@ -200,7 +201,7 @@ public class TestData {
   private static void createPostalCodes(Country country, User owner) throws SQLException {
     Logger.info("Create postal codes.");
     Path postalCodesPath = Configuration.getInstance().getSystemDataPath().resolve("postalCodes.csv");
-    try (BufferedReader br = new BufferedReader(new FileReader(postalCodesPath.toFile()))) {
+    try ( BufferedReader br = new BufferedReader(new FileReader(postalCodesPath.toFile()))) {
       String line;
       boolean headers = true;
       int counter = 0;
@@ -234,7 +235,7 @@ public class TestData {
           city = CityManager.getInstance().add(state, cityName, owner);
         }
 
-        try (Connection connection = Database.getConnection()) {
+        try ( Connection connection = Database.getConnection()) {
 
           SettlementType settlementType = SettlementTypeManager.getInstance().add(connection, settlementTypeName);
 

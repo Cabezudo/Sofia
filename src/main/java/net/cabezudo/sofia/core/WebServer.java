@@ -28,6 +28,7 @@ import net.cabezudo.sofia.core.server.js.JSServlet;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
@@ -58,14 +59,14 @@ public class WebServer {
 
   private static void runServer(String... args) {
     List<String> arguments = Arrays.asList(args);
-    System.out.println("Sofia 0.1 (http://sofia.systems)");
+    Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
 
     StartOptions startOptions = new StartOptions(arguments);
     if (startOptions.hasHelp() || startOptions.hasInvalidArgument()) {
       if (startOptions.hasInvalidArgument()) {
-        System.out.println("Invalid argument: " + startOptions.getInvalidArgument());
+        Utils.consoleOutLn("Invalid argument: " + startOptions.getInvalidArgument());
       }
-      System.out.println(startOptions.getHelp());
+      Utils.consoleOutLn(startOptions.getHelp());
       System.exit(0);
     }
 
@@ -73,7 +74,7 @@ public class WebServer {
       Logger.setLevel(Level.DEBUG);
     }
 
-    Logger.info("Starting server...");
+    Logger.info("Check configuration.");
     try {
       checkAndCreateConfigurationFile();
     } catch (ConfigurationException e) {
@@ -82,6 +83,26 @@ public class WebServer {
     }
     int port = Configuration.getInstance().getServerPort();
 
+    if (startOptions.hasConfigureAdministrator()) {
+      try {
+        UserManager.getInstance().createAdministrator();
+        System.exit(0);
+      } catch (SQLException e) {
+        Logger.severe(e);
+        System.exit(1);
+      }
+    }
+
+    if (startOptions.hasChangeUserPassword()) {
+      try {
+        UserManager.getInstance().changeUserPassword();
+        System.exit(0);
+      } catch (SQLException e) {
+        Logger.severe(e);
+      }
+    }
+
+    Logger.info("Starting server...");
     try {
       ServerSocket ss = new ServerSocket(port);
       ss.close();
@@ -103,19 +124,19 @@ public class WebServer {
   }
 
   private static void checkAndCreateConfigurationFile() throws ConfigurationException {
-    System.out.print("Checking configuration file path... ");
+    Utils.consoleOut("Checking configuration file path... ");
     if (Configuration.getConfigurationFilePath() == null) {
-      System.out.println("Not found.");
+      Utils.consoleOutLn("Not found.");
       if (System.console() != null) {
-        System.out.print("Create configuration file example? [Y/n]: ");
+        Utils.consoleOut("Create configuration file example? [Y/n]: ");
         String createConfigurationFile = System.console().readLine();
         if (createConfigurationFile.isBlank() || "y".equalsIgnoreCase(createConfigurationFile)) {
           try {
             Path configurationFilePath = Configuration.createFile();
-            System.out.println("Configure the file " + configurationFilePath + " and run the server again.");
+            Utils.consoleOutLn("Configure the file " + configurationFilePath + " and run the server again.");
             System.exit(0);
           } catch (ConfigurationException e) {
-            System.out.println(e.getMessage());
+            Utils.consoleOutLn(e.getMessage());
             System.exit(1);
           }
         }
@@ -123,7 +144,7 @@ public class WebServer {
       Logger.severe("Configuration file not found.");
       System.exit(1);
     }
-    System.out.println("OK");
+    Utils.consoleOutLn("OK");
     Configuration.validateConfiguration();
   }
 

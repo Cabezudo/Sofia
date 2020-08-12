@@ -27,7 +27,7 @@ public class PostalCodeManager {
   }
 
   public PostalCode add(Settlement settlement, int postalCode, User owner) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       return add(connection, settlement, postalCode, owner);
     }
   }
@@ -39,13 +39,12 @@ public class PostalCodeManager {
     }
     String query = "INSERT INTO " + PostalCodesTable.NAME + " (settlement, postalCode, owner) VALUES (?, ?, ?)";
     ResultSet rs = null;
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlement.getId());
       ps.setInt(2, postalCode);
       ps.setInt(3, owner.getId());
       Logger.fine(ps);
       ps.executeUpdate();
-      connection.setAutoCommit(true);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
@@ -63,7 +62,7 @@ public class PostalCodeManager {
   private PostalCode get(Connection connection, Settlement settlement, int postalCode, User owner) throws SQLException {
     String query = "SELECT id, settlement, postalCode FROM " + PostalCodesTable.NAME + " WHERE settlement = ? AND postalCode = ? AND (owner = ? OR owner = 1)";
     ResultSet rs = null;
-    try (PreparedStatement ps = connection.prepareStatement(query);) {
+    try ( PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, settlement.getId());
       ps.setInt(2, postalCode);
       ps.setInt(3, owner.getId());

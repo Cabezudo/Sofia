@@ -35,6 +35,17 @@ public class User {
     this.passwordRecoveryDate = passwordRecoveryDate;
   }
 
+  public User(int id, Site site, int eMailId, Date creationDate, boolean activated, String passwordRecoveryUUID, Date passwordRecoveryDate) {
+    this.id = id;
+    this.siteId = site.getId();
+    this.site = site;
+    this.eMailId = eMailId;
+    this.creationDate = creationDate;
+    this.activated = activated;
+    this.passwordRecoveryUUID = passwordRecoveryUUID;
+    this.passwordRecoveryDate = passwordRecoveryDate;
+  }
+
   @Override
   public String toString() {
     return "[ id = " + id + ", email = " + eMail + ", siteId = " + siteId + " ]";
@@ -86,5 +97,9 @@ public class User {
 
   public Date getPasswordRecoveryDate() {
     return passwordRecoveryDate;
+  }
+
+  public Site getSite() {
+    return site;
   }
 }

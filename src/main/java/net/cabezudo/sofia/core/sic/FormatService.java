@@ -51,6 +51,7 @@ public class FormatService extends Service<ValidationResponse> {
     Path basePath = site.getVersionedSourcesPath();
     JSONObject jsonResponse = new JSONObject();
     Messages messages = new Messages();
+
     SofiaImageCode sofiaImageCode = new SofiaImageCode(basePath, code, true);
     try {
       sofiaImageCode.parse();
@@ -68,7 +69,10 @@ public class FormatService extends Service<ValidationResponse> {
       JSONPair jsonPairMessage = new JSONPair("message", message.getText());
       jsonMessage.add(jsonPairMessage);
 
-      JSONPair jsonPairPosition = new JSONPair("position", message.getPosition());
+      JSONObject jsonPosition = new JSONObject();
+      jsonPosition.add(new JSONPair("line", message.getPosition().getLine()));
+      jsonPosition.add(new JSONPair("row", message.getPosition().getRow()));
+      JSONPair jsonPairPosition = new JSONPair("position", jsonPosition);
       jsonMessage.add(jsonPairPosition);
 
       jsonMessages.add(jsonMessage);

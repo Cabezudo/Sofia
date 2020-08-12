@@ -13,6 +13,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Properties;
+import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -78,14 +79,14 @@ public final class Configuration {
   private final Path sitesPath;
 
   public static void validateConfiguration() throws ConfigurationException {
-    System.out.println("Validate environment configuration.");
+    Utils.consoleOutLn("Validate environment configuration.");
     if (!DEVELOPMENT_ENVIRONMENT.equals(Configuration.getInstance().environment) && !PRODUCTION_ENVIRONMENT.equals(Configuration.getInstance().environment)) {
       throw new ConfigurationException(
               "Invalid value " + Configuration.getInstance().environment + " for environment. MUST BE " + DEVELOPMENT_ENVIRONMENT + " or " + PRODUCTION_ENVIRONMENT);
     }
-    System.out.print("Test connection.");
+    Utils.consoleOut("Test connection.");
     Configuration.getInstance().testConnection();
-    System.out.println(" OK");
+    Utils.consoleOutLn(" OK");
   }
 
   private Configuration() throws IOException {
@@ -311,7 +312,7 @@ public final class Configuration {
         throw new ConfigurationException("Can't create the file. " + e.getMessage());
       }
       try {
-        try (FileWriter out = new FileWriter(filePath.toFile())) {
+        try ( FileWriter out = new FileWriter(filePath.toFile())) {
           out.write("environment=production\n");
           out.write("database.driver=com.mysql.cj.jdbc.Driver\n");
           out.write("database.hostname=localhost\n");
