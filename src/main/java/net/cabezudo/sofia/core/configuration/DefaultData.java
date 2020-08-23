@@ -93,13 +93,13 @@ public class DefaultData {
 
   private static void createSites() throws SQLException, IOException {
     Logger.info("Create sites.");
-    Site site;
     if (System.console() != null) {
       askUser();
     } else {
       SiteManager.getInstance().create("Manager", "manager", "localhost");
     }
     SiteManager.getInstance().create("Playground", "playground");
+    SiteManager.getInstance().create("Nutrición digital", "nutricion.digital");
   }
 
   private static Site askUser() throws SQLException, IOException {

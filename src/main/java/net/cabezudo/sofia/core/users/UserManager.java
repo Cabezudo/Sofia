@@ -170,9 +170,13 @@ public class UserManager {
     String plainPassword;
     do {
       Utils.consoleOut("Password: ");
-      plainPassword = System.console().readLine();
+      char[] charPasswrod = System.console().readPassword();
+      plainPassword = new String(charPasswrod);
+
       Utils.consoleOut("Repeat password: ");
-      String otherPlainPassword = System.console().readLine();
+      char[] otherCharPasswrod = System.console().readPassword();
+      String otherPlainPassword = new String(otherCharPasswrod);
+
       match = plainPassword.equals(otherPlainPassword);
       if (!match) {
         Utils.consoleOutLn("The passwords don't match.");

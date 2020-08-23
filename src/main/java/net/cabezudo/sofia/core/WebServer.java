@@ -1,6 +1,8 @@
 package net.cabezudo.sofia.core;
 
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
@@ -19,6 +21,7 @@ import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DefaultData;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.exceptions.ServerException;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
@@ -28,6 +31,7 @@ import net.cabezudo.sofia.core.server.js.JSServlet;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
@@ -113,6 +117,9 @@ public class WebServer {
 
     try {
       DefaultData.create(startOptions);
+      if (startOptions.hasDropDatabase()) {
+        System.exit(0);
+      }
       WebServer.getInstance().start();
     } catch (FileNotFoundException | PortAlreadyInUseException | ConfigurationException | ServerException | UserNotExistException | EMailNotExistException e) {
       if (Environment.getInstance().isDevelopment()) {
@@ -172,17 +179,23 @@ public class WebServer {
       throw new ConfigurationException("Configuration error." + e.getMessage(), e);
     }
 
-    Logger.debug("Create handler for host %s", site.getBaseDomainName().getName());
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
     context.setContextPath("/");
     String sitePath = site.getVersionPath().toString();
+    Logger.debug("Create handler for host %s using site path %s.", site.getBaseDomainName().getName(), sitePath);
+
     context.setResourceBase(sitePath);
     String[] virtualHosts;
     try {
-      virtualHosts = site.getDomainNames().toStringArray();
+      DomainNameList domainNames = site.getDomainNames();
+      if (domainNames.getSize() == 0) {
+        throw new SofiaRuntimeException("No domains names for " + site.getName());
+      }
+      virtualHosts = domainNames.toStringArray();
     } catch (SQLException e) {
       throw new ServerException(e);
     }
+
     context.setVirtualHosts(virtualHosts);
 
     context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
@@ -214,15 +227,45 @@ public class WebServer {
       Logger.debug("Virtual host: " + vh);
     }
 
-    // Check and create mandatory directories
+    // Check and create mandatory directories and files
     Path cacheImagesPath = site.getSourcesImagesPath().resolve("cache");
     try {
       Files.createDirectories(cacheImagesPath);
     } catch (IOException e) {
       throw new ServerException("Can't create the cache image path: " + cacheImagesPath, e);
     }
+    try {
+      createCommonsFile(site);
+    } catch (IOException e) {
+      throw new ServerException("Can't create the commons file for " + site.getName(), e);
+    }
 
     return context;
+  }
+
+  private void createCommonsFile(Site site) throws IOException {
+    File file = site.getVersionedSourcesCommonsFilePath().toFile();
+    Logger.debug("Create %s.", file.getAbsoluteFile());
+    if (file.createNewFile()) {
+      Logger.debug("%s file created.", file.getName());
+    } else {
+      Logger.debug("%s file already exists.", file.getName());
+    }
+
+    try ( FileWriter writer = new FileWriter(file)) {
+      writer.write("{\n");
+      writer.write("  \"site\": {\n");
+      writer.write("    \"name\": \"" + site.getName() + "\",\n");
+      writer.write("    \"shortName\": \"" + site.getName() + "\",\n");
+      writer.write("    \"socialMedia\": {\n");
+      writer.write("      \"twitter\": {\n");
+      writer.write("        \"url\": \"\"\n");
+      writer.write("      }\n");
+      writer.write("    }\n");
+      writer.write("  },\n");
+      writer.write("  \"themeName\": \"basic\"\n");
+      writer.write("}\n");
+    }
   }
 
   private Handler setAPI(Site site) {
@@ -244,7 +287,7 @@ public class WebServer {
 
   private WebServer() throws ServerException, ConfigurationException, PortAlreadyInUseException {
     server = new Server(Configuration.getInstance().getServerPort());
-    HandlerCollection handler = new HandlerCollection();
+    HandlerCollection handlerCollection = new HandlerCollection();
 
     SiteList siteList;
     try {
@@ -254,11 +297,11 @@ public class WebServer {
     }
 
     for (Site site : siteList) {
-      handler.addHandler(setServer(site));
-      handler.addHandler(setAPI(site));
+      handlerCollection.addHandler(setServer(site));
+      handlerCollection.addHandler(setAPI(site));
     }
 
-    server.setHandler(handler);
+    server.setHandler(handlerCollection);
 
     try {
       server.start();

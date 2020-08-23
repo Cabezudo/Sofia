@@ -406,6 +406,39 @@ Se puede colocar un mensaje que será mostrado en la siguiente página que se ca
 
 Las imágenes se colocan en un directorio `images` en el directorio de base de la versión del sitio.
 
+Las variables del query string de la urls se puedeon obtener utilizando Core.pageParameters
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 Lenguaje de transformaciones
 Se puede utilizar un lenguaje para transformar las imágenes. Mediante este lenguaje se puede indicar que transformaciones y en que orden se aplicar a una imagen. Cada instrucción toma la imagen entregada por la instrucción anterior y le aplica la transformación correspondiente.
 Las transformaciones se expresan con un JSON en donde cada propiedad es una transformación y se ejecutan en el orden que se encuentran.

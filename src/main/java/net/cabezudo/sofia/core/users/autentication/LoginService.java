@@ -76,10 +76,6 @@ public class LoginService extends Service {
         WebUserDataManager.getInstance().incrementFailLoginResponseTime(getClientData());
         sendResponse(new Response(Response.Status.FAIL, Response.Type.ACTION, "login.fail"));
       } else {
-
-        System.out.println("******************");
-        System.out.println(user);
-
         setClientData(WebUserDataManager.getInstance().resetFailLoginResponseTime(getClientData()));
         getClientData().setUser(user);
         request.getSession().removeAttribute("goBackPage");

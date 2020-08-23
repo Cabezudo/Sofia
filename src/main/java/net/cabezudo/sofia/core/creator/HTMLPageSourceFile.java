@@ -60,6 +60,9 @@ class HTMLPageSourceFile extends HTMLSourceFile {
       return htmlSourceFilePath;
     }
     Logger.debug("HTMLPageSourceFile:getSourceFilePath:htmlSourceFilePath: %s", htmlSourceFilePath);
+    if (caller == null) {
+      throw new SiteCreationException("File " + getPartialFilePath() + " NOT FOUND");
+    }
     throw new SiteCreationException("The file " + getPartialFilePath() + " called on " + caller + " NOT FOUND");
   }
 

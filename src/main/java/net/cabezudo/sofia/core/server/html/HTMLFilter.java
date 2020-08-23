@@ -9,6 +9,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
@@ -36,7 +37,8 @@ public class HTMLFilter implements Filter {
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
 
     if (req instanceof HttpServletRequest) {
-      HttpServletRequest request = (HttpServletRequest) req;
+
+      HttpServletRequest request = new SofiaServletRequest((HttpServletRequest) req);
 
       String serverName = request.getServerName();
       Site site;
@@ -49,12 +51,8 @@ public class HTMLFilter implements Filter {
       req.setAttribute("site", site);
 
       String requestURI = request.getRequestURI();
-      if (requestURI.endsWith("/")) {
-        Logger.debug("The file is omitted, adding index.html.");
-        requestURI += "index.html";
-      }
-      if (requestURI.endsWith("html")) {
 
+      if (requestURI.endsWith("html")) {
         String lastPage = (String) request.getSession().getAttribute("thisPage");
         String thisPage = requestURI;
         if (request.getQueryString() != null) {
@@ -78,12 +76,61 @@ public class HTMLFilter implements Filter {
           }
         }
       }
+      chain.doFilter(request, res);
+    } else {
+      chain.doFilter(req, res);
     }
-    chain.doFilter(req, res);
   }
 
   @Override
   public void destroy() {
     // Nothing to do here
+  }
+
+  private class SofiaServletRequest extends HttpServletRequestWrapper {
+
+    private String requestURI;
+    private String serverName;
+
+    private SofiaServletRequest(HttpServletRequest request) {
+      super(request);
+
+      serverName = request.getServerName();
+      requestURI = request.getRequestURI();
+
+      if (serverName.startsWith("local.")) {
+        serverName = serverName.substring(6);
+        Logger.debug("Change serverName to %s.", serverName);
+      }
+      changeServerNamePrefix();
+      if (requestURI.endsWith("/")) {
+        requestURI += "index.html";
+        Logger.debug("The file is omitted, adding file: %s", requestURI);
+      }
+    }
+
+    @Override
+    public String getServerName() {
+      return serverName;
+    }
+
+    @Override
+    public String getRequestURI() {
+      return requestURI;
+    }
+
+    private void changeServerNamePrefix() {
+      if (serverName.startsWith("api.")) {
+        serverName = serverName.substring(4);
+        requestURI = "/api" + requestURI;
+        Logger.debug("Change requestURI to %s.", requestURI);
+        return;
+      }
+      if (serverName.startsWith("admin.")) {
+        serverName = serverName.substring(6);
+        requestURI = "/admin" + requestURI;
+        Logger.debug("Change requestURI to %s.", requestURI);
+      }
+    }
   }
 }

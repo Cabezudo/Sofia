@@ -113,7 +113,6 @@ public class HTMLAuthorizationFilter implements Filter {
         }
       }
     }
-
     chain.doFilter(req, res);
   }
 

@@ -16,6 +16,10 @@
             id: 'sitesLink',
             onClick: '/manager/sites/sites.html'
           });
+          linkTo({
+            id: 'usersLink',
+            onClick: '/manager/users/users.html'
+          });
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -43,6 +47,7 @@
         <section class="content">
           <h2 class="title">Administración</h2>
           <div id="sitesLink" class="screenMenuItem">Sitios</div>
+          <div id="usersLink" class="screenMenuItem">Usuarios</div>
         </section>
       </section>
       <section id="footer" file="/footer.html"></section>

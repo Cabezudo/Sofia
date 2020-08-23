@@ -17,7 +17,9 @@ import net.cabezudo.sofia.emails.EMail;
  */
 public class Site implements Comparable<Integer> {
 
-  public final static int NAME_MAX_LENGTH = 80;
+  public static final String COMMONS_FILE_NAME = "commons.json";
+  public static final int NAME_MAX_LENGTH = 80;
+
   private final Integer id;
   private final String name;
   private final DomainName baseDomainName;
@@ -33,7 +35,7 @@ public class Site implements Comparable<Integer> {
     if (baseDomainName == null) {
       throw new SofiaRuntimeException("The base domain name is null");
     }
-    if (domainNames == null) {
+    if (domainNames == null || domainNames.isEmpty()) {
       throw new SofiaRuntimeException("The domain name list is null");
     }
   }
@@ -112,6 +114,10 @@ public class Site implements Comparable<Integer> {
     return getSourcesPath(domainName).resolve(Integer.toString(version));
   }
 
+  public Path getVersionedSourcesCommonsFilePath() {
+    return getVersionedSourcesPath().resolve(COMMONS_FILE_NAME);
+  }
+
   public Path getSourcesImagesPath() {
     return Site.this.getVersionedSourcesPath().resolve("images");
   }
@@ -126,7 +132,7 @@ public class Site implements Comparable<Integer> {
       URI uri = new URI(baseDomainName.getName());
       return uri;
     } catch (URISyntaxException e) {
-      throw new RuntimeException(e);
+      throw new SofiaRuntimeException(e);
     }
   }
 
