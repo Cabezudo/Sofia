@@ -8,7 +8,6 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.passwords.PasswordValidationException;
@@ -20,6 +19,7 @@ import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -76,9 +76,13 @@ public class LoginService extends Service {
         WebUserDataManager.getInstance().incrementFailLoginResponseTime(getClientData());
         sendResponse(new Response(Response.Status.FAIL, Response.Type.ACTION, "login.fail"));
       } else {
+
+        System.out.println("******************");
+        System.out.println(user);
+
         setClientData(WebUserDataManager.getInstance().resetFailLoginResponseTime(getClientData()));
         getClientData().setUser(user);
-        request.getSession().removeAttribute("comebackPage");
+        request.getSession().removeAttribute("goBackPage");
         sendResponse(new Response(Response.Status.LOGGED, Response.Type.ACTION, "user.logged"));
       }
     } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainNameMaxSizeException e) {

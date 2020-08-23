@@ -59,10 +59,10 @@
                   Core.setSessionMessage({
                     status: "OK", message: `${detail.message}`
                   });
-                  if (variables.comebackPage === null) {
+                  if (variables.goBackPage === null) {
                     location.assign('/manager/sites/sites.html');
                   } else {
-                    location.assign(variables.comebackPage);
+                    location.assign(variables.goBackPage);
                   }
                 } else {
                   Core.screenBlocker.unblock();
@@ -79,10 +79,10 @@
               onResponse: event => {
                 const detail = event.detail;
                 if (detail.status === 'OK') {
-                  if (variables.comebackPage === null) {
+                  if (variables.goBackPage === null) {
                     location.assign('/manager/sites/sites.html');
                   } else {
-                    location.assign(variables.comebackPage);
+                    location.assign(variables.goBackPage);
                   }
                 } else {
                   Core.showMessage({status: 'ERROR', message: detail.message});
@@ -312,7 +312,7 @@
       }
       .list .editableField input {
         border: 0;
-        padding: 0;
+        padding: 0 10px;
       }
       .list .editableField input:disabled {
         background-color: transparent;

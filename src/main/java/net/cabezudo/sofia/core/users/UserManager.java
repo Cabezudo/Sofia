@@ -299,18 +299,19 @@ public class UserManager {
     }
   }
 
-  public User login(Site site, String address, Password password) throws SQLException {
+  public User login(Site site, String emailAddress, Password password) throws SQLException {
     try ( Connection connection = Database.getConnection()) {
       String query
-              = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+              = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate "
               + "FROM " + UsersTable.NAME + " AS u "
               + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+              + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
               + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
       PreparedStatement ps = null;
       ResultSet rs = null;
       try {
         ps = connection.prepareStatement(query);
-        ps.setString(1, address);
+        ps.setString(1, emailAddress);
         ps.setInt(2, site.getId());
         ps.setBytes(3, password.getBytes());
         Logger.fine(ps);
@@ -319,13 +320,16 @@ public class UserManager {
         if (rs.next()) {
           int id = rs.getInt("id");
           int siteId = rs.getInt("site");
-          int eMailId = rs.getInt("eMail");
+          int eMailId = rs.getInt("eMailId");
+          int personId = rs.getInt("personId");
+          String address = rs.getString("address");
+          EMail eMail = new EMail(eMailId, personId, address);
           Date creationDate = rs.getDate("creationDate");
           boolean activated = rs.getBoolean("activated");
           String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
           Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
 
-          return new User(id, siteId, eMailId, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+          return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
         }
         return null;
       } finally {
@@ -437,7 +441,7 @@ public class UserManager {
       if (rs.next()) {
         int userId = rs.getInt(1);
         boolean activated = true;
-        return new User(userId, site.getId(), eMail.getId(), null, activated, null, null);
+        return new User(userId, site.getId(), eMail, null, activated, null, null);
       }
     } finally {
       if (rs != null) {
@@ -463,9 +467,10 @@ public class UserManager {
   public User getByEMail(String address, Site site) throws SQLException {
     try ( Connection connection = Database.getConnection()) {
       String query
-              = "SELECT u.id AS id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+              = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
               + "FROM " + UsersTable.NAME + " AS u "
               + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+              + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
               + "WHERE address = ? AND site = ?";
       PreparedStatement ps = null;
       ResultSet rs = null;
@@ -479,13 +484,15 @@ public class UserManager {
         if (rs.next()) {
           int id = rs.getInt("id");
           int siteId = rs.getInt("site");
-          int eMailId = rs.getInt("eMail");
+          int eMailId = rs.getInt("eMailId");
+          int personId = rs.getInt("personId");
+          EMail eMail = new EMail(eMailId, personId, address);
           Date creationDate = rs.getDate("creationDate");
           boolean activated = rs.getBoolean("activated");
           String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
           Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
 
-          return new User(id, siteId, eMailId, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+          return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
         }
         return null;
       } finally {
@@ -503,9 +510,10 @@ public class UserManager {
     try ( Connection connection = Database.getConnection()) {
       Users users = new Users();
       String query
-              = "SELECT u.id AS id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+              = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
               + "FROM " + UsersTable.NAME + " AS u "
               + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+              + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
               + "WHERE address = ?";
       PreparedStatement ps = null;
       ResultSet rs = null;
@@ -518,13 +526,15 @@ public class UserManager {
         while (rs.next()) {
           int id = rs.getInt("id");
           int siteId = rs.getInt("site");
-          int eMailId = rs.getInt("eMail");
+          int eMailId = rs.getInt("eMailId");
+          int personId = rs.getInt("personId");
+          EMail eMail = new EMail(eMailId, personId, address);
           Date creationDate = rs.getDate("creationDate");
           boolean activated = rs.getBoolean("activated");
           String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
           Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
 
-          User user = new User(id, siteId, eMailId, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+          User user = new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
           users.add(user);
         }
         return null;
@@ -547,9 +557,10 @@ public class UserManager {
 
   public User getByPersonId(Connection connection, int personId) throws SQLException {
     String query
-            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+            = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
             + "FROM " + UsersTable.NAME + " AS u "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE personId = ?";
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -562,13 +573,15 @@ public class UserManager {
       if (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("site");
-        int eMailId = rs.getInt("eMail");
+        int eMailId = rs.getInt("eMailId");
+        String address = rs.getString("address");
+        EMail eMail = new EMail(eMailId, personId, address);
         Date creationDate = rs.getDate("creationDate");
         boolean activated = rs.getBoolean("activated");
         String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
         Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
 
-        return new User(id, siteId, eMailId, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+        return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
       return null;
     } finally {
@@ -590,9 +603,10 @@ public class UserManager {
 
   public User get(Connection connection, int id) throws SQLException {
     String query
-            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+            = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
             + "FROM " + UsersTable.NAME + " AS u "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE u.id = ?";
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -604,13 +618,16 @@ public class UserManager {
 
       if (rs.next()) {
         int siteId = rs.getInt("site");
-        int eMailId = rs.getInt("eMail");
+        int eMailId = rs.getInt("eMailId");
+        int personId = rs.getInt("personId");
+        String address = rs.getString("address");
+        EMail eMail = new EMail(eMailId, personId, address);
         Date creationDate = rs.getDate("creationDate");
         boolean activated = rs.getBoolean("activated");
         String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
         Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
 
-        return new User(id, siteId, eMailId, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+        return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
       return null;
     } finally {
@@ -626,9 +643,10 @@ public class UserManager {
 
   public User getByHash(Connection connection, Hash hash) throws SQLException {
     String query
-            = "SELECT u.id, `site`, `eMail`, `creationDate`, `activated`, `passwordRecoveryUUID`, `passwordRecoveryDate` "
+            = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
             + "FROM " + UsersTable.NAME + " AS u "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE passwordRecoveryUUID = ?";
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -641,13 +659,16 @@ public class UserManager {
       if (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("site");
-        int eMailId = rs.getInt("eMail");
+        int eMailId = rs.getInt("eMailId");
+        int personId = rs.getInt("personId");
+        String address = rs.getString("address");
+        EMail eMail = new EMail(eMailId, personId, address);
         Date creationDate = rs.getDate("creationDate");
         boolean activated = rs.getBoolean("activated");
         String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
         Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
 
-        return new User(id, siteId, eMailId, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+        return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
       return null;
     } finally {

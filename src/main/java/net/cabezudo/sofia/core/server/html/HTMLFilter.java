@@ -19,6 +19,7 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -48,8 +49,9 @@ public class HTMLFilter implements Filter {
       req.setAttribute("site", site);
 
       String requestURI = request.getRequestURI();
-      if ("/".equals(requestURI)) {
-        requestURI = "/index.html";
+      if (requestURI.endsWith("/")) {
+        Logger.debug("The file is omitted, adding index.html.");
+        requestURI += "index.html";
       }
       if (requestURI.endsWith("html")) {
 

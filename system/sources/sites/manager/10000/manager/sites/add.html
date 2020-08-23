@@ -85,10 +85,10 @@
             onResponse: event => {
               const payload = event.detail;
               if (payload.status === 'OK') {
-                if (variables.comebackPage === null) {
+                if (variables.goBackPage === null) {
                   location.assign('/manager/sites/sites.html');
                 } else {
-                  location.assign(variables.comebackPage);
+                  location.assign(variables.goBackPage);
                 }
               } else {
                 Core.showMessage({status: 'ERROR', message: payload.message});
