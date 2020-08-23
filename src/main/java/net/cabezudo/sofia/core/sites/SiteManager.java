@@ -10,10 +10,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import net.cabezudo.sofia.core.InvalidParameterException;
 import net.cabezudo.sofia.core.QueryHelper;
 import net.cabezudo.sofia.core.api.options.OptionValue;
@@ -125,8 +122,7 @@ public class SiteManager {
 
   public Site create(String name, String... domainNames) throws SQLException, IOException {
     try ( Connection connection = Database.getConnection()) {
-      Site site = add(connection, name, domainNames);
-      return site;
+      return add(connection, name, domainNames);
     }
   }
 
@@ -169,7 +165,7 @@ public class SiteManager {
     DomainNameList domainNames = new DomainNameList();
     for (String domainNameName : domainNameNames) {
       if (domainNameName == null || domainNameName.isEmpty()) {
-        throw new InvalidParameterException("Invalid domain name: " + domainNameName);
+        continue;
       }
       DomainName domainName = DomainNameManager.getInstance().add(connection, siteId, domainNameName);
       if (baseDomainName == null) {
@@ -225,9 +221,10 @@ public class SiteManager {
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query
-              = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS baseDomainNameName, version "
+              = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, h.name AS domainNameName, version "
               + "FROM " + SitesTable.NAME + " AS s "
               + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
+              + "LEFT JOIN " + DomainNamesTable.NAME + " AS h ON s.id = h.siteId "
               + where + sqlSort + sqlLimit;
 
       PreparedStatement ps = null;
@@ -241,29 +238,17 @@ public class SiteManager {
         rs = ps.executeQuery();
 
         list = new SiteList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
-        Map<Integer, SiteHelper> map = new HashMap<>();
 
         while (rs.next()) {
           int id = rs.getInt("siteId");
           String name = rs.getString("name");
           int baseDomainNameId = rs.getInt("baseDomainNameId");
           int version = rs.getInt("version");
-
-          SiteHelper siteHelper = map.get(id);
-          if (siteHelper == null) {
-            siteHelper = new SiteHelper(id, name, baseDomainNameId, version);
-            map.put(id, siteHelper);
-          }
           int domainNameId = rs.getInt("domainNameId");
-          String domainNameName = rs.getString("baseDomainNameName");
-
-          siteHelper.add(domainNameId, domainNameName);
+          String domainNameName = rs.getString("domainNameName");
+          list.add(id, name, baseDomainNameId, version, domainNameId, domainNameName);
         }
-        for (Entry<Integer, SiteHelper> entry : map.entrySet()) {
-          SiteHelper siteHelper = entry.getValue();
-          Site site = siteHelper.getSite();
-          list.add(site);
-        }
+        list.create();
       } finally {
         if (rs != null) {
           rs.close();
@@ -533,37 +518,6 @@ public class SiteManager {
       if (ps != null) {
         ps.close();
       }
-    }
-  }
-
-  private static class SiteHelper {
-
-    private final int id;
-    private final String name;
-    private final int baseDomainNameId;
-    private DomainName baseDomainName;
-    private final DomainNameList domainNameList = new DomainNameList();
-    private final int version;
-
-    private SiteHelper(int id, String name, int baseDomainNameId, int version) {
-      this.id = id;
-      this.name = name;
-      this.baseDomainNameId = baseDomainNameId;
-      this.version = version;
-    }
-
-    private void add(int domainNameId, String domainNameName) {
-      DomainName domainName = new DomainName(domainNameId, id, domainNameName);
-      if (domainNameId == baseDomainNameId) {
-        baseDomainName = domainName;
-      } else {
-        domainNameList.add(domainName);
-      }
-    }
-
-    private Site getSite() {
-      Site site = new Site(id, name, baseDomainName, domainNameList, version);
-      return site;
     }
   }
 

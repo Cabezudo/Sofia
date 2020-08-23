@@ -81,4 +81,8 @@ public class DomainNameList implements Iterable<DomainName> {
   public int getSize() {
     return list.size();
   }
+
+  public boolean isEmpty() {
+    return list.isEmpty();
+  }
 }

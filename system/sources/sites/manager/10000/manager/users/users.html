@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html profiles="administrator">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Users list</title>
+    <link rel="stylesheet" type="text/css" href="/css/manager/users/users.css">
+    <script src="/js/variables.js"></script>
+    <script src="/js/manager/users/users.js"></script>
+    <script lib="button/0.1.0"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="linkTo/0.1.0"></script>
+    <script lib="simpleList/0.1.0"></script>
+    <script>
+      {
+        const createGUI = () => {
+          blueButton({
+            element: addUserButton,
+            enabled: true,
+            onClick: () => {
+              document.location.href = 'add.html';
+            },
+            onResponse: event => {
+              const detail = event.detail;
+              if (detail.status === 'OK') {
+                if (variables.goBackPage === null) {
+                  location.assign('/manager/users/users.html');
+                } else {
+                  location.assign(variables.goBackPage);
+                }
+              } else {
+                Core.showMessage({status: 'ERROR', message: detail.message});
+              }
+            }
+          });
+          simpleList({
+            id: 'userList',
+            source: '/api/v1/users',
+            filterInputElement: null,
+            cellMaker: row => {
+              if (row) {
+                return `<td><div><p>${row.name}</p></div></td>`;
+              } else {
+                return `<td><div><p>&nbsp;</p></div></td>`;
+              }
+            },
+            onClick: (event, data) => {
+              location.href = `/manager/users/user.html?id=${data.id}`;
+            },
+            notLoggedURL: '/'
+          });
+        };
+        Core.addOnloadFunction(createGUI);
+      }
+    </script>
+    <style file="menu.css"></style>
+  </head>
+  <body>
+    <section id="application" class="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section class="container">
+        <section id="detail" class="content">
+          <h2 class="title">Users</h2>
+          <div id="siteList"></div>
+          <div class="field space"></div>
+          <div class="firstButtonContainer">
+            <div class="secondButtonContainer">
+              <div id="addSiteButton">add site</div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <section id="messages" template="messages/section/simple/message"></section>
+      <section id="footer" file="/footer.html"></section>
+    </section>
+  </body>
+</html>

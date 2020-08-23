@@ -8,9 +8,7 @@
 /* global postData */
 /* global variables */
 /* global Node */
-
-
-
+/* global templateVariables */
 
 'use strict';
 const Core = {

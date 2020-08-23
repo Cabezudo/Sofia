@@ -32,14 +32,10 @@ public class JSServlet extends HttpServlet {
     try {
       ClientData clientData = WebUserDataManager.getInstance().get(request);
 
-      System.out.println("*************************************************************************");
-      System.out.println(clientData);
-
       Site site = (Site) request.getAttribute("site");
       User user = clientData.getUser();
 
       String requestURI = request.getRequestURI();
-
       String fileName = requestURI.substring(1);
 
       Path jsPath = site.getVersionPath();
@@ -110,11 +106,8 @@ public class JSServlet extends HttpServlet {
             out.flush();
           }
         }
-      } catch (EMailNotExistException e) {
-        SystemMonitor.log(e);
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
       }
-    } catch (SQLException e) {
+    } catch (EMailNotExistException | SQLException e) {
       SystemMonitor.log(e);
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }

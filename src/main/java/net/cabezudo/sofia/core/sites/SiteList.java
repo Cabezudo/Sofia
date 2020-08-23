@@ -6,11 +6,14 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
 import net.cabezudo.sofia.core.EntityList;
+import net.cabezudo.sofia.core.sites.domainname.DomainName;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -19,6 +22,7 @@ import net.cabezudo.sofia.core.EntityList;
 // TODO Extends from Sites, this is a paginated list of sites.
 public class SiteList extends EntityList<Site> {
 
+  Map<Integer, RawSite> rawMap = new HashMap<>();
   List<Site> list = new ArrayList<>();
   Map<Integer, Site> map = new HashMap<>();
 
@@ -66,5 +70,40 @@ public class SiteList extends EntityList<Site> {
     }
 
     return listObject;
+  }
+
+  void add(int siteId, String siteName, int baseDomainNameId, int version, int domainNameId, String domainNameName) {
+    RawSite rawSite = rawMap.computeIfAbsent(siteId, key -> new RawSite(key, siteName, baseDomainNameId, domainNameId, domainNameName, version));
+    DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
+    rawSite.domainNameList.add(domainName);
+  }
+
+  // Create the list from the raw map
+  void create() throws SQLException {
+    for (Entry<Integer, RawSite> entry : rawMap.entrySet()) {
+      RawSite rawSite = entry.getValue();
+      Site site = new Site(rawSite.id, rawSite.name, rawSite.baseDomainName, rawSite.domainNameList, rawSite.version);
+      add(site);
+    }
+  }
+
+  private static class RawSite {
+
+    private final int id;
+    private final String name;
+    private DomainName baseDomainName;
+    private final DomainNameList domainNameList = new DomainNameList();
+    private final int version;
+
+    private RawSite(int id, String name, int baseDomainNameId, int domainNameId, String domainNameName, int version) {
+      this.id = id;
+      this.name = name;
+      DomainName domainName = new DomainName(domainNameId, id, domainNameName);
+      if (domainNameId == baseDomainNameId) {
+        this.baseDomainName = domainName;
+      }
+      domainNameList.add(domainName);
+      this.version = version;
+    }
   }
 }

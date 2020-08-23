@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.creator;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,12 +7,12 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Environment;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
 import net.cabezudo.sofia.core.users.permission.PermissionTypeManager;
 import net.cabezudo.sofia.core.users.profiles.PermissionType;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -21,23 +20,18 @@ import net.cabezudo.sofia.core.users.profiles.Profiles;
  */
 public class SiteCreator {
 
-  private static SiteCreator INSTANCE;
+  private static final SiteCreator INSTANCE = new SiteCreator();
 
   private SiteCreator() {
-    // To protect the instance;
   }
 
   public static SiteCreator getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new SiteCreator();
-    }
     return INSTANCE;
   }
 
-  public void createPage(Site site, String requestURI) throws IOException, SQLException, FileNotFoundException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException {
+  public void createPage(Site site, String requestURI) throws IOException, SQLException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException {
     String htmlPartialPathName = requestURI.substring(1);
     String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPathName.length() - 5); // Used to create the javascript and css files for this html page
-    Path voidPartialPath = Paths.get(voidPartialPathName);
     Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");
     Path cssPartialPath = Paths.get(voidPartialPathName + ".css");
     Path jsPartialPath = Paths.get(voidPartialPathName + ".js");
@@ -54,13 +48,13 @@ public class SiteCreator {
 
     TemplateVariables templateVariables = new TemplateVariables();
     try {
-      templateVariables.add(site.getVersionedSourcesPath(), "commons.json");
+      templateVariables.add(site.getVersionedSourcesPath(), Site.COMMONS_FILE_NAME);
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e.getMessage());
     }
     String themeName = templateVariables.get("themeName");
     if (themeName == null) {
-      throw new SiteCreationException("Can't find the theme for the site in the commons.json file.");
+      throw new SiteCreationException("Can't find the theme for the site in the " + Site.COMMONS_FILE_NAME + " file.");
     }
 
     // TODO Read all the theme style sheets after the entire site
