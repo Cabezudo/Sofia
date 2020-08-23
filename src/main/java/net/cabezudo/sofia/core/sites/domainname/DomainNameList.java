@@ -58,16 +58,6 @@ public class DomainNameList implements Iterable<DomainName> {
     return sb.toString();
   }
 
-  public String[] toStringArray() {
-    String[] names = new String[list.size()];
-    int i = 0;
-    for (DomainName domainName : list) {
-      names[i] = domainName.getName();
-      i++;
-    }
-    return names;
-  }
-
   public void setTotal(int total) {
     this.total = total;
   }

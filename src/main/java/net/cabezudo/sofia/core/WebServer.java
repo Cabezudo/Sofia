@@ -31,6 +31,7 @@ import net.cabezudo.sofia.core.server.js.JSServlet;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -185,15 +186,22 @@ public class WebServer {
     Logger.debug("Create handler for host %s using site path %s.", site.getBaseDomainName().getName(), sitePath);
 
     context.setResourceBase(sitePath);
-    String[] virtualHosts;
+    DomainNameList domainNames;
     try {
-      DomainNameList domainNames = site.getDomainNames();
-      if (domainNames.getSize() == 0) {
-        throw new SofiaRuntimeException("No domains names for " + site.getName());
-      }
-      virtualHosts = domainNames.toStringArray();
+      domainNames = site.getDomainNames();
     } catch (SQLException e) {
       throw new ServerException(e);
+    }
+    if (domainNames.getSize() == 0) {
+      throw new SofiaRuntimeException("No domains names for " + site.getName());
+    }
+
+    String[] virtualHosts = new String[domainNames.getSize() * 2];
+    int i = 0;
+    for (DomainName domainName : domainNames) {
+      virtualHosts[i] = domainName.getName();
+      virtualHosts[i + 1] = "local." + domainName.getName();
+      i += 2;
     }
 
     context.setVirtualHosts(virtualHosts);

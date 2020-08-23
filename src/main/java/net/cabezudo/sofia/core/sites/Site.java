@@ -4,6 +4,7 @@ import static java.lang.Integer.compare;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
@@ -32,6 +33,45 @@ public class Site implements Comparable<Integer> {
     this.domainNames = domainNameList;
     this.baseDomainName = baseDomainName;
     this.version = version;
+    checkSiteData();
+  }
+
+  Site(RawSite rawSite) {
+    this(rawSite.getId(), rawSite.getName(), rawSite.getBaseDomainName(), rawSite.getDomainNameList(), rawSite.getVersion());
+  }
+
+  Site(ResultSet rs) throws SQLException {
+    int siteId;
+    String siteName;
+    int baseDomainNameId;
+    int domainNameId;
+    String domainNameName;
+    int siteVersion;
+
+    RawSite rawSite = null;
+    do {
+      siteId = rs.getInt("siteId");
+      siteName = rs.getString("siteName");
+      baseDomainNameId = rs.getInt("baseDomainNameId");
+      domainNameId = rs.getInt("domainNameId");
+      domainNameName = rs.getString("domainNameName");
+      siteVersion = rs.getInt("siteVersion");
+      if (rawSite == null) {
+        rawSite = new RawSite(siteId, siteName, siteVersion);
+      }
+      DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
+      rawSite.add(baseDomainNameId, domainName);
+    } while (rs.next());
+
+    this.id = siteId;
+    this.name = siteName;
+    this.domainNames = rawSite.getDomainNameList();
+    this.baseDomainName = rawSite.getBaseDomainName();
+    this.version = siteVersion;
+    checkSiteData();
+  }
+
+  private void checkSiteData() {
     if (baseDomainName == null) {
       throw new SofiaRuntimeException("The base domain name is null");
     }
@@ -166,12 +206,12 @@ public class Site implements Comparable<Integer> {
     sb.append("\"name\": \"");
     sb.append(name);
     sb.append("\", ");
-    sb.append("\"domains\": ");
+    sb.append("\"domains\": {");
     DomainNameList list = new DomainNameList();
-    list.add(this.baseDomainName);
     list.add(domainNames);
-    sb.append(list.toJSON());
-    sb.append(", ");
+    sb.append("\"base\": ").append(this.getBaseDomainName().toJSON()).append(", ");
+    sb.append("\"list\": ").append(list.toJSON());
+    sb.append("}, ");
     sb.append("\"version\": ");
     sb.append(version);
     sb.append("}");
