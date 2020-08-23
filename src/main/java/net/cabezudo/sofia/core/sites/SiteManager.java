@@ -53,10 +53,10 @@ public class SiteManager {
     }
   }
 
-  public Site getById(Connection connection, int id, User owner) throws SQLException {
+  public Site getById(Connection connection, int siteId, User owner) throws SQLException {
     // TODO autorizacion
     String query
-            = "SELECT s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+            = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
             + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.id = ? ORDER BY domainName";
@@ -65,37 +65,13 @@ public class SiteManager {
     ResultSet rs = null;
     try {
       ps = connection.prepareStatement(query);
-      ps.setInt(1, id);
+      ps.setInt(1, siteId);
       Logger.fine("SiteManager", "getById", ps);
       rs = ps.executeQuery();
-
-      String name = null;
-      int baseDomainNameId = 0;
-      int version = 0;
-      DomainName baseDomainName = null;
-      DomainNameList domainNameList = new DomainNameList();
-
-      while (rs.next()) {
-        if (name == null) {
-          name = rs.getString("name");
-          baseDomainNameId = rs.getInt("baseDomainNameId");
-          version = rs.getInt("version");
-        }
-
-        int domainNameId = rs.getInt("domainNameId");
-        String domainNameName = rs.getString("domainName");
-        DomainName domainName = new DomainName(domainNameId, id, domainNameName);
-        if (domainNameId == baseDomainNameId) {
-          baseDomainName = domainName;
-          Logger.debug("Base domain found: %s (%s).", baseDomainName, baseDomainNameId);
-        } else {
-          domainNameList.add(domainName);
-        }
-      }
-      if (name == null) {
+      if (!rs.next()) {
         return null;
       }
-      return new Site(id, name, baseDomainName, domainNameList, version);
+      return new Site(rs);
     } finally {
       if (rs != null) {
         rs.close();
@@ -216,15 +192,14 @@ public class SiteManager {
         sqlLimitValue = limit.getValue();
       }
 
-      String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
+      String sqlSort = QueryHelper.getOrderString(sort, "domainName", new String[]{"id", "name"});
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query
-              = "SELECT s.id AS siteId, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, h.name AS domainNameName, version "
+              = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
               + "FROM " + SitesTable.NAME + " AS s "
               + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
-              + "LEFT JOIN " + DomainNamesTable.NAME + " AS h ON s.id = h.siteId "
               + where + sqlSort + sqlLimit;
 
       PreparedStatement ps = null;
@@ -241,12 +216,12 @@ public class SiteManager {
 
         while (rs.next()) {
           int id = rs.getInt("siteId");
-          String name = rs.getString("name");
+          String name = rs.getString("siteName");
           int baseDomainNameId = rs.getInt("baseDomainNameId");
-          int version = rs.getInt("version");
+          int siteVersion = rs.getInt("siteVersion");
           int domainNameId = rs.getInt("domainNameId");
           String domainNameName = rs.getString("domainNameName");
-          list.add(id, name, baseDomainNameId, version, domainNameId, domainNameName);
+          list.add(id, name, baseDomainNameId, siteVersion, domainNameId, domainNameName);
         }
         list.create();
       } finally {
@@ -335,7 +310,7 @@ public class SiteManager {
 
   public Site getByName(Connection connection, String name) throws SQLException {
     String query
-            = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, d.id AS domainNameId, d.name AS domainName, version "
+            = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
             + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.name = ? ORDER BY domainName";
@@ -347,32 +322,11 @@ public class SiteManager {
       Logger.fine("SiteManager", "getByName", ps);
       rs = ps.executeQuery();
 
-      int id = 0;
-      int baseDomainNameId = 0;
-      int version = 0;
-      DomainName baseDomainName = null;
-      DomainNameList domainNameList = new DomainNameList();
-
-      if (rs.next()) {
-        do {
-          if (id == 0) {
-            id = rs.getInt("id");
-            baseDomainNameId = rs.getInt("baseDomainNameId");
-            version = rs.getInt("version");
-          }
-
-          int domainNameId = rs.getInt("domainNameId");
-          String domainNameName = rs.getString("domainName");
-          DomainName domainName = new DomainName(domainNameId, id, domainNameName);
-          if (domainNameId == baseDomainNameId) {
-            baseDomainName = domainName;
-            Logger.debug("Base domain found: %s (%s).", baseDomainName, baseDomainNameId);
-          } else {
-            domainNameList.add(domainName);
-          }
-        } while (rs.next());
-        return new Site(id, name, baseDomainName, domainNameList, version);
+      if (!rs.next()) {
+        return null;
       }
+
+      return new Site(rs);
     } finally {
       if (rs != null) {
         rs.close();
@@ -381,7 +335,6 @@ public class SiteManager {
         ps.close();
       }
     }
-    return null;
   }
 
   private synchronized void changeBasePath(Site site, DomainName domainName) throws IOException {
@@ -457,9 +410,10 @@ public class SiteManager {
 
   public Sites getByUserEMail(Connection connection, EMail eMail) throws SQLException {
     String query
-            = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS version, d.id AS domainNameId, d.name AS domainName "
+            = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, h.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
             + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON h.id = d.siteId "
             + "LEFT JOIN " + UsersTable.NAME + " AS u ON s.id = u.id "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
             + "WHERE address = ? "
@@ -473,43 +427,18 @@ public class SiteManager {
       Logger.fine("SiteManager", "getByUserEMail", ps);
       rs = ps.executeQuery();
 
-      int lastSiteId = 0;
-      int siteId = 0;
-      Site site = null;
-      String siteName = null;
-      int baseDomainNameId = 0;
-      int version = 0;
-      DomainName baseDomainName = null;
-      // TODO chang for a simple list of domains. DomainNameList is for paginated list
-      DomainNameList domainNameList = new DomainNameList();
       Sites sites = new Sites();
 
       while (rs.next()) {
-        siteId = rs.getInt("siteId");
-        if (lastSiteId != 0 && lastSiteId != siteId) {
-          site = new Site(lastSiteId, siteName, baseDomainName, domainNameList, version);
-          sites.add(site);
-
-          baseDomainName = null;
-          domainNameList = new DomainNameList();
-        }
-        siteName = rs.getString("siteName");
-        baseDomainNameId = rs.getInt("baseDomainNameId");
-        version = rs.getInt("version");
+        int id = rs.getInt("siteId");
+        String name = rs.getString("name");
+        int baseDomainNameId = rs.getInt("baseDomainNameId");
+        int siteVersion = rs.getInt("siteVersion");
         int domainNameId = rs.getInt("domainNameId");
-        String domainNameName = rs.getString("domainName");
-        DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
-        if (baseDomainNameId == domainNameId) {
-          baseDomainName = domainName;
-        }
-        domainNameList.add(domainName);
-
-        lastSiteId = siteId;
+        String domainNameName = rs.getString("domainNameName");
+        sites.add(id, name, baseDomainNameId, siteVersion, domainNameId, domainNameName);
       }
-      if (domainNameList.getSize() > 0) {
-        site = new Site(siteId, siteName, baseDomainName, domainNameList, version);
-        sites.add(site);
-      }
+      sites.create();
       return sites;
     } finally {
       if (rs != null) {

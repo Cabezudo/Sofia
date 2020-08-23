@@ -118,11 +118,12 @@
               }
             });
             const domains = siteData.domains;
+            const baseDomain = domains.base;
+            const domainList = domains.list;
             domainsElement = document.getElementById('domains');
-            let baseDomain = true;
-            domains.forEach(host => {
-              addDomainToList(siteData.id, host.id, host.name, baseDomain);
-              baseDomain = false;
+            domainList.forEach(host => {
+              const isBaseDomain = baseDomain.id === host.id;
+              addDomainToList(siteData.id, host.id, host.name, isBaseDomain);
             });
             Core.screenBlocker.unblock();
             if (siteData.id !== 1 && siteData.id !== 2) {

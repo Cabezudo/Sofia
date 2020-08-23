@@ -51,7 +51,7 @@ public class DomainName {
     return "[ id = " + id + ", name = " + name + " ]";
   }
 
-  String toJSON() {
+  public String toJSON() {
     StringBuilder sb = new StringBuilder();
     sb.append("{");
     sb.append("\"id\": ");
