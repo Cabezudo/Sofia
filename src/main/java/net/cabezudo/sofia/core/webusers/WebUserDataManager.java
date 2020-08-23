@@ -22,16 +22,13 @@ public class WebUserDataManager {
 
   private static final int INITIAL_FAIL_LOGIN_RESPONSE_TIME = 1000;
 
-  private static WebUserDataManager INSTANCE;
+  private static WebUserDataManager INSTANCE = new WebUserDataManager();
 
   private WebUserDataManager() {
     // Only for protect the instanciation
   }
 
   public static WebUserDataManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new WebUserDataManager();
-    }
     return INSTANCE;
   }
 
@@ -60,6 +57,10 @@ public class WebUserDataManager {
 
     private ClientData(String sessionId) {
       this(sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, "es", "MX");
+    }
+
+    public String getSessionId() {
+      return sessionId;
     }
 
     public Locale getLocale() {
@@ -115,9 +116,9 @@ public class WebUserDataManager {
     public void setUser(User user) throws SQLException {
       jsonObject = null;
       if (user == null) {
-        update("user", 0);
+        update("user", 0, this.sessionId);
       } else {
-        update("user", user.getId());
+        update("user", user.getId(), this.sessionId);
       }
       this.user = user;
     }
@@ -135,19 +136,20 @@ public class WebUserDataManager {
         clientData = new ClientData(sessionId);
         insert(connection, clientData);
       }
+      connection.commit();
       return clientData;
     }
   }
 
   public ClientData resetFailLoginResponseTime(ClientData clientData) throws SQLException {
     clientData = clientData.setLoginResponseTime(INITIAL_FAIL_LOGIN_RESPONSE_TIME);
-    update("failLoginResponseTime", clientData.failLoginResponseTime);
+    update("failLoginResponseTime", clientData.failLoginResponseTime, clientData.getSessionId());
     return clientData;
   }
 
   public ClientData incrementFailLoginResponseTime(ClientData clientData) throws SQLException {
     clientData = clientData.setLoginResponseTime(clientData.getFailLoginResponseTime() * 2);
-    update("failLoginResponseTime", clientData.failLoginResponseTime);
+    update("failLoginResponseTime", clientData.failLoginResponseTime, clientData.getSessionId());
     return clientData;
   }
 
@@ -214,12 +216,13 @@ public class WebUserDataManager {
     }
   }
 
-  private void update(String column, Object o) throws SQLException {
+  private void update(String column, Object o, String sessionId) throws SQLException {
     PreparedStatement ps = null;
     try ( Connection connection = Database.getConnection()) {
-      String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ?";
+      String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ? WHERE sessionId = ?";
       ps = connection.prepareStatement(query);
       ps.setObject(1, o);
+      ps.setString(2, sessionId);
       Logger.fine(ps);
       ps.executeUpdate();
     } finally {

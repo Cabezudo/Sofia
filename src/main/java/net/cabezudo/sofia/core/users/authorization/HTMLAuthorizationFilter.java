@@ -97,11 +97,11 @@ public class HTMLAuthorizationFilter implements Filter {
           }
         } catch (NotLoggedException e) {
           if (requestURI.endsWith("html")) {
-            String comebackPage = requestURI;
+            String goBackPage = requestURI;
             if (request.getQueryString() != null) {
-              comebackPage += "?" + request.getQueryString();
+              goBackPage += "?" + request.getQueryString();
             }
-            request.getSession().setAttribute("comebackPage", comebackPage);
+            request.getSession().setAttribute("goBackPage", goBackPage);
           }
           Logger.debug("Not logged. Redirect to login.");
           response.sendRedirect(Configuration.getInstance().getLoginURL());

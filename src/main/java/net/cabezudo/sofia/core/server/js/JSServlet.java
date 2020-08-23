@@ -32,6 +32,9 @@ public class JSServlet extends HttpServlet {
     try {
       ClientData clientData = WebUserDataManager.getInstance().get(request);
 
+      System.out.println("*************************************************************************");
+      System.out.println(clientData);
+
       Site site = (Site) request.getAttribute("site");
       User user = clientData.getUser();
 
@@ -44,10 +47,10 @@ public class JSServlet extends HttpServlet {
 
       response.setContentType("text/javascript");
 
-      try (OutputStream out = response.getOutputStream();) {
+      try ( OutputStream out = response.getOutputStream();) {
         if ("js/variables.js".equals(fileName)) {
           String lastPage = (String) request.getSession().getAttribute("lastPage");
-          String comebackPage = (String) request.getSession().getAttribute("comebackPage");
+          String goBackPage = (String) request.getSession().getAttribute("goBackPage");
 
           StringBuilder sb = new StringBuilder();
 
@@ -57,10 +60,10 @@ public class JSServlet extends HttpServlet {
           } else {
             sb.append("  lastPage: '").append(lastPage).append("',\n");
           }
-          if (comebackPage == null) {
-            sb.append("  comebackPage: null,\n");
+          if (goBackPage == null) {
+            sb.append("  goBackPage: null,\n");
           } else {
-            sb.append("  comebackPage: '").append(comebackPage).append("',\n");
+            sb.append("  goBackPage: '").append(goBackPage).append("',\n");
           }
           String message = (String) request.getSession().getAttribute("message");
           if (message == null) {
@@ -98,7 +101,7 @@ public class JSServlet extends HttpServlet {
           sb.append("\n");
           out.write(sb.toString().getBytes(Configuration.getInstance().getEncoding()));
         } else {
-          try (FileInputStream in = new FileInputStream(jsFilePath.toFile());) {
+          try ( FileInputStream in = new FileInputStream(jsFilePath.toFile());) {
             byte[] buffer = new byte[1024];
             int count;
             while ((count = in.read(buffer)) >= 0) {

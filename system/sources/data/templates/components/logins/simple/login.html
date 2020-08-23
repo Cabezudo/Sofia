@@ -77,10 +77,10 @@
         onResponse: event => {
           const detail = event.detail;
           if (detail.status === 'LOGGED') {
-            if (variables.comebackPage === null) {
+            if (variables.goBackPage === null) {
               location.assign('#{afterLoginSucessfullPage}');
             } else {
-              location.assign(variables.comebackPage);
+              location.assign(variables.goBackPage);
             }
           } else {
             Core.showMessage({status: 'ERROR', message: detail.message});
