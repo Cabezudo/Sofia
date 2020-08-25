@@ -39,7 +39,6 @@ public class HTMLFilter implements Filter {
       HttpServletRequest request = (HttpServletRequest) req;
 
       String serverName = request.getServerName();
-      System.out.println(serverName);
       Site site;
       try {
         User owner = UserManager.getInstance().getAdministrator();
