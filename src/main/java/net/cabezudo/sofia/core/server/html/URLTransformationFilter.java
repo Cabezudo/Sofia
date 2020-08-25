@@ -94,7 +94,6 @@ public class URLTransformationFilter implements Filter {
         DomainName newDomainName = domainName.parent();
         String company = domainName.getValue("company");
         requestURI = "/" + company + requestURI;
-        request.setAttribute("company", company);
         Logger.debug("company name found : requestURI is now %s for domain name %s.", requestURI, newDomainName);
       }
     }
