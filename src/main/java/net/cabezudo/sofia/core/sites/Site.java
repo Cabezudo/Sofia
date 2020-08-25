@@ -130,12 +130,16 @@ public class Site implements Comparable<Integer> {
     return this.getBasePath().resolve(Integer.toString(version));
   }
 
-  public Path getCSSPath() {
-    return getVersionPath().resolve("css");
-  }
-
-  public Path getJSPath() {
-    return getVersionPath().resolve("js");
+  public Path getFilesPath(Path partialPath) {
+    Path fileName = partialPath.getFileName();
+    Path parentPath = partialPath.getParent();
+    Path basePath;
+    if (parentPath == null) {
+      basePath = getVersionPath();
+    } else {
+      basePath = getVersionPath().resolve(parentPath);
+    }
+    return basePath.resolve(fileName);
   }
 
   public Path getSourcesPath(DomainName domainName) {
