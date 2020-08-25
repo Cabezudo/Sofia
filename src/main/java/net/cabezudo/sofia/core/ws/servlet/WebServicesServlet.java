@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.http.url.parser.URLPathTokenizer;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.WebServiceNotFoundException;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
-import net.cabezudo.sofia.core.ws.parser.URLPathTokenizer;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -34,7 +34,7 @@ public class WebServicesServlet extends HttpServlet {
     }
 
     Logger.debug("GET request for: %s.", uri);
-    WSTokens tokens = URLPathTokenizer.tokenize(uri);
+    URLTokens tokens = URLPathTokenizer.tokenize(uri);
 
     try {
       WebServicesUniverse.getInstance().runGET(request, response, tokens);
@@ -50,7 +50,7 @@ public class WebServicesServlet extends HttpServlet {
     String uri = request.getRequestURI();
 
     Logger.debug("POST request for: %s.", uri);
-    WSTokens tokens = URLPathTokenizer.tokenize(uri);
+    URLTokens tokens = URLPathTokenizer.tokenize(uri);
 
     try {
       WebServicesUniverse.getInstance().runPOST(request, response, tokens);
@@ -64,7 +64,7 @@ public class WebServicesServlet extends HttpServlet {
   @Override
   protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String uri = request.getRequestURI();
-    WSTokens tokens = URLPathTokenizer.tokenize(uri);
+    URLTokens tokens = URLPathTokenizer.tokenize(uri);
 
     try {
       WebServicesUniverse.getInstance().runPUT(request, response, tokens);
@@ -80,7 +80,7 @@ public class WebServicesServlet extends HttpServlet {
     String uri = request.getRequestURI();
 
     Logger.debug("DELETE request for: %s.", uri);
-    WSTokens tokens = URLPathTokenizer.tokenize(uri);
+    URLTokens tokens = URLPathTokenizer.tokenize(uri);
 
     try {
       WebServicesUniverse.getInstance().runDELETE(request, response, tokens);

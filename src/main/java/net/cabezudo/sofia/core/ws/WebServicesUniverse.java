@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -37,27 +37,27 @@ public class WebServicesUniverse {
     put.add(apiConfiguration.getNullJSONArray("put"));
   }
 
-  public void runGET(HttpServletRequest request, HttpServletResponse response, WSTokens tokens)
+  public void runGET(HttpServletRequest request, HttpServletResponse response, URLTokens tokens)
           throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ServletException, WebServiceNotFoundException {
     run(request, response, tokens, get);
   }
 
-  public void runPOST(HttpServletRequest request, HttpServletResponse response, WSTokens tokens)
+  public void runPOST(HttpServletRequest request, HttpServletResponse response, URLTokens tokens)
           throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ServletException, WebServiceNotFoundException {
     run(request, response, tokens, post);
   }
 
-  public void runDELETE(HttpServletRequest request, HttpServletResponse response, WSTokens tokens)
+  public void runDELETE(HttpServletRequest request, HttpServletResponse response, URLTokens tokens)
           throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ServletException, WebServiceNotFoundException {
     run(request, response, tokens, delete);
   }
 
-  public void runPUT(HttpServletRequest request, HttpServletResponse response, WSTokens tokens)
+  public void runPUT(HttpServletRequest request, HttpServletResponse response, URLTokens tokens)
           throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ServletException, WebServiceNotFoundException {
     run(request, response, tokens, put);
   }
 
-  private void run(HttpServletRequest request, HttpServletResponse response, WSTokens tokens, WebServices webServices)
+  private void run(HttpServletRequest request, HttpServletResponse response, URLTokens tokens, WebServices webServices)
           throws ClassNotFoundException, NoSuchMethodException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ServletException, WebServiceNotFoundException {
     for (WebService webService : webServices) {
       if (tokens.match(webService.getPath())) {
@@ -67,7 +67,7 @@ public class WebServicesUniverse {
         Class[] arguments = new Class[3];
         arguments[0] = HttpServletRequest.class;
         arguments[1] = HttpServletResponse.class;
-        arguments[2] = WSTokens.class;
+        arguments[2] = URLTokens.class;
 
         Service service = (Service) classToLoad.getDeclaredConstructor(arguments).newInstance(request, response, tokens);
         service.execute();

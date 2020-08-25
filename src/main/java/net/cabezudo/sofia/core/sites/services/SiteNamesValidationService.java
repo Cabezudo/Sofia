@@ -11,8 +11,8 @@ import net.cabezudo.sofia.core.sites.SiteValidationException;
 import net.cabezudo.sofia.core.sites.validators.SiteNameValidator;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -23,7 +23,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class SiteNamesValidationService extends Service {
 
-  public SiteNamesValidationService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public SiteNamesValidationService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -31,7 +31,7 @@ public class SiteNamesValidationService extends Service {
   public void execute() throws ServletException {
     int siteId;
     String name;
-    WSToken token;
+    URLToken token;
 
     User owner = super.getUser();
 

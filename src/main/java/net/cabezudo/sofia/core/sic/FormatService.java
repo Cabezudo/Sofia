@@ -11,7 +11,7 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.sites.Site;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.sic.Message;
@@ -27,7 +27,7 @@ import net.cabezudo.sofia.sic.elements.SICUnexpectedEndOfCodeException;
  */
 public class FormatService extends Service<ValidationResponse> {
 
-  public FormatService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public FormatService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

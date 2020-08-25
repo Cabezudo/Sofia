@@ -11,7 +11,7 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -21,7 +21,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class HostnameNameValidationService extends Service {
 
-  public HostnameNameValidationService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public HostnameNameValidationService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

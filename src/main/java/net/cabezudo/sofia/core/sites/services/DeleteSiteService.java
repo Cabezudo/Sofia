@@ -11,8 +11,8 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -22,7 +22,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class DeleteSiteService extends Service {
 
-  public DeleteSiteService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public DeleteSiteService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -31,7 +31,7 @@ public class DeleteSiteService extends Service {
 
     User owner = super.getUser();
 
-    WSToken siteIdToken = tokens.getValue("siteId");
+    URLToken siteIdToken = tokens.getValue("siteId");
     try {
       int siteId;
 

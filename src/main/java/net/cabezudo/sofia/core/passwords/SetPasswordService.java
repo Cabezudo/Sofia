@@ -16,7 +16,7 @@ import net.cabezudo.sofia.core.users.HashTooOldException;
 import net.cabezudo.sofia.core.users.NullHashException;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotFoundByHashException;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.emails.EMailNotExistException;
@@ -27,7 +27,7 @@ import net.cabezudo.sofia.emails.EMailNotExistException;
  */
 public class SetPasswordService extends Service {
 
-  public SetPasswordService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public SetPasswordService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

@@ -17,7 +17,7 @@ import net.cabezudo.sofia.core.sites.validators.SiteNameValidator;
 import net.cabezudo.sofia.core.sites.validators.SiteVersionException;
 import net.cabezudo.sofia.core.sites.validators.SiteVersionValidator;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -27,7 +27,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class AddSiteService extends Service {
 
-  public AddSiteService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public AddSiteService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

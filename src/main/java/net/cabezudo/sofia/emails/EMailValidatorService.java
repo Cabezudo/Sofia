@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -15,7 +15,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class EMailValidatorService extends Service {
 
-  public EMailValidatorService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public EMailValidatorService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

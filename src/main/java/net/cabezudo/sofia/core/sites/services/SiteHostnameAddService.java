@@ -15,14 +15,14 @@ import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
 import net.cabezudo.sofia.core.hostname.HostnameValidator;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -32,7 +32,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class SiteHostnameAddService extends Service {
 
-  public SiteHostnameAddService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public SiteHostnameAddService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -41,7 +41,7 @@ public class SiteHostnameAddService extends Service {
 
     User owner = super.getUser();
 
-    WSToken siteIdToken = tokens.getValue("siteId");
+    URLToken siteIdToken = tokens.getValue("siteId");
 
     try {
       int siteId;
@@ -64,7 +64,7 @@ public class SiteHostnameAddService extends Service {
       String hostname = jsonData.getString("name");
       String messageKey = HostnameValidator.getInstance().validate(hostname);
 
-      DomainName domainName = DomainNameManager.getInstance().add(connection, siteId, hostname);
+      DomainName domainName = DomainNameManager.getInstance().add(connection, site.getId(), hostname);
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", domainName.getId()));
       data.add(new JSONPair("name", domainName.getName()));

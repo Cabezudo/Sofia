@@ -10,7 +10,7 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -20,7 +20,7 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class ListClientsService extends ListService {
 
-  public ListClientsService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public ListClientsService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

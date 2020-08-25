@@ -146,9 +146,8 @@ public class SiteManager {
       DomainName domainName = DomainNameManager.getInstance().add(connection, siteId, domainNameName);
       if (baseDomainName == null) {
         baseDomainName = domainName;
-      } else {
-        domainNames.add(domainName);
       }
+      domainNames.add(domainName);
     }
     Site site = new Site(siteId, name, baseDomainName, domainNames, DEFAULT_VERSION);
     SiteManager.getInstance().update(connection, site);
@@ -199,7 +198,7 @@ public class SiteManager {
       String query
               = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
               + "FROM " + SitesTable.NAME + " AS s "
-              + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.domainName = d.id "
+              + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
               + where + sqlSort + sqlLimit;
 
       PreparedStatement ps = null;
@@ -648,7 +647,7 @@ public class SiteManager {
         Logger.fine(ps);
         rs = ps.executeQuery();
         if (!rs.next()) {
-          throw new RuntimeException("The select to count the number of sites fail.");
+          throw new SofiaRuntimeException("The select to count the number of sites fail.");
         }
         int total = rs.getInt("total");
 

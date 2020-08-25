@@ -13,8 +13,8 @@ import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -24,7 +24,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class DeleteSiteHostnameService extends Service {
 
-  public DeleteSiteHostnameService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public DeleteSiteHostnameService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -34,7 +34,7 @@ public class DeleteSiteHostnameService extends Service {
     User owner = super.getUser();
 
     try {
-      WSToken siteIdToken = tokens.getValue("siteId");
+      URLToken siteIdToken = tokens.getValue("siteId");
       int siteId;
       try {
         siteId = siteIdToken.toInteger();
@@ -49,7 +49,7 @@ public class DeleteSiteHostnameService extends Service {
         return;
       }
 
-      WSToken hostIdToken = tokens.getValue("hostId");
+      URLToken hostIdToken = tokens.getValue("hostId");
       int hostId;
       try {
         hostId = hostIdToken.toInteger();

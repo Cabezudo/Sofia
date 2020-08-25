@@ -29,7 +29,7 @@ public class SiteCreator {
     return INSTANCE;
   }
 
-  public void createPage(Site site, String requestURI) throws IOException, SQLException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException {
+  public void createPages(Site site, String requestURI) throws IOException, SQLException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException {
     String htmlPartialPathName = requestURI.substring(1);
     String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPathName.length() - 5); // Used to create the javascript and css files for this html page
     Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");

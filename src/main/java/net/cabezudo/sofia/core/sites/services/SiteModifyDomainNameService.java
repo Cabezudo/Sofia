@@ -17,8 +17,8 @@ import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -29,7 +29,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class SiteModifyDomainNameService extends Service {
 
-  public SiteModifyDomainNameService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public SiteModifyDomainNameService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -37,8 +37,8 @@ public class SiteModifyDomainNameService extends Service {
   public void execute() throws ServletException {
     User owner = super.getUser();
 
-    WSToken siteIdToken = tokens.getValue("siteId");
-    WSToken hostIdToken = tokens.getValue("hostId");
+    URLToken siteIdToken = tokens.getValue("siteId");
+    URLToken hostIdToken = tokens.getValue("hostId");
 
     try {
       int siteId;

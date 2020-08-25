@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -16,7 +16,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class AddMessageService extends Service {
 
-  public AddMessageService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public AddMessageService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

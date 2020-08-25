@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.ws.parser.tokens;
+package net.cabezudo.sofia.core.http.url.parser.tokens;
 
 import java.security.InvalidParameterException;
 import java.util.AbstractList;
@@ -6,28 +6,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import net.cabezudo.sofia.core.ws.parser.URLPathTokenizer;
+import net.cabezudo.sofia.core.http.url.parser.URLPathTokenizer;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.15
  */
-public class WSTokens extends AbstractList<WSToken> {
+public class URLTokens extends AbstractList<URLToken> {
 
-  private final List<WSToken> list = new ArrayList<>();
-  private final Map<String, WSToken> map = new TreeMap<>();
+  private final List<URLToken> list = new ArrayList<>();
+  private final Map<String, URLToken> map = new TreeMap<>();
 
   @Override
-  public boolean add(WSToken token) {
+  public boolean add(URLToken token) {
     return list.add(token);
   }
 
   @Override
-  public WSToken get(int i) {
+  public URLToken get(int i) {
     return list.get(i);
   }
 
-  public WSToken consume() {
+  public URLToken consume() {
     return list.remove(0);
   }
 
@@ -39,22 +39,22 @@ public class WSTokens extends AbstractList<WSToken> {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    for (WSToken t : list) {
+    for (URLToken t : list) {
       sb.append(t.getClass().getSimpleName()).append(" ").append(t.toString()).append('\n');
     }
     return sb.toString();
   }
 
   public boolean match(String pattern) {
-    WSTokens patternTokens = URLPathTokenizer.tokenize(pattern);
+    URLTokens patternTokens = URLPathTokenizer.tokenize(pattern);
 
     if (patternTokens.size() != this.size()) {
       return false;
     }
 
     for (int i = 0; i < patternTokens.size(); i++) {
-      WSToken patternToken = patternTokens.get(i);
-      WSToken pathToken = this.get(i);
+      URLToken patternToken = patternTokens.get(i);
+      URLToken pathToken = this.get(i);
 
       if (!patternToken.match(pathToken)) {
         return false;
@@ -66,11 +66,11 @@ public class WSTokens extends AbstractList<WSToken> {
     return true;
   }
 
-  public WSToken getValue(String parameterName) {
+  public URLToken getValue(String parameterName) {
     if (parameterName == null) {
       throw new InvalidParameterException("The parameter name is null");
     }
-    WSToken value = map.get(parameterName);
+    URLToken value = map.get(parameterName);
     if (value == null) {
       throw new RuntimeException("Parameter '" + parameterName + "' not found.");
     }

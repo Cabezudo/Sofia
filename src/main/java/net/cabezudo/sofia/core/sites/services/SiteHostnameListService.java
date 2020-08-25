@@ -14,8 +14,8 @@ import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 
 /**
@@ -27,7 +27,7 @@ public class SiteHostnameListService extends ListService {
 
   private final int MAX_ITEMS = 200;
 
-  public SiteHostnameListService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public SiteHostnameListService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -36,7 +36,7 @@ public class SiteHostnameListService extends ListService {
     int siteId;
     User owner = super.getUser();
 
-    WSToken token = tokens.getValue("siteId");
+    URLToken token = tokens.getValue("siteId");
     try {
       siteId = token.toInteger();
     } catch (InvalidPathParameterException e) {
