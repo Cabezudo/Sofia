@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.people.PeopleList;
 
@@ -14,7 +14,7 @@ import net.cabezudo.sofia.people.PeopleList;
  */
 public class ListUsersService extends Service {
 
-  public ListUsersService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public ListUsersService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

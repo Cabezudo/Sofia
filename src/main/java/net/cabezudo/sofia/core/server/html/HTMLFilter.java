@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
@@ -20,7 +19,6 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -37,14 +35,16 @@ public class HTMLFilter implements Filter {
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
 
     if (req instanceof HttpServletRequest) {
-
-      HttpServletRequest request = new SofiaServletRequest((HttpServletRequest) req);
+      HttpServletRequest request = (HttpServletRequest) req;
 
       String serverName = request.getServerName();
       Site site;
       try {
         User owner = UserManager.getInstance().getAdministrator();
         site = SiteManager.getInstance().getByHostame(serverName, owner);
+        if (site == null) {
+          throw new ServletException("Site for " + serverName + " NOT FOUND.");
+        }
       } catch (SQLException e) {
         throw new ServletException(e);
       }
@@ -63,18 +63,7 @@ public class HTMLFilter implements Filter {
           request.getSession().setAttribute("lastPage", lastPage);
         }
 
-        if (Environment.getInstance().isDevelopment()) {
-          try {
-            SiteCreator.getInstance().createPage(site, requestURI);
-          } catch (SQLException | IOException | InvalidFragmentTag e) {
-            if (Environment.getInstance().isDevelopment()) {
-              e.printStackTrace();
-            }
-            throw new ServletException(e);
-          } catch (JSONParseException | SiteCreationException | LibraryVersionConflictException e) {
-            throw new ServletException(e);
-          }
-        }
+        createPages(site, requestURI);
       }
       chain.doFilter(request, res);
     } else {
@@ -87,49 +76,17 @@ public class HTMLFilter implements Filter {
     // Nothing to do here
   }
 
-  private class SofiaServletRequest extends HttpServletRequestWrapper {
-
-    private String requestURI;
-    private String serverName;
-
-    private SofiaServletRequest(HttpServletRequest request) {
-      super(request);
-
-      serverName = request.getServerName();
-      requestURI = request.getRequestURI();
-
-      if (serverName.startsWith("local.")) {
-        serverName = serverName.substring(6);
-        Logger.debug("Change serverName to %s.", serverName);
-      }
-      changeServerNamePrefix();
-      if (requestURI.endsWith("/")) {
-        requestURI += "index.html";
-        Logger.debug("The file is omitted, adding file: %s", requestURI);
-      }
-    }
-
-    @Override
-    public String getServerName() {
-      return serverName;
-    }
-
-    @Override
-    public String getRequestURI() {
-      return requestURI;
-    }
-
-    private void changeServerNamePrefix() {
-      if (serverName.startsWith("api.")) {
-        serverName = serverName.substring(4);
-        requestURI = "/api" + requestURI;
-        Logger.debug("Change requestURI to %s.", requestURI);
-        return;
-      }
-      if (serverName.startsWith("admin.")) {
-        serverName = serverName.substring(6);
-        requestURI = "/admin" + requestURI;
-        Logger.debug("Change requestURI to %s.", requestURI);
+  private void createPages(Site site, String requestURI) throws ServletException {
+    if (Environment.getInstance().isDevelopment()) {
+      try {
+        SiteCreator.getInstance().createPages(site, requestURI);
+      } catch (SQLException | IOException | InvalidFragmentTag e) {
+        if (Environment.getInstance().isDevelopment()) {
+          e.printStackTrace();
+        }
+        throw new ServletException(e);
+      } catch (JSONParseException | SiteCreationException | LibraryVersionConflictException e) {
+        throw new ServletException(e);
       }
     }
   }

@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.ws.parser.tokens;
+package net.cabezudo.sofia.core.http.url.parser.tokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,11 +10,11 @@ public class TokenFactory {
     // Nothing to do here. Utility classes should not have public constructors.
   }
 
-  public static WSToken get(char c) {
+  public static URLToken get(char c) {
     return get(Character.toString(c));
   }
 
-  public static WSToken get(String s) {
+  public static URLToken get(String s) {
     if ("/".equals(s)) {
       return new PathSeparatorToken();
     }

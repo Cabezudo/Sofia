@@ -1,6 +1,6 @@
-package net.cabezudo.sofia.core.ws.parser.tokens;
+package net.cabezudo.sofia.core.http.url.parser.tokens;
 
-public class StringToken extends WSToken {
+public class StringToken extends URLToken {
 
   private final String value;
 

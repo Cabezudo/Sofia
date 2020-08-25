@@ -18,7 +18,7 @@ import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.passwords.PasswordValidator;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.customers.CustomerService;
@@ -38,7 +38,7 @@ import net.cabezudo.sofia.people.Person;
  */
 public class AddUserService extends Service {
 
-  public AddUserService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public AddUserService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

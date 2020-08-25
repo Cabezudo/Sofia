@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.ws.parser.tokens;
+package net.cabezudo.sofia.core.http.url.parser.tokens;
 
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 
@@ -6,7 +6,7 @@ import net.cabezudo.sofia.core.InvalidPathParameterException;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.15
  */
-public abstract class WSToken {
+public abstract class URLToken {
 
   @Override
   public abstract String toString();
@@ -31,7 +31,7 @@ public abstract class WSToken {
     return false;
   }
 
-  public boolean match(WSToken t) {
+  public boolean match(URLToken t) {
     return this.isVariable() || t.isVariable() || this.toString().equals(t.toString());
   }
 }

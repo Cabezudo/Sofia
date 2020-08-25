@@ -38,8 +38,12 @@ public class AuthorizationManager {
   }
 
   public boolean hasAuthorization(String requestURI, User user, PermissionType permissionType, Site site) throws NotLoggedException, SQLException {
+    if (permissionType == null) {
+      Logger.debug("Permission type was not specified for user %s in uri %s on site %s", user, requestURI, site.getBaseDomainName().getName());
+      return false;
+    }
     Logger.debug("Looking for authorization for uri %s, user %s, permissionType %s and site %s", requestURI, user, permissionType.getName(), site.getBaseDomainName().getName());
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       Profiles profiles;
       if (user == null) {
         Profile profile = ProfileManager.getInstance().get(connection, "all", site);
@@ -90,14 +94,14 @@ public class AuthorizationManager {
   }
 
   public void delete(String requestURI, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+    try ( Connection connection = Database.getConnection()) {
       delete(connection, requestURI, site);
     }
   }
 
   public void delete(Connection connection, String requestURI, Site site) throws SQLException {
     String query = "DELETE FROM " + ProfilesPermissionsTable.NAME + " WHERE permission = (SELECT id FROM " + PermissionsTable.NAME + " WHERE uri = ? AND site = ?)";
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, requestURI);
       ps.setInt(2, site.getId());
       Logger.fine(ps);

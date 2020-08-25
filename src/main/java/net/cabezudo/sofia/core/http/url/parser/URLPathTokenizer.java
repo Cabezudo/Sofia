@@ -1,8 +1,8 @@
-package net.cabezudo.sofia.core.ws.parser;
+package net.cabezudo.sofia.core.http.url.parser;
 
-import net.cabezudo.sofia.core.ws.parser.tokens.TokenFactory;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.TokenFactory;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -14,12 +14,12 @@ public class URLPathTokenizer {
     // Nothing to do here. Utility classes should not have public constructors.
   }
 
-  public static WSTokens tokenize(String path) {
-    WSTokens tokens = new WSTokens();
+  public static URLTokens tokenize(String path) {
+    URLTokens tokens = new URLTokens();
     int stringLength = path.length();
     StringBuilder sb = new StringBuilder();
 
-    WSToken token = null;
+    URLToken token = null;
     for (int i = 0; i < stringLength; i++) {
       char c = path.charAt(i);
       if (c == '/') {

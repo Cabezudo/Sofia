@@ -14,7 +14,7 @@ import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
@@ -27,7 +27,7 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class LoginService extends Service {
 
-  public LoginService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public LoginService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

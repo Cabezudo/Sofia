@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -18,7 +18,7 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class SiteService extends Service {
 
-  public SiteService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public SiteService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
@@ -26,7 +26,7 @@ public class SiteService extends Service {
   public void execute() throws ServletException {
     User owner = super.getUser();
 
-    WSToken token = tokens.getValue("siteId");
+    URLToken token = tokens.getValue("siteId");
     int siteId;
     try {
       siteId = token.toInteger();

@@ -5,8 +5,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSToken;
-import net.cabezudo.sofia.core.ws.parser.tokens.WSTokens;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -15,13 +15,13 @@ import net.cabezudo.sofia.core.ws.servlet.services.Service;
  */
 public class DetailClientsService extends Service {
 
-  public DetailClientsService(HttpServletRequest request, HttpServletResponse response, WSTokens tokens) throws ServletException {
+  public DetailClientsService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 
   @Override
   public void execute() throws ServletException {
-    WSToken token = tokens.getValue("clientId");
+    URLToken token = tokens.getValue("clientId");
 
     try {
       int id = token.toInteger();

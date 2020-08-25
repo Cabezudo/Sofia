@@ -1,6 +1,6 @@
-package net.cabezudo.sofia.core.ws.parser.tokens;
+package net.cabezudo.sofia.core.http.url.parser.tokens;
 
-public class NumberToken extends WSToken {
+public class NumberToken extends URLToken {
 
   private final String stringValue;
   private final int intValue;

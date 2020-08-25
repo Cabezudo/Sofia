@@ -26,6 +26,7 @@ import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.HTMLFilter;
+import net.cabezudo.sofia.core.server.html.URLTransformationFilter;
 import net.cabezudo.sofia.core.server.images.ImageServlet;
 import net.cabezudo.sofia.core.server.js.JSServlet;
 import net.cabezudo.sofia.core.sites.Site;
@@ -56,13 +57,10 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class WebServer {
 
   private static WebServer instance;
+
   private final Server server;
 
-  public static void main(String... args) {
-    runServer(args);
-  }
-
-  private static void runServer(String... args) {
+  public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException {
     List<String> arguments = Arrays.asList(args);
     Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
 
@@ -98,6 +96,19 @@ public class WebServer {
       }
     }
 
+    try {
+      DefaultData.create(startOptions);
+      if (startOptions.hasDropDatabase()) {
+        System.exit(0);
+      }
+    } catch (FileNotFoundException | UserNotExistException | EMailNotExistException e) {
+      if (Environment.getInstance().isDevelopment()) {
+        e.printStackTrace();
+      } else {
+        Logger.severe(e);
+      }
+    }
+
     if (startOptions.hasChangeUserPassword()) {
       try {
         UserManager.getInstance().changeUserPassword();
@@ -106,7 +117,6 @@ public class WebServer {
         Logger.severe(e);
       }
     }
-
     Logger.info("Starting server...");
     try {
       ServerSocket ss = new ServerSocket(port);
@@ -115,20 +125,7 @@ public class WebServer {
       Logger.severe("Can't open the port " + port + ". " + e.getMessage());
       System.exit(1);
     }
-
-    try {
-      DefaultData.create(startOptions);
-      if (startOptions.hasDropDatabase()) {
-        System.exit(0);
-      }
-      WebServer.getInstance().start();
-    } catch (FileNotFoundException | PortAlreadyInUseException | ConfigurationException | ServerException | UserNotExistException | EMailNotExistException e) {
-      if (Environment.getInstance().isDevelopment()) {
-        e.printStackTrace();
-      } else {
-        Logger.severe(e);
-      }
-    }
+    WebServer.getInstance().start();
   }
 
   private static void checkAndCreateConfigurationFile() throws ConfigurationException {
@@ -181,6 +178,7 @@ public class WebServer {
     }
 
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    context.setDisplayName(Integer.toString(site.getId()));
     context.setContextPath("/");
     String sitePath = site.getVersionPath().toString();
     Logger.debug("Create handler for host %s using site path %s.", site.getBaseDomainName().getName(), sitePath);
@@ -206,6 +204,7 @@ public class WebServer {
 
     context.setVirtualHosts(virtualHosts);
 
+    context.addFilter(URLTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLAuthorizationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 
@@ -249,6 +248,34 @@ public class WebServer {
     }
 
     return context;
+  }
+
+  public static void add(DomainName domainName) {
+    HandlerCollection handlerCollection = (HandlerCollection) instance.server.getHandler();
+
+    Handler[] contexts = handlerCollection.getHandlers();
+
+    for (Handler handler : contexts) {
+      ServletContextHandler context = (ServletContextHandler) handler;
+      String siteName = Integer.toString(domainName.getSiteId());
+      if (siteName.equals(context.getDisplayName())) {
+        context.addVirtualHosts(new String[]{domainName.getName(), "local." + domainName.getName()});
+      }
+    }
+  }
+
+  public static void delete(DomainName domainName) {
+    HandlerCollection handlerCollection = (HandlerCollection) instance.server.getHandler();
+
+    Handler[] contexts = handlerCollection.getHandlers();
+
+    for (Handler handler : contexts) {
+      ServletContextHandler context = (ServletContextHandler) handler;
+      String siteName = Integer.toString(domainName.getSiteId());
+      if (siteName.equals(context.getDisplayName())) {
+        context.removeVirtualHosts(new String[]{domainName.getName(), "local." + domainName.getName()});
+      }
+    }
   }
 
   private void createCommonsFile(Site site) throws IOException {
@@ -311,25 +338,6 @@ public class WebServer {
 
     server.setHandler(handlerCollection);
 
-    try {
-      server.start();
-      server.join();
-    } catch (Exception e) {
-      if (e.getCause() instanceof java.net.BindException && "Address already in use".equals(e.getCause().getMessage())) {
-        throw new PortAlreadyInUseException("Port " + Configuration.getInstance().getServerPort() + " already in use.");
-      }
-      throw new ServerException("Can't start server. " + e.getMessage(), e);
-    }
-  }
-
-  public void start() throws ServerException {
-    try {
-      server.start();
-      server.join();
-      Logger.info("Server started.");
-    } catch (Exception e) {
-      throw new ServerException(e);
-    }
   }
 
   public void stop() throws ServerException {
@@ -339,5 +347,19 @@ public class WebServer {
       throw new ServerException(e);
     }
     Logger.info("Server stoped.");
+  }
+
+  private void start() {
+    try {
+      server.start();
+      server.join();
+      Logger.info("Server started.");
+    } catch (Exception e) {
+      if (Environment.getInstance().isDevelopment()) {
+        e.printStackTrace();
+      } else {
+        Logger.severe(e);
+      }
+    }
   }
 }

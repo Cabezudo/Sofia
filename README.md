@@ -408,9 +408,11 @@ Las imágenes se colocan en un directorio `images` en el directorio de base de l
 
 Las variables del query string de la urls se puedeon obtener utilizando Core.pageParameters
 
+Todos los nombres de dominio agregados tienen por defecto un subdominio localque esta pensado para configurar el archivo de hosts para que apunte a la máquina y poder hacer pruebas locales con el servidor.
 
+Todos los nombres de dominio que comienzan con api, por ejemplo api.x.com, apuntan por defecto a x.com/api.
 
-
+Todos los nombres de dominio que comienzan con admin, por ejemplo admin.x.com, apuntan por defecto a x.com/admin.
 
 
 

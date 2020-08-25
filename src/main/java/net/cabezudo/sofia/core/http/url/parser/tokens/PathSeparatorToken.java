@@ -1,10 +1,10 @@
-package net.cabezudo.sofia.core.ws.parser.tokens;
+package net.cabezudo.sofia.core.http.url.parser.tokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.15
  */
-public class PathSeparatorToken extends WSToken {
+public class PathSeparatorToken extends URLToken {
 
   @Override
   public boolean isPathSeparator() {
