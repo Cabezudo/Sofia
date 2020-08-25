@@ -14,10 +14,11 @@ public class SofiaErrorHandler extends ErrorHandler {
   @Override
   protected void writeErrorPage(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks) throws IOException {
     switch (code) {
+      // TODO load either, beatifull pages form the user site or beatifull default pages
       case 404:
         writer.write("<html><head><meta http-equiv=\"Content-Type\" content=\"text/html;charset=UTF-8\"/>");
         writer.write("<title>Error 404 Not Found</title></head>");
-        writer.write("<body><h2>HTTP ERROR: 404</h2><p>Not Found</p><hr /><i><small>Powered by Sofia</small></i>");
+        writer.write("<body><h2>HTTP ERROR: 404</h2><p>" + request.getRequestURI() + " not Found</p><hr /><i><small>Powered by Sofia</small></i>");
         writer.write("</body></html>");
         break;
       case 500:

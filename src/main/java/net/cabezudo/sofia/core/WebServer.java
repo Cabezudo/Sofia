@@ -226,8 +226,10 @@ public class WebServer {
     ServletHolder jsHolder = new ServletHolder("VariablesJS", VariablesJSServlet.class);
     context.addServlet(jsHolder, "/variables.js");
 
-    ServletHolder defaultServlet = new ServletHolder("static", SofiaDefaultServlet.class);
+    ServletHolder defaultServlet = new ServletHolder("static", SofiaDefaultServlet.class
+    );
     context.addServlet(defaultServlet, "/*");
+
     context.setErrorHandler(new SofiaErrorHandler());
 
     for (String vh : context.getVirtualHosts()) {
