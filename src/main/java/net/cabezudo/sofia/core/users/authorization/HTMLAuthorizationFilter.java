@@ -41,7 +41,6 @@ public class HTMLAuthorizationFilter implements Filter {
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
-    Logger.all(Logger.getLevel().name());
     Site site = (Site) req.getAttribute("site");
     Logger.all("Site: %s", site);
     if (req instanceof HttpServletRequest) {
@@ -80,9 +79,9 @@ public class HTMLAuthorizationFilter implements Filter {
       request.getSession().setAttribute("user", user);
 
       String requestURI = request.getRequestURI();
-      Logger.fine("Request path: " + requestURI);
+      Logger.fine("Server name: " + request.getServerName());
+      Logger.fine("Request uri: " + requestURI);
       Path path = Paths.get(requestURI);
-      Logger.fine("Path: " + path);
       if (path.toString().endsWith("html")) {
         try {
           Logger.fine("Check for permissions.");

@@ -100,7 +100,7 @@ class CSSSourceFile implements SofiaSource {
   }
 
   void save(Path filePath) throws IOException {
-    Logger.debug("Creating the js file %s.", filePath);
+    Logger.debug("Creating the css file %s.", filePath);
     StringBuilder code = new StringBuilder();
 
     for (Library library : libraries) {
@@ -175,7 +175,7 @@ class CSSSourceFile implements SofiaSource {
 
   StringBuilder readFileFor(Path filePath) throws IOException {
     Path htmlPartialPath = site.getVersionPath().relativize(filePath);
-    Path cssBasePath = site.getCSSPath().resolve(htmlPartialPath).getParent();
+    Path cssBasePath = site.getFilesPath(htmlPartialPath);
     String htmlFileName = filePath.getFileName().toString();
     int i = htmlFileName.lastIndexOf('.');
     if (i == -1) {

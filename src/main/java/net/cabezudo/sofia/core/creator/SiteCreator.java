@@ -43,8 +43,6 @@ public class SiteCreator {
     Files.createDirectories(fileContentPath.getParent());
     Files.createDirectories(site.getBasePath());
     Files.createDirectories(site.getVersionPath());
-    Files.createDirectories(site.getJSPath());
-    Files.createDirectories(site.getCSSPath());
 
     TemplateVariables templateVariables = new TemplateVariables();
     try {
@@ -72,7 +70,7 @@ public class SiteCreator {
     JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, baseFileCaller);
     jsFile.add(baseFile.getLibraries());
     jsFile.add(baseFile.getJavaScriptLines());
-    Path jsFilePath = site.getJSPath().resolve(jsPartialPath);
+    Path jsFilePath = site.getFilesPath(jsPartialPath);
     jsFile.save(jsFilePath);
 
     CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, baseFileCaller);
@@ -82,7 +80,7 @@ public class SiteCreator {
     cssFile.add(baseFile.getCascadingStyleSheetImports());
     cssFile.add(baseFile.getCascadingStyleSheetLines());
     // Read all the CSS files from the CSS path
-    Path cssFilePath = site.getCSSPath().resolve(cssPartialPath);
+    Path cssFilePath = site.getFilesPath(cssPartialPath);
     cssFile.save(cssFilePath);
 
     Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);

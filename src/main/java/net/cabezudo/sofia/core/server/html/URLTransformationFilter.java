@@ -54,8 +54,7 @@ public class URLTransformationFilter implements Filter {
         requestURI += "index.html";
         Logger.fine("NO FILE FOUND in path, add index.");
       }
-
-      changeURL(request);
+      changeURL();
 
     }
 
@@ -69,7 +68,7 @@ public class URLTransformationFilter implements Filter {
       return requestURI;
     }
 
-    private void changeURL(HttpServletRequest request) {
+    private void changeURL() {
       if (domainName.match("local.**")) {
         domainName = domainName.parent();
         Logger.debug("local.** change : serverName is now %s.", domainName);
@@ -91,10 +90,10 @@ public class URLTransformationFilter implements Filter {
 
       // TODO change this in order to use the database for add new domains to this behavior
       if (domainName.match("{company}.cdmx.menu")) {
-        DomainName newDomainName = domainName.parent();
         String company = domainName.getValue("company");
+        domainName = domainName.parent();
         requestURI = "/" + company + requestURI;
-        Logger.debug("company name found : requestURI is now %s for domain name %s.", requestURI, newDomainName);
+        Logger.debug("company name found : requestURI is now %s for domain name %s.", requestURI, domainName);
       }
     }
   }

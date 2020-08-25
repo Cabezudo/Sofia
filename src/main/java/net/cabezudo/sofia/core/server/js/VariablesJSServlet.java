@@ -24,7 +24,7 @@ import net.cabezudo.sofia.emails.EMailNotExistException;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.05.31
  */
-public class JSServlet extends HttpServlet {
+public class VariablesJSServlet extends HttpServlet {
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,7 +44,7 @@ public class JSServlet extends HttpServlet {
       response.setContentType("text/javascript");
 
       try ( OutputStream out = response.getOutputStream();) {
-        if ("js/variables.js".equals(fileName)) {
+        if ("variables.js".equals(fileName)) {
           String lastPage = (String) request.getSession().getAttribute("lastPage");
           String goBackPage = (String) request.getSession().getAttribute("goBackPage");
 
