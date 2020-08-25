@@ -82,10 +82,6 @@ public class HTMLAuthorizationFilter implements Filter {
       String requestURI = request.getRequestURI();
       Logger.fine("Request path: " + requestURI);
       Path path = Paths.get(requestURI);
-      if (requestURI.endsWith("/")) {
-        path = Paths.get(requestURI + "/index.html");
-        Logger.fine("NO FILE FOUND in path, add index.");
-      }
       Logger.fine("Path: " + path);
       if (path.toString().endsWith("html")) {
         try {

@@ -19,6 +19,7 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -38,6 +39,7 @@ public class HTMLFilter implements Filter {
       HttpServletRequest request = (HttpServletRequest) req;
 
       String serverName = request.getServerName();
+      System.out.println(serverName);
       Site site;
       try {
         User owner = UserManager.getInstance().getAdministrator();
@@ -78,6 +80,7 @@ public class HTMLFilter implements Filter {
 
   private void createPages(Site site, String requestURI) throws ServletException {
     if (Environment.getInstance().isDevelopment()) {
+      Logger.debug("Create pages for URI %s.", requestURI);
       try {
         SiteCreator.getInstance().createPages(site, requestURI);
       } catch (SQLException | IOException | InvalidFragmentTag e) {
