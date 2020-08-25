@@ -50,6 +50,11 @@ public class URLTransformationFilter implements Filter {
       domainName = new DomainName(request.getServerName());
       requestURI = request.getRequestURI();
 
+      if (requestURI.endsWith("/")) {
+        requestURI += "index.html";
+        Logger.fine("NO FILE FOUND in path, add index.");
+      }
+
       changeURL(request);
 
     }
