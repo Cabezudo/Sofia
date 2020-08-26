@@ -8,6 +8,7 @@ import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -106,6 +107,13 @@ public class HTMLAuthorizationFilter implements Filter {
           response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
           return;
         }
+      }
+      boolean urlChanged = (Boolean) request.getAttribute("urlChanged");
+      if (urlChanged) {
+        RequestDispatcher dispatcher = request.getRequestDispatcher(request.getRequestURI());
+        dispatcher.forward(request, res);
+      } else {
+        chain.doFilter(req, res);
       }
     }
     chain.doFilter(req, res);

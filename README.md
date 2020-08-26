@@ -440,7 +440,6 @@ Todos los nombres de dominio que comienzan con admin, por ejemplo admin.x.com, a
 
 
 
-
 Lenguaje de transformaciones
 Se puede utilizar un lenguaje para transformar las imágenes. Mediante este lenguaje se puede indicar que transformaciones y en que orden se aplicar a una imagen. Cada instrucción toma la imagen entregada por la instrucción anterior y le aplica la transformación correspondiente.
 Las transformaciones se expresan con un JSON en donde cada propiedad es una transformación y se ejecutan en el orden que se encuentran.

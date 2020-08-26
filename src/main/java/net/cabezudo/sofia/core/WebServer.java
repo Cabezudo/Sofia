@@ -26,10 +26,10 @@ import net.cabezudo.sofia.core.http.SofiaDefaultServlet;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
+import net.cabezudo.sofia.core.server.html.CompanyPathTransformationFilter;
 import net.cabezudo.sofia.core.server.html.HTMLFilter;
 import net.cabezudo.sofia.core.server.html.URLTransformationFilter;
 import net.cabezudo.sofia.core.server.images.ImageServlet;
-import net.cabezudo.sofia.core.server.js.VariablesJSServlet;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
@@ -205,6 +205,7 @@ public class WebServer {
     context.setVirtualHosts(virtualHosts);
 
     context.addFilter(URLTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+    context.addFilter(CompanyPathTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLAuthorizationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
 
@@ -222,9 +223,6 @@ public class WebServer {
 
     ServletHolder qrImageHolder = new ServletHolder("qrImage", QRImageServlet.class);
     context.addServlet(qrImageHolder, "/images/upload/qr.png");
-
-    ServletHolder jsHolder = new ServletHolder("VariablesJS", VariablesJSServlet.class);
-    context.addServlet(jsHolder, "/variables.js");
 
     ServletHolder defaultServlet = new ServletHolder("static", SofiaDefaultServlet.class
     );
