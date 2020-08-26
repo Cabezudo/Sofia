@@ -35,6 +35,7 @@ public class HTMLFilter implements Filter {
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
 
+    Logger.debug("HTML filter.");
     if (req instanceof HttpServletRequest) {
       HttpServletRequest request = (HttpServletRequest) req;
 

@@ -4,6 +4,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.server.js.VariablesJSServlet;
 import org.eclipse.jetty.servlet.DefaultServlet;
 
 /**
@@ -14,6 +15,12 @@ public class SofiaDefaultServlet extends DefaultServlet {
 
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    super.doGet(request, response);
+    String requestURI = request.getRequestURI();
+    if (requestURI.endsWith("variables.js")) {
+      VariablesJSServlet variablesJSServlet = new VariablesJSServlet();
+      variablesJSServlet.doGet(request, response);
+    } else {
+      super.doGet(request, response);
+    }
   }
 }
