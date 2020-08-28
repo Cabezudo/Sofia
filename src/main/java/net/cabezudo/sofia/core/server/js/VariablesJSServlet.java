@@ -24,9 +24,7 @@ public class VariablesJSServlet {
     User user = clientData.getUser();
 
     String requestURI = request.getRequestURI();
-//    String fileName = requestURI.substring(1);
 
-//    Path jsPath = site.getVersionPath();
     int i = requestURI.lastIndexOf("/");
     String company = null;
     if (i > 0) {

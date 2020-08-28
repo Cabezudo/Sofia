@@ -15,12 +15,35 @@
         Core.addOnloadFunction(createGUI);
       }
     </script>
+    <style>
+      .itemList {
+       display: flex;
+       flex-wrap: wrap;
+      }
+      .item {
+        border: 1px solid gray;
+        height: 200px;
+        width: 33%;
+      }
+      .item > .image {
+        background-image: url(/images/donbeto.01.jpg)
+      }
+    </style>
   </head>
   <body>
     <section id="application" class="application">
       <section class="container">
         <section class="content">
           <h2 id="title" class="title">Lista de restaurantes</h2>
+          <div>
+            <div class="itemList">
+              <div class="item"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+              <div class="item"></div>
+            </div>
+          </div>
         </section>
       </section>
     </section>

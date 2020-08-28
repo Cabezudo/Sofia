@@ -99,7 +99,7 @@ public class DefaultData {
       SiteManager.getInstance().create("Manager", "manager", "localhost");
     }
     SiteManager.getInstance().create("Playground", "playground");
-    SiteManager.getInstance().create("Menú electrónico", "cdmx.menu");
+    SiteManager.getInstance().create("Menú electrónico", "hayquecomer.com", "cdmx.menu");
     SiteManager.getInstance().create("Nutrición digital", "nutricion.digital");
   }
 

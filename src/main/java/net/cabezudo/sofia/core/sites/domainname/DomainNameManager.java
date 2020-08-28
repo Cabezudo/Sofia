@@ -7,7 +7,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.api.options.list.Filters;
 import net.cabezudo.sofia.core.api.options.list.Limit;
 import net.cabezudo.sofia.core.api.options.list.Offset;
@@ -86,7 +85,6 @@ public class DomainNameManager {
       if (rs.next()) {
         int id = rs.getInt(1);
         DomainName domainName = new DomainName(id, siteId, domainNameName);
-        WebServer.add(domainName);
         return domainName;
       }
     } finally {
@@ -225,9 +223,6 @@ public class DomainNameManager {
   }
 
   public void delete(Connection connection, int hostId) throws SQLException {
-    DomainName domainName = get(connection, hostId);
-    WebServer.delete(domainName);
-
     String query = "DELETE FROM " + DomainNamesTable.NAME + " WHERE id = ?";
     try ( PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, hostId);

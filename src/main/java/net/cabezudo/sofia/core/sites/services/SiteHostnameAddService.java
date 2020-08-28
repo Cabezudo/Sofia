@@ -11,6 +11,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
@@ -65,6 +66,7 @@ public class SiteHostnameAddService extends Service {
       String messageKey = HostnameValidator.getInstance().validate(hostname);
 
       DomainName domainName = DomainNameManager.getInstance().add(connection, site.getId(), hostname);
+      WebServer.add(domainName);
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", domainName.getId()));
       data.add(new JSONPair("name", domainName.getName()));

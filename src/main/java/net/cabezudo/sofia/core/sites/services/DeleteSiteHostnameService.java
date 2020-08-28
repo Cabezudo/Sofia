@@ -7,14 +7,15 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.WebServer;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -33,38 +34,47 @@ public class DeleteSiteHostnameService extends Service {
 
     User owner = super.getUser();
 
+    URLToken siteIdToken = tokens.getValue("siteId");
+    int siteId;
     try {
-      URLToken siteIdToken = tokens.getValue("siteId");
-      int siteId;
-      try {
-        siteId = siteIdToken.toInteger();
-      } catch (InvalidPathParameterException e) {
-        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
-        return;
-      }
+      siteId = siteIdToken.toInteger();
+    } catch (InvalidPathParameterException e) {
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
+      return;
+    }
 
-      Site site = SiteManager.getInstance().getById(siteId, owner);
+    URLToken hostIdToken = tokens.getValue("hostId");
+    int hostId;
+    try {
+      hostId = hostIdToken.toInteger();
+    } catch (InvalidPathParameterException e) {
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + hostIdToken + " not found");
+      return;
+    }
+
+    Site site;
+    try {
+      site = SiteManager.getInstance().getById(siteId, owner);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");
         return;
       }
-
-      URLToken hostIdToken = tokens.getValue("hostId");
-      int hostId;
-      try {
-        hostId = hostIdToken.toInteger();
-      } catch (InvalidPathParameterException e) {
-        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + hostIdToken + " not found");
-        return;
-      }
-
       DomainName baseDomainName = site.getBaseDomainName();
       if (baseDomainName.getId() == hostId) {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.DELETE, "site.host.base.can.not.be.deleted"));
         return;
       }
+    } catch (SQLException e) {
+      SystemMonitor.log(e);
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+    }
+
+    try {
 
       DomainNameManager.getInstance().delete(hostId);
+      DomainName domainName = DomainNameManager.getInstance().get(hostId);
+      WebServer.delete(domainName);
+
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", hostId));
       sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.host.deleted"));
