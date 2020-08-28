@@ -8,15 +8,14 @@ import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.QueryString;
+import net.cabezudo.sofia.core.server.html.SofiaHTMLServletRequest;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
@@ -44,8 +43,8 @@ public class HTMLAuthorizationFilter implements Filter {
 
     Site site = (Site) req.getAttribute("site");
     Logger.all("Site: %s", site);
-    if (req instanceof HttpServletRequest) {
-      HttpServletRequest request = (HttpServletRequest) req;
+    if (req instanceof SofiaHTMLServletRequest) {
+      SofiaHTMLServletRequest request = (SofiaHTMLServletRequest) req;
       HttpServletResponse response = (HttpServletResponse) res;
 
       ClientData clientData = (ClientData) request.getSession().getAttribute("clientData");
@@ -107,13 +106,6 @@ public class HTMLAuthorizationFilter implements Filter {
           response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
           return;
         }
-      }
-      boolean urlChanged = (Boolean) request.getAttribute("urlChanged");
-      if (urlChanged) {
-        RequestDispatcher dispatcher = request.getRequestDispatcher(request.getRequestURI());
-        dispatcher.forward(request, res);
-      } else {
-        chain.doFilter(req, res);
       }
     }
     chain.doFilter(req, res);

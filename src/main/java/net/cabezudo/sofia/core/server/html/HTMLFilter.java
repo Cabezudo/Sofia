@@ -15,6 +15,7 @@ import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
 import net.cabezudo.sofia.core.creator.SiteCreator;
+import net.cabezudo.sofia.core.http.domains.DomainName;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.users.User;
@@ -34,40 +35,39 @@ public class HTMLFilter implements Filter {
 
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
-
-    Logger.debug("HTML filter.");
     if (req instanceof HttpServletRequest) {
-      HttpServletRequest request = (HttpServletRequest) req;
-
-      String serverName = request.getServerName();
-      Site site;
       try {
+        SofiaHTMLServletRequest request = new SofiaHTMLServletRequest((HttpServletRequest) req);
+        DomainName domainName = new DomainName(request.getServerName());
+        Site site;
         User owner = UserManager.getInstance().getAdministrator();
-        site = SiteManager.getInstance().getByHostame(serverName, owner);
-        if (site == null) {
-          throw new ServletException("Site for " + serverName + " NOT FOUND.");
+        site = SiteManager.getInstance().getByHostame(domainName.toString(), owner);
+        request.setAttribute("site", site);
+
+        String requestURI = request.getRequestURI();
+
+        if (requestURI.endsWith("/")) {
+          requestURI = requestURI + "index.html";
+          request.setRequestURI(requestURI);
+          Logger.debug("NO FILE FOUND in path. Add file. Request URI: %s", request.getRequestURI());
         }
+
+        if (requestURI.endsWith(".html")) {
+          String lastPage = (String) request.getSession().getAttribute("thisPage");
+          String thisPage = requestURI;
+          if (request.getQueryString() != null) {
+            thisPage += "?" + request.getQueryString();
+          }
+          request.getSession().setAttribute("thisPage", thisPage);
+          if (lastPage == null || !lastPage.equals(requestURI)) {
+            request.getSession().setAttribute("lastPage", lastPage);
+          }
+          createPages(site, requestURI);
+        }
+        chain.doFilter(request, res);
       } catch (SQLException e) {
         throw new ServletException(e);
       }
-      req.setAttribute("site", site);
-
-      String requestURI = request.getRequestURI();
-
-      if (requestURI.endsWith("html")) {
-        String lastPage = (String) request.getSession().getAttribute("thisPage");
-        String thisPage = requestURI;
-        if (request.getQueryString() != null) {
-          thisPage += "?" + request.getQueryString();
-        }
-        request.getSession().setAttribute("thisPage", thisPage);
-        if (lastPage == null || !lastPage.equals(requestURI)) {
-          request.getSession().setAttribute("lastPage", lastPage);
-        }
-
-        createPages(site, requestURI);
-      }
-      chain.doFilter(request, res);
     } else {
       chain.doFilter(req, res);
     }
@@ -93,4 +93,5 @@ public class HTMLFilter implements Filter {
       }
     }
   }
+
 }
