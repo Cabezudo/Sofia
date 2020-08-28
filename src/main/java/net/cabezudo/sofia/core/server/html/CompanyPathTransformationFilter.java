@@ -58,6 +58,9 @@ public class CompanyPathTransformationFilter implements Filter {
       }
       Logger.debug("Company directory FOUND in path. Add file. Request URI: %s", request.getRequestURI());
     }
+    if (domainName.match("cdmx.menu")) {
+      request.setServerName(new DomainName("hayquecomer.com"));
+    }
   }
 
 }

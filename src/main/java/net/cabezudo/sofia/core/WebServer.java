@@ -56,9 +56,13 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class WebServer {
 
-  private static WebServer instance;
+  private static final WebServer instance = new WebServer();
 
   private final Server server;
+
+  private WebServer() {
+    server = new Server(Configuration.getInstance().getServerPort());
+  }
 
   public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException {
     List<String> arguments = Arrays.asList(args);
@@ -125,6 +129,7 @@ public class WebServer {
       Logger.severe("Can't open the port " + port + ". " + e.getMessage());
       System.exit(1);
     }
+
     WebServer.getInstance().start();
   }
 
@@ -154,9 +159,6 @@ public class WebServer {
   }
 
   public static WebServer getInstance() throws ServerException, PortAlreadyInUseException, ConfigurationException {
-    if (instance == null) {
-      instance = new WebServer();
-    }
     return instance;
   }
 
@@ -319,8 +321,16 @@ public class WebServer {
     return context;
   }
 
-  private WebServer() throws ServerException, ConfigurationException, PortAlreadyInUseException {
-    server = new Server(Configuration.getInstance().getServerPort());
+  public void stop() throws ServerException {
+    try {
+      server.stop();
+    } catch (Exception e) {
+      throw new ServerException(e);
+    }
+    Logger.info("Server stoped.");
+  }
+
+  private void start() throws ServerException, ConfigurationException {
     HandlerCollection handlerCollection = new HandlerCollection();
 
     SiteList siteList;
@@ -331,24 +341,11 @@ public class WebServer {
     }
 
     for (Site site : siteList) {
-      handlerCollection.addHandler(setServer(site));
-      handlerCollection.addHandler(setAPI(site));
+      handlerCollection.addHandler(instance.setServer(site));
+      handlerCollection.addHandler(instance.setAPI(site));
     }
 
-    server.setHandler(handlerCollection);
-
-  }
-
-  public void stop() throws ServerException {
-    try {
-      server.stop();
-    } catch (Exception e) {
-      throw new ServerException(e);
-    }
-    Logger.info("Server stoped.");
-  }
-
-  private void start() {
+    instance.server.setHandler(handlerCollection);
     try {
       server.start();
       server.join();

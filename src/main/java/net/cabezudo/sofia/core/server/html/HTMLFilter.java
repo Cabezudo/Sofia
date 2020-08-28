@@ -49,7 +49,7 @@ public class HTMLFilter implements Filter {
         if (requestURI.endsWith("/")) {
           requestURI = requestURI + "index.html";
           request.setRequestURI(requestURI);
-          Logger.debug("NO FILE FOUND in path. Add file. Request URI: %s", request.getRequestURI());
+          Logger.debug("index.html file NO FOUND in path. Add file. Request URI: %s", request.getRequestURI());
         }
 
         if (requestURI.endsWith(".html")) {
