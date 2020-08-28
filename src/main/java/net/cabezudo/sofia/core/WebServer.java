@@ -22,8 +22,8 @@ import net.cabezudo.sofia.core.configuration.DefaultData;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
-import net.cabezudo.sofia.core.http.SofiaDefaultServlet;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
+import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.CompanyPathTransformationFilter;
@@ -208,7 +208,6 @@ public class WebServer {
     context.addFilter(CompanyPathTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLAuthorizationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-
     ServletHolder logoutHolder = new ServletHolder("logout", LogoutHolder.class);
     context.addServlet(logoutHolder, "/logout");
 
@@ -224,7 +223,7 @@ public class WebServer {
     ServletHolder qrImageHolder = new ServletHolder("qrImage", QRImageServlet.class);
     context.addServlet(qrImageHolder, "/images/upload/qr.png");
 
-    ServletHolder defaultServlet = new ServletHolder("static", SofiaDefaultServlet.class
+    ServletHolder defaultServlet = new ServletHolder("static", SofiaHTMLDefaultServlet.class
     );
     context.addServlet(defaultServlet, "/*");
 

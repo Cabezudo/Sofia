@@ -8,15 +8,17 @@ import net.cabezudo.sofia.core.http.domains.DomainName;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.08.25
  */
-class SofiaServletRequest extends HttpServletRequestWrapper {
+public class SofiaHTMLServletRequest extends HttpServletRequestWrapper {
 
   private DomainName domainName;
   private String requestURI;
+  private String pathInfo;
 
-  SofiaServletRequest(HttpServletRequest request) {
+  public SofiaHTMLServletRequest(HttpServletRequest request) {
     super(request);
     domainName = new DomainName(request.getServerName());
     requestURI = request.getRequestURI();
+    pathInfo = requestURI;
   }
 
   @Override
@@ -26,6 +28,7 @@ class SofiaServletRequest extends HttpServletRequestWrapper {
 
   public void setRequestURI(String requestURI) {
     this.requestURI = requestURI;
+    this.pathInfo = requestURI;
   }
 
   @Override
@@ -33,7 +36,12 @@ class SofiaServletRequest extends HttpServletRequestWrapper {
     return requestURI;
   }
 
-  void setServerName(DomainName domainName) {
+  @Override
+  public String getPathInfo() {
+    return pathInfo;
+  }
+
+  public void setServerName(DomainName domainName) {
     this.domainName = domainName;
   }
 }
