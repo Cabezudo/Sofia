@@ -93,6 +93,14 @@ const Core = {
   isFunction: v => {
     return Object.prototype.toString.call(v) === '[object Function]';
   },
+  isInsideViewport: element => {
+    const viewportOffset = element.getBoundingClientRect();
+    const top = viewportOffset.top;
+    const left = viewportOffset.left;
+    const windowHeight = window.innerHeight;
+    const windowWidth = window.innerWidth;
+    return inside = top > 0 && top < windowHeight && left > 0 && left < windowWidth;
+  },
   isLogged: () => {
     return !Core.isNotLogged();
   },
