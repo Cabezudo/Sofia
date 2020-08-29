@@ -8,25 +8,85 @@
     <script src="variables.js"></script>
     <script src="index.js"></script>
     <script lib="core/0.1.0"></script>
+    <script lib="image/0.1.0"></script>
     <script>
+      const createGUI = () =>
       {
-        const createGUI = () => {
-        };
-        Core.addOnloadFunction(createGUI);
+        image({id: 'image1', url: '/images/donbeto.01.jpg?resize(width = 500)'});
+        image({id: 'image2', url: '/images/bariloche.01.jpg?resize(width=500)'});
+        image({id: 'image3', url: '/images/casquet.01.jpg?resize(width=500)'});
+        image({id: 'image4', url: '/images/heladosdolphy.01.jpg?resize(width=500)'});
+        image({id: 'image5', url: '/images/pinchegringobbq.01.jpg?resize(width = 500)'});
+        image({id: 'image6', url: '/images/tacosfondaargentina.01.jpg?resize(width=500)'});
       }
+      ;
+      Core.addOnloadFunction(createGUI);
     </script>
     <style>
       .itemList {
-       display: flex;
-       flex-wrap: wrap;
+        display: flex;
+        align-content: space-between;
+        flex-wrap: wrap;
       }
       .item {
-        border: 1px solid gray;
-        height: 200px;
-        width: 33%;
+        margin: 10px auto;
+        border: 0;
+        width: 80%;
       }
       .item > .image {
-        background-image: url(/images/donbeto.01.jpg)
+        border: 0;
+        height: 180px;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center;
+      }
+
+      .item .name {
+        font-size: 18px;
+        font-weight: bold;
+        padding: 10px 0;
+      }
+
+      .item .detail {
+        font-size: 14px;
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+      }
+
+      .item .detail div {
+        display: inline-block;
+      }
+
+      .item .type {
+        color: rgb(120, 120, 120);
+        font-size: 12px;
+        padding-top: 10px;
+        border-top: 1px solid rgb(225, 225, 225);
+      }
+
+      .item .price {
+        font-size: 12px;
+      }
+
+      .image {
+        background-image: url('/images/list.default.jpg?resize(width=500),gray(method=luma,type=bt709)');
+      }
+
+      @media all and ( min-width: 750px ) {
+        .item {
+          width: 45%;
+        }
+      }
+      @media all and ( min-width: 1024px ) {
+        .item {
+          width: 30%;
+        }
+      }
+      @media all and ( min-width: 1250px ) {
+        .item > .image {
+          height: 220px;
+        }
       }
     </style>
   </head>
@@ -37,11 +97,79 @@
           <h2 id="title" class="title">Lista de restaurantes</h2>
           <div>
             <div class="itemList">
-              <div class="item"></div>
-              <div class="item"></div>
-              <div class="item"></div>
-              <div class="item"></div>
-              <div class="item"></div>
+              <div id="donbeto" class="item">
+                <div id="image1" class="image"></div>
+                <div class="info">
+                  <div class="name">Parrillada Don Beto</div>
+                  <div class="detail">
+                    <div>MXN20</div>&nbsp;&middot;&nbsp;<div>30min</div>&nbsp;&middot;&nbsp;<div class="price">$$</div>
+                  </div>
+                  <div class="type">
+                    <div>Argentina</div><div class="values"><div></div></div>
+                  </div>
+                </div>
+              </div>
+              <div id="bariloche" class="item">
+                <div id="image2" class="image"></div>
+                <div class="info">
+                  <div class="name">Bariloche</div>
+                  <div class="detail">
+                    <div>MXN35</div>&nbsp;&middot;&nbsp;<div>35min</div>&nbsp;&middot;&nbsp;<div class="price">$$</div>
+                  </div>
+                  <div class="type">
+                    <div>Argentina</div><div class="values"><div></div></div>
+                  </div>
+                </div>
+
+              </div>
+              <div id="casquet" class="item">
+                <div id="image3" class="image"></div>
+                <div class="info">
+                  <div class="name">Casquet</div>
+                  <div class="detail">
+                    <div>MXN20</div>&nbsp;&middot;&nbsp;<div>30min</div>&nbsp;&middot;&nbsp;<div class="price">$$</div>
+                  </div>
+                  <div class="type">
+                    <div>Argentina</div><div class="values"><div></div></div>
+                  </div>
+                </div>
+              </div>
+              <div id="heladosdolphy" class="item">
+                <div id="image4" class="image"></div>
+                <div class="info">
+                  <div class="name">Helados Dolphy (Dakota)</div>
+                  <div class="detail">
+                    <div>MXN18</div>&nbsp;&middot;&nbsp;<div>20-30min</div>&nbsp;&middot;&nbsp;<div class="price">$</div>
+                  </div>
+                  <div class="type">
+                    <div>Postres</div><div class="values"><div></div></div>
+                  </div>
+                </div>
+              </div>
+              <div id="pinchegringobbq" class="item">
+                <div id="image5" class="image"></div>
+                <div class="info">
+                  <div class="name">Pinche Gringo BBQ</div>
+                  <div class="detail">
+                    <div>MXN24</div>&nbsp;&middot;&nbsp;<div>30-40min</div>&nbsp;&middot;&nbsp;<div class="price">$$</div>
+                  </div>
+                  <div class="type">
+                    <div>Americana</div><div class="values"><div></div></div>
+                  </div>
+                </div>
+              </div>
+              <div id="tacosfondaargentina" class="item">
+                <div id="image6" class="image"></div>
+                <div class="info">
+                  <div class="name">Tacos Fonda Argentina</div>
+                  <div class="detail">
+                    <div>MXN20</div>&nbsp;&middot;&nbsp;<div>30-35min</div>&nbsp;&middot;&nbsp;<div class="price">$$</div>
+                  </div>
+                  <div class="type">
+                    <div>Argentina</div><div class="values"><div></div></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
