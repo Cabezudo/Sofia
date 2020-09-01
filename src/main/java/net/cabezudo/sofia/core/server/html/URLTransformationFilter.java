@@ -38,17 +38,17 @@ public class URLTransformationFilter implements Filter {
     String requestURI = request.getRequestURI();
 
     if (domainName.match("local.**")) {
-      request.setServerName(domainName.parent());
+      request.setServerName(domainName.parent().toString());
       Logger.debug("local.** change : serverName is now %s", domainName);
     }
 
     if (domainName.match("api.**")) {
-      request.setServerName(domainName.parent());
+      request.setServerName(domainName.parent().toString());
       request.setRequestURI("/api" + requestURI);
     }
 
     if (domainName.match("admin.**")) {
-      request.setServerName(domainName.parent());
+      request.setServerName(domainName.parent().toString());
       request.setRequestURI("/admin" + requestURI);
     }
   }
