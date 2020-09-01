@@ -20,6 +20,8 @@ import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.money.Money;
+import net.cabezudo.sofia.core.server.html.URLManager;
+import net.cabezudo.sofia.core.server.html.URLTable;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.SitesTable;
@@ -85,6 +87,7 @@ public class DefaultData {
     Database.createDatabase("sofia");
     try ( Connection connection = Database.getConnection()) {
       Database.createTable(connection, SitesTable.CREATION_QUERY);
+      Database.createTable(connection, URLTable.CREATION_QUERY);
       Database.createTable(connection, DomainNamesTable.CREATION_QUERY);
       Database.createTable(connection, PeopleTable.CREATION_QUERY);
       Database.createTable(connection, EMailsTable.CREATION_QUERY);
@@ -276,60 +279,71 @@ public class DefaultData {
 
   private static void createRestaurants() throws SQLException {
     Logger.debug("Create restaurante data");
-    RestaurantTypeManager restaurantTypeManager = RestaurantTypeManager.getInstance();
 
-    restaurantTypeManager.add("Argentina");
-    restaurantTypeManager.add("Postres");
-    restaurantTypeManager.add("Americana");
+    URLManager urlManager = URLManager.getInstance();
+    try ( Connection connection = Database.getConnection();) {
+      Site site = SiteManager.getInstance().getByHostame(connection, "hayquecomer.com");
 
-    RestaurantType type;
+      RestaurantTypeManager restaurantTypeManager = RestaurantTypeManager.getInstance();
 
-    RestaurantManager manager = RestaurantManager.getInstance();
-    Restaurant restaurant;
+      restaurantTypeManager.add(connection, "Argentina");
+      restaurantTypeManager.add(connection, "Postres");
+      restaurantTypeManager.add(connection, "Americana");
 
-    type = RestaurantTypeManager.getInstance().get("Argentina");
-    restaurant = new Restaurant("donbeto", "donbeto.01.jpg", "Parrillada Don Beto", type, Currency.getInstance("MXN"));
-    restaurant.setPriceRange(2);
-    restaurant.setShippingCost(new Money(20, Currency.getInstance("MXN")));
-    restaurant.setDeliveryTime(30);
-    manager.add(restaurant);
+      RestaurantType type;
 
-    restaurant = new Restaurant("bariloche", "bariloche.01.jpg", "Bariloche", type, Currency.getInstance("MXN"));
-    restaurant.setPriceRange(2);
-    restaurant.setShippingCost(new Money(30, Currency.getInstance("MXN")));
-    restaurant.setDeliveryTime(35);
-    manager.add(restaurant);
+      RestaurantManager restaurantManager = RestaurantManager.getInstance();
+      Restaurant restaurant;
 
-    restaurant = new Restaurant("casquet", "casquet.01.jpg", "Casquet", type, Currency.getInstance("MXN"));
-    restaurant.setPriceRange(2);
-    restaurant.setShippingCost(new Money(20, Currency.getInstance("MXN")));
-    restaurant.setDeliveryTime(30);
-    manager.add(restaurant);
+      type = RestaurantTypeManager.getInstance().get("Argentina");
+      restaurant = new Restaurant("donbeto", "donbeto.01.jpg", "Parrillada Don Beto", type, Currency.getInstance("MXN"));
+      restaurant.setPriceRange(2);
+      restaurant.setShippingCost(new Money(20, Currency.getInstance("MXN")));
+      restaurant.setDeliveryTime(30);
+      restaurantManager.add(connection, restaurant);
+      urlManager.add(connection, site, "donbeto.cdmx.menu", "donbeto");
 
-    type = RestaurantTypeManager.getInstance().get("Postres");
-    restaurant = new Restaurant("heladosdolphy", "heladosdolphy.01.jpg", "Helados Dolphy", type, Currency.getInstance("MXN"));
-    restaurant.setLocation("Dakota");
-    restaurant.setPriceRange(1);
-    restaurant.setShippingCost(new Money(18, Currency.getInstance("MXN")));
-    restaurant.setMinDeliveryTime(20);
-    restaurant.setMaxDeliveryTime(30);
-    manager.add(restaurant);
+      restaurant = new Restaurant("bariloche", "bariloche.01.jpg", "Bariloche", type, Currency.getInstance("MXN"));
+      restaurant.setPriceRange(2);
+      restaurant.setShippingCost(new Money(30, Currency.getInstance("MXN")));
+      restaurant.setDeliveryTime(35);
+      restaurantManager.add(connection, restaurant);
+      urlManager.add(connection, site, "bariloche.cdmx.menu", "bariloche");
 
-    type = RestaurantTypeManager.getInstance().get("Americana");
-    restaurant = new Restaurant("pinchegringobbq", "pinchegringobbq.01.jpg", "Pinche Gringo BBQ", type, Currency.getInstance("MXN"));
-    restaurant.setPriceRange(2);
-    restaurant.setShippingCost(new Money(24, Currency.getInstance("MXN")));
-    restaurant.setMinDeliveryTime(30);
-    restaurant.setMaxDeliveryTime(40);
-    manager.add(restaurant);
+      restaurant = new Restaurant("casquet", "casquet.01.jpg", "Casquet", type, Currency.getInstance("MXN"));
+      restaurant.setPriceRange(2);
+      restaurant.setShippingCost(new Money(20, Currency.getInstance("MXN")));
+      restaurant.setDeliveryTime(30);
+      restaurantManager.add(connection, restaurant);
+      urlManager.add(connection, site, "casquet.cdmx.menu", "casquet");
 
-    type = RestaurantTypeManager.getInstance().get("Argentina");
-    restaurant = new Restaurant("tacosfondaargentina", "tacosfondaargentina.01.jpg", "Tacos Fonda Argentina", type, Currency.getInstance("MXN"));
-    restaurant.setPriceRange(2);
-    restaurant.setShippingCost(new Money(20, Currency.getInstance("MXN")));
-    restaurant.setMinDeliveryTime(30);
-    restaurant.setMaxDeliveryTime(35);
-    manager.add(restaurant);
+      type = RestaurantTypeManager.getInstance().get("Postres");
+      restaurant = new Restaurant("heladosdolphy", "heladosdolphy.01.jpg", "Helados Dolphy", type, Currency.getInstance("MXN"));
+      restaurant.setLocation("Dakota");
+      restaurant.setPriceRange(1);
+      restaurant.setShippingCost(new Money(18, Currency.getInstance("MXN")));
+      restaurant.setMinDeliveryTime(20);
+      restaurant.setMaxDeliveryTime(30);
+      restaurantManager.add(connection, restaurant);
+      urlManager.add(connection, site, "heladosdolphy.cdmx.menu", "heladosdolphy");
 
+      type = RestaurantTypeManager.getInstance().get("Americana");
+      restaurant = new Restaurant("pinchegringobbq", "pinchegringobbq.01.jpg", "Pinche Gringo BBQ", type, Currency.getInstance("MXN"));
+      restaurant.setPriceRange(2);
+      restaurant.setShippingCost(new Money(24, Currency.getInstance("MXN")));
+      restaurant.setMinDeliveryTime(30);
+      restaurant.setMaxDeliveryTime(40);
+      restaurantManager.add(connection, restaurant);
+      urlManager.add(connection, site, "pinchegringobbq.cdmx.menu", "pinchegringobbq");
+
+      type = RestaurantTypeManager.getInstance().get("Argentina");
+      restaurant = new Restaurant("tacosfondaargentina", "tacosfondaargentina.01.jpg", "Tacos Fonda Argentina", type, Currency.getInstance("MXN"));
+      restaurant.setPriceRange(2);
+      restaurant.setShippingCost(new Money(20, Currency.getInstance("MXN")));
+      restaurant.setMinDeliveryTime(30);
+      restaurant.setMaxDeliveryTime(35);
+      restaurantManager.add(connection, restaurant);
+      urlManager.add(connection, site, "tacosfondaargentina.cdmx.menu", "tacosfondaargentina");
+    }
   }
 }

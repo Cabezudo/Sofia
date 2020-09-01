@@ -16,7 +16,6 @@ import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
 import net.cabezudo.sofia.core.creator.SiteCreator;
 import net.cabezudo.sofia.core.sites.Site;
-import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -33,40 +32,30 @@ public class HTMLFilter implements Filter {
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
     if (req instanceof HttpServletRequest) {
-      try {
-        SofiaHTMLServletRequest request = new SofiaHTMLServletRequest((HttpServletRequest) req);
-        String serverName = request.getServerName();
-        Site site;
-        site = SiteManager.getInstance().getByHostame(serverName);
-        if (site == null) {
-          throw new ServletException("Can't find the site using " + serverName);
-        }
-        request.setAttribute("site", site);
+      SofiaHTMLServletRequest request = new SofiaHTMLServletRequest((HttpServletRequest) req);
+      Site site = (Site) request.getAttribute("site");
 
-        String requestURI = request.getRequestURI();
+      String requestURI = request.getRequestURI();
 
-        if (requestURI.endsWith("/")) {
-          requestURI = requestURI + "index.html";
-          request.setRequestURI(requestURI);
-          Logger.debug("index.html file NO FOUND in path. Add file. Request URI: %s", request.getRequestURI());
-        }
-
-        if (requestURI.endsWith(".html")) {
-          String lastPage = (String) request.getSession().getAttribute("thisPage");
-          String thisPage = requestURI;
-          if (request.getQueryString() != null) {
-            thisPage += "?" + request.getQueryString();
-          }
-          request.getSession().setAttribute("thisPage", thisPage);
-          if (lastPage == null || !lastPage.equals(requestURI)) {
-            request.getSession().setAttribute("lastPage", lastPage);
-          }
-          createPages(site, requestURI);
-        }
-        chain.doFilter(request, res);
-      } catch (SQLException e) {
-        throw new ServletException(e);
+      if (requestURI.endsWith("/")) {
+        requestURI = requestURI + "index.html";
+        request.setRequestURI(requestURI);
+        Logger.debug("index.html file NO FOUND in path. Add file. Request URI: %s", request.getRequestURI());
       }
+
+      if (requestURI.endsWith(".html")) {
+        String lastPage = (String) request.getSession().getAttribute("thisPage");
+        String thisPage = requestURI;
+        if (request.getQueryString() != null) {
+          thisPage += "?" + request.getQueryString();
+        }
+        request.getSession().setAttribute("thisPage", thisPage);
+        if (lastPage == null || !lastPage.equals(requestURI)) {
+          request.getSession().setAttribute("lastPage", lastPage);
+        }
+        createPages(site, requestURI);
+      }
+      chain.doFilter(request, res);
     } else {
       chain.doFilter(req, res);
     }

@@ -414,6 +414,7 @@ Todos los nombres de dominio que comienzan con api, por ejemplo api.x.com, apunt
 
 Todos los nombres de dominio que comienzan con admin, por ejemplo admin.x.com, apuntan por defecto a x.com/admin.
 
+Se puede configurar el sitio para ser un contenedor de empresas con un subdominio propio.
 
 
 
