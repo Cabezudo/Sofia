@@ -39,7 +39,8 @@ public class RestaurantManager {
             = "SELECT "
             + "  r.id, `subdomain`, `imageName`, r.name AS name, `location`, `typeId`, t.name as typeName, `priceRange`, "
             + "  `currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`, `score` "
-            + "FROM " + RestaurantsTable.NAME + " AS r LEFT JOIN " + RestaurantTypesTable.NAME + " AS t ON r.typeId = t.id";
+            + "FROM " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " AS r "
+            + "LEFT JOIN " + RestaurantTypesTable.DATABASE + "." + RestaurantTypesTable.NAME + " AS t ON r.typeId = t.id";
 
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -101,7 +102,7 @@ public class RestaurantManager {
 
   public Restaurant add(Connection connection, Restaurant r) throws SQLException {
     String query
-            = "INSERT INTO " + RestaurantsTable.NAME + " "
+            = "INSERT INTO " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " "
             + "("
             + "`subdomain`, `imageName`, `name`, `location`, `typeId`, `priceRange`, `currencyCode`, `shippingCost`, `minDeliveryTime`, "
             + "`maxDeliveryTime`, `score`"

@@ -16,8 +16,8 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class SimpleCatalogManager<T extends CatalogEntry> {
 
-  private final String tableName;
   private final String databaseName;
+  private final String tableName;
 
   public SimpleCatalogManager(String databaseName, String tableName) {
     this.databaseName = databaseName;
@@ -31,7 +31,7 @@ public class SimpleCatalogManager<T extends CatalogEntry> {
   }
 
   public T add(Connection connection, String name) throws SQLException {
-    String query = "INSERT INTO " + tableName + " (name) VALUES (?)";
+    String query = "INSERT INTO " + databaseName + "." + tableName + " (name) VALUES (?)";
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
@@ -65,7 +65,7 @@ public class SimpleCatalogManager<T extends CatalogEntry> {
   }
 
   public T get(Connection connection, int id) throws SQLException {
-    String query = "SELECT id, name FROM " + tableName + " WHERE id = ?";
+    String query = "SELECT id, name FROM " + databaseName + "." + tableName + " WHERE id = ?";
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
@@ -94,7 +94,7 @@ public class SimpleCatalogManager<T extends CatalogEntry> {
   }
 
   public T get(Connection connection, String name) throws SQLException {
-    String query = "SELECT id, name FROM " + tableName + " WHERE name = ?";
+    String query = "SELECT id, name FROM " + databaseName + "." + tableName + " WHERE name = ?";
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {

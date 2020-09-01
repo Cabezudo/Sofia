@@ -24,6 +24,7 @@ public class URLTransformationFilter implements Filter {
 
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws ServletException, IOException {
+
     if (req instanceof HttpServletRequest) {
       SofiaHTMLServletRequest request = new SofiaHTMLServletRequest((HttpServletRequest) req);
       changeURL(request);
@@ -36,6 +37,8 @@ public class URLTransformationFilter implements Filter {
   private void changeURL(SofiaHTMLServletRequest request) {
     DomainName domainName = new DomainName(request.getServerName());
     String requestURI = request.getRequestURI();
+
+    Logger.debug("URL transformation filter. " + request.getServerName() + " " + requestURI);
 
     if (domainName.match("local.**")) {
       request.setServerName(domainName.parent().toString());
