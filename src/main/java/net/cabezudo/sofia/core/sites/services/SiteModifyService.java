@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.sites.services;
 
-import net.cabezudo.sofia.core.sites.validators.EmptySiteNameException;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,13 +9,14 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.InvalidSiteVersionException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.core.sites.validators.EmptySiteNameException;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -44,7 +44,7 @@ public class SiteModifyService extends Service {
     }
 
     try {
-      Site site = SiteManager.getInstance().getById(siteId, owner);
+      Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;

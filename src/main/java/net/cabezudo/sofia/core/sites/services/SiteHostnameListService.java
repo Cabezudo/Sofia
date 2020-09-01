@@ -8,14 +8,14 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 
 /**
@@ -45,7 +45,7 @@ public class SiteHostnameListService extends ListService {
     }
 
     try {
-      Site site = SiteManager.getInstance().getById(siteId, owner);
+      Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;

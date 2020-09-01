@@ -1,25 +1,23 @@
 package net.cabezudo.sofia.core.sites.domainname;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONArray;
+import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.EntityList;
 import net.cabezudo.sofia.core.Utils;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.28
  */
-public class DomainNameList implements Iterable<DomainName> {
+public class DomainNameList extends EntityList<DomainName> {
 
-  Map<Integer, DomainName> map = new TreeMap<>();
-  List<DomainName> list = new ArrayList<>();
-  private final int offset;
-  private int total;
+  private final DomainNames domainNames = new DomainNames();
 
   public DomainNameList(int offset) {
-    this.offset = offset;
+    super(offset);
   }
 
   public DomainNameList() {
@@ -27,39 +25,31 @@ public class DomainNameList implements Iterable<DomainName> {
   }
 
   public DomainName[] toArray() {
-    DomainName array[] = new DomainName[list.size()];
-    return list.toArray(array);
+    return domainNames.toArray();
   }
 
   public void add(DomainName domainName) {
-    if (domainName == null) {
-      throw new NullPointerException("domainName is null");
-    }
-    map.put(domainName.getId(), domainName);
-    list.add(domainName);
+    domainNames.add(domainName);
   }
 
   @Override
   public Iterator<DomainName> iterator() {
-    return list.iterator();
+    return domainNames.iterator();
   }
 
+  @Override
   public String toJSON() {
     StringBuilder sb = new StringBuilder();
     sb.append("[");
-    for (DomainName domainName : list) {
+    for (DomainName domainName : domainNames) {
       sb.append(domainName.toJSON());
       sb.append(", ");
     }
-    if (!list.isEmpty()) {
+    if (!domainNames.isEmpty()) {
       sb = Utils.chop(sb, 2);
     }
     sb.append("]");
     return sb.toString();
-  }
-
-  public void setTotal(int total) {
-    this.total = total;
   }
 
   public void add(DomainNameList domainNames) {
@@ -68,11 +58,28 @@ public class DomainNameList implements Iterable<DomainName> {
     }
   }
 
-  public int getSize() {
-    return list.size();
+  @Override
+  public JSONValue toJSONTree() {
+    JSONObject listObject = new JSONObject();
+    JSONArray jsonRecords = new JSONArray();
+    JSONPair jsonRecordsPair = new JSONPair("records", jsonRecords);
+    listObject.add(jsonRecordsPair);
+    domainNames.forEach((domainName) -> {
+      JSONObject jsonPerson = new JSONObject();
+      jsonPerson.add(new JSONPair("id", domainName.getId()));
+      jsonPerson.add(new JSONPair("name", domainName.getName()));
+      jsonRecords.add(jsonPerson);
+    });
+
+    return listObject;
+  }
+
+  public int size() {
+    return domainNames.size();
   }
 
   public boolean isEmpty() {
-    return list.isEmpty();
+    return domainNames.isEmpty();
   }
+
 }

@@ -199,9 +199,9 @@ const Core = {
       }
     }
   },
-  sendGet: (url, origin) => {
-    if (!origin) {
-      throw new Error(`Invalid origin for sendGet: ${origin}`);
+  sendGet: (url, originElement) => {
+    if (!originElement) {
+      throw new Error(`Invalid origin for sendGet: ${originElement}`);
     }
     const requestId = Core.getNextRequestId();
     fetch(url, {
@@ -218,7 +218,7 @@ const Core = {
                 try {
                   jsonData = JSON.parse(text);
                   jsonData.requestId = requestId;
-                  Core.trigger(origin, 'response', jsonData);
+                  Core.trigger(originElement, 'response', jsonData);
                 } catch (error) {
                   console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
                 }

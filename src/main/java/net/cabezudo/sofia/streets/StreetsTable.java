@@ -1,13 +1,12 @@
 package net.cabezudo.sofia.streets;
 
-import net.cabezudo.sofia.core.database.Table;
 import net.cabezudo.sofia.core.users.UsersTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.28
  */
-public class StreetsTable extends Table {
+public class StreetsTable {
 
   public static final String NAME = "streets";
   public static final String CREATION_QUERY

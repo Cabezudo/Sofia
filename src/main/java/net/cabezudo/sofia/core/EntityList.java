@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core;
 
-import java.util.Iterator;
 import net.cabezudo.json.JSONable;
 
 /**
@@ -10,7 +9,7 @@ import net.cabezudo.json.JSONable;
  */
 public abstract class EntityList<T> implements JSONable, Iterable<T> {
 
-  public static final int MAX = 200;
+  public static final int MAX_PAGE_SIZE = 200;
 
   private int total;
   private final int offset;
@@ -19,6 +18,11 @@ public abstract class EntityList<T> implements JSONable, Iterable<T> {
   public EntityList(int offset, int pageSize) {
     this.offset = offset;
     this.pageSize = pageSize;
+  }
+
+  public EntityList(int offset) {
+    this.offset = offset;
+    this.pageSize = MAX_PAGE_SIZE;
   }
 
   public void setTotal(int total) {
@@ -38,6 +42,8 @@ public abstract class EntityList<T> implements JSONable, Iterable<T> {
   }
 
   @Override
-  public abstract Iterator<T> iterator();
+  public String toJSON() {
+    return toJSONTree().toString();
+  }
 
 }

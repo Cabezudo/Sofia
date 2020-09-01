@@ -190,7 +190,7 @@ public class ClientManager {
     if (offset != null) {
       sqlOffsetValue = offset.getValue();
     }
-    long sqlLimitValue = ClientList.MAX;
+    long sqlLimitValue = ClientList.MAX_PAGE_SIZE;
     if (limit != null) {
       sqlLimitValue = limit.getValue();
     }
@@ -228,7 +228,7 @@ public class ClientManager {
       Logger.fine(ps);
       rs = ps.executeQuery();
 
-      list = new ClientList(offset == null ? 0 : offset.getValue(), limit == null ? ClientList.MAX : limit.getValue());
+      list = new ClientList(offset == null ? 0 : offset.getValue(), limit == null ? ClientList.MAX_PAGE_SIZE : limit.getValue());
       while (rs.next()) {
         int personId = rs.getInt("personId");
         String name = rs.getString("name");

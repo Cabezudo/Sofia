@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.users;
 
-import net.cabezudo.sofia.core.database.Table;
 import net.cabezudo.sofia.core.sites.SitesTable;
 import net.cabezudo.sofia.emails.EMailsTable;
 
@@ -8,7 +7,7 @@ import net.cabezudo.sofia.emails.EMailsTable;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.17
  */
-public class UsersTable extends Table {
+public class UsersTable {
 
   public static final String NAME = "users";
   public static final String CREATION_QUERY

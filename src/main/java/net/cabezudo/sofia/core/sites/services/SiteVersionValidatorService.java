@@ -5,13 +5,12 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.InvalidSiteVersionException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -32,8 +31,6 @@ public class SiteVersionValidatorService extends Service {
     String versionParameter;
     URLToken token;
 
-    User owner = super.getUser();
-
     token = tokens.getValue("siteId");
     try {
       siteId = token.toInteger();
@@ -44,7 +41,7 @@ public class SiteVersionValidatorService extends Service {
     }
 
     try {
-      Site site = SiteManager.getInstance().getById(siteId, owner);
+      Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;

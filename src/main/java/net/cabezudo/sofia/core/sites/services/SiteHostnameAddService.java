@@ -23,7 +23,6 @@ import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -40,21 +39,19 @@ public class SiteHostnameAddService extends Service {
   @Override
   public void execute() throws ServletException {
 
-    User owner = super.getUser();
-
     URLToken siteIdToken = tokens.getValue("siteId");
 
+    int siteId;
+
     try {
-      int siteId;
+      siteId = siteIdToken.toInteger();
+    } catch (InvalidPathParameterException e) {
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
+      return;
+    }
 
-      try {
-        siteId = siteIdToken.toInteger();
-      } catch (InvalidPathParameterException e) {
-        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
-        return;
-      }
-
-      Site site = SiteManager.getInstance().getById(siteId, owner);
+    try {
+      Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");
         return;

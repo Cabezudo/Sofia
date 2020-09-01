@@ -47,13 +47,13 @@ public class SiteManager {
     return instance;
   }
 
-  public Site getById(int id, User owner) throws SQLException {
+  public Site getById(int id) throws SQLException {
     try ( Connection connection = Database.getConnection()) {
-      return getById(connection, id, owner);
+      return getById(connection, id);
     }
   }
 
-  public Site getById(Connection connection, int siteId, User owner) throws SQLException {
+  public Site getById(Connection connection, int siteId) throws SQLException {
     // TODO autorizacion
     String query
             = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
@@ -82,18 +82,18 @@ public class SiteManager {
     }
   }
 
-  public Site getByHostame(String domainName, User owner) throws SQLException {
+  public Site getByHostame(String domainName) throws SQLException {
     try ( Connection connection = Database.getConnection()) {
-      return getByHostame(connection, domainName, owner);
+      return getByHostame(connection, domainName);
     }
   }
 
-  public Site getByHostame(Connection connection, String requestDomainNameName, User owner) throws SQLException {
+  public Site getByHostame(Connection connection, String requestDomainNameName) throws SQLException {
     DomainName domainName = DomainNameManager.getInstance().getByDomainNameName(requestDomainNameName);
     if (domainName == null) {
       return null;
     }
-    return getById(connection, domainName.getSiteId(), owner);
+    return getById(connection, domainName.getSiteId());
   }
 
   public Site create(String name, String... domainNames) throws SQLException, IOException {
@@ -186,7 +186,7 @@ public class SiteManager {
       if (offset != null) {
         sqlOffsetValue = offset.getValue();
       }
-      long sqlLimitValue = SiteList.MAX;
+      long sqlLimitValue = SiteList.MAX_PAGE_SIZE;
       if (limit != null) {
         sqlLimitValue = limit.getValue();
       }
@@ -459,7 +459,7 @@ public class SiteManager {
       if (offset != null) {
         sqlOffsetValue = offset.getValue();
       }
-      long sqlLimitValue = SiteList.MAX;
+      long sqlLimitValue = SiteList.MAX_PAGE_SIZE;
       if (limit != null) {
         sqlLimitValue = limit.getValue();
       }
@@ -529,7 +529,7 @@ public class SiteManager {
       if (offset != null) {
         sqlOffsetValue = offset.getValue();
       }
-      long sqlLimitValue = SiteList.MAX;
+      long sqlLimitValue = SiteList.MAX_PAGE_SIZE;
       if (limit != null) {
         sqlLimitValue = limit.getValue();
       }
@@ -601,7 +601,7 @@ public class SiteManager {
       if (offset != null) {
         sqlOffsetValue = offset.getValue();
       }
-      long sqlLimitValue = SiteList.MAX;
+      long sqlLimitValue = SiteList.MAX_PAGE_SIZE;
       if (limit != null) {
         sqlLimitValue = limit.getValue();
       }
