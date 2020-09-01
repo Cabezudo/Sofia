@@ -45,7 +45,7 @@ public class Profile {
 
   public Site getSite(User owner) throws SQLException {
     if (site == null) {
-      site = SiteManager.getInstance().getById(siteId, owner);
+      site = SiteManager.getInstance().getById(siteId);
     }
     return site;
   }

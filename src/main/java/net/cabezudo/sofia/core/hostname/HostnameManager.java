@@ -10,12 +10,9 @@ import net.cabezudo.sofia.core.sites.domainname.DomainName;
  */
 public class HostnameManager {
 
-  private static HostnameManager INSTANCE;
+  private static final HostnameManager INSTANCE = new HostnameManager();
 
   public static HostnameManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new HostnameManager();
-    }
     return INSTANCE;
   }
 

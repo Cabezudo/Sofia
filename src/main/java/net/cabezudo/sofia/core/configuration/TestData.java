@@ -123,9 +123,7 @@ public class TestData {
   private static void createPeople() throws SQLException {
     Logger.info("Create people.");
 
-    User owner = UserManager.getInstance().getAdministrator();
-
-    Site site = SiteManager.getInstance().getByHostame("nutricion.digital", owner);
+    Site site = SiteManager.getInstance().getByHostame("nutricion.digital");
     try {
       UserManager.getInstance().set(site, "santiago@nasar.com", Password.createFromPlain("popo"));
     } catch (EMailAddressNotExistException e) {
@@ -166,7 +164,7 @@ public class TestData {
       "Hernández", "Agüero", "Páez", "Blanco", "Mendoza", "Barrios", "Escobar", "Ávila", "Soria", "Leiva", "Acuña", "Martin", "Maidana", "Moyano", "Campos", "Olivera", "Duarte", "Soto", "Franco",
       "Bravo", "Valdéz", "Toledo", "Andrade", "Montenegro", "Leguizamón", "Chávez", "Arce"};
 
-    SiteManager.getInstance().getByHostame("nutricion.digital", owner);
+    SiteManager.getInstance().getByHostame("nutricion.digital");
     for (int i = 0; i < 357; i++) {
       int n = random.nextInt(names.length);
       int l = random.nextInt(lastNames.length);

@@ -18,8 +18,6 @@ import net.cabezudo.sofia.core.creator.SiteCreator;
 import net.cabezudo.sofia.core.http.domains.DomainName;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -40,8 +38,7 @@ public class HTMLFilter implements Filter {
         SofiaHTMLServletRequest request = new SofiaHTMLServletRequest((HttpServletRequest) req);
         DomainName domainName = new DomainName(request.getServerName());
         Site site;
-        User owner = UserManager.getInstance().getAdministrator();
-        site = SiteManager.getInstance().getByHostame(domainName.toString(), owner);
+        site = SiteManager.getInstance().getByHostame(domainName.toString());
         request.setAttribute("site", site);
 
         String requestURI = request.getRequestURI();

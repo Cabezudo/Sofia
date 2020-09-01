@@ -31,11 +31,6 @@ public class SiteList extends EntityList<Site> {
   }
 
   @Override
-  public String toJSON() {
-    return toJSONTree().toString();
-  }
-
-  @Override
   public JSONValue toJSONTree() {
     JSONObject listObject = new JSONObject();
     JSONArray jsonList = new JSONArray();

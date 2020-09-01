@@ -1,12 +1,14 @@
 package net.cabezudo.sofia.people;
 
-import net.cabezudo.sofia.core.database.Table;
-
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.17
  */
-public class PeopleTable extends Table {
+public class PeopleTable {
+
+  private PeopleTable() {
+    // Nothing to do here
+  }
 
   public static final String NAME = "people";
   public static final String CREATION_QUERY

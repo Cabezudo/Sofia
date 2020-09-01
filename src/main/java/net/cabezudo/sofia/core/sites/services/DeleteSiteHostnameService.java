@@ -54,7 +54,7 @@ public class DeleteSiteHostnameService extends Service {
 
     Site site;
     try {
-      site = SiteManager.getInstance().getById(siteId, owner);
+      site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");
         return;

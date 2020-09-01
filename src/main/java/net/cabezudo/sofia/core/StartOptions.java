@@ -19,6 +19,10 @@ public class StartOptions {
   private boolean ide;
 
   public StartOptions(List<String> arguments) {
+    Logger.debug("Check start options.");
+    if (arguments != null && arguments.isEmpty()) {
+      Logger.debug("%s command lines argument FOUND.", arguments.size());
+    }
     for (String argument : arguments) {
       switch (argument) {
         case "--help":

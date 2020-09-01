@@ -5,10 +5,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
-import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
+import net.cabezudo.sofia.core.system.SystemMonitor;
+import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -36,7 +36,7 @@ public class SiteService extends Service {
     }
 
     try {
-      Site site = SiteManager.getInstance().getById(siteId, owner);
+      Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");
         return;

@@ -152,7 +152,7 @@ public class UserManager {
   }
 
   private void setAdministratorPrivileges(String address) throws SQLException {
-    Site site = SiteManager.getInstance().getById(1, null);
+    Site site = SiteManager.getInstance().getById(1);
     User user = getByEMail(address, site);
     if (user == null) {
       Password password = getPassword();
@@ -189,7 +189,7 @@ public class UserManager {
   public void createSofiaAdministrator(String name, String lastName, String address, Password password) throws SQLException {
     try ( Connection connection = Database.getConnection()) {
       connection.setAutoCommit(false);
-      Site managerSite = SiteManager.getInstance().getById(1, null);
+      Site managerSite = SiteManager.getInstance().getById(1);
       Person person = addPerson(connection, name, lastName, 1);
       EMail eMail = EMailManager.getInstance().create(connection, person.getId(), address);
       PeopleManager.getInstance().setPrimaryEMail(connection, person, eMail);
@@ -203,7 +203,7 @@ public class UserManager {
         throw new SofiaRuntimeException(e);
       }
 
-      Site playgroundSite = SiteManager.getInstance().getById(2, null);
+      Site playgroundSite = SiteManager.getInstance().getById(2);
       try {
         User user = UserManager.getInstance().set(connection, playgroundSite, address, password);
         ProfileManager.getInstance().create(connection, "administrator", playgroundSite);

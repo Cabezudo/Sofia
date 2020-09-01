@@ -37,7 +37,7 @@ public class SiteListService extends ListService {
         jsonObject.add(new JSONPair("filters", getFilters() == null ? "" : getFilters().getOriginalValue()));
         jsonObject.add(new JSONPair("headers", jsonArray));
         jsonObject.add(new JSONPair("totalRecords", total));
-        jsonObject.add(new JSONPair("pageSize", super.getLimit() == null ? SiteList.MAX : super.getLimit().getValue()));
+        jsonObject.add(new JSONPair("pageSize", super.getLimit() == null ? SiteList.MAX_PAGE_SIZE : super.getLimit().getValue()));
 
         JSONObject jsonTitleObject;
 

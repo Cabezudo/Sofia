@@ -44,6 +44,8 @@ import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.restaurants.RestaurantList;
+import net.cabezudo.sofia.restaurants.RestaurantManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -64,7 +66,29 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
   }
 
-  public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException {
+  public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException {
+
+    if (false) {
+      RestaurantList list = RestaurantManager.getInstance().list();
+      System.out.print(list.toJSON());
+    } else {
+      processOptions(args);
+
+      Logger.info("Starting server...");
+      int port = Configuration.getInstance().getServerPort();
+      try {
+        ServerSocket ss = new ServerSocket(port);
+        ss.close();
+      } catch (IOException e) {
+        Logger.severe("Can't open the port " + port + ". " + e.getMessage());
+        System.exit(1);
+      }
+
+      WebServer.getInstance().start();
+    }
+  }
+
+  private static void processOptions(String... args) {
     List<String> arguments = Arrays.asList(args);
     Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
 
@@ -88,7 +112,6 @@ public class WebServer {
       Logger.severe(e);
       System.exit(1);
     }
-    int port = Configuration.getInstance().getServerPort();
 
     if (startOptions.hasConfigureAdministrator()) {
       try {
@@ -121,16 +144,6 @@ public class WebServer {
         Logger.severe(e);
       }
     }
-    Logger.info("Starting server...");
-    try {
-      ServerSocket ss = new ServerSocket(port);
-      ss.close();
-    } catch (IOException e) {
-      Logger.severe("Can't open the port " + port + ". " + e.getMessage());
-      System.exit(1);
-    }
-
-    WebServer.getInstance().start();
   }
 
   private static void checkAndCreateConfigurationFile() throws ConfigurationException {
@@ -192,11 +205,11 @@ public class WebServer {
     } catch (SQLException e) {
       throw new ServerException(e);
     }
-    if (domainNames.getSize() == 0) {
+    if (domainNames.isEmpty()) {
       throw new SofiaRuntimeException("No domains names for " + site.getName());
     }
 
-    String[] virtualHosts = new String[domainNames.getSize() * 2];
+    String[] virtualHosts = new String[domainNames.size() * 2];
     int i = 0;
     for (DomainName domainName : domainNames) {
       virtualHosts[i] = domainName.getName();

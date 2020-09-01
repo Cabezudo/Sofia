@@ -18,9 +18,9 @@ import net.cabezudo.sofia.logger.Logger;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.03.13
  */
-public class ListClientsService extends ListService {
+public class ClientListService extends ListService {
 
-  public ListClientsService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
+  public ClientListService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
   }
 

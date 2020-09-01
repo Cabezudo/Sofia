@@ -54,19 +54,23 @@
     },
     {
       "path": "/api/v1/users",
-      "class": "net.cabezudo.sofia.core.users.ListUsersService"
+      "class": "net.cabezudo.sofia.core.users.UserListService"
     },
     {
       "path": "/api/v1/persons",
-      "class": "net.cabezudo.sofia.people.ListPeopleService"
+      "class": "net.cabezudo.sofia.people.PeopleListService"
     },
     {
       "path": "/api/v1/clients",
-      "class": "net.cabezudo.sofia.clients.ListClientsService"
+      "class": "net.cabezudo.sofia.clients.ClientListService"
     },
     {
       "path": "/api/v1/clients/{clientId}",
       "class": "net.cabezudo.sofia.clients.DetailClientsService"
+    },
+    {
+      "path": "/api/v1/restaurants",
+      "class": "net.cabezudo.sofia.restaurants.RestaurantListService"
     }
   ],
   "post": [

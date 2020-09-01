@@ -5,14 +5,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.SiteValidationException;
 import net.cabezudo.sofia.core.sites.validators.SiteNameValidator;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -33,8 +32,6 @@ public class SiteNamesValidationService extends Service {
     String name;
     URLToken token;
 
-    User owner = super.getUser();
-
     token = tokens.getValue("siteId");
 
     try {
@@ -46,7 +43,7 @@ public class SiteNamesValidationService extends Service {
     }
 
     try {
-      Site site = SiteManager.getInstance().getById(siteId, owner);
+      Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
         return;

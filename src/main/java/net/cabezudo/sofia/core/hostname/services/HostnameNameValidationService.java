@@ -7,11 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
 import net.cabezudo.sofia.core.hostname.HostnameValidator;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -27,12 +26,10 @@ public class HostnameNameValidationService extends Service {
 
   @Override
   public void execute() throws ServletException {
-
-    User owner = super.getUser();
     String name = tokens.getValue("name").toString();
 
     try {
-      Site siteWithHostname = SiteManager.getInstance().getByHostame(name, owner);
+      Site siteWithHostname = SiteManager.getInstance().getByHostame(name);
       if (siteWithHostname != null) {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, "site.hostname.exist.for.other.site", name, siteWithHostname.getName()));
         return;

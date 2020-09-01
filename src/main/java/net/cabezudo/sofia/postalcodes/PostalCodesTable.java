@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.postalcodes;
 
-import net.cabezudo.sofia.core.database.Table;
 import net.cabezudo.sofia.core.users.UsersTable;
 import net.cabezudo.sofia.settlements.SettlementsTable;
 
@@ -8,7 +7,11 @@ import net.cabezudo.sofia.settlements.SettlementsTable;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.28
  */
-public class PostalCodesTable extends Table {
+public class PostalCodesTable {
+
+  private PostalCodesTable() {
+    // Nothing to do here
+  }
 
   public static final String NAME = "postalCodes";
   public static final String CREATION_QUERY

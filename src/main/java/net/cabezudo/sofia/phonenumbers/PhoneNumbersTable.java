@@ -1,14 +1,16 @@
 package net.cabezudo.sofia.phonenumbers;
 
-import net.cabezudo.sofia.core.database.Table;
 import net.cabezudo.sofia.people.PeopleTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.17
  */
-public class PhoneNumbersTable extends Table {
+public class PhoneNumbersTable {
 
+  private PhoneNumbersTable() {
+    // Nothing to do here
+  }
   public static final String NAME = "phoneNumbers";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
