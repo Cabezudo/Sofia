@@ -54,7 +54,6 @@ public class SiteManager {
   }
 
   public Site getById(Connection connection, int siteId) throws SQLException {
-    // TODO autorizacion
     String query
             = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "

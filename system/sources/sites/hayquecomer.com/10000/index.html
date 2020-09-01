@@ -17,7 +17,8 @@
           const detail = event.detail;
           const records = detail.records;
           records.forEach(record => {
-            const item = document.createElement('DIV');
+            const item = document.createElement('a');
+            item.href = `${window.location.href}${record.subdomain}`;
             item.className = 'item';
             item.id = `id_${record.id}`;
             let deliveryTime;

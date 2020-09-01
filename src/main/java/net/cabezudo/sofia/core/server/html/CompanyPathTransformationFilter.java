@@ -8,8 +8,6 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import net.cabezudo.sofia.core.http.domains.DomainName;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -39,28 +37,8 @@ public class CompanyPathTransformationFilter implements Filter {
   }
 
   private void changeURL(SofiaHTMLServletRequest request) {
-    DomainName domainName = new DomainName(request.getServerName());
-    String requestURI = request.getRequestURI();
-
-    // TODO change this in order to use the database for add new domains to this behavior
-    if (domainName.match("donbeto.cdmx.menu")) {
-      requestURI = "/donbeto" + requestURI;
-      request.setRequestURI(requestURI);
-      request.setServerName(domainName.parent());
-    }
-
-    if (requestURI.startsWith("/donbeto")) {
-      Logger.debug("Request start with /donbeto");
-      if (!requestURI.endsWith("variables.js")) {
-        requestURI = "/company" + requestURI.substring("/donbeto".length());
-        request.setRequestURI(requestURI);
-        Logger.debug("The file is not variables.js");
-      }
-      Logger.debug("Company directory FOUND in path. Add file. Request URI: %s", request.getRequestURI());
-    }
-    if (domainName.match("cdmx.menu")) {
-      request.setServerName(new DomainName("hayquecomer.com"));
-    }
+    URLManager.getInstance().changeCompanyHost(request);
+    URLManager.getInstance().changeCompanyPath(request);
+    URLManager.getInstance().changeDomainName(request);
   }
-
 }

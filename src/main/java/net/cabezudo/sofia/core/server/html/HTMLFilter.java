@@ -15,7 +15,6 @@ import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
 import net.cabezudo.sofia.core.creator.SiteCreator;
-import net.cabezudo.sofia.core.http.domains.DomainName;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.logger.Logger;
@@ -36,9 +35,12 @@ public class HTMLFilter implements Filter {
     if (req instanceof HttpServletRequest) {
       try {
         SofiaHTMLServletRequest request = new SofiaHTMLServletRequest((HttpServletRequest) req);
-        DomainName domainName = new DomainName(request.getServerName());
+        String serverName = request.getServerName();
         Site site;
-        site = SiteManager.getInstance().getByHostame(domainName.toString());
+        site = SiteManager.getInstance().getByHostame(serverName);
+        if (site == null) {
+          throw new ServletException("Can't find the site using " + serverName);
+        }
         request.setAttribute("site", site);
 
         String requestURI = request.getRequestURI();

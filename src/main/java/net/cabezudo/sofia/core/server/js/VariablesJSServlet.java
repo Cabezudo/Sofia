@@ -41,7 +41,7 @@ public class VariablesJSServlet {
       sb.append("  company: null,\n");
     } else {
       sb.append("  company: {\n");
-      sb.append("    name: '").append(company).append("',\n");
+      sb.append("    host: '").append(company).append("',\n");
       sb.append("  },\n");
     }
     if (lastPage == null) {
