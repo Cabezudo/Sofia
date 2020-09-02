@@ -1,0 +1,14 @@
+{
+  "elements": {},
+  "attributes": {
+    "file": {
+      "context": "style"
+    },
+    "lib": {
+      "context": "script"
+    },
+    "profiles": {
+      "context": "html"
+    }
+  }
+}

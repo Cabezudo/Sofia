@@ -26,6 +26,7 @@ public class Restaurant {
   private int minDeliveryTime;
   private int maxDeliveryTime;
   private int score;
+  private int numberOfVotes;
   private BigDecimal longitude;
   private BigDecimal latitude;
   private Address address;
@@ -129,6 +130,14 @@ public class Restaurant {
     return score;
   }
 
+  void setNumberOfVotes(int numberOfVotes) {
+    this.numberOfVotes = numberOfVotes;
+  }
+
+  public int getNumberOfVotes() {
+    return numberOfVotes;
+  }
+
   public void setLongitude(BigDecimal longitude) {
     this.longitude = longitude;
   }
@@ -176,6 +185,7 @@ public class Restaurant {
     jsonRestaurant.add(new JSONPair("minDeliveryTime", minDeliveryTime));
     jsonRestaurant.add(new JSONPair("maxDeliveryTime", maxDeliveryTime));
     jsonRestaurant.add(new JSONPair("score", score));
+    jsonRestaurant.add(new JSONPair("numberOfVotes", numberOfVotes));
     jsonRestaurant.add(new JSONPair("longitude", longitude));
     jsonRestaurant.add(new JSONPair("latitude", latitude));
     jsonRestaurant.add(new JSONPair("address", address == null ? null : address.toJSONTree()));

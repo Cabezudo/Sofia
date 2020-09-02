@@ -37,7 +37,7 @@ public class RestaurantManager {
   private String getRestaurantQuery() {
     return "SELECT "
             + "  r.id, `subdomain`, `imageName`, r.name AS name, `location`, `typeId`, t.name as typeName, `priceRange`, "
-            + "  `currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`, `score` "
+            + "  `currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`, `score`, `numberOfVotes` "
             + "FROM " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " AS r "
             + "LEFT JOIN " + RestaurantTypesTable.DATABASE + "." + RestaurantTypesTable.NAME + " AS t ON r.typeId = t.id";
   }
@@ -199,6 +199,7 @@ public class RestaurantManager {
     int minDeliveryTime = rs.getInt("minDeliveryTime");
     int maxDeliveryTime = rs.getInt("maxDeliveryTime");
     int score = rs.getInt("score");
+    int numberOfVotes = rs.getInt("numberOfVotes");
 
     Restaurant restaurant = new Restaurant(id, subdomain, imageName, name, type, currency);
     restaurant.setLocation(location);
@@ -207,6 +208,7 @@ public class RestaurantManager {
     restaurant.setMinDeliveryTime(minDeliveryTime);
     restaurant.setMaxDeliveryTime(maxDeliveryTime);
     restaurant.setScore(score);
+    restaurant.setNumberOfVotes(numberOfVotes);
 
     return restaurant;
   }
