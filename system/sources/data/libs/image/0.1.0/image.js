@@ -5,12 +5,12 @@
 
 /* global Core */
 
-const image = ({ id = null, url = null } = {}) => {
+const image = ({ id = null, src = null } = {}) => {
   let element;
   let loaded = false;
 
   const validateOptions = () => {
-    if (id === null && url === null) {
+    if (id === null && src === null) {
       throw Error('You must define a property id and a property url.');
     }
   };
@@ -26,9 +26,9 @@ const image = ({ id = null, url = null } = {}) => {
         loaded = true;
         const newImage = new Image();
         newImage.onload = () => {
-          element.style.backgroundImage = `url('${url}')`;
+          element.style.backgroundImage = `url('${src}')`;
         };
-        newImage.src = url;
+        newImage.src = src;
       }
     };
     loadImage();
