@@ -11,21 +11,114 @@
     <style file="documentation.css"></style>
     <script>
       {
+        let info;
         const createGUI = () => {
-          const titleDiv = Core.validateById('title');
-          titleDiv.innerHTML = `Menú para ${variables.company.host}`;
+          info = document.getElementById('info');
+          info.addEventListener('response', event => {
+            const detail = event.detail;
+            console.log(detail);
+            const setData = (id, html) => {
+              document.getElementById(id).innerHTML = html;
+            };
+            document.getElementById('image').style.backgroundImage = `url('/images/${detail.imageName}')`;
+            setData('name', detail.name);
+            let typeAndCost = '';
+            if (detail.type) {
+              typeAndCost = `<div>${detail.type.name}</div>`;
+            }
+            switch (detail.priceRange) {
+              case 1:
+                typeAndCost += '&nbsp;&middot;&nbsp;<div class="cost">$</div>';
+                break;
+              case 2:
+                typeAndCost += '&nbsp;&middot;&nbsp;<div class="cost">$$</div>';
+                break;
+              case 3:
+                typeAndCost += '&nbsp;&middot;&nbsp;<div class="cost">$$$</div>';
+            }
+            setData('typeAndCost', typeAndCost);
+            let score = '';
+            if (detail.score) {
+              score = detail.score;
+              if (detail.numberOfVotes) {
+                score += ` (${detail.numberOfVotes})`;
+              }
+              setData('score', score);
+            }
+            setData('name', detail.name);
+          });
+        };
+        const loadData = () => {
+          Core.sendGet(`/api/v1/restaurants/${variables.company.host}`, info);
         };
         Core.addOnloadFunction(createGUI);
+        Core.addOnloadFunction(loadData);
       }
     </script>
+    <style>
+      #image {
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 300px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      #info {
+        background-color: white;
+        width: 70%;
+        text-align: center;
+        font-size: 14px;
+        padding: 20px;
+      }
+      #name {
+        font-size: 28px;
+        font-weight: 700;
+      }
+      #typeAndCost {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        padding: 10px 0 0 0;
+      }
+      .cost {
+        display: inline-block;
+        font-size: 12px;
+      }
+      @media all and ( min-width: 750px ) {
+        #image {
+          height: 400px;
+          justify-content: flex-start;
+        }
+        #info {
+          width: 50%;
+          text-align: left;
+        }
+        #name {
+          font-size: 36px;
+          font-weight: 500;
+        }
+        #typeAndCost {
+          justify-content: flex-start;
+        }
+      }
+    </style>
   </head>
   <body>
     <section id="application" class="application">
-      <section class="container">
-        <section class="content">
-          <h2 id="title" class="title"></h2>
-        </section>
+      <section class="header"></section>
+      <section class="restaurant">
+        <div id="image">
+          <div id="info">
+            <div id="name">&nbsp;</div>
+            <div id="typeAndCost">&nbsp;</div>
+            <div id="score"></div>
+            <div id="address"></div>
+          </div>
+        </div>
       </section>
+      <section class="menu"></section>
+      <section class="footer"></section>
     </section>
   </body>
 </html>

@@ -25,6 +25,7 @@ public class RestaurantsTable {
           + "`minDeliveryTime` INT(3), "
           + "`maxDeliveryTime` INT(3), "
           + "`score` INT(1), "
+          + "`numberOfVotes` INT(5), "
           + "`longitude` DECIMAL(9,6), "
           + "`latitude` DECIMAL(8,6), "
           + "`addressId` INT(10), "
