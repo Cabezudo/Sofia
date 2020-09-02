@@ -29,37 +29,35 @@ public class URLManager {
   }
 
   void changeCompanyHost(Site site, SofiaHTMLServletRequest request) throws SQLException {
+    Logger.debug("request on changeCompanyHost: %s", request);
     String serverName = request.getServerName();
     String requestURI = request.getRequestURI();
+
+    String subdomain = null;
 
     Cache<String, RequestData> requestDataCache = RequestData.getCache();
     RequestData requestData = requestDataCache.get(serverName);
 
     if (requestData == null) {
-      Logger.debug("requestData NOT FOUND in cache");
-      String subdomain = getCompanyPathByServerName(site, serverName);
-      if (subdomain != null) {
+      Logger.debug(serverName + " NOT FOUND in cache");
+      subdomain = getCompanyPathByServerName(site, serverName);
+      if (subdomain == null) {
+        Logger.debug("Subdomain NOT FOUND in database for server name %s", serverName);
+      } else {
         Logger.debug("Subdomain %s FOUND in database for server name %s", subdomain, serverName);
         requestURI = "/" + subdomain + requestURI;
         DomainName domainName = new DomainName(serverName);
         serverName = domainName.parent().toString();
-        requestData = new RequestData(serverName, domainName.toString());
+        requestData = new RequestData(serverName, subdomain);
         requestDataCache.put(serverName, requestData);
         request.setRequestURI(requestURI);
         request.setServerName(serverName);
-      } else {
-        Logger.debug("Subdomain NOT FOUND in database for server name %s", serverName);
       }
-    } else {
-      serverName = requestData.getServerName();
-      requestURI = requestData.getRequestURI();
-      request.setRequestURI(requestURI);
-      request.setServerName(serverName);
     }
-    Logger.debug("request in changeCompanyHost: %s", request);
   }
 
   void changeCompanyPath(Site site, SofiaHTMLServletRequest request) throws SQLException {
+    Logger.debug("request on changeCompanyPath: %s", request);
     String requestURI = request.getRequestURI();
 
     String path = requestURI.substring(1);
