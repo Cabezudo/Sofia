@@ -22,7 +22,7 @@ public class SofiaHTMLServletRequest extends HttpServletRequestWrapper {
 
   @Override
   public String toString() {
-    return "http://" + serverName + ":" + super.getLocalPort() + "/" + requestURI;
+    return "http://" + serverName + ":" + super.getLocalPort() + requestURI;
   }
 
   @Override

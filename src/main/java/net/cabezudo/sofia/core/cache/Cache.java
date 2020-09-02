@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.cache;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 /**
@@ -19,5 +20,15 @@ public class Cache<K, T> {
 
   public void put(K key, T value) {
     map.put(key, value);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    sb.append(map.size()).append(" elements\n");
+    for (Entry<K, T> entry : map.entrySet()) {
+      sb.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+    }
+    return sb.toString();
   }
 }
