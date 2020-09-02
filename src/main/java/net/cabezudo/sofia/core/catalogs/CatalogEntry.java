@@ -1,5 +1,8 @@
 package net.cabezudo.sofia.core.catalogs;
 
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONObject;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.08.31
@@ -27,4 +30,10 @@ public class CatalogEntry {
     return name;
   }
 
+  public JSONObject toJSONTree() {
+    JSONObject jsonRestaurantType = new JSONObject();
+    jsonRestaurantType.add(new JSONPair("id", id));
+    jsonRestaurantType.add(new JSONPair("name", name));
+    return jsonRestaurantType;
+  }
 }

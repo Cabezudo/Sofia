@@ -34,13 +34,47 @@ public class RestaurantManager {
     }
   }
 
-  public RestaurantList list(Connection connection) throws SQLException {
-    String query
-            = "SELECT "
+  private String getRestaurantQuery() {
+    return "SELECT "
             + "  r.id, `subdomain`, `imageName`, r.name AS name, `location`, `typeId`, t.name as typeName, `priceRange`, "
             + "  `currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`, `score` "
             + "FROM " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " AS r "
             + "LEFT JOIN " + RestaurantTypesTable.DATABASE + "." + RestaurantTypesTable.NAME + " AS t ON r.typeId = t.id";
+  }
+
+  public Restaurant get(String path) throws SQLException {
+    try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
+      return get(connection, path);
+    }
+  }
+
+  public Restaurant get(Connection connection, String path) throws SQLException {
+    String query = getRestaurantQuery() + " WHERE subdomain = ?";
+
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setString(1, path);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
+
+      if (rs.next()) {
+        return createRestaurant(rs);
+      }
+      return null;
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
+    }
+  }
+
+  public RestaurantList list(Connection connection) throws SQLException {
+    String query = getRestaurantQuery();
 
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -52,35 +86,7 @@ public class RestaurantManager {
       RestaurantList list = new RestaurantList(0);
 
       while (rs.next()) {
-        int id = rs.getInt("id");
-        String subdomain = rs.getString("subdomain");
-        String imageName = rs.getString("imageName");
-        String name = rs.getString("name");
-        String location = rs.getString("location");
-        int restaurantTypeId = rs.getInt("typeId");
-        String restaurantTypeName = rs.getString("typeName");
-        RestaurantType type = new RestaurantType(restaurantTypeId, restaurantTypeName);
-        int priceRange = rs.getInt("priceRange");
-        String currencyCode = rs.getString("currencyCode");
-        Currency currency;
-        if (currencyCode == null) {
-          currency = null;
-        } else {
-          currency = Currency.getInstance(currencyCode);
-        }
-        BigDecimal shippingCost = rs.getBigDecimal("shippingCost");
-        int minDeliveryTime = rs.getInt("minDeliveryTime");
-        int maxDeliveryTime = rs.getInt("maxDeliveryTime");
-        int score = rs.getInt("score");
-
-        Restaurant restaurant = new Restaurant(id, subdomain, imageName, name, type, currency);
-        restaurant.setLocation(location);
-        restaurant.setPriceRange(priceRange);
-        restaurant.setShippingCost(new Money(shippingCost, currency));
-        restaurant.setMinDeliveryTime(minDeliveryTime);
-        restaurant.setMaxDeliveryTime(maxDeliveryTime);
-        restaurant.setScore(score);
-
+        Restaurant restaurant = createRestaurant(rs);
         list.add(restaurant);
       }
       return list;
@@ -170,5 +176,38 @@ public class RestaurantManager {
         ps.close();
       }
     }
+  }
+
+  private Restaurant createRestaurant(ResultSet rs) throws SQLException {
+    int id = rs.getInt("id");
+    String subdomain = rs.getString("subdomain");
+    String imageName = rs.getString("imageName");
+    String name = rs.getString("name");
+    String location = rs.getString("location");
+    int restaurantTypeId = rs.getInt("typeId");
+    String restaurantTypeName = rs.getString("typeName");
+    RestaurantType type = new RestaurantType(restaurantTypeId, restaurantTypeName);
+    int priceRange = rs.getInt("priceRange");
+    String currencyCode = rs.getString("currencyCode");
+    Currency currency;
+    if (currencyCode == null) {
+      currency = null;
+    } else {
+      currency = Currency.getInstance(currencyCode);
+    }
+    BigDecimal shippingCost = rs.getBigDecimal("shippingCost");
+    int minDeliveryTime = rs.getInt("minDeliveryTime");
+    int maxDeliveryTime = rs.getInt("maxDeliveryTime");
+    int score = rs.getInt("score");
+
+    Restaurant restaurant = new Restaurant(id, subdomain, imageName, name, type, currency);
+    restaurant.setLocation(location);
+    restaurant.setPriceRange(priceRange);
+    restaurant.setShippingCost(new Money(shippingCost, currency));
+    restaurant.setMinDeliveryTime(minDeliveryTime);
+    restaurant.setMaxDeliveryTime(maxDeliveryTime);
+    restaurant.setScore(score);
+
+    return restaurant;
   }
 }

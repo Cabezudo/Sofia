@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.restaurants;
 
-
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.addresses.Address;
 
 /**
@@ -25,4 +26,10 @@ public abstract class Company {
     return address;
   }
 
+  public JSONObject toJSONTree() {
+    JSONObject jsonRestaurantType = new JSONObject();
+    jsonRestaurantType.add(new JSONPair("id", id));
+    jsonRestaurantType.add(new JSONPair("address", address.toJSONTree()));
+    return jsonRestaurantType;
+  }
 }

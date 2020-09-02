@@ -8,7 +8,6 @@ import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -24,8 +23,6 @@ public class SiteService extends Service {
 
   @Override
   public void execute() throws ServletException {
-    User owner = super.getUser();
-
     URLToken token = tokens.getValue("siteId");
     int siteId;
     try {

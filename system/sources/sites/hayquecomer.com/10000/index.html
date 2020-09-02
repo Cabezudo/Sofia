@@ -55,15 +55,9 @@
                 </div>
                 `;
             itemList.appendChild(item);
-            image({id, url: `/images/${record.imageName}?resize(width = 500)`});
+            image({id, src: `/images/${record.imageName}?resize(width = 500)`});
           });
         });
-//        image({id: 'image1', url: '/images/donbeto.01.jpg?resize(width = 500)'});
-//        image({id: 'image2', url: '/images/bariloche.01.jpg?resize(width=500)'});
-//        image({id: 'image3', url: '/images/casquet.01.jpg?resize(width=500)'});
-//        image({id: 'image4', url: '/images/heladosdolphy.01.jpg?resize(width=500)'});
-//        image({id: 'image5', url: '/images/pinchegringobbq.01.jpg?resize(width = 500)'});
-//        image({id: 'image6', url: '/images/tacosfondaargentina.01.jpg?resize(width=500)'});
       }
       ;
       Core.addOnloadFunction(getList);
@@ -78,6 +72,9 @@
         margin: 10px auto;
         border: 0;
         width: 80%;
+      }
+      .item:hover {
+        text-decoration: none;
       }
       .item > .image {
         border: 0;

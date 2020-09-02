@@ -2,6 +2,8 @@ package net.cabezudo.sofia.restaurants;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.addresses.Address;
 import net.cabezudo.sofia.core.money.Money;
 
@@ -159,4 +161,25 @@ public class Restaurant {
     return businessHours;
   }
 
+  public String toJSON() {
+    JSONObject jsonRestaurant = new JSONObject();
+    jsonRestaurant.add(new JSONPair("id", id));
+    jsonRestaurant.add(new JSONPair("company", company == null ? null : company.toJSONTree()));
+    jsonRestaurant.add(new JSONPair("subdomain", subdomain));
+    jsonRestaurant.add(new JSONPair("imageName", imageName));
+    jsonRestaurant.add(new JSONPair("name", name));
+    jsonRestaurant.add(new JSONPair("location", location));
+    jsonRestaurant.add(new JSONPair("type", type.toJSONTree()));
+    jsonRestaurant.add(new JSONPair("priceRange", priceRange));
+    jsonRestaurant.add(new JSONPair("currency", currency.getNumericCode()));
+    jsonRestaurant.add(new JSONPair("shippingCost", shippingCost.toJSONTree()));
+    jsonRestaurant.add(new JSONPair("minDeliveryTime", minDeliveryTime));
+    jsonRestaurant.add(new JSONPair("maxDeliveryTime", maxDeliveryTime));
+    jsonRestaurant.add(new JSONPair("score", score));
+    jsonRestaurant.add(new JSONPair("longitude", longitude));
+    jsonRestaurant.add(new JSONPair("latitude", latitude));
+    jsonRestaurant.add(new JSONPair("address", address == null ? null : address.toJSONTree()));
+    jsonRestaurant.add(new JSONPair("businessHours", businessHours == null ? null : businessHours.toJSON()));
+    return jsonRestaurant.toString();
+  }
 }
