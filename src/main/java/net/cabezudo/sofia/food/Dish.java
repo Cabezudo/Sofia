@@ -2,6 +2,9 @@ package net.cabezudo.sofia.food;
 
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.money.Money;
+import net.cabezudo.sofia.food.helpers.DishHelper;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,31 +13,31 @@ import net.cabezudo.json.values.JSONObject;
 public class Dish {
 
   private final int id;
-  private final DishGroup dishGroup;
   private final String name;
   private final String description;
-  private final String image;
+  private final String imageName;
   private final Allergens allergens;
   private final Integer calories;
+  private final Money price;
 
   public Dish(DishHelper dishHelper) {
     id = dishHelper.getId();
-    dishGroup = dishHelper.getDishGroup();
     name = dishHelper.getName();
     description = dishHelper.getDescription();
-    image = dishHelper.getImage();
-    allergens = dishHelper.getAllergens();
+    imageName = dishHelper.getImageName();
+    allergens = new Allergens(dishHelper.getAllergens());
     calories = dishHelper.getCalories();
+    price = dishHelper.getPrice();
   }
 
-  Dish(int id, DishGroup dishGroup, String name, String description, String image, Integer calories) {
+  Dish(int id, String name, String description, String imageName, Allergens allergens, Integer calories, Money price) {
     this.id = id;
-    this.dishGroup = dishGroup;
     this.name = name;
     this.description = description;
-    this.image = image;
-    this.allergens = new Allergens();
+    this.imageName = imageName;
+    this.allergens = allergens;
     this.calories = calories;
+    this.price = price;
   }
 
   public String toJSON() {
@@ -47,10 +50,6 @@ public class Dish {
     return id;
   }
 
-  public DishGroup getCategory() {
-    return dishGroup;
-  }
-
   public String getName() {
     return name;
   }
@@ -59,8 +58,8 @@ public class Dish {
     return description;
   }
 
-  public String getImage() {
-    return image;
+  public String getImageName() {
+    return imageName;
   }
 
   public Allergens getAllergens() {
@@ -69,5 +68,17 @@ public class Dish {
 
   public Integer getCalories() {
     return calories;
+  }
+
+  JSONValue toJSONTree() {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.add(new JSONPair("id", id));
+    jsonObject.add(new JSONPair("name", name));
+    jsonObject.add(new JSONPair("description", description));
+    jsonObject.add(new JSONPair("imageName", imageName));
+    jsonObject.add(new JSONPair("allergens", allergens.toJSONTree()));
+    jsonObject.add(new JSONPair("calories", calories));
+    jsonObject.add(new JSONPair("price", price.toJSONTree()));
+    return jsonObject;
   }
 }

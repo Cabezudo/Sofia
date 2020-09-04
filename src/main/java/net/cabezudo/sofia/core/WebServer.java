@@ -42,6 +42,8 @@ import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.emails.EMailNotExistException;
+import net.cabezudo.sofia.food.FoodManager;
+import net.cabezudo.sofia.food.Menu;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.restaurants.Restaurant;
@@ -68,9 +70,10 @@ public class WebServer {
 
   public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException {
 
-    if (false) {
+    if (true) {
       Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
-      System.out.print(restaurant.toJSON());
+      Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant);
+      System.out.print(menu.toJSON());
     } else {
       processOptions(args);
 

@@ -44,7 +44,7 @@ public class CategoryManager {
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
-        return new Category(id, restaurant, name, new Schedule());
+        return new Category(id, name, new DishGroups(), new Schedule());
       }
       throw new SofiaRuntimeException("Can't get the generated key");
     } finally {
@@ -74,7 +74,7 @@ public class CategoryManager {
       Logger.fine(ps);
       rs = ps.executeQuery();
       if (rs.next()) {
-        return new Category(rs.getInt("id"), null, rs.getString("name"), null);
+        return new Category(rs.getInt("id"), rs.getString("name"), new DishGroups(), new Schedule());
       }
     } finally {
       if (rs != null) {
@@ -103,7 +103,7 @@ public class CategoryManager {
       Logger.fine(ps);
       rs = ps.executeQuery();
       if (rs.next()) {
-        return new Category(rs.getInt("id"), null, rs.getString("name"), null);
+        return new Category(rs.getInt("id"), rs.getString("name"), new DishGroups(), new Schedule());
       }
     } finally {
       if (rs != null) {
