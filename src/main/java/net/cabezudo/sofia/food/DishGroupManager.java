@@ -45,7 +45,7 @@ public class DishGroupManager {
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
-        return new DishGroup(id, category, name);
+        return new DishGroup(id, name, new Dishes());
       }
       throw new SofiaRuntimeException("Can't get the generated key");
     } finally {

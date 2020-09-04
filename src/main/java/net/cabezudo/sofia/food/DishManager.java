@@ -58,7 +58,7 @@ public class DishManager {
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
-        return new Dish(id, dishGroup, name, description, imageName, calories);
+        return new Dish(id, name, description, imageName, new Allergens(), calories, price);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
     } finally {
