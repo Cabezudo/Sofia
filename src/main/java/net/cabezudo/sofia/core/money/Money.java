@@ -11,36 +11,36 @@ import net.cabezudo.json.values.JSONObject;
  */
 public class Money {
 
-  private final BigDecimal cost;
   private final Currency currency;
+  private final BigDecimal cost;
 
-  public Money(int cost, Currency currency) {
-    this.cost = new BigDecimal(cost);
+  public Money(Currency currency, int cost) {
     this.currency = currency;
+    this.cost = new BigDecimal(cost);
   }
 
-  public Money(String cost, Currency currency) {
-    this.cost = new BigDecimal(cost);
+  public Money(Currency currency, String cost) {
     this.currency = currency;
+    this.cost = new BigDecimal(cost);
   }
 
-  public Money(BigDecimal cost, Currency currency) {
+  public Money(Currency currency, BigDecimal cost) {
+    this.currency = currency;
     this.cost = cost;
-    this.currency = currency;
-  }
-
-  public BigDecimal getCost() {
-    return cost;
   }
 
   public Currency getCurrency() {
     return currency;
   }
 
+  public BigDecimal getCost() {
+    return cost;
+  }
+
   public JSONObject toJSONTree() {
     JSONObject jsonRestaurantType = new JSONObject();
-    jsonRestaurantType.add(new JSONPair("cost", cost));
     jsonRestaurantType.add(new JSONPair("currency", currency.getNumericCode()));
+    jsonRestaurantType.add(new JSONPair("cost", cost));
     return jsonRestaurantType;
   }
 
