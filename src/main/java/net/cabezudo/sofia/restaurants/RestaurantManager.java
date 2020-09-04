@@ -100,36 +100,31 @@ public class RestaurantManager {
     }
   }
 
-  public Restaurant add(Restaurant restaurant) throws SQLException {
+  public Restaurant add(String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange
+  ) throws SQLException {
     try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
-      return add(connection, restaurant);
+      return add(connection, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange);
     }
   }
 
-  public Restaurant add(Connection connection, Restaurant r) throws SQLException {
+  public Restaurant add(
+          Connection connection, String subdomain, String imageName, String name, String location, RestaurantType type,
+          int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange)
+          throws SQLException {
     String query
             = "INSERT INTO " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " "
             + "("
-            + "`subdomain`, `imageName`, `name`, `location`, `typeId`, `priceRange`, `currencyCode`, `shippingCost`, `minDeliveryTime`, "
-            + "`maxDeliveryTime`, `score`"
+            + "`subdomain`, `imageName`, `name`, `location`, `typeId`, `priceRange`, "
+            + "`currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`"
             + ") "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
       ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
-      String subdomain = r.getSubdomain();
-      String imageName = r.getImageName();
-      String name = r.getName();
-      String location = r.getLocation();
-      RestaurantType type = r.getType();
-      int priceRange = r.getPriceRange();
-      Currency currency = r.getCurrency();
-      Money shippingCost = r.getShippingCost();
-      int minDeliveryTime = r.getMinDeliveryTime();
-      int maxDeliveryTime = r.getMaxDeliveryTime();
-      int score = r.getScore();
+      int minDeliveryTime = deliveryRange.getMin();
+      int maxDeliveryTime = deliveryRange.getMax();
 
       ps.setString(1, subdomain);
       ps.setString(2, imageName);
@@ -149,7 +144,6 @@ public class RestaurantManager {
       }
       ps.setInt(9, minDeliveryTime);
       ps.setInt(10, maxDeliveryTime);
-      ps.setInt(11, score);
 
       Logger.fine(ps);
       ps.executeUpdate();
@@ -157,15 +151,7 @@ public class RestaurantManager {
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
-        Restaurant restaurant = new Restaurant(id, subdomain, imageName, name, type, currency);
-        restaurant.setLocation(location);
-        restaurant.setPriceRange(priceRange);
-        restaurant.setShippingCost(shippingCost);
-        restaurant.setMinDeliveryTime(minDeliveryTime);
-        restaurant.setMaxDeliveryTime(maxDeliveryTime);
-        restaurant.setScore(score);
-
-        return restaurant;
+        return new Restaurant(id, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange, null, null);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
     } finally {
@@ -195,21 +181,15 @@ public class RestaurantManager {
     } else {
       currency = Currency.getInstance(currencyCode);
     }
-    BigDecimal shippingCost = rs.getBigDecimal("shippingCost");
+    BigDecimal cost = rs.getBigDecimal("shippingCost");
+    Money shippingCost = new Money(currency, cost);
     int minDeliveryTime = rs.getInt("minDeliveryTime");
     int maxDeliveryTime = rs.getInt("maxDeliveryTime");
+    DeliveryRange deliveryRange = new DeliveryRange(minDeliveryTime, maxDeliveryTime);
     int score = rs.getInt("score");
     int numberOfVotes = rs.getInt("numberOfVotes");
 
-    Restaurant restaurant = new Restaurant(id, subdomain, imageName, name, type, currency);
-    restaurant.setLocation(location);
-    restaurant.setPriceRange(priceRange);
-    restaurant.setShippingCost(new Money(shippingCost, currency));
-    restaurant.setMinDeliveryTime(minDeliveryTime);
-    restaurant.setMaxDeliveryTime(maxDeliveryTime);
-    restaurant.setScore(score);
-    restaurant.setNumberOfVotes(numberOfVotes);
+    return new Restaurant(id, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange, score, numberOfVotes);
 
-    return restaurant;
   }
 }

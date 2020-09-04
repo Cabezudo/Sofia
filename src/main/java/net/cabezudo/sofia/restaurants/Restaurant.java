@@ -18,31 +18,32 @@ public class Restaurant {
   private final String subdomain;
   private final String imageName;
   private final String name;
-  private String location;
+  private final String location;
   private final RestaurantType type;
-  private int priceRange;
+  private final int priceRange;
   private final Currency currency;
-  private Money shippingCost;
-  private int minDeliveryTime;
-  private int maxDeliveryTime;
-  private int score;
-  private int numberOfVotes;
+  private final Money shippingCost;
+  private final DeliveryRange deliveryRange;
+  private final Integer score;
+  private final Integer numberOfVotes;
   private BigDecimal longitude;
   private BigDecimal latitude;
   private Address address;
-  private BusinessHours businessHours;
+  private Schedule businessHours;
 
-  public Restaurant(String subdomain, String image, String name, RestaurantType type, Currency currency) {
-    this(0, subdomain, image, name, type, currency);
-  }
-
-  public Restaurant(int id, String subdomain, String image, String name, RestaurantType type, Currency currency) {
+  Restaurant(int id, String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange, Integer score, Integer numberOfVotes) {
     this.id = id;
     this.subdomain = subdomain;
-    this.imageName = image;
+    this.imageName = imageName;
     this.name = name;
+    this.location = location;
     this.type = type;
+    this.priceRange = priceRange;
     this.currency = currency;
+    this.shippingCost = shippingCost;
+    this.deliveryRange = deliveryRange;
+    this.score = score;
+    this.numberOfVotes = numberOfVotes;
   }
 
   public int getId() {
@@ -73,16 +74,8 @@ public class Restaurant {
     return location;
   }
 
-  public void setLocation(String location) {
-    this.location = location;
-  }
-
   public RestaurantType getType() {
     return type;
-  }
-
-  public void setPriceRange(int priceRange) {
-    this.priceRange = priceRange;
   }
 
   public int getPriceRange() {
@@ -93,48 +86,19 @@ public class Restaurant {
     return currency;
   }
 
-  public void setShippingCost(Money shippingCost) {
-    this.shippingCost = shippingCost;
-  }
-
   public Money getShippingCost() {
     return shippingCost;
   }
 
-  public void setDeliveryTime(int deliveryTime) {
-    this.minDeliveryTime = deliveryTime;
-    this.maxDeliveryTime = deliveryTime;
+  public DeliveryRange getDeliveryRange() {
+    return deliveryRange;
   }
 
-  public void setMinDeliveryTime(int minDeliveryTime) {
-    this.minDeliveryTime = minDeliveryTime;
-  }
-
-  public int getMinDeliveryTime() {
-    return minDeliveryTime;
-  }
-
-  public void setMaxDeliveryTime(int maxDeliveryTime) {
-    this.maxDeliveryTime = maxDeliveryTime;
-  }
-
-  public int getMaxDeliveryTime() {
-    return maxDeliveryTime;
-  }
-
-  public void setScore(int score) {
-    this.score = score;
-  }
-
-  public int getScore() {
+  public Integer getScore() {
     return score;
   }
 
-  void setNumberOfVotes(int numberOfVotes) {
-    this.numberOfVotes = numberOfVotes;
-  }
-
-  public int getNumberOfVotes() {
+  public Integer getNumberOfVotes() {
     return numberOfVotes;
   }
 
@@ -162,11 +126,11 @@ public class Restaurant {
     return address;
   }
 
-  public void setBusinessHours(BusinessHours businessHours) {
+  public void setBusinessHours(Schedule businessHours) {
     this.businessHours = businessHours;
   }
 
-  public BusinessHours getBusinessHours() {
+  public Schedule getBusinessHours() {
     return businessHours;
   }
 
@@ -182,8 +146,7 @@ public class Restaurant {
     jsonRestaurant.add(new JSONPair("priceRange", priceRange));
     jsonRestaurant.add(new JSONPair("currency", currency.getNumericCode()));
     jsonRestaurant.add(new JSONPair("shippingCost", shippingCost.toJSONTree()));
-    jsonRestaurant.add(new JSONPair("minDeliveryTime", minDeliveryTime));
-    jsonRestaurant.add(new JSONPair("maxDeliveryTime", maxDeliveryTime));
+    jsonRestaurant.add(new JSONPair("deliveryRange", deliveryRange.toJSONTree()));
     jsonRestaurant.add(new JSONPair("score", score));
     jsonRestaurant.add(new JSONPair("numberOfVotes", numberOfVotes));
     jsonRestaurant.add(new JSONPair("longitude", longitude));

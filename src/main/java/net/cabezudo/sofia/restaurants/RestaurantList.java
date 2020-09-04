@@ -51,6 +51,7 @@ public class RestaurantList extends EntityList<Restaurant> {
       jsonRestaurant.add(new JSONPair("subdomain", restaurant.getSubdomain()));
       jsonRestaurant.add(new JSONPair("imageName", restaurant.getImageName()));
       jsonRestaurant.add(new JSONPair("name", restaurant.getName()));
+      jsonRestaurant.add(new JSONPair("location", restaurant.getLocation()));
       JSONObject jsonShippingCost = new JSONObject();
       String typeName;
       if (restaurant.getType() == null) {
@@ -61,11 +62,13 @@ public class RestaurantList extends EntityList<Restaurant> {
       jsonRestaurant.add(new JSONPair("type", typeName));
       jsonRestaurant.add(new JSONPair("priceRange", restaurant.getPriceRange()));
       Money shippingCost = restaurant.getShippingCost();
-      jsonShippingCost.add(new JSONPair("cost", shippingCost.getCost()));
       jsonShippingCost.add(new JSONPair("currency", shippingCost.getCurrency().getCurrencyCode()));
+      jsonShippingCost.add(new JSONPair("shippingCost", shippingCost.getCost()));
       jsonRestaurant.add(new JSONPair("shippingCost", jsonShippingCost));
-      jsonRestaurant.add(new JSONPair("minDeliveryTime", restaurant.getMinDeliveryTime()));
-      jsonRestaurant.add(new JSONPair("maxDeliveryTime", restaurant.getMaxDeliveryTime()));
+      jsonRestaurant.add(new JSONPair("minDeliveryTime", restaurant.getDeliveryRange().getMin()));
+      jsonRestaurant.add(new JSONPair("maxDeliveryTime", restaurant.getDeliveryRange().getMax()));
+      jsonRestaurant.add(new JSONPair("score", restaurant.getScore()));
+      jsonRestaurant.add(new JSONPair("numberOfVotes", restaurant.getNumberOfVotes()));
       jsonRecords.add(jsonRestaurant);
     });
 
