@@ -10,7 +10,6 @@ import net.cabezudo.sofia.food.helpers.AllergensHelper;
 import net.cabezudo.sofia.food.helpers.MenuHelper;
 import net.cabezudo.sofia.food.helpers.ScheduleHelper;
 import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.restaurants.Restaurant;
 import net.cabezudo.sofia.restaurants.RestaurantsTable;
 
 /**
@@ -29,13 +28,13 @@ public class FoodManager {
     return INSTANCE;
   }
 
-  public Menu getMenuByRestaurantId(Restaurant restaurant) throws SQLException {
+  public Menu getMenuByRestaurantById(int id) throws SQLException {
     try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
-      return getMenuByRestaurantId(connection, restaurant);
+      return getMenuByRestaurantById(connection, id);
     }
   }
 
-  private Menu getMenuByRestaurantId(Connection connection, Restaurant restaurant) throws SQLException {
+  private Menu getMenuByRestaurantById(Connection connection, int id) throws SQLException {
     String query
             = "SELECT "
             + "c.id AS categoryId, c.name AS categoryName, "
@@ -50,7 +49,7 @@ public class FoodManager {
     ResultSet rs = null;
     try {
       ps = connection.prepareStatement(query);
-      ps.setInt(1, restaurant.getId());
+      ps.setInt(1, id);
       Logger.fine(ps);
       rs = ps.executeQuery();
 

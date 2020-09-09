@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.food;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.sofia.food.helpers.CategoriesHelper;
@@ -23,12 +22,7 @@ class Categories {
   }
 
   String toJSON() {
-    JSONArray jsonCategories = new JSONArray();
-    for (Entry<Integer, Category> entry : map.entrySet()) {
-      Category category = entry.getValue();
-      jsonCategories.add(category.toJSONTree());
-    }
-    return jsonCategories.toJSON();
+    return toJSONTree().toString();
   }
 
   void add(Category c) {
@@ -40,6 +34,12 @@ class Categories {
 
   Category get(Category c) {
     return map.get(c.getId());
+  }
+
+  JSONArray toJSONTree() {
+    JSONArray jsonCategories = new JSONArray();
+    map.entrySet().stream().map(entry -> entry.getValue()).forEachOrdered(category -> jsonCategories.add(category.toJSONTree()));
+    return jsonCategories;
   }
 
 }

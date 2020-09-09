@@ -70,10 +70,9 @@ public class WebServer {
 
   public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException {
 
-    if (true) {
+    if (false) {
       Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
-      Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant);
-      System.out.print(menu.toJSON());
+      Menu menu = FoodManager.getInstance().getMenuByRestaurantById(restaurant.getId());
     } else {
       processOptions(args);
 
@@ -297,26 +296,25 @@ public class WebServer {
 
   private void createCommonsFile(Site site) throws IOException {
     File file = site.getVersionedSourcesCommonsFilePath().toFile();
-    Logger.debug("Create %s.", file.getAbsoluteFile());
+    Logger.debug("Check for %s.", file.getAbsoluteFile());
     if (file.createNewFile()) {
-      Logger.debug("%s file created.", file.getName());
+      try ( FileWriter writer = new FileWriter(file)) {
+        Logger.debug("%s file created.", file.getName());
+        writer.write("{\n");
+        writer.write("  \"site\": {\n");
+        writer.write("    \"name\": \"" + site.getName() + "\",\n");
+        writer.write("    \"shortName\": \"" + site.getName() + "\",\n");
+        writer.write("    \"socialMedia\": {\n");
+        writer.write("      \"twitter\": {\n");
+        writer.write("        \"url\": \"\"\n");
+        writer.write("      }\n");
+        writer.write("    }\n");
+        writer.write("  },\n");
+        writer.write("  \"themeName\": \"basic\"\n");
+        writer.write("}\n");
+      }
     } else {
       Logger.debug("%s file already exists.", file.getName());
-    }
-
-    try ( FileWriter writer = new FileWriter(file)) {
-      writer.write("{\n");
-      writer.write("  \"site\": {\n");
-      writer.write("    \"name\": \"" + site.getName() + "\",\n");
-      writer.write("    \"shortName\": \"" + site.getName() + "\",\n");
-      writer.write("    \"socialMedia\": {\n");
-      writer.write("      \"twitter\": {\n");
-      writer.write("        \"url\": \"\"\n");
-      writer.write("      }\n");
-      writer.write("    }\n");
-      writer.write("  },\n");
-      writer.write("  \"themeName\": \"basic\"\n");
-      writer.write("}\n");
     }
   }
 

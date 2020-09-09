@@ -75,6 +75,10 @@
     {
       "path": "/api/v1/restaurants/{path}",
       "class": "net.cabezudo.sofia.restaurants.RestaurantDataService"
+    },
+    {
+      "path": "/api/v1/restaurants/{path}/menu",
+      "class": "net.cabezudo.sofia.food.MenuService"
     }
   ],
   "post": [

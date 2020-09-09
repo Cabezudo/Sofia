@@ -10,9 +10,9 @@ import net.cabezudo.sofia.food.helpers.AllergensHelper;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.09.02
  */
-public class Allergens {
+public final class Allergens {
 
-  private List<Allergen> list = new ArrayList<>();
+  private final List<Allergen> list = new ArrayList<>();
 
   Allergens(AllergensHelper allergens) {
     for (AllergenHelper allergen : allergens) {
@@ -21,11 +21,11 @@ public class Allergens {
   }
 
   Allergens() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    // Nothing to do here
   }
 
   void add(Allergen allergen) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    list.add(allergen);
   }
 
   JSONArray toJSONTree() {

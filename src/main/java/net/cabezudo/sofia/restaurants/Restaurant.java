@@ -135,6 +135,10 @@ public class Restaurant {
   }
 
   public String toJSON() {
+    return toJSONTree().toString();
+  }
+
+  public JSONObject toJSONTree() {
     JSONObject jsonRestaurant = new JSONObject();
     jsonRestaurant.add(new JSONPair("id", id));
     jsonRestaurant.add(new JSONPair("company", company == null ? null : company.toJSONTree()));
@@ -153,6 +157,6 @@ public class Restaurant {
     jsonRestaurant.add(new JSONPair("latitude", latitude));
     jsonRestaurant.add(new JSONPair("address", address == null ? null : address.toJSONTree()));
     jsonRestaurant.add(new JSONPair("businessHours", businessHours == null ? null : businessHours.toJSON()));
-    return jsonRestaurant.toString();
+    return jsonRestaurant;
   }
 }

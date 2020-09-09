@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.food;
 
+import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.sofia.food.helpers.MenuHelper;
 
 /**
@@ -20,5 +21,9 @@ public class Menu {
 
   public String toJSON() {
     return categories.toJSON();
+  }
+
+  public JSONArray toJSONTree() {
+    return categories.toJSONTree();
   }
 }

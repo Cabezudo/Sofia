@@ -5,18 +5,19 @@
 
 /* global Core */
 
-const image = ({ id = null, src = null } = {}) => {
-  let element;
+const image = ({ id = null, element = null, src = null } = {}) => {
   let loaded = false;
 
   const validateOptions = () => {
-    if (id === null && src === null) {
-      throw Error('You must define a property id and a property url.');
+    if (id === null && element === null && src === null) {
+      throw Error('You must define a property id or element and a property url.');
     }
   };
 
   const createGUI = () => {
-    element = Core.validateById(id);
+    if (id !== null) {
+      element = Core.validateById(id);
+    }
 
     const loadImage = () => {
       if (loaded) {
