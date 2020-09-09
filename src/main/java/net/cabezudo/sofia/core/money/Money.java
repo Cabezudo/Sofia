@@ -39,7 +39,7 @@ public class Money {
 
   public JSONObject toJSONTree() {
     JSONObject jsonRestaurantType = new JSONObject();
-    jsonRestaurantType.add(new JSONPair("currency", currency.getNumericCode()));
+    jsonRestaurantType.add(new JSONPair("currency", currency.getCurrencyCode()));
     jsonRestaurantType.add(new JSONPair("cost", cost));
     return jsonRestaurantType;
   }
