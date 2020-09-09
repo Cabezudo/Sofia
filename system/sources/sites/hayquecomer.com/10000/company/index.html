@@ -8,25 +8,91 @@
     <script src="variables.js"></script>
     <script src="index.js"></script>
     <script lib="core/0.1.0"></script>
-    <style file="documentation.css"></style>
+    <script lib="image/0.1.0"></script>
     <script>
       {
-        let info;
+        let
+                info, categoriesContainerElement, categoryElementContainer = [], elementContainerSelected = 0,
+                dishGroupsContainerElement, dishGroupsElement = [];
+        const setCategorySelected = () => {
+          for (let i = 0; i < categoryElementContainer.length; i++) {
+            if (elementContainerSelected === i) {
+              categoryElementContainer[i].className = 'category selected';
+              Core.show(dishGroupsElement[i]);
+            } else {
+              categoryElementContainer[i].className = 'category';
+              Core.hide(dishGroupsElement[i]);
+            }
+          }
+        };
+        const createMenu = menu => {
+          for (let i = 0; i < menu.length; i++) {
+            const category = menu[i];
+            const categoryName = category.name;
+            categoryElementContainer[i] = document.createElement('DIV');
+            categoryElementContainer[i].onclick = () => {
+              elementContainerSelected = i;
+              setCategorySelected();
+            };
+            categoryElementContainer[i].innerHTML = `<div class="categoryName">${categoryName}</div><div class="categoryTime">Wed 12:30 PM – 6:15 PM</div>`;
+            categoriesContainerElement.appendChild(categoryElementContainer[i]);
+            const categorySpace = document.createElement('DIV');
+            categorySpace.className = 'categorySpace';
+            categoriesContainerElement.appendChild(categorySpace);
+
+            dishGroupsElement[i] = document.createElement('DIV');
+            dishGroupsElement[i].className = 'dishGroups';
+            dishGroupsContainerElement.appendChild(dishGroupsElement[i]);
+            const dishGroups = category.dishGroups;
+            console.log(dishGroups);
+            dishGroups.forEach(dishGroup => {
+              const dishGroupElement = document.createElement('DIV');
+              dishGroupElement.innerHTML = `<div class="dishGroupTitle">${dishGroup.name}</div>`;
+              dishGroupsElement[i].appendChild(dishGroupElement);
+              const dishesContainerElement = document.createElement('DIV');
+              dishesContainerElement.className = 'dishes';
+              dishGroupElement.appendChild(dishesContainerElement);
+              const dishes = dishGroup.dishes;
+              dishes.forEach(dish => {
+                const dishElement = document.createElement('DIV');
+                dishElement.className = 'dish';
+                dishesContainerElement.appendChild(dishElement);
+
+                const dishDataElement = document.createElement('DIV');
+                dishDataElement.className = 'dishData';
+                dishElement.appendChild(dishDataElement);
+
+                const dishImageElement = document.createElement('DIV');
+                dishImageElement.className = 'dishImage';
+
+                dishElement.appendChild(dishImageElement);
+                image({element: dishImageElement, src: `/images/${dish.imageName}?resize(width=500)`});
+
+                dishElement.innerHTML =
+                        `<div class="data"><div class="dishName">${dish.name}</div><div class="dishDescription">${dish.description}</div><div class="dishprice">${dish.price.currency}${dish.price.cost}</div><div class="dishImage"></div></div>`;
+
+              });
+
+            });
+          }
+          setCategorySelected();
+        };
+
         const createGUI = () => {
           info = document.getElementById('info');
           info.addEventListener('response', event => {
             const detail = event.detail;
-            console.log(detail);
+            const restaurant = detail.restaurant;
             const setData = (id, html) => {
               document.getElementById(id).innerHTML = html;
             };
-            document.getElementById('image').style.backgroundImage = `url('/images/${detail.imageName}')`;
-            setData('name', detail.name);
+            document.getElementById('image').style.backgroundImage = `url('/images/${restaurant.imageName}')`;
+            setData('name', restaurant.name);
             let typeAndCost = '';
-            if (detail.type) {
-              typeAndCost = `<div>${detail.type.name}</div>`;
+            if (restaurant.type) {
+              typeAndCost = `<div>${restaurant.type.name}</div>`;
             }
-            switch (detail.priceRange) {
+            switch (restaurant.priceRange) {
               case 1:
                 typeAndCost += '&nbsp;&middot;&nbsp;<div class="cost">$</div>';
                 break;
@@ -38,18 +104,21 @@
             }
             setData('typeAndCost', typeAndCost);
             let score = '';
-            if (detail.score) {
-              score = detail.score;
-              if (detail.numberOfVotes) {
-                score += ` (${detail.numberOfVotes})`;
+            if (restaurant.score) {
+              score = restaurant.score;
+              if (restaurant.numberOfVotes) {
+                score += ` (${restaurant.numberOfVotes})`;
               }
               setData('score', score);
             }
-            setData('name', detail.name);
+            setData('name', restaurant.name);
+            createMenu(detail.menu);
           });
+          categoriesContainerElement = document.getElementById('categories');
+          dishGroupsContainerElement = document.getElementById('dishGroups');
         };
         const loadData = () => {
-          Core.sendGet(`/api/v1/restaurants/${variables.company.host}`, info);
+          Core.sendGet(`/api/v1/restaurants/${variables.company.host}/menu`, info);
         };
         Core.addOnloadFunction(createGUI);
         Core.addOnloadFunction(loadData);
@@ -59,7 +128,8 @@
       #image {
         background-size: cover;
         background-repeat: no-repeat;
-        height: 300px;
+        background-position: center;
+        height: 240px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -85,9 +155,62 @@
         display: inline-block;
         font-size: 12px;
       }
+
+      #menu {
+        padding: 0 20px;
+      }
+
+      #categories {
+        display: flex;
+        flex-direction: row;
+      }
+      .category {
+        flex-direction: column;
+        align-content: flex-start;
+        display: flex;
+        padding: 20px 0 ;
+        border-bottom: 1px solid buttonhighlight;
+      }
+      .selected {
+        border-bottom: 2px solid black;
+      }
+      .categoryName {
+        font-size: 16px;
+        font-weight: 500;
+        color: rgb(80, 80, 80);
+      }
+      .categoryTime {
+        color: rgb(100, 100, 100);
+        font-size: 12px;
+      }
+      .categorySpace {
+        display: flex;
+        width: 20px;
+        border-bottom: 1px solid buttonhighlight;
+      }
+      .categorySpace:last-child {
+        flex-grow: 2;
+      }
+      .dishGroups {
+
+      }
+      .dishGroup {
+
+      }
+      .dish {
+        border: 1px solid black;
+      }
+      .dishGroupTitle {
+        font-size: 18px;
+        font-weight: 800;
+        margin: 20px 0;
+      }
+      #dishes {
+
+      }
       @media all and ( min-width: 750px ) {
         #image {
-          height: 400px;
+          height: 300px;
           justify-content: flex-start;
         }
         #info {
@@ -117,7 +240,10 @@
           </div>
         </div>
       </section>
-      <section class="menu"></section>
+      <section id="menu">
+        <section id="categories"></section>
+        <section id="dishGroups"></section>
+      </section>
       <section class="footer"></section>
     </section>
   </body>
