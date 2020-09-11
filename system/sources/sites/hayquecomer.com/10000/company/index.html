@@ -14,6 +14,39 @@
         let
                 info, categoriesContainerElement, categoryElementContainer = [], elementContainerSelected = 0,
                 dishGroupsContainerElement, dishGroupsElement = [];
+
+        const fontFitter = (element, fontSize) => {
+          const fitFontOnElement = (element, fontSize) => {
+            const running = element.getAttribute('running');
+            if (running === 'true') {
+              return;
+            }
+            element.setAttribute('running', true);
+            const child = element.firstChild;
+            child.style.fontSize = `${fontSize}px`;
+            const color = child.style.color;
+            child.style.color = 'transparent';
+            const checkFont = () => {
+              if (element.clientHeight < child.scrollHeight && fontSize > 2) {
+                fontSize--;
+                child.style.fontSize = `${fontSize}px`;
+                setTimeout(checkFont, 50);
+              } else {
+                element.setAttribute('running', false);
+                child.style.color = color;
+              }
+            };
+            checkFont();
+          };
+          Core.addOnResizeFunction(() => {
+            fitFontOnElement(element, fontSize);
+          });
+          window.addEventListener('show', e => {
+            fitFontOnElement(element, fontSize);
+          });
+          fitFontOnElement(element, fontSize);
+        };
+
         const setCategorySelected = () => {
           for (let i = 0; i < categoryElementContainer.length; i++) {
             if (elementContainerSelected === i) {
@@ -65,8 +98,9 @@
 
                 const dishDataNameElement = document.createElement('DIV');
                 dishDataNameElement.className = 'dishName';
-                dishDataNameElement.innerHTML = `${dish.name}`;
+                dishDataNameElement.innerHTML = `<div>${dish.name}</div>`;
                 dishDataElement.appendChild(dishDataNameElement);
+                fontFitter(dishDataNameElement, 16);
 
                 const dishDataDescriptionContainerElement = document.createElement('DIV');
                 dishDataDescriptionContainerElement.className = 'dishDescriptionContainer';
@@ -88,36 +122,7 @@
                   dishElement.appendChild(dishImageElement);
                   image({element: dishImageElement, src: `/images/${dish.imageName}?resize(height=180)`});
                 }
-
-                const fitFontOnElement = (element, fontSize) => {
-                  const running = dishDataDescriptionElement.getAttribute('running');
-                  if (running === 'true') {
-                    return;
-                  }
-                  dishDataDescriptionElement.setAttribute('running', true);
-                  dishDataDescriptionElement.style.fontSize = `${fontSize}px`;
-                  const child = element.firstChild;
-                  const color = dishDataDescriptionElement.style.color;
-                  dishDataDescriptionElement.style.color = 'transparent';
-                  const checkFont = () => {
-                    if (element.clientHeight < child.scrollHeight && fontSize > 2) {
-                      fontSize--;
-                      dishDataDescriptionElement.style.fontSize = `${fontSize}px`;
-                      setTimeout(checkFont, 50);
-                    } else {
-                      dishDataDescriptionElement.setAttribute('running', false);
-                      dishDataDescriptionElement.style.color = color;
-                    }
-                  };
-                  checkFont();
-                };
-                Core.addOnResizeFunction(() => {
-                  fitFontOnElement(dishDataDescriptionContainerElement, 16);
-                });
-                window.addEventListener('show', e => {
-                  fitFontOnElement(dishDataDescriptionContainerElement, 16);
-                });
-                fitFontOnElement(dishDataDescriptionContainerElement, 16);
+                fontFitter(dishDataDescriptionContainerElement, 16);
               });
             });
           }
@@ -271,6 +276,7 @@
         margin-bottom: 10px;
         font-size: 18px;
         font-weight: 700;
+        overflow: hidden;
       }
       .dishDescriptionContainer {
         flex-grow: 0;
@@ -333,8 +339,8 @@
         }
         #menu {
           width: fit-content;
-          margin: 40px;;
-          max-width: fit-content;
+          margin: auto;
+          max-width: 1200px;
         }
         .dishes {
           display: flex;
@@ -346,7 +352,12 @@
           display: inline-flex;
         }
       }
-      @media all and ( min-width: 1250px ) {
+      @media all and ( min-width: 1600px ) {
+        #menu {
+          width: fit-content;
+          margin: auto;
+          max-width: 2000px;
+        }
         .dish {
           width: 32%;
         }
