@@ -35,6 +35,9 @@ const image = ({ id = null, element = null, src = null } = {}) => {
     loadImage();
 
     if (loaded === false) {
+      window.addEventListener('show', e => {
+        loadImage();
+      });
       window.addEventListener('scroll', e => {
         loadImage();
       });

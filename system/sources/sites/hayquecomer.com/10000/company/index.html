@@ -42,6 +42,7 @@
 
             dishGroupsElement[i] = document.createElement('DIV');
             dishGroupsElement[i].className = 'dishGroups';
+
             dishGroupsContainerElement.appendChild(dishGroupsElement[i]);
             const dishGroups = category.dishGroups;
             console.log(dishGroups);
@@ -60,17 +61,16 @@
 
                 const dishDataElement = document.createElement('DIV');
                 dishDataElement.className = 'dishData';
+                dishDataElement.innerHTML =
+                        `<div class="dishName">${dish.name}</div><div class="dishDescription">${dish.description === null ? '' : dish.description}</div><div class="dishPrice">${dish.price.currency}${dish.price.cost}</div>`;
                 dishElement.appendChild(dishDataElement);
 
-                const dishImageElement = document.createElement('DIV');
-                dishImageElement.className = 'dishImage';
-
-                dishElement.appendChild(dishImageElement);
-                image({element: dishImageElement, src: `/images/${dish.imageName}?resize(width=500)`});
-
-                dishElement.innerHTML =
-                        `<div class="data"><div class="dishName">${dish.name}</div><div class="dishDescription">${dish.description}</div><div class="dishprice">${dish.price.currency}${dish.price.cost}</div><div class="dishImage"></div></div>`;
-
+                if (dish.imageName !== null) {
+                  const dishImageElement = document.createElement('DIV');
+                  dishImageElement.className = 'dishImage';
+                  dishElement.appendChild(dishImageElement);
+                  image({element: dishImageElement, src: `/images/${dish.imageName}?resize(height=180)`});
+                }
               });
 
             });
@@ -142,7 +142,7 @@
         padding: 20px;
       }
       #name {
-        font-size: 28px;
+        font-size: 32px;
         font-weight: 700;
       }
       #typeAndCost {
@@ -150,6 +150,7 @@
         display: flex;
         justify-content: center;
         padding: 10px 0 0 0;
+        font-size: 14px;
       }
       .cost {
         display: inline-block;
@@ -158,6 +159,8 @@
 
       #menu {
         padding: 0 20px;
+        max-width: 550px;
+        margin: auto;
       }
 
       #categories {
@@ -177,7 +180,7 @@
       .categoryName {
         font-size: 16px;
         font-weight: 500;
-        color: rgb(80, 80, 80);
+        color: rgb(50, 50, 50);
       }
       .categoryTime {
         color: rgb(100, 100, 100);
@@ -197,16 +200,52 @@
       .dishGroup {
 
       }
-      .dish {
-        border: 1px solid black;
-      }
       .dishGroupTitle {
-        font-size: 18px;
+        font-size: 22px;
         font-weight: 800;
         margin: 20px 0;
       }
       #dishes {
-
+      }
+      .dish {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+        border: 1px solid rgb(220, 220, 220);
+      }
+      .dishData {
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+        color: rgb(80, 80, 80);
+      }
+      .dishName {
+        flex-grow: 0;
+        margin-bottom: 10px;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .dishDescription {
+        flex-grow: 0;
+        font-size:16px;
+      }
+      .dishPrice {
+        font-family: Lato;
+        flex-grow: 1;
+        align-items: flex-end;
+        display: flex;
+        font-weight: 400;
+        font-size:16px;
+        color: rgb(100, 100, 100);
+        margin-top: 20px;
+      }
+      .dishImage {
+        flex-basis: 180px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        height: 180px;
+        background-position: center;
+        background-repeat: no-repeat;
       }
       @media all and ( min-width: 750px ) {
         #image {
@@ -223,6 +262,45 @@
         }
         #typeAndCost {
           justify-content: flex-start;
+        }
+        #menu {
+          width: 550px;
+        }
+      }
+      @media all and ( min-width: 1024px ) {
+        #image {
+          height: 300px;
+          justify-content: flex-start;
+        }
+        #info {
+          width: 50%;
+          text-align: left;
+        }
+        #name {
+          font-size: 36px;
+          font-weight: 500;
+        }
+        #typeAndCost {
+          justify-content: flex-start;
+        }
+        #menu {
+          width: fit-content;
+          margin: 40px;;
+          max-width: fit-content;
+        }
+        .dishes {
+          display: flex;
+          justify-content: space-between;
+          flex-wrap: wrap;
+        }
+        .dish {
+          width: 48%;
+          display: inline-flex;
+        }
+      }
+      @media all and ( min-width: 1250px ) {
+        .dish {
+          width: 32%;
         }
       }
     </style>
