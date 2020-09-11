@@ -76,6 +76,7 @@ const Core = {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
     element.hidden = true;
     Core.trigger(element, 'hide');
+    Core.trigger(window, 'hide', {id});
 //    if (!element.style.display) {
 //      element.setAttribute('lastDisplay', element.style.display);
 //    }
@@ -355,6 +356,7 @@ const Core = {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
     element.hidden = false;
     Core.trigger(element, 'show');
+    Core.trigger(window, 'show', {id});
 //    const display = element.getAttribute('lastDisplay');
 //    if (display) {
 //      element.style.display = display;
