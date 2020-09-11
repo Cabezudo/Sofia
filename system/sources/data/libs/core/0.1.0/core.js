@@ -14,7 +14,9 @@
 const Core = {
   messagesContainer: null,
   requestId: 0,
+  resizeTimer: null,
   onloadFunctions: [],
+  onResizeFunctions: [],
   setPageFunctions: [],
   testFunctions: [],
   screenBlockerDiv: null,
@@ -30,6 +32,9 @@ const Core = {
   },
   addOnloadFunction: (func) => {
     Core.onloadFunctions.push(func);
+  },
+  addOnResizeFunction: (func) => {
+    Core.onResizeFunctions.push(func);
   },
   addSetFunction: (func) => {
     Core.setPageFunctions.push(func);
@@ -407,6 +412,14 @@ const Core = {
       return Core.validateElement(element);
     }
   }
+};
+window.onresize = () => {
+  resizeTimer = setTimeout(() => {
+    clearTimeout(resizeTimer);
+    Core.onResizeFunctions.forEach(func => {
+      func();
+    });
+  }, 500);
 };
 window.onload = () => {
   Core.onloadFunctions.forEach(func => {

@@ -61,9 +61,26 @@
 
                 const dishDataElement = document.createElement('DIV');
                 dishDataElement.className = 'dishData';
-                dishDataElement.innerHTML =
-                        `<div class="dishName">${dish.name}</div><div class="dishDescription">${dish.description === null ? '' : dish.description}</div><div class="dishPrice">${dish.price.currency}${dish.price.cost}</div>`;
                 dishElement.appendChild(dishDataElement);
+
+                const dishDataNameElement = document.createElement('DIV');
+                dishDataNameElement.className = 'dishName';
+                dishDataNameElement.innerHTML = `${dish.name}`;
+                dishDataElement.appendChild(dishDataNameElement);
+
+                const dishDataDescriptionContainerElement = document.createElement('DIV');
+                dishDataDescriptionContainerElement.className = 'dishDescriptionContainer';
+                dishDataElement.appendChild(dishDataDescriptionContainerElement);
+
+                const dishDataDescriptionElement = document.createElement('DIV');
+                dishDataDescriptionElement.innerHTML = `${dish.description === null ? '' : dish.description}`;
+                dishDataDescriptionElement.className = 'dishDescription';
+                dishDataDescriptionContainerElement.appendChild(dishDataDescriptionElement);
+
+                const dishDataPriceNameElement = document.createElement('DIV');
+                dishDataPriceNameElement.className = 'dishPrice';
+                dishDataPriceNameElement.innerHTML = `${dish.price.currency}${dish.price.cost}`;
+                dishDataElement.appendChild(dishDataPriceNameElement);
 
                 if (dish.imageName !== null) {
                   const dishImageElement = document.createElement('DIV');
@@ -71,8 +88,37 @@
                   dishElement.appendChild(dishImageElement);
                   image({element: dishImageElement, src: `/images/${dish.imageName}?resize(height=180)`});
                 }
-              });
 
+                const fitFontOnElement = (element, fontSize) => {
+                  const running = dishDataDescriptionElement.getAttribute('running');
+                  if (running === 'true') {
+                    return;
+                  }
+                  dishDataDescriptionElement.setAttribute('running', true);
+                  dishDataDescriptionElement.style.fontSize = `${fontSize}px`;
+                  const child = element.firstChild;
+                  const color = dishDataDescriptionElement.style.color;
+                  dishDataDescriptionElement.style.color = 'transparent';
+                  const checkFont = () => {
+                    if (element.clientHeight < child.scrollHeight && fontSize > 2) {
+                      fontSize--;
+                      dishDataDescriptionElement.style.fontSize = `${fontSize}px`;
+                      setTimeout(checkFont, 50);
+                    } else {
+                      dishDataDescriptionElement.setAttribute('running', false);
+                      dishDataDescriptionElement.style.color = color;
+                    }
+                  };
+                  checkFont();
+                };
+                Core.addOnResizeFunction(() => {
+                  fitFontOnElement(dishDataDescriptionContainerElement, 16);
+                });
+                window.addEventListener('show', e => {
+                  fitFontOnElement(dishDataDescriptionContainerElement, 16);
+                });
+                fitFontOnElement(dishDataDescriptionContainerElement, 16);
+              });
             });
           }
           setCategorySelected();
@@ -212,6 +258,7 @@
         justify-content: space-between;
         margin: 20px 0;
         border: 1px solid rgb(220, 220, 220);
+        height: 180px;
       }
       .dishData {
         display: flex;
@@ -225,8 +272,11 @@
         font-size: 18px;
         font-weight: 700;
       }
-      .dishDescription {
+      .dishDescriptionContainer {
         flex-grow: 0;
+        overflow: hidden;
+      }
+      .dishDescription {
         font-size:16px;
       }
       .dishPrice {
@@ -258,7 +308,6 @@
         }
         #name {
           font-size: 36px;
-          font-weight: 500;
         }
         #typeAndCost {
           justify-content: flex-start;
@@ -278,7 +327,6 @@
         }
         #name {
           font-size: 36px;
-          font-weight: 500;
         }
         #typeAndCost {
           justify-content: flex-start;

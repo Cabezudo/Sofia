@@ -377,7 +377,7 @@ public class DefaultData {
     DishGroup paraEmpezarElDia = dishGroupManager.add(breakfast, "Para Empezar el Día");
     DishGroup bebidas = dishGroupManager.add(breakfast, "Bebidas");
 
-    dishManager.add(chilaquiles, "Chilaquiles con Pollo", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 112));
+    dishManager.add(chilaquiles, "Chilaquiles con Pollo", "Los mejores chilaquiles con pollo que se te pueden haber ocurrido probar en tu vida. Hasta tienen pollo de verdad y todo.", "chilaquiles.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 112));
     dishManager.add(chilaquiles, "Chilaquiles con Huevo", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 112));
     dishManager.add(chilaquiles, "Chilaquiles con Chistorra", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 123));
     dishManager.add(chilaquiles, "Chilaquiles con Arrachera", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 131));
@@ -410,7 +410,7 @@ public class DefaultData {
 
     dishManager.add(paraEmpezarElDia, "Jugo de Naranja", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 36));
     dishManager.add(paraEmpezarElDia, "Pan Tostado con mantequilla y mermelada", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 19));
-    dishManager.add(paraEmpezarElDia, "Plato de frutas", "Con yogurt natural, miel y granola.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 72));
+    dishManager.add(paraEmpezarElDia, "Plato de Frutas", "Con yogurt natural, miel y granola.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 72));
 
     dishManager.add(bebidas, "Naranjada", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 48));
     dishManager.add(bebidas, "Limonada", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 48));
