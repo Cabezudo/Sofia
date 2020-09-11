@@ -301,6 +301,7 @@ public class DefaultData {
       restaurantTypeManager.add(connection, "Argentina");
       restaurantTypeManager.add(connection, "Postres");
       restaurantTypeManager.add(connection, "Americana");
+      restaurantTypeManager.add(connection, "Hamburguesas");
 
       RestaurantType type;
 
@@ -314,9 +315,16 @@ public class DefaultData {
               connection, "donbeto", "donbeto.01.jpg", "Parrillada Don Beto", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 25), new DeliveryRange(30)
       );
-
       urlManager.add(connection, site, "donbeto.cdmx.menu", "donbeto");
       createDonBetoDishes(restaurant);
+
+      type = RestaurantTypeManager.getInstance().get("Hamburguesas");
+      restaurant = restaurantManager.add(
+              connection, "elgrilloh", "elgrilloh.01.jpg", "El Grill Oh!", location, type, 2, Currency.getInstance("MXN"),
+              new Money(Currency.getInstance("MXN"), 0), new DeliveryRange(30, 40)
+      );
+      urlManager.add(connection, site, "elgrilloh.cdmx.menu", "elgrilloh");
+      createElGrillOhDishes(restaurant);
 
       restaurant = restaurantManager.add(
               connection, "bariloche", "bariloche.01.jpg", "Bariloche", location, type, 2, Currency.getInstance("MXN"),
@@ -358,10 +366,8 @@ public class DefaultData {
     DishGroupManager dishGroupManager = DishGroupManager.getInstance();
     DishManager dishManager = DishManager.getInstance();
 
-    int noSelection = 0;
     String noDescription = null;
     String noImageName = null;
-    String noCode = null;
     Integer noCalories = null;
 
     Category breakfast = categoryManager.add(restaurant, "Desayuno");
@@ -453,21 +459,122 @@ public class DefaultData {
     dishManager.add(sopas, "Caldito Bueno", "Con pollo, verduras y queso panela.", "sopas.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 102));
     dishManager.add(sopas, "Sopa Campirana", "Exquisita crema con elote, chile poblano y queso.", "sopas.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 107));
 
-    dishManager.add(deLaParrilla, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(deLaParrilla, "Bife de Chorizo", "300 gramos.", "deLaParrilla.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 276));
+    dishManager.add(deLaParrilla, "Picaña", "300 gramos. Acompañada de puré de papa y gravy especial.", "deLaParrilla.02.jpg", noCalories, new Money(Currency.getInstance("MXN"), 288));
+    dishManager.add(deLaParrilla, "Vacío", "300 gramos.", "deLaParrilla.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 315));
+    dishManager.add(deLaParrilla, "Arrachera", "300 gramos.", "deLaParrilla.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 268));
+    dishManager.add(deLaParrilla, "Lomo", "300 gramos.", "deLaParrilla.05.jpg", noCalories, new Money(Currency.getInstance("MXN"), 308));
+    dishManager.add(deLaParrilla, "Asado de Tira", "400 gramos.", "deLaParrilla.06.jpg", noCalories, new Money(Currency.getInstance("MXN"), 251));
+    dishManager.add(deLaParrilla, "Pollo a la Parrilla", "Orégano, ajo, chile y ajillo.", "deLaParrilla.07.jpg", noCalories, new Money(Currency.getInstance("MXN"), 196));
+    dishManager.add(deLaParrilla, "Parrillada", "Arrachera, t-bone, asado de tira, pollo a elegir y chorizo argentino.", "deLaParrilla.08.jpg", noCalories, new Money(Currency.getInstance("MXN"), 574));
+    dishManager.add(deLaParrilla, "Parrillada Don Beto", "Bife de chorizo, arrachera, churrasco, asado de tira, pollo a elegir, verduras asadas, queso panela y chorizo argentino.", "deLaParrilla.09.jpg", noCalories, new Money(Currency.getInstance("MXN"), 753));
 
-    dishManager.add(delMar, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(delMar, "Salmón a la Parrilla", noDescription, "delMar.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 230));
+    dishManager.add(delMar, "Atún Sellado", "En costra de ajonjolí negro.", "delMar.02.jpg", noCalories, new Money(Currency.getInstance("MXN"), 245));
+    dishManager.add(delMar, "Filete de Pescado a la Livornese", "Delicioso Filete de Pescado con jitomate, alcaparras, aceitunas negras y vino blanco. Acompañado de pasta al burro.", "delMar.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 212));
+    dishManager.add(delMar, "Filete de Pescado a la Putanesca", "En salsa con tomate, anchoas, aceitunas, orégano y una pizca guindillas. Acompañado de pasta al burro.", "delMar.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 212));
+    dishManager.add(delMar, "Filete de Pescado Piccata", "Prepara con una deliciosa salsa a base de mantequilla, limón y especias. Acompañado de pasta al burro.", "delMar.05.jpg", noCalories, new Money(Currency.getInstance("MXN"), 212));
+    dishManager.add(delMar, "Pulpo a la Parrilla", "Con papa bábara y adobo de la casa.", "delMar.06.jpg", noCalories, new Money(Currency.getInstance("MXN"), 332));
 
-    dishManager.add(ensaladas, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(ensaladas, "Ensalada Tango", "Espinaca, berro, fresa, queso provoleta y tocino.", "ensalada.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 126));
+    dishManager.add(ensaladas, "Ensalada Gaucha", "Espinaca, lechuga. aguacate, jitomate cherry, apio, aceitunas negras y queso de cabra.", "ensalada.02.jpg", noCalories, new Money(Currency.getInstance("MXN"), 128));
+    dishManager.add(ensaladas, "Ensalada Don José", "Mezcla de lechuga, manzana, espinaca, berro, germen de soya, queso camembert y amaranto.", "ensalada.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 126));
+    dishManager.add(ensaladas, "Ensalada Caminito", "Trocitos de atún sellado, lechuga escarola, arúgula, berro, queso parmesano y germen de soya.", "ensalada.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 238));
+    dishManager.add(ensaladas, "Ensalada Mixta", "Mezcla de lechugas, jitomate, zanahoria y cebolla.", "ensalada.05.jpg", noCalories, new Money(Currency.getInstance("MXN"), 92));
+    dishManager.add(ensaladas, "Ensalada de la Casa", "Mezcla de lechugas, berro, espinaca, apio, betabel, champiñón huevo y tocino.", "ensalada.06.jpg", noCalories, new Money(Currency.getInstance("MXN"), 102));
+    dishManager.add(ensaladas, "Ensalada Gaucha con Pechuga a la Parrilla", "Espinaca, Lechuga, Aguacate, Jitomate Cherry, Apio, Aceituna Verde, Queso de Cabra y Tiras de Pollo a la Parrilla.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 188));
 
-    dishManager.add(guarniciones, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(guarniciones, "Papas a la Francesa", noDescription, "guarnicion.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 83));
+    dishManager.add(guarniciones, "Espinacas con Crema", noDescription, "guarnicion.02.jpg", noCalories, new Money(Currency.getInstance("MXN"), 87));
+    dishManager.add(guarniciones, "Verduras Asadas", noDescription, "guarnicion.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 94));
+    dishManager.add(guarniciones, "Puré de Papa", noDescription, "guarnicion.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 94));
+    dishManager.add(guarniciones, "Papa al Horno", noDescription, "guarnicion.05.jpg", noCalories, new Money(Currency.getInstance("MXN"), 102));
+    dishManager.add(guarniciones, "Champiñones al Ajillo", noDescription, "guarnicion.06.jpg", noCalories, new Money(Currency.getInstance("MXN"), 96));
 
-    dishManager.add(platillos, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(platillos, "Milanesa de Res", "Con papas a la francesa y ensalada.", "platillo.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 161));
+    dishManager.add(platillos, "Milanesa de Pollo", "Con papa a la francesa y ensalada.", "platillo.02.jpg", noCalories, new Money(Currency.getInstance("MXN"), 147));
+    dishManager.add(platillos, "Milanesa Napolitana", "Con salsa de jitomate, jamón y queso gratinado. Con papas a la francesa y ensalada.", "platillo.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 198));
+    dishManager.add(platillos, "Choripan", noDescription, "platillo.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 116));
+    dishManager.add(platillos, "Choripan con Queso", noDescription, "platillo.05.jpg", noCalories, new Money(Currency.getInstance("MXN"), 134));
+    dishManager.add(platillos, "Chapata de Arrachera", "Con papas a la francesa.", "platillo.06.jpg", noCalories, new Money(Currency.getInstance("MXN"), 147));
+    dishManager.add(platillos, "Hamburguesa", "Con queso y papas a la francesa.", "platillo.07.jpg", noCalories, new Money(Currency.getInstance("MXN"), 153));
+    dishManager.add(platillos, "Hamburguesa Especial", "Con queso, jamón, tocino y papas a la francesa.", "platillo.08.jpg", noCalories, new Money(Currency.getInstance("MXN"), 183));
+    dishManager.add(platillos, "Hamburguesa Costanera", "Con queso, chorizo argentino y papas a la francesa.", "platillo.09.jpg", noCalories, new Money(Currency.getInstance("MXN"), 187));
 
-    dishManager.add(pastas, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(pastas, "Pasta Alfredo", noDescription, "pasta.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 147));
+    dishManager.add(pastas, "Pasta Pesto", noDescription, "pasta.02.jpg", noCalories, new Money(Currency.getInstance("MXN"), 147));
+    dishManager.add(pastas, "Pasta Burro", noDescription, "pasta.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 147));
+    dishManager.add(pastas, "Pasta Boloñesa", noDescription, "pasta.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 181));
+    dishManager.add(pastas, "Pasta Arrabiata", "Con chorizo argentino.", "pasta.05.jpg", noCalories, new Money(Currency.getInstance("MXN"), 181));
+    dishManager.add(pastas, "Pasta de Salmón en Salsa Rosada", noDescription, "pasta.06.jpg", noCalories, new Money(Currency.getInstance("MXN"), 198));
 
-    dishManager.add(postres, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(postres, "Crepas de Dulce de Leche", "Con Helado de Vainilla", "postre.01.jpg", noCalories, new Money(Currency.getInstance("MXN"), 74));
+    dishManager.add(postres, "Crepa de Nutella", noDescription, "postre.02.jpg", noCalories, new Money(Currency.getInstance("MXN"), 74));
+    dishManager.add(postres, "Crepas Don Beto", "Queso Philadelphia, Plátano y Fresa. Con Helado de Vainilla.", "postre.03.jpg", noCalories, new Money(Currency.getInstance("MXN"), 98));
+    dishManager.add(postres, "Helado Frito Don Beto", "Delicioso Helado de Vainilla cubierto de una esponjosita masa frita. Bañado con jarabe de chocolate.", "postre.04.jpg", noCalories, new Money(Currency.getInstance("MXN"), 82));
+    dishManager.add(postres, "Brownie con Helado", noDescription, "postre.05.jpg", noCalories, new Money(Currency.getInstance("MXN"), 77));
+    dishManager.add(postres, "Strudel de Manzana", "Calientito y con helado de vainilla.", "postre.06.jpg", noCalories, new Money(Currency.getInstance("MXN"), 77));
+    dishManager.add(postres, "Alfajor", "De dulce de leche con nuez.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 52));
 
-    dishManager.add(bebidasEnMenu, "", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 1));
+    dishManager.add(bebidasEnMenu, "Naranjada o Limonada", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 48));
+    dishManager.add(bebidasEnMenu, "Agua Embotellada", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 40));
+    dishManager.add(bebidasEnMenu, "Refresco", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 40));
+    dishManager.add(bebidasEnMenu, "Café", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 35));
+    dishManager.add(bebidasEnMenu, "Té", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 39));
+    dishManager.add(bebidasEnMenu, "Agua de Sabor", "Elige entre Horchata, Guanábana o Maracuyá.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 53));
+    dishManager.add(bebidasEnMenu, "Clericot", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 85));
+  }
 
+  private static void createElGrillOhDishes(Restaurant restaurant) throws SQLException {
+    CategoryManager categoryManager = CategoryManager.getInstance();
+    DishGroupManager dishGroupManager = DishGroupManager.getInstance();
+    DishManager dishManager = DishManager.getInstance();
+
+    String noDescription = null;
+    String noImageName = null;
+    Integer noCalories = null;
+
+    Category menu = categoryManager.add(restaurant, "Menu");
+
+    DishGroup combos = dishGroupManager.add(menu, "Combos");
+    DishGroup hamburguesas = dishGroupManager.add(menu, "Hamburguesas");
+    DishGroup otrosPlatillos = dishGroupManager.add(menu, "Otros Platillos");
+    DishGroup ensaladas = dishGroupManager.add(menu, "Ensaladas");
+
+    dishManager.add(combos, "Clásica", "A la parrilla con queso", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
+    dishManager.add(combos, "Hawaiana", "Con jamón y piña", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 80));
+    dishManager.add(combos, "Ranchera", "Con aguacate y tocino", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 80));
+    dishManager.add(combos, "BBQ", "Con salsa especial BBQ", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 80));
+    dishManager.add(combos, "Champiñon a la Parrilla", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 80));
+    dishManager.add(combos, "4 Quesos", "Blue cheese, manchego, oaxaca y americano", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 84));
+    dishManager.add(combos, "Chelita", "A la parrilla con salsa de cerveza y tocino", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 84));
+    dishManager.add(combos, "Meditarránea", "Marinada con vino tinto y cebolla caramelizada", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 84));
+    dishManager.add(combos, "Whiskey BBQ", "A la parrilla con salsa BBQ y whiskey", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 84));
+    dishManager.add(combos, "Hot Dog", "Con papas y bebida", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 60));
+    dishManager.add(combos, "Hot Dog Jumbo Clásico", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 75));
+    dishManager.add(combos, "Hot Dog Hawaiano", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 80));
+    dishManager.add(combos, "Hot Dog Ranchero", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 80));
+
+    dishManager.add(hamburguesas, "Hongo Portobello", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 50));
+    dishManager.add(hamburguesas, "Pollo", "100 gramos.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 40));
+    dishManager.add(hamburguesas, "Angus", "110 gramos.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 50));
+    dishManager.add(hamburguesas, "Sirloin", "160 gramos.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 55));
+
+    dishManager.add(otrosPlatillos, "Nachos con Queso", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 30));
+    dishManager.add(otrosPlatillos, "Nachos con Carne", "2 personas", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 65));
+    dishManager.add(otrosPlatillos, "Aros de Cebolla", "12 piezas", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 39));
+    dishManager.add(otrosPlatillos, "Papas a la Francesa", "250 gramos.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 35));
+    dishManager.add(otrosPlatillos, "Papas Gajo", "250 gramos.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 45));
+    dishManager.add(otrosPlatillos, "Nuggets de Pollo", "6 piezas.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 30));
+    dishManager.add(otrosPlatillos, "Dedos de Queso", "5 piezas.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 55));
+    dishManager.add(otrosPlatillos, "Plato Appetizer", "Papas gajo, aros de cebolla, dedos de queso y nuggets", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 95));
+    dishManager.add(otrosPlatillos, "Hot Dog con Queso", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 25));
+    dishManager.add(otrosPlatillos, "Hot Dog Jumbo Clásico", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 50));
+    dishManager.add(otrosPlatillos, "Alitas de Pollo", "BBQ y picositas. 5 piezas.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 65));
+    dishManager.add(otrosPlatillos, "Tiras de Pollo BBQ", "4 piezas", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 65));
+
+    dishManager.add(ensaladas, "Ensalada de la casa", "Lechuga, jitomate, queso mozzarella, ajonjolí garrapiñado, queso manchego, jamón, de pabo, arándanos y crotones.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 60));
+    dishManager.add(ensaladas, "Ensalada con Portobello Gratinado", "Lechuga, jitomate, arándanos, portobello gratinado con queso mozzarella, crotones y ajonjolí garrapiñado.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
+    dishManager.add(ensaladas, "Ensalada con Pechuga a la Parilla", "Lechuga, jitomate, arándanos, pollo a las finas hierbas, queso mozzarella, crotones y ajonjolí garrapiñado.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
   }
 }
