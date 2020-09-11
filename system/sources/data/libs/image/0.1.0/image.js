@@ -38,6 +38,9 @@ const image = ({ id = null, element = null, src = null } = {}) => {
       window.addEventListener('show', e => {
         loadImage();
       });
+      Core.addOnResizeFunction(e => {
+        loadImage();
+      });
       window.addEventListener('scroll', e => {
         loadImage();
       });
