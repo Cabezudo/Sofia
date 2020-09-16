@@ -24,7 +24,7 @@ class ImageManager {
     return INSTANCE;
   }
 
-  Path save(Path imagePath, SofiaImage sofiaImage) {
+  Path save(Path imagePath, SofiaImage sofiaImage) throws IOException {
     if (Files.exists(imagePath)) {
       if (Environment.getInstance().isProduction()) {
         Logger.debug("[SofiaImage:save] The file %s already exist. Don't save.", imagePath);
@@ -38,11 +38,11 @@ class ImageManager {
 
     String imagePathName = imagePath.toString();
     String formatName = imagePathName.substring(imagePathName.lastIndexOf(".") + 1);
-    try {
-      ImageIO.write(sofiaImage.getImage(), formatName, imagePath.toFile());
-    } catch (IOException ex) {
-      ex.printStackTrace();
+    Path parent = imagePath.getParent();
+    if (!Files.exists(parent)) {
+      Files.createDirectories(parent);
     }
+    ImageIO.write(sofiaImage.getImage(), formatName, imagePath.toFile());
     return imagePath;
   }
 

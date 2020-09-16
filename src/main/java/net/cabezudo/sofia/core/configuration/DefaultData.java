@@ -318,7 +318,7 @@ public class DefaultData {
 
       type = RestaurantTypeManager.getInstance().get("Argentina");
       restaurant = restaurantManager.add(
-              connection, "donbeto", "donbeto.01.jpg", "Parrillada Don Beto", location, type, 2, Currency.getInstance("MXN"),
+              connection, "donbeto", "donbeto.jpg", "Parrillada Don Beto", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 25), new DeliveryRange(30)
       );
       urlManager.add(connection, site, "donbeto.cdmx.menu", "donbeto");
@@ -333,34 +333,34 @@ public class DefaultData {
       createElGrillOhDishes(restaurant);
 
       restaurant = restaurantManager.add(
-              connection, "bariloche", "bariloche.01.jpg", "Bariloche", location, type, 2, Currency.getInstance("MXN"),
+              connection, "bariloche", "bariloche.jpg", "Bariloche", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 30), new DeliveryRange(35)
       );
       urlManager.add(connection, site, "bariloche.cdmx.menu", "bariloche");
 
       restaurant = restaurantManager.add(
-              connection, "casquet", "casquet.01.jpg", "Casquet", location, type, 2, Currency.getInstance("MXN"),
+              connection, "casquet", "casquet.jpg", "Casquet", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 20), new DeliveryRange(30)
       );
       urlManager.add(connection, site, "casquet.cdmx.menu", "casquet");
 
       type = RestaurantTypeManager.getInstance().get("Postres");
       restaurant = restaurantManager.add(
-              connection, "heladosdolphy", "heladosdolphy.01.jpg", "Helados Dolphy", "Dakota", type, 1, Currency.getInstance("MXN"),
+              connection, "heladosdolphy", "heladosdolphy.jpg", "Helados Dolphy", "Dakota", type, 1, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 18), new DeliveryRange(20, 30)
       );
       urlManager.add(connection, site, "heladosdolphy.cdmx.menu", "heladosdolphy");
 
       type = RestaurantTypeManager.getInstance().get("Americana");
       restaurant = restaurantManager.add(
-              connection, "pinchegringobbq", "pinchegringobbq.01.jpg", "Pinche Gringo BBQ", location, type, 2, Currency.getInstance("MXN"),
+              connection, "pinchegringobbq", "pinchegringobbq.jpg", "Pinche Gringo BBQ", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 24), new DeliveryRange(30, 40)
       );
       urlManager.add(connection, site, "pinchegringobbq.cdmx.menu", "pinchegringobbq");
 
       type = RestaurantTypeManager.getInstance().get("Argentina");
       restaurant = restaurantManager.add(
-              connection, "tacosfondaargentina", "tacosfondaargentina.01.jpg", "Tacos Fonda Argentina", location, type, 2, Currency.getInstance("MXN"),
+              connection, "tacosfondaargentina", "tacosfondaargentina.jpg", "Tacos Fonda Argentina", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 20), new DeliveryRange(30, 35)
       );
       urlManager.add(connection, site, "tacosfondaargentina.cdmx.menu", "tacosfondaargentina");

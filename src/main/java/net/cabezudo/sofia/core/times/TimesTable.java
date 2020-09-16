@@ -20,7 +20,7 @@ public class TimesTable {
           + "`end` INT NOT NULL, "
           + "`type` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "UNIQUE INDEX `iName` (`name`), "
+          + "UNIQUE INDEX `iName` (`id`), "
           + "FOREIGN KEY (`entry`) REFERENCES " + TimeEntriesTable.NAME + "(`id`), "
           + "FOREIGN KEY (`type`) REFERENCES " + TimeTypesTable.NAME + "(`id`)"
           + ") "
