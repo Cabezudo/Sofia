@@ -8,7 +8,7 @@ sofia.configuration.properties
 **/.DS_Store
 varios/
 sql.tests.txt
-**/images/cache
+**/images/**/cache
 nbactions.xml
 /target/
 nb-configuration.xml

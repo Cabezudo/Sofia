@@ -45,10 +45,17 @@ public class ImageServlet extends HttpServlet {
     long startTime = new Date().getTime();
 
     String imagePathName = request.getRequestURI();
+
     String imagePartialPathName = imagePathName;
     if (imagePartialPathName.startsWith("/")) {
       imagePartialPathName = imagePartialPathName.substring(1);
     }
+
+    String company = (String) request.getSession().getAttribute("company");
+    if (company != null) {
+      imagePartialPathName = imagePartialPathName.replace("images", "images/" + company);
+    }
+
     Site site = (Site) request.getAttribute("site");
     String queryString = request.getQueryString();
     if (queryString != null) {
