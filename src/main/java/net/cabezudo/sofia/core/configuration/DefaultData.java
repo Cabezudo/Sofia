@@ -32,6 +32,9 @@ import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
 import net.cabezudo.sofia.core.sites.domainname.EmptyDomainNameException;
 import net.cabezudo.sofia.core.sites.domainname.InvalidCharacterException;
 import net.cabezudo.sofia.core.sites.domainname.MissingDotException;
+import net.cabezudo.sofia.core.times.TimeEntriesTable;
+import net.cabezudo.sofia.core.times.TimeTypesTable;
+import net.cabezudo.sofia.core.times.TimesTable;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -121,6 +124,9 @@ public class DefaultData {
       Database.createTable(connection, ProfilesPermissionsTable.CREATION_QUERY);
       Database.createTable(connection, PermissionTypesTable.CREATION_QUERY);
       Database.createTable(connection, PermissionsPermissionTypesTable.CREATION_QUERY);
+      Database.createTable(connection, TimeEntriesTable.CREATION_QUERY);
+      Database.createTable(connection, TimeTypesTable.CREATION_QUERY);
+      Database.createTable(connection, TimesTable.CREATION_QUERY);
     }
   }
 
@@ -320,7 +326,7 @@ public class DefaultData {
 
       type = RestaurantTypeManager.getInstance().get("Hamburguesas");
       restaurant = restaurantManager.add(
-              connection, "elgrilloh", "elgrilloh.01.jpg", "El Grill Oh!", location, type, 2, Currency.getInstance("MXN"),
+              connection, "elgrilloh", "elGrillOh.jpg", "El Grill Oh!", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 0), new DeliveryRange(30, 40)
       );
       urlManager.add(connection, site, "elgrilloh.cdmx.menu", "elgrilloh");
