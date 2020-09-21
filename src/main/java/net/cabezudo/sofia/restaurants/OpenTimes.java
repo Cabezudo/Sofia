@@ -10,11 +10,11 @@ import net.cabezudo.sofia.core.schedule.Event;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.09.20
  */
-class OpenTimes implements Iterable<OpenTime> {
+public class OpenTimes implements Iterable<OpenTime> {
 
   private final List<OpenTime> list = new ArrayList<>();
 
-  void add(int day, Event start, Event end) {
+  public void add(int day, Event start, Event end) {
     list.add(new OpenTime(day, start, end));
   }
 

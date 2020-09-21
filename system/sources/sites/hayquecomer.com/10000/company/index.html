@@ -14,7 +14,6 @@
         let
                 info, categoriesContainerElement, categoryElementContainer = [], elementContainerSelected = 0,
                 dishGroupsContainerElement, dishGroupsElement = [];
-
         const fontFitter = (element, fontSize) => {
           const fitFontOnElement = (element, fontSize) => {
             const running = element.getAttribute('running');
@@ -46,7 +45,6 @@
           });
           fitFontOnElement(element, fontSize);
         };
-
         const setCategorySelected = () => {
           for (let i = 0; i < categoryElementContainer.length; i++) {
             // TODO Si la categoría está seleccionada no mostrar la manito
@@ -75,10 +73,8 @@
             const categorySpace = document.createElement('DIV');
             categorySpace.className = 'categorySpace';
             categoriesContainerElement.appendChild(categorySpace);
-
             dishGroupsElement[i] = document.createElement('DIV');
             dishGroupsElement[i].className = 'dishGroups';
-
             dishGroupsContainerElement.appendChild(dishGroupsElement[i]);
             const dishGroups = category.dishGroups;
             console.log(dishGroups);
@@ -94,31 +90,25 @@
                 const dishElement = document.createElement('DIV');
                 dishElement.className = 'dish';
                 dishesContainerElement.appendChild(dishElement);
-
                 const dishDataElement = document.createElement('DIV');
                 dishDataElement.className = 'dishData';
                 dishElement.appendChild(dishDataElement);
-
                 const dishDataNameElement = document.createElement('DIV');
                 dishDataNameElement.className = 'dishName';
                 dishDataNameElement.innerHTML = `<div>${dish.name}</div>`;
                 dishDataElement.appendChild(dishDataNameElement);
                 fontFitter(dishDataNameElement, 16);
-
                 const dishDataDescriptionContainerElement = document.createElement('DIV');
                 dishDataDescriptionContainerElement.className = 'dishDescriptionContainer';
                 dishDataElement.appendChild(dishDataDescriptionContainerElement);
-
                 const dishDataDescriptionElement = document.createElement('DIV');
                 dishDataDescriptionElement.innerHTML = `${dish.description === null ? '' : dish.description}`;
                 dishDataDescriptionElement.className = 'dishDescription';
                 dishDataDescriptionContainerElement.appendChild(dishDataDescriptionElement);
-
                 const dishDataPriceNameElement = document.createElement('DIV');
                 dishDataPriceNameElement.className = 'dishPrice';
                 dishDataPriceNameElement.innerHTML = `${dish.price.currency}${dish.price.cost}`;
                 dishDataElement.appendChild(dishDataPriceNameElement);
-
                 if (dish.imageName !== null) {
                   const dishImageElement = document.createElement('DIV');
                   dishImageElement.className = 'dishImage';
@@ -131,7 +121,6 @@
           }
           setCategorySelected();
         };
-
         const createGUI = () => {
           info = document.getElementById('info');
           info.addEventListener('response', event => {
@@ -172,7 +161,8 @@
           dishGroupsContainerElement = document.getElementById('dishGroups');
         };
         const loadData = () => {
-          Core.sendGet(`/api/v1/restaurants/${variables.company.host}/menu`, info);
+          const timeZoneOffset = (new Date()).getTimezoneOffset();
+          Core.sendGet(`/api/v1/restaurants/${variables.company.host}/menu?timeZoneOffset=${timeZoneOffset}`, info);
         };
         Core.addOnloadFunction(createGUI);
         Core.addOnloadFunction(loadData);

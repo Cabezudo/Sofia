@@ -9,13 +9,13 @@ import net.cabezudo.sofia.core.schedule.Event;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.09.20
  */
-class OpenTime {
+public class OpenTime {
 
   private final int day;
   private final Event start;
   private final Event end;
 
-  OpenTime(int day, Event start, Event end) {
+  public OpenTime(int day, Event start, Event end) {
     this.day = day;
     this.start = start;
     this.end = end;
@@ -26,15 +26,15 @@ class OpenTime {
     return "[ " + day + ", " + Utils.toHour(start.getTime()) + ", " + Utils.toHour(end.getTime()) + " ]";
   }
 
-  int getDay() {
+  public int getDay() {
     return day;
   }
 
-  Event getStart() {
+  public Event getStart() {
     return start;
   }
 
-  boolean isOpen(int time) {
+  public boolean isOpen(int time) {
     return start.getTime() <= time && time < end.getTime();
   }
 

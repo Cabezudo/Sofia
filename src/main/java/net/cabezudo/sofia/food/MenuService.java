@@ -8,6 +8,7 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
+import net.cabezudo.sofia.core.schedule.BusinessHours;
 import net.cabezudo.sofia.core.ws.servlet.services.QueryParameters;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.restaurants.*;
@@ -29,22 +30,23 @@ public class MenuService extends Service {
 
     QueryParameters queryParameters = getQueryParmeters();
 
-    String stringOffset = queryParameters.get("zoneOffset");
+    String stringOffset = queryParameters.get("timeZoneOffset");
     int offset;
     try {
       offset = Integer.parseInt(stringOffset);
     } catch (NumberFormatException e) {
-      sendError(400, "Invalid offset value");
+      sendError(400, "Invalid timeZoneOffset value");
       return;
     }
 
     try {
       Restaurant restaurant = RestaurantManager.getInstance().get(path);
+      BusinessHours businessHours = restaurant.getBusinessHours();
+      businessHours.calculateFor(offset);
       Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
-      RestaurantSchedule restaurantSchedule = new RestaurantSchedule(menu.getCategories(), offset);
       JSONObject jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("restaurant", restaurant.toJSONTree()));
-      jsonObject.add(new JSONPair("businessHours", restaurantSchedule.getBusinessHours().toJSONTree()));
+      jsonObject.add(new JSONPair("businessHours", businessHours.toJSONTree()));
       jsonObject.add(new JSONPair("menu", menu.toJSONTree()));
       out.print(jsonObject.toJSON());
     } catch (SQLException e) {
