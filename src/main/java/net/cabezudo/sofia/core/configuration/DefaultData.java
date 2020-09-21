@@ -20,6 +20,12 @@ import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.money.Money;
+import net.cabezudo.sofia.core.schedule.Day;
+import net.cabezudo.sofia.core.schedule.Hour;
+import net.cabezudo.sofia.core.schedule.TimeEntriesTable;
+import net.cabezudo.sofia.core.schedule.TimeTypeManager;
+import net.cabezudo.sofia.core.schedule.TimeTypesTable;
+import net.cabezudo.sofia.core.schedule.TimesTable;
 import net.cabezudo.sofia.core.server.html.URLManager;
 import net.cabezudo.sofia.core.server.html.URLTable;
 import net.cabezudo.sofia.core.sites.Site;
@@ -32,9 +38,6 @@ import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
 import net.cabezudo.sofia.core.sites.domainname.EmptyDomainNameException;
 import net.cabezudo.sofia.core.sites.domainname.InvalidCharacterException;
 import net.cabezudo.sofia.core.sites.domainname.MissingDotException;
-import net.cabezudo.sofia.core.times.TimeEntriesTable;
-import net.cabezudo.sofia.core.times.TimeTypesTable;
-import net.cabezudo.sofia.core.times.TimesTable;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -176,8 +179,8 @@ public class DefaultData {
       }
       if (!Database.exist(Configuration.getInstance().getDatabaseName())) {
         createSofiaDatabaseStructure();
-        createSites();
-        UserManager.getInstance().createAdministrator();
+        createSites(startOptions);
+        UserManager.getInstance().createAdministrator(startOptions);
         createData();
       }
     } catch (SQLException | IOException e) {
@@ -188,12 +191,13 @@ public class DefaultData {
   private static void createData() throws SQLException {
     Country country = createCountries();
     createPostalCodes(country, null);
+    createTimeTypes();
     createRestaurants();
   }
 
-  private static void createSites() throws SQLException, IOException {
+  private static void createSites(StartOptions startOptions) throws SQLException, IOException {
     Logger.info("Create sites.");
-    if (System.console() != null) {
+    if (System.console() != null && !startOptions.hasIDE()) {
       askUser();
     } else {
       SiteManager.getInstance().create("Manager", "manager", "localhost");
@@ -295,6 +299,14 @@ public class DefaultData {
     }
   }
 
+  private static void createTimeTypes() throws SQLException {
+    TimeTypeManager.getInstance().add("time");
+    TimeTypeManager.getInstance().add("day");
+    TimeTypeManager.getInstance().add("week");
+    TimeTypeManager.getInstance().add("month");
+    TimeTypeManager.getInstance().add("year");
+  }
+
   private static void createRestaurants() throws SQLException {
     Logger.debug("Create restaurante data");
 
@@ -377,7 +389,21 @@ public class DefaultData {
     Integer noCalories = null;
 
     Category breakfast = categoryManager.add(restaurant, "Desayuno");
+    categoryManager.add(breakfast, Day.MONDAY, new Hour(9, 30, 0), new Hour(13, 00, 0));
+    categoryManager.add(breakfast, Day.SATURDAY, new Hour(9, 30, 0), new Hour(13, 00, 0));
+    categoryManager.add(breakfast, Day.SUNDAY, new Hour(10, 30, 0), new Hour(12, 00, 0));
+
     Category menu = categoryManager.add(restaurant, "Menu");
+    categoryManager.add(menu, Day.MONDAY, new Hour(12, 30, 0), new Hour(14, 15, 0));
+    categoryManager.add(menu, Day.MONDAY, new Hour(16, 30, 0), new Hour(18, 15, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(12, 30, 0), new Hour(18, 15, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(12, 30, 0), new Hour(18, 15, 0));
+    categoryManager.add(menu, Day.THURSDAY, new Hour(12, 30, 0), new Hour(18, 15, 0));
+    categoryManager.add(menu, Day.FRIDAY, new Hour(12, 30, 0), new Hour(19, 15, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(12, 30, 0), new Hour(14, 15, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(16, 30, 0), new Hour(19, 15, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(12, 30, 0), new Hour(14, 30, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(15, 00, 0), new Hour(19, 15, 0));
 
     DishGroup chilaquiles = dishGroupManager.add(breakfast, "Chilaquiles");
     DishGroup sandwichesClasicos = dishGroupManager.add(breakfast, "Sandwiches Clásicos");

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
+import net.cabezudo.sofia.core.StartOptions;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
@@ -61,8 +62,8 @@ public class UserManager {
     return INSTANCE;
   }
 
-  public void createAdministrator() throws SQLException {
-    if (System.console() == null) {
+  public void createAdministrator(StartOptions startOptions) throws SQLException {
+    if (System.console() == null || startOptions.hasIDE()) {
       UserManager.getInstance().createSofiaAdministrator("Esteban", "Cabezudo", "esteban@cabezudo.net", Password.createFromPlain("1234"));
     } else {
       Utils.consoleOutLn("Create administrator user.");
@@ -145,6 +146,7 @@ public class UserManager {
         EMailValidator.validate(address);
         validAddress = true;
       } catch (EMailMaxSizeException | DomainNameMaxSizeException | EMailAddressValidationException e) {
+        // FIX The message show the key for the error not the text
         Utils.consoleOut(e.getMessage());
       }
     } while (!validAddress);

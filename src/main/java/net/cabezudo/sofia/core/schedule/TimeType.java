@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.restaurants;
+package net.cabezudo.sofia.core.schedule;
 
 import net.cabezudo.sofia.core.catalogs.CatalogEntry;
 
@@ -6,13 +6,13 @@ import net.cabezudo.sofia.core.catalogs.CatalogEntry;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.08.29
  */
-public class RestaurantType extends CatalogEntry {
+public class TimeType extends CatalogEntry {
 
-  public RestaurantType(int id, String name) {
+  public TimeType(int id, String name) {
     super(id, name);
   }
 
-  RestaurantType(CatalogEntry entry) {
+  public TimeType(CatalogEntry entry) {
     super(entry);
   }
 }

@@ -6,6 +6,7 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.addresses.Address;
 import net.cabezudo.sofia.core.money.Money;
+import net.cabezudo.sofia.core.schedule.Schedule;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -26,12 +27,11 @@ public class Restaurant {
   private final DeliveryRange deliveryRange;
   private final Integer score;
   private final Integer numberOfVotes;
-  private BigDecimal longitude;
-  private BigDecimal latitude;
+  private final BigDecimal longitude;
+  private final BigDecimal latitude;
   private Address address;
-  private Schedule businessHours;
 
-  Restaurant(int id, String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange, Integer score, Integer numberOfVotes) {
+  Restaurant(int id, String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange, Integer score, Integer numberOfVotes, BigDecimal latitude, BigDecimal longitude) {
     this.id = id;
     this.subdomain = subdomain;
     this.imageName = imageName;
@@ -44,6 +44,8 @@ public class Restaurant {
     this.deliveryRange = deliveryRange;
     this.score = score;
     this.numberOfVotes = numberOfVotes;
+    this.latitude = latitude;
+    this.longitude = longitude;
   }
 
   public int getId() {
@@ -102,16 +104,8 @@ public class Restaurant {
     return numberOfVotes;
   }
 
-  public void setLongitude(BigDecimal longitude) {
-    this.longitude = longitude;
-  }
-
   public BigDecimal getLongitude() {
     return longitude;
-  }
-
-  public void setLatitude(BigDecimal latitude) {
-    this.latitude = latitude;
   }
 
   public BigDecimal getLatitude() {
@@ -126,12 +120,8 @@ public class Restaurant {
     return address;
   }
 
-  public void setBusinessHours(Schedule businessHours) {
-    this.businessHours = businessHours;
-  }
-
   public Schedule getBusinessHours() {
-    return businessHours;
+    return null;
   }
 
   public String toJSON() {
@@ -156,7 +146,7 @@ public class Restaurant {
     jsonRestaurant.add(new JSONPair("longitude", longitude));
     jsonRestaurant.add(new JSONPair("latitude", latitude));
     jsonRestaurant.add(new JSONPair("address", address == null ? null : address.toJSONTree()));
-    jsonRestaurant.add(new JSONPair("businessHours", businessHours == null ? null : businessHours.toJSON()));
+    jsonRestaurant.add(new JSONPair("businessHours", getBusinessHours().toJSON()));
     return jsonRestaurant;
   }
 }

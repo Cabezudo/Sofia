@@ -30,10 +30,19 @@ public class CatalogEntry {
     return name;
   }
 
+  @Override
+  public String toString() {
+    return "[ " + id + ", " + name + " ]";
+  }
+
   public JSONObject toJSONTree() {
     JSONObject jsonRestaurantType = new JSONObject();
     jsonRestaurantType.add(new JSONPair("id", id));
     jsonRestaurantType.add(new JSONPair("name", name));
     return jsonRestaurantType;
+  }
+
+  public String toJSON() {
+    return toJSONTree().toString();
   }
 }

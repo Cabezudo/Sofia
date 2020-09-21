@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.times;
+package net.cabezudo.sofia.core.schedule;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

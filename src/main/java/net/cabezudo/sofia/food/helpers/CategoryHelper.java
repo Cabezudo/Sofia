@@ -1,6 +1,8 @@
 package net.cabezudo.sofia.food.helpers;
 
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.schedule.AbstractTime;
+import net.cabezudo.sofia.core.schedule.Schedule;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -20,6 +22,12 @@ public class CategoryHelper {
     if (schedule == null) {
       throw new SofiaRuntimeException("null parameter schedule");
     }
+  }
+
+  CategoryHelper(int id, String name, Schedule schedule) {
+    this.id = id;
+    this.name = name;
+    this.schedule = new ScheduleHelper(schedule);
   }
 
   @Override
@@ -49,5 +57,9 @@ public class CategoryHelper {
 
   public DishGroupHelper getDishGroup(int id) {
     return dishGroups.get(id);
+  }
+
+  void add(AbstractTime time) {
+    schedule.add(time);
   }
 }

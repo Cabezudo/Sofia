@@ -78,7 +78,7 @@ public class TestData {
         if (!Database.exist(Configuration.getInstance().getDatabaseName())) {
           Database.createDatabase();
         }
-        UserManager.getInstance().createAdministrator();
+        UserManager.getInstance().createAdministrator(startOptions);
         User owner = UserManager.getInstance().getAdministrator();
         createData(owner);
       }

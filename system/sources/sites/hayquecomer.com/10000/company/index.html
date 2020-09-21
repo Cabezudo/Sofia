@@ -49,6 +49,7 @@
 
         const setCategorySelected = () => {
           for (let i = 0; i < categoryElementContainer.length; i++) {
+            // TODO Si la categoría está seleccionada no mostrar la manito
             if (elementContainerSelected === i) {
               categoryElementContainer[i].className = 'category selected';
               Core.show(dishGroupsElement[i]);
@@ -59,10 +60,12 @@
           }
         };
         const createMenu = menu => {
+          // TODO Si la categoria es una sola no mostrar
           for (let i = 0; i < menu.length; i++) {
             const category = menu[i];
             const categoryName = category.name;
             categoryElementContainer[i] = document.createElement('DIV');
+            // TODO Si la categoría está seleccionada que no pueda hacer click
             categoryElementContainer[i].onclick = () => {
               elementContainerSelected = i;
               setCategorySelected();

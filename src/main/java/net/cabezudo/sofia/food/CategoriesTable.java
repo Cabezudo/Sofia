@@ -14,6 +14,7 @@ public class CategoriesTable {
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`restaurant` INT NOT NULL, "
           + "`name` VARCHAR(50) NOT NULL, "
+          + "`schedule` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
           + "INDEX `iRestaurant` (`restaurant`), "
           + "UNIQUE INDEX `iRestaurantName` (`restaurant`, `name`)"
