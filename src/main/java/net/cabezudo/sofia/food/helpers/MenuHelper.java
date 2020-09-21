@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.food.helpers;
 
 import java.math.BigDecimal;
+import net.cabezudo.sofia.core.schedule.Schedule;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,7 +11,7 @@ public class MenuHelper {
 
   private final CategoriesHelper categories = new CategoriesHelper();
 
-  public void addCategory(int id, String name, ScheduleHelper schedule) {
+  public void addCategory(int id, String name, Schedule schedule) {
     CategoryHelper category = new CategoryHelper(id, name, schedule);
     categories.add(category);
   }

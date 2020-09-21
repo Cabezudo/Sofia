@@ -1,12 +1,12 @@
-package net.cabezudo.sofia.restaurants;
+package net.cabezudo.sofia.core.schedule;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
+import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.food.Time;
 import net.cabezudo.sofia.food.helpers.ScheduleHelper;
-import net.cabezudo.sofia.food.helpers.TimeHelper;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -14,31 +14,49 @@ import net.cabezudo.sofia.food.helpers.TimeHelper;
  */
 public class Schedule {
 
-  private final Set<Time> set = new TreeSet<>();
+  private final int id;
+  private final Set<AbstractTime> set = new TreeSet<>();
 
   public Schedule(ScheduleHelper schedule) {
+    this.id = schedule.getId();
+
     if (!schedule.isEmpty()) {
-      for (TimeHelper time : schedule) {
-        set.add(new Time(time));
+      for (AbstractTime time : schedule) {
+        set.add(time);
       }
     }
   }
 
-  public Schedule() {
-    // Nothing to do here
+  public Schedule(int id) {
+    this.id = id;
   }
 
-  JSONObject toJSON() {
-    return new JSONObject();
+  public int getId() {
+    return id;
   }
 
-  public void add(Time time) {
+  public String toJSON() {
+    return toJSONTree().toString();
+  }
+
+  public JSONObject toJSONTree() {
+    JSONObject jsonObject = new JSONObject();
+
+    jsonObject.add(new JSONPair("id", id));
+
+    JSONArray jsonTimes = new JSONArray();
+    for (AbstractTime time : set) {
+      jsonTimes.add(time.toJSONTree());
+    }
+    jsonObject.add(new JSONPair("times", jsonTimes));
+    return jsonObject;
+  }
+
+  public void add(AbstractTime time) {
     set.add(time);
   }
 
-  public JSONArray toJSONTree() {
-    // TODO Calculate the adjacent times as one.
-    return new JSONArray();
+  public ArrayList<AbstractTime> getTimeList() {
+    return new ArrayList<>(set);
   }
-
 }

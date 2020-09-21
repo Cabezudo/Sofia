@@ -414,7 +414,7 @@ Todos los nombres de dominio que comienzan con api, por ejemplo api.x.com, apunt
 
 Todos los nombres de dominio que comienzan con admin, por ejemplo admin.x.com, apuntan por defecto a x.com/admin.
 
-Se puede configurar el sitio para ser un contenedor de empresas con un subdominio propio.
+Se puede configurar el sitio para ser un contenedor de empresas con un subdominio propio. Si un subdominio está listado como empresa, internamente se hace una transformación de nombre de ominio y URL para hacer match con los valores configurados para ese subdominio. El nombre del subdominio encontrado para el archivo HTML es colocado en una variable de sessión para que pueda ser utilizado en las otras peticiones para esa página. Si en la siguiente petición a un archivo 
 
 
 

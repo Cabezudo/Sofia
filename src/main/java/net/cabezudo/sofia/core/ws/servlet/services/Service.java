@@ -2,18 +2,20 @@ package net.cabezudo.sofia.core.ws.servlet.services;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 
 /**
@@ -106,11 +108,26 @@ public abstract class Service<T extends Response> {
   }
 
   protected Site getSite() {
-    Site site = (Site) request.getAttribute("site");
-    return site;
+    return (Site) request.getAttribute("site");
   }
 
   protected User getUser() {
     return (User) request.getAttribute("user");
+  }
+
+  public QueryParameters getQueryParmeters() {
+    String queryString = request.getQueryString();
+    QueryParameters queryParameters = new QueryParameters();
+    if (queryString == null) {
+      return queryParameters;
+    }
+    String decodedQueryString;
+    decodedQueryString = URLDecoder.decode(queryString, Configuration.getInstance().getEncoding());
+    String[] parameters = decodedQueryString.split("&");
+    for (String parameter : parameters) {
+      String[] dupla = parameter.split("=");
+      queryParameters.put(dupla[0], dupla[1]);
+    }
+    return queryParameters;
   }
 }

@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.food.helpers.AllergensHelper;
 import net.cabezudo.sofia.food.helpers.MenuHelper;
-import net.cabezudo.sofia.food.helpers.ScheduleHelper;
 import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.restaurants.RestaurantManager;
 import net.cabezudo.sofia.restaurants.RestaurantsTable;
 
 /**
@@ -28,13 +28,27 @@ public class FoodManager {
     return INSTANCE;
   }
 
-  public Menu getMenuByRestaurantById(int id) throws SQLException {
+  public Categories getScheduleByRestaurantId(int id) throws SQLException {
     try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
-      return getMenuByRestaurantById(connection, id);
+      return getScheduleByRestaurantId(connection, id);
     }
   }
 
-  private Menu getMenuByRestaurantById(Connection connection, int id) throws SQLException {
+  private Categories getScheduleByRestaurantId(Connection connection, int id) throws SQLException {
+    Categories scheduleByCategory = RestaurantManager.getInstance().getScheduleByRestaurantId(connection, id);
+    System.out.println("scheduleByCategory.toJSON(): " + scheduleByCategory.toJSON());
+    return scheduleByCategory;
+  }
+
+  public Menu getMenuByRestaurantId(int id) throws SQLException {
+    try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
+      return getMenuByRestaurantId(connection, id);
+    }
+  }
+
+  private Menu getMenuByRestaurantId(Connection connection, int id) throws SQLException {
+    Categories scheduleByCategory = RestaurantManager.getInstance().getScheduleByRestaurantId(connection, id);
+
     String query
             = "SELECT "
             + "c.id AS categoryId, c.name AS categoryName, "
@@ -54,7 +68,6 @@ public class FoodManager {
       rs = ps.executeQuery();
 
       MenuHelper menuHelper = new MenuHelper();
-      ScheduleHelper schedule = new ScheduleHelper();
 
       while (rs.next()) {
         int categoryId = rs.getInt("categoryId");
@@ -70,7 +83,7 @@ public class FoodManager {
         String currencyCode = rs.getString("currencyCode");
         BigDecimal cost = rs.getBigDecimal("cost");
 
-        menuHelper.addCategory(categoryId, categoryName, schedule);
+        menuHelper.addCategory(categoryId, categoryName, scheduleByCategory.getSchedule(categoryId));
         menuHelper.addDishGroup(dishGroupId, categoryId, dishGroupName);
         menuHelper.addDish(categoryId, dishId, dishGroupId, dishName, description, imageName, allergens, calories, currencyCode, cost);
       }

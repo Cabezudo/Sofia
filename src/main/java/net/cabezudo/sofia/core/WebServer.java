@@ -47,7 +47,9 @@ import net.cabezudo.sofia.food.Menu;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.restaurants.Restaurant;
+import net.cabezudo.sofia.restaurants.RestaurantBusinessHours;
 import net.cabezudo.sofia.restaurants.RestaurantManager;
+import net.cabezudo.sofia.restaurants.RestaurantSchedule;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -70,22 +72,29 @@ public class WebServer {
 
   public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException {
 
-    if (false) {
+    processOptions(args);
+
+    Logger.info("Starting server...");
+    int port = Configuration.getInstance().getServerPort();
+    try {
+      ServerSocket ss = new ServerSocket(port);
+      ss.close();
+    } catch (IOException e) {
+      Logger.severe("Can't open the port " + port + ". " + e.getMessage());
+      System.exit(1);
+    }
+
+    if (true) {
       Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
-      Menu menu = FoodManager.getInstance().getMenuByRestaurantById(restaurant.getId());
+      Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
+      RestaurantSchedule restaurantSchedule = new RestaurantSchedule(menu.getCategories(), 300);
+      RestaurantBusinessHours businessHours = restaurantSchedule.getBusinessHours();
+      System.out.println(businessHours.toJSONTree());
+
+//      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
+//      Schedule businessHours = restaurant.getBusinessHours();
+//      businessHours.getTimesForToday();
     } else {
-      processOptions(args);
-
-      Logger.info("Starting server...");
-      int port = Configuration.getInstance().getServerPort();
-      try {
-        ServerSocket ss = new ServerSocket(port);
-        ss.close();
-      } catch (IOException e) {
-        Logger.severe("Can't open the port " + port + ". " + e.getMessage());
-        System.exit(1);
-      }
-
       WebServer.getInstance().start();
     }
   }
@@ -117,7 +126,7 @@ public class WebServer {
 
     if (startOptions.hasConfigureAdministrator()) {
       try {
-        UserManager.getInstance().createAdministrator();
+        UserManager.getInstance().createAdministrator(startOptions);
         System.exit(0);
       } catch (SQLException e) {
         Logger.severe(e);

@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.times;
+package net.cabezudo.sofia.core.schedule;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -16,13 +16,14 @@ public class TimesTable {
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`entry` INT NOT NULL, "
+          + "`type` INT NOT NULL, "
+          + "`index` INT NOT NULL, "
           + "`start` INT NOT NULL, "
           + "`end` INT NOT NULL, "
-          + "`type` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
           + "UNIQUE INDEX `iName` (`id`), "
-          + "FOREIGN KEY (`entry`) REFERENCES " + TimeEntriesTable.NAME + "(`id`), "
-          + "FOREIGN KEY (`type`) REFERENCES " + TimeTypesTable.NAME + "(`id`)"
+          + "FOREIGN KEY (`entry`) REFERENCES " + TimeEntriesTable.DATABASE + "." + TimeEntriesTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`type`) REFERENCES " + TimeTypesTable.DATABASE + "." + TimeTypesTable.NAME + "(`id`)"
           + ") "
           + "CHARACTER SET = UTF8";
 }

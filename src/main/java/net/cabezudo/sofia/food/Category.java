@@ -3,8 +3,8 @@ package net.cabezudo.sofia.food;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.schedule.Schedule;
 import net.cabezudo.sofia.food.helpers.CategoryHelper;
-import net.cabezudo.sofia.restaurants.Schedule;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -24,7 +24,7 @@ public class Category {
     this.schedule = schedule;
   }
 
-  Category(CategoryHelper categoryHelper) {
+  public Category(CategoryHelper categoryHelper) {
     this.id = categoryHelper.getId();
     this.name = categoryHelper.getName();
     this.dishGroups = new DishGroups(categoryHelper.getDishGroups());
@@ -56,9 +56,7 @@ public class Category {
     JSONObject jsonCategory = new JSONObject();
     jsonCategory.add(new JSONPair("id", id));
     jsonCategory.add(new JSONPair("name", name));
-    jsonCategory.add(new JSONPair("dishGroups", dishGroups.toJSONTree())
-    );
-    jsonCategory.add(new JSONPair("schedule", schedule.toJSONTree()));
+    jsonCategory.add(new JSONPair("dishGroups", dishGroups.toJSONTree()));
     return jsonCategory;
   }
 }

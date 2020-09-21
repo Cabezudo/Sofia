@@ -19,6 +19,10 @@ public class Menu {
     this.categories = new Categories(menuHelper.getCategories());
   }
 
+  public Categories getCategories() {
+    return categories;
+  }
+
   public String toJSON() {
     return categories.toJSON();
   }

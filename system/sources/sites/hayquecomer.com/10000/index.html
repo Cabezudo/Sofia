@@ -46,6 +46,7 @@
             if (record.shippingCost.cost) {
               shippinCost = `${record.shippingCost.currency}${record.shippingCost.cost}`;
             }
+            // TODO si está cerrado mostrarlo en gris y los horarios y un cartel que diga cerrado en rojo
             item.innerHTML = `
                 <div id="${id}" class="image"></div>
                 <div class="info">

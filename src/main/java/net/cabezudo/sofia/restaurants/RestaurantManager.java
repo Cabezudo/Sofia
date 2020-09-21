@@ -10,6 +10,14 @@ import java.util.Currency;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.money.Money;
+import net.cabezudo.sofia.core.schedule.AbstractTime;
+import net.cabezudo.sofia.core.schedule.TimeFactory;
+import net.cabezudo.sofia.core.schedule.TimeType;
+import net.cabezudo.sofia.core.schedule.TimeTypesTable;
+import net.cabezudo.sofia.core.schedule.TimesTable;
+import net.cabezudo.sofia.food.Categories;
+import net.cabezudo.sofia.food.CategoriesTable;
+import net.cabezudo.sofia.food.helpers.CategoriesHelper;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -37,7 +45,8 @@ public class RestaurantManager {
   private String getRestaurantQuery() {
     return "SELECT "
             + "  r.id, `subdomain`, `imageName`, r.name AS name, `location`, `typeId`, t.name as typeName, `priceRange`, "
-            + "  `currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`, `score`, `numberOfVotes` "
+            + "  `currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`, `score`, `numberOfVotes`, "
+            + "`longitude`, `latitude` "
             + "FROM " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " AS r "
             + "LEFT JOIN " + RestaurantTypesTable.DATABASE + "." + RestaurantTypesTable.NAME + " AS t ON r.typeId = t.id";
   }
@@ -100,7 +109,9 @@ public class RestaurantManager {
     }
   }
 
-  public Restaurant add(String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange
+  public Restaurant add(
+          String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost,
+          DeliveryRange deliveryRange
   ) throws SQLException {
     try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
       return add(connection, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange);
@@ -108,8 +119,8 @@ public class RestaurantManager {
   }
 
   public Restaurant add(
-          Connection connection, String subdomain, String imageName, String name, String location, RestaurantType type,
-          int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange)
+          Connection connection, String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency,
+          Money shippingCost, DeliveryRange deliveryRange)
           throws SQLException {
     String query
             = "INSERT INTO " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " "
@@ -151,7 +162,7 @@ public class RestaurantManager {
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
-        return new Restaurant(id, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange, null, null);
+        return new Restaurant(id, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange, null, null, null, null);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
     } finally {
@@ -188,8 +199,52 @@ public class RestaurantManager {
     DeliveryRange deliveryRange = new DeliveryRange(minDeliveryTime, maxDeliveryTime);
     int score = rs.getInt("score");
     int numberOfVotes = rs.getInt("numberOfVotes");
+    BigDecimal longitude = rs.getBigDecimal("longitude");
+    BigDecimal latitude = rs.getBigDecimal("latitude");
 
-    return new Restaurant(id, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange, score, numberOfVotes);
+    return new Restaurant(
+            id, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange, score, numberOfVotes, latitude, longitude);
 
   }
+
+  public Categories getScheduleByRestaurantId(Connection connection, int id) throws SQLException {
+    String query
+            = "SELECT c.`id` AS categoryId, c.`name` AS categoryName, `type` AS typeId, tt.`name` AS typeName, `index`, `start`, `end` "
+            + "FROM " + CategoriesTable.DATABASE + "." + CategoriesTable.NAME + " AS c "
+            + "LEFT JOIN " + TimesTable.DATABASE + "." + TimesTable.NAME + " AS t ON c.schedule = t.entry "
+            + "LEFT JOIN " + TimeTypesTable.DATABASE + "." + TimeTypesTable.NAME + " as tt ON t.type = tt.id "
+            + "WHERE c.restaurant = ?";
+
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      ps = connection.prepareStatement(query);
+      ps.setInt(1, id);
+      Logger.fine(ps);
+      rs = ps.executeQuery();
+
+      CategoriesHelper categoriesHelper = new CategoriesHelper();
+      while (rs.next()) {
+        int categoryId = rs.getInt("categoryId");
+        String categoryName = rs.getString("categoryName");
+        int typeId = rs.getInt("typeId");
+        String typeName = rs.getString("typeName");
+        TimeType type = new TimeType(typeId, typeName);
+        int index = rs.getInt("index");
+        int start = rs.getInt("start");
+        int end = rs.getInt("end");
+        AbstractTime time = TimeFactory.get(id, type, index, start, end);
+        categoriesHelper.add(categoryId, categoryName, time);
+      }
+      return new Categories(categoriesHelper);
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
+    }
+  }
+
 }
