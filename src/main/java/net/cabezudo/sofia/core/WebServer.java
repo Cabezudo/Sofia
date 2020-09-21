@@ -42,14 +42,10 @@ import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.emails.EMailNotExistException;
-import net.cabezudo.sofia.food.FoodManager;
-import net.cabezudo.sofia.food.Menu;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.restaurants.Restaurant;
-import net.cabezudo.sofia.restaurants.RestaurantBusinessHours;
+import net.cabezudo.sofia.restaurants.RestaurantList;
 import net.cabezudo.sofia.restaurants.RestaurantManager;
-import net.cabezudo.sofia.restaurants.RestaurantSchedule;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -85,15 +81,16 @@ public class WebServer {
     }
 
     if (true) {
-      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
-      Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
-      RestaurantSchedule restaurantSchedule = new RestaurantSchedule(menu.getCategories(), 300);
-      RestaurantBusinessHours businessHours = restaurantSchedule.getBusinessHours();
-      System.out.println(businessHours.toJSONTree());
+      RestaurantList list = RestaurantManager.getInstance().list();
+      list.calculateFor(300);
+      System.out.print(list.toJSON());
 
+//
 //      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
-//      Schedule businessHours = restaurant.getBusinessHours();
-//      businessHours.getTimesForToday();
+//      BusinessHours businessHours = restaurant.getBusinessHours();
+//      businessHours.calculateFor(300);
+//      System.out.println(businessHours.toJSONTree());
+//
     } else {
       WebServer.getInstance().start();
     }

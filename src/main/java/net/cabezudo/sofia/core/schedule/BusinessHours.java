@@ -1,39 +1,39 @@
-package net.cabezudo.sofia.restaurants;
+package net.cabezudo.sofia.core.schedule;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.Utils;
-import net.cabezudo.sofia.core.schedule.AbstractTime;
-import net.cabezudo.sofia.core.schedule.Day;
-import net.cabezudo.sofia.core.schedule.EndEvent;
-import net.cabezudo.sofia.core.schedule.Event;
-import net.cabezudo.sofia.core.schedule.Schedule;
-import net.cabezudo.sofia.core.schedule.StartEvent;
-import net.cabezudo.sofia.core.schedule.TimeEvents;
-import net.cabezudo.sofia.food.Categories;
-import net.cabezudo.sofia.food.Category;
+import net.cabezudo.sofia.restaurants.OpenTime;
+import net.cabezudo.sofia.restaurants.OpenTimes;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.09.18
  */
-public class RestaurantBusinessHours {
+public class BusinessHours {
 
-  private final boolean todayStatus;
-  private final int dayOfWeek;
-  private final int tomorrowDayOfWeek;
+  private boolean openNow;
+  private int dayOfWeek;
+  private int tomorrowDayOfWeek;
   private final OpenTimes todayEvents = new OpenTimes();
   private final OpenTimes tomorrowEvents = new OpenTimes();
   private Event todayOpenAt = null;
   private Event tomorrowOpenAt = null;
-  private final String todayName;
-  private final String tomorrowName;
+  private String todayName;
+  private String tomorrowName;
+  private List<AbstractTime> times = new ArrayList<>();
 
-  RestaurantBusinessHours(Categories categories, int offset) {
+  public BusinessHours() {
+    // Nothing to do here
+  }
+
+  public void calculateFor(int offset) {
     Instant instant = Instant.now();
     OffsetDateTime now = instant.atOffset(ZoneOffset.ofHoursMinutes(-offset / 60, -offset % 60));
     dayOfWeek = now.getDayOfWeek().getValue();
@@ -41,7 +41,7 @@ public class RestaurantBusinessHours {
     tomorrowDayOfWeek = now.getDayOfWeek().plus(1).getValue();
     tomorrowName = Day.getShortName(tomorrowDayOfWeek);
 
-    TimeEvents temporalEvents = getTemporalEvents(categories);
+    TimeEvents temporalEvents = createEvents();
     cleanOverlapedEvents(temporalEvents);
 
     int hour = now.getHour();
@@ -59,7 +59,7 @@ public class RestaurantBusinessHours {
         todayOpenAt = event.getStart();
       }
     }
-    todayStatus = isOpen;
+    openNow = isOpen;
     for (OpenTime event : tomorrowEvents) {
       if (tomorrowOpenAt == null) {
         tomorrowOpenAt = event.getStart();
@@ -72,7 +72,7 @@ public class RestaurantBusinessHours {
 
     JSONObject jsonToday = new JSONObject();
     jsonToday.add(new JSONPair("name", todayName));
-    jsonToday.add(new JSONPair("isOpen", todayStatus));
+    jsonToday.add(new JSONPair("isOpen", openNow));
     jsonToday.add(new JSONPair("openAt", todayOpenAt == null ? null : Utils.toHour(todayOpenAt.getTime())));
     jsonToday.add(new JSONPair("times", todayEvents.toJSONTree()));
     jsonObject.add(new JSONPair("today", jsonToday));
@@ -83,24 +83,28 @@ public class RestaurantBusinessHours {
     jsonTomorrow.add(new JSONPair("times", tomorrowEvents.toJSONTree()));
     jsonObject.add(new JSONPair("tomorrow", jsonTomorrow));
 
-    // TODO add a deep search for the next day open
-    jsonObject.add(new JSONPair("openUntil", null));
+    Date closedUntil = null;
+    if (!openNow && todayOpenAt == null && tomorrowOpenAt == null) {
+      closedUntil = calculateNextOpen();
+    }
+    jsonObject.add(new JSONPair("closedUntil", closedUntil));
     return jsonObject;
   }
 
-  private TimeEvents getTemporalEvents(Categories categories) {
-    TimeEvents temporalEvents = new TimeEvents();
-    for (Category category : categories) {
-      Schedule schedule = category.getSchedule();
-      ArrayList<AbstractTime> timeList = schedule.getTimeList();
-      for (AbstractTime time : timeList) {
-        if (time.dayIs(dayOfWeek) || time.dayIs(tomorrowDayOfWeek)) {
-          temporalEvents.add(new StartEvent(time.getIndex(), time.getStart()));
-          temporalEvents.add(new EndEvent(time.getIndex(), time.getEnd()));
-        }
+  public void add(AbstractTime time) {
+    times.add(time);
+  }
+
+  private TimeEvents createEvents() {
+    TimeEvents events = new TimeEvents();
+
+    for (AbstractTime time : times) {
+      if (time.dayIs(dayOfWeek) || time.dayIs(tomorrowDayOfWeek)) {
+        events.add(new StartEvent(time.getIndex(), time.getStart()));
+        events.add(new EndEvent(time.getIndex(), time.getEnd()));
       }
     }
-    return temporalEvents;
+    return events;
   }
 
   private void cleanOverlapedEvents(TimeEvents temporalEvents) {
@@ -129,5 +133,9 @@ public class RestaurantBusinessHours {
     } else {
       tomorrowEvents.add(event.getDay(), lastEvent, event);
     }
+  }
+
+  private Date calculateNextOpen() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

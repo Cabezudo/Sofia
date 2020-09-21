@@ -2,6 +2,7 @@ package net.cabezudo.sofia.restaurants;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.List;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
@@ -13,7 +14,7 @@ import net.cabezudo.sofia.core.money.Money;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.08.29
  */
-public class RestaurantList extends EntityList<Restaurant> {
+public final class RestaurantList extends EntityList<Restaurant> {
 
   Restaurants restaurants = new Restaurants();
 
@@ -23,6 +24,17 @@ public class RestaurantList extends EntityList<Restaurant> {
 
   public RestaurantList(int offset) {
     this(offset, 50);
+  }
+
+  public RestaurantList(int listOffset, List<Restaurant> list) throws SQLException {
+    this(listOffset, 50);
+    for (Restaurant restaurant : list) {
+      add(restaurant);
+    }
+  }
+
+  public void calculateFor(int timeZoneOffset) {
+    restaurants.calculateFor(timeZoneOffset);
   }
 
   @Override
@@ -45,7 +57,7 @@ public class RestaurantList extends EntityList<Restaurant> {
     JSONArray jsonRecords = new JSONArray();
     JSONPair jsonRecordsPair = new JSONPair("records", jsonRecords);
     listObject.add(jsonRecordsPair);
-    restaurants.forEach((restaurant) -> {
+    restaurants.forEach(restaurant -> {
       JSONObject jsonRestaurant = new JSONObject();
       jsonRestaurant.add(new JSONPair("id", restaurant.getId()));
       jsonRestaurant.add(new JSONPair("subdomain", restaurant.getSubdomain()));
@@ -75,5 +87,4 @@ public class RestaurantList extends EntityList<Restaurant> {
     return listObject;
 
   }
-
 }

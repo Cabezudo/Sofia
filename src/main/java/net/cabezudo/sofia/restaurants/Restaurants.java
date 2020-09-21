@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import net.cabezudo.sofia.core.schedule.BusinessHours;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -31,6 +32,13 @@ class Restaurants implements Iterable<Restaurant> {
   public void add(Restaurant restaurant) {
     map.put(restaurant.getId(), restaurant);
     list.add(restaurant);
+  }
+
+  void calculateFor(int timeZoneOffset) {
+    for (Restaurant restaurant : list) {
+      BusinessHours businessHours = restaurant.getBusinessHours();
+      businessHours.calculateFor(timeZoneOffset);
+    }
   }
 
 }

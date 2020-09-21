@@ -6,7 +6,7 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.addresses.Address;
 import net.cabezudo.sofia.core.money.Money;
-import net.cabezudo.sofia.core.schedule.Schedule;
+import net.cabezudo.sofia.core.schedule.BusinessHours;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -29,9 +29,10 @@ public class Restaurant {
   private final Integer numberOfVotes;
   private final BigDecimal longitude;
   private final BigDecimal latitude;
+  private final BusinessHours businessHours;
   private Address address;
 
-  Restaurant(int id, String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange, Integer score, Integer numberOfVotes, BigDecimal latitude, BigDecimal longitude) {
+  Restaurant(int id, String subdomain, String imageName, String name, String location, RestaurantType type, int priceRange, Currency currency, Money shippingCost, DeliveryRange deliveryRange, Integer score, Integer numberOfVotes, BigDecimal latitude, BigDecimal longitude, BusinessHours businessHours) {
     this.id = id;
     this.subdomain = subdomain;
     this.imageName = imageName;
@@ -46,6 +47,7 @@ public class Restaurant {
     this.numberOfVotes = numberOfVotes;
     this.latitude = latitude;
     this.longitude = longitude;
+    this.businessHours = businessHours;
   }
 
   public int getId() {
@@ -120,8 +122,8 @@ public class Restaurant {
     return address;
   }
 
-  public Schedule getBusinessHours() {
-    return null;
+  public BusinessHours getBusinessHours() {
+    return businessHours;
   }
 
   public String toJSON() {
@@ -146,7 +148,6 @@ public class Restaurant {
     jsonRestaurant.add(new JSONPair("longitude", longitude));
     jsonRestaurant.add(new JSONPair("latitude", latitude));
     jsonRestaurant.add(new JSONPair("address", address == null ? null : address.toJSONTree()));
-    jsonRestaurant.add(new JSONPair("businessHours", getBusinessHours().toJSON()));
     return jsonRestaurant;
   }
 }
