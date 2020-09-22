@@ -19,7 +19,7 @@ import net.cabezudo.sofia.restaurants.OpenTimes;
  */
 public class BusinessHours {
 
-  private boolean openNow;
+  private Boolean openNow;
   private int dayOfWeek;
   private int tomorrowDayOfWeek;
   private final OpenTimes todayEvents = new OpenTimes();
@@ -53,9 +53,10 @@ public class BusinessHours {
     int minutes = now.getMinute();
     int time = ((hour * 60) + minutes) * 60;
 
-    boolean isOpen = false;
+    Boolean isOpen = null;
 
     for (OpenTime event : todayEvents) {
+      isOpen = false;
       if (event.isOpen(time)) {
         isOpen = true;
         break;
@@ -89,7 +90,7 @@ public class BusinessHours {
     jsonObject.add(new JSONPair("tomorrow", jsonTomorrow));
 
     Date closedUntil = null;
-    if (!openNow && todayOpenAt == null && tomorrowOpenAt == null) {
+    if ((openNow != null && !openNow) && todayOpenAt == null && tomorrowOpenAt == null) {
       closedUntil = calculateNextOpen();
     }
     jsonObject.add(new JSONPair("closedUntil", closedUntil));
