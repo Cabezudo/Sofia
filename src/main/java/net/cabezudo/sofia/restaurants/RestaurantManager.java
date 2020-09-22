@@ -188,8 +188,6 @@ public class RestaurantManager {
     Map<Integer, Restaurant> map = new TreeMap<>();
     List<Restaurant> list = new ArrayList<>();
 
-    BusinessHours businessHours = new BusinessHours();
-
     while (rs.next()) {
       int id = rs.getInt("id");
       String subdomain = rs.getString("subdomain");
@@ -223,15 +221,19 @@ public class RestaurantManager {
       int timeIndex = rs.getInt("timeIndex");
       int timeStart = rs.getInt("timeStart");
       int timeEnd = rs.getInt("timeEnd");
-      AbstractTime time = TimeFactory.get(timeId, new TimeType(timeTypeId, timeTypeName), timeIndex, timeStart, timeEnd);
-      businessHours.add(time);
 
       Restaurant restaurant = map.get(id);
       if (restaurant == null) {
+        BusinessHours businessHours = new BusinessHours();
         restaurant = new Restaurant(
                 id, subdomain, imageName, name, location, type, priceRange, currency, shippingCost, deliveryRange, score, numberOfVotes, latitude, longitude, businessHours);
         map.put(id, restaurant);
         list.add(restaurant);
+      }
+      BusinessHours businessHours = restaurant.getBusinessHours();
+      if (timeId != 0) {
+        AbstractTime time = TimeFactory.get(timeId, new TimeType(timeTypeId, timeTypeName), timeIndex, timeStart, timeEnd);
+        businessHours.add(time);
       }
     }
     return list;

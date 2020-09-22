@@ -9,6 +9,7 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
 import net.cabezudo.sofia.core.EntityList;
 import net.cabezudo.sofia.core.money.Money;
+import net.cabezudo.sofia.core.schedule.BusinessHours;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -16,7 +17,8 @@ import net.cabezudo.sofia.core.money.Money;
  */
 public final class RestaurantList extends EntityList<Restaurant> {
 
-  Restaurants restaurants = new Restaurants();
+  private final Restaurants restaurants = new Restaurants();
+  private int timezoneOffset;
 
   public RestaurantList(int offset, int pageSize) {
     super(offset, pageSize);
@@ -44,6 +46,10 @@ public final class RestaurantList extends EntityList<Restaurant> {
 
   public void add(Restaurant restaurant) throws SQLException {
     restaurants.add(restaurant);
+  }
+
+  public void setTimeZoneOffset(int timezoneOffset) {
+    this.timezoneOffset = timezoneOffset;
   }
 
   @Override
@@ -81,6 +87,9 @@ public final class RestaurantList extends EntityList<Restaurant> {
       jsonRestaurant.add(new JSONPair("maxDeliveryTime", restaurant.getDeliveryRange().getMax()));
       jsonRestaurant.add(new JSONPair("score", restaurant.getScore()));
       jsonRestaurant.add(new JSONPair("numberOfVotes", restaurant.getNumberOfVotes()));
+      BusinessHours businessHours = restaurant.getBusinessHours();
+      jsonRestaurant.add(new JSONPair("businessHours", businessHours.toJSONTree()));
+
       jsonRecords.add(jsonRestaurant);
     });
 

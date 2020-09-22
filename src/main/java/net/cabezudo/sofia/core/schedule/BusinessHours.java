@@ -9,6 +9,7 @@ import java.util.List;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.Utils;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.restaurants.OpenTime;
 import net.cabezudo.sofia.restaurants.OpenTimes;
 
@@ -28,14 +29,18 @@ public class BusinessHours {
   private String todayName;
   private String tomorrowName;
   private List<AbstractTime> times = new ArrayList<>();
+  private Instant instant;
 
   public BusinessHours() {
     // Nothing to do here
   }
 
-  public void calculateFor(int offset) {
-    Instant instant = Instant.now();
-    OffsetDateTime now = instant.atOffset(ZoneOffset.ofHoursMinutes(-offset / 60, -offset % 60));
+  public void calculateFor(int timezoneOffset) {
+    if (instant != null) {
+      throw new SofiaRuntimeException("Already calculated for offset " + timezoneOffset);
+    }
+    instant = Instant.now();
+    OffsetDateTime now = instant.atOffset(ZoneOffset.ofHoursMinutes(-timezoneOffset / 60, -timezoneOffset % 60));
     dayOfWeek = now.getDayOfWeek().getValue();
     todayName = Day.getShortName(dayOfWeek);
     tomorrowDayOfWeek = now.getDayOfWeek().plus(1).getValue();
@@ -136,6 +141,7 @@ public class BusinessHours {
   }
 
   private Date calculateNextOpen() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    // TODO calculate the next day open
+    return null;
   }
 }

@@ -390,14 +390,18 @@ public class DefaultData {
 
     Category breakfast = categoryManager.add(restaurant, "Desayuno");
     categoryManager.add(breakfast, Day.MONDAY, new Hour(9, 30, 0), new Hour(13, 00, 0));
+    categoryManager.add(breakfast, Day.TUESDAY, new Hour(7, 30, 0), new Hour(10, 00, 0));
+    categoryManager.add(breakfast, Day.WEDNESDAY, new Hour(8, 10, 0), new Hour(15, 00, 0));
     categoryManager.add(breakfast, Day.SATURDAY, new Hour(9, 30, 0), new Hour(13, 00, 0));
     categoryManager.add(breakfast, Day.SUNDAY, new Hour(10, 30, 0), new Hour(12, 00, 0));
 
     Category menu = categoryManager.add(restaurant, "Menu");
     categoryManager.add(menu, Day.MONDAY, new Hour(12, 30, 0), new Hour(14, 15, 0));
     categoryManager.add(menu, Day.MONDAY, new Hour(16, 30, 0), new Hour(18, 15, 0));
-    categoryManager.add(menu, Day.TUESDAY, new Hour(12, 30, 0), new Hour(18, 15, 0));
-    categoryManager.add(menu, Day.WEDNESDAY, new Hour(12, 30, 0), new Hour(18, 15, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(12, 30, 0), new Hour(14, 20, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(15, 30, 0), new Hour(18, 15, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(12, 30, 0), new Hour(15, 45, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(16, 30, 0), new Hour(18, 15, 0));
     categoryManager.add(menu, Day.THURSDAY, new Hour(12, 30, 0), new Hour(18, 15, 0));
     categoryManager.add(menu, Day.FRIDAY, new Hour(12, 30, 0), new Hour(19, 15, 0));
     categoryManager.add(menu, Day.SATURDAY, new Hour(12, 30, 0), new Hour(14, 15, 0));

@@ -15,7 +15,8 @@ public class OpenTimes implements Iterable<OpenTime> {
   private final List<OpenTime> list = new ArrayList<>();
 
   public void add(int day, Event start, Event end) {
-    list.add(new OpenTime(day, start, end));
+    OpenTime openTime = new OpenTime(day, start, end);
+    list.add(openTime);
   }
 
   @Override
