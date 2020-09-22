@@ -26,18 +26,18 @@ public class RestaurantListService extends Service {
     }
 
     QueryParameters queryParameters = getQueryParmeters();
-    String stringOffset = queryParameters.get("timeZoneOffset");
+    String stringTimezoneOffset = queryParameters.get("timezoneOffset");
     int timezoneOffset;
     try {
-      timezoneOffset = Integer.parseInt(stringOffset);
+      timezoneOffset = Integer.parseInt(stringTimezoneOffset);
     } catch (NumberFormatException e) {
-      sendError(400, "Invalid timeZoneOffset value");
+      sendError(400, "Invalid timezoneOffset value");
       return;
     }
 
     try {
       RestaurantList list = RestaurantManager.getInstance().list();
-      list.setTimeZoneOffset(timezoneOffset);
+      list.calculateFor(300);
       out.print(list.toJSON());
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
