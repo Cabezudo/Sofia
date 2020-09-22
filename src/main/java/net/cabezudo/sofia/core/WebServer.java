@@ -80,7 +80,7 @@ public class WebServer {
       System.exit(1);
     }
 
-    if (true) {
+    if (false) {
       RestaurantList list = RestaurantManager.getInstance().list();
       list.calculateFor(300);
       System.out.print(list.toJSON());

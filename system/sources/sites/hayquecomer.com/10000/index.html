@@ -12,7 +12,8 @@
     <script>
       const getList = () => {
         const itemList = document.getElementById('itemList');
-        Core.sendGet('/api/v1/restaurants', itemList);
+        const timezoneOffset = (new Date()).getTimezoneOffset();
+        Core.sendGet(`/api/v1/restaurants?timezoneOffset=${timezoneOffset}`, itemList);
         itemList.addEventListener('response', event => {
           const detail = event.detail;
           const records = detail.records;
@@ -60,7 +61,13 @@
                 </div>
                 `;
             itemList.appendChild(item);
-            image({id, src: `/images/${record.imageName}?resize(width=500)`});
+
+            const businessHours = record.businessHours;
+            if (businessHours.today.isOpen) {
+              image({id, src: `/images/${record.imageName}?resize(width=500)`});
+            } else {
+              image({id, src: `/images/${record.imageName}?resize(width=500),gray(method=averaging),brightness(model=hsb,value=50)`});
+            }
           });
         });
       }
