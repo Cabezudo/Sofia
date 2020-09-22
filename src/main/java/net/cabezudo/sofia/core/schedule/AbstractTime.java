@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.schedule;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.Utils;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -91,8 +92,8 @@ public abstract class AbstractTime implements Comparable<AbstractTime> {
     jsonObject.add(new JSONPair("id", getId()));
     jsonObject.add(new JSONPair("type", getType().toJSONTree()));
     jsonObject.add(new JSONPair("index", getIndex()));
-    jsonObject.add(new JSONPair("start", getStart()));
-    jsonObject.add(new JSONPair("end", getEnd()));
+    jsonObject.add(new JSONPair("start", Utils.toHour(getStart())));
+    jsonObject.add(new JSONPair("end", Utils.toHour(getEnd())));
     return jsonObject;
   }
 

@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
+import net.cabezudo.sofia.core.ws.servlet.services.QueryParameters;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -23,8 +24,20 @@ public class RestaurantListService extends Service {
     if (queryString != null) {
       // TODO agregar los filtros, el orden y demas
     }
+
+    QueryParameters queryParameters = getQueryParmeters();
+    String stringOffset = queryParameters.get("timeZoneOffset");
+    int timezoneOffset;
+    try {
+      timezoneOffset = Integer.parseInt(stringOffset);
+    } catch (NumberFormatException e) {
+      sendError(400, "Invalid timeZoneOffset value");
+      return;
+    }
+
     try {
       RestaurantList list = RestaurantManager.getInstance().list();
+      list.setTimeZoneOffset(timezoneOffset);
       out.print(list.toJSON());
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
