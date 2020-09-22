@@ -36,8 +36,7 @@ public class RestaurantListService extends Service {
     }
 
     try {
-      RestaurantList list = RestaurantManager.getInstance().list();
-      list.calculateFor(300);
+      RestaurantList list = RestaurantManager.getInstance().list(timezoneOffset);
       out.print(list.toJSON());
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());

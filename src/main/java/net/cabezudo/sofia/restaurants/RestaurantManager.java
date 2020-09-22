@@ -42,9 +42,9 @@ public class RestaurantManager {
     // Nothing to do here
   }
 
-  public RestaurantList list() throws SQLException {
+  public RestaurantList list(int timezoneOffset) throws SQLException {
     try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
-      return list(connection);
+      return list(connection, timezoneOffset);
     }
   }
 
@@ -78,7 +78,7 @@ public class RestaurantManager {
       Logger.fine(ps);
       rs = ps.executeQuery();
 
-      List<Restaurant> list = createRestaurant(rs);
+      List<Restaurant> list = createRestaurant(rs, 0);
 
       if (list.size() == 1) {
         return list.get(0);
@@ -98,7 +98,7 @@ public class RestaurantManager {
     }
   }
 
-  public RestaurantList list(Connection connection) throws SQLException {
+  public RestaurantList list(Connection connection, int timezoneOffset) throws SQLException {
     String query = getRestaurantQuery();
 
     PreparedStatement ps = null;
@@ -107,7 +107,7 @@ public class RestaurantManager {
       ps = connection.prepareStatement(query);
       Logger.fine(ps);
       rs = ps.executeQuery();
-      return new RestaurantList(0, createRestaurant(rs));
+      return new RestaurantList(0, createRestaurant(rs, timezoneOffset));
     } finally {
       if (rs != null) {
         rs.close();
@@ -184,7 +184,7 @@ public class RestaurantManager {
     }
   }
 
-  private List<Restaurant> createRestaurant(ResultSet rs) throws SQLException {
+  private List<Restaurant> createRestaurant(ResultSet rs, int timezoneOffset) throws SQLException {
     Map<Integer, Restaurant> map = new TreeMap<>();
     List<Restaurant> list = new ArrayList<>();
 
@@ -236,7 +236,12 @@ public class RestaurantManager {
         businessHours.add(time);
       }
     }
-    return list;
+    List<Restaurant> orderedList = new ArrayList<>();
+    for (Restaurant restaurant : list) {
+      restaurant.getBusinessHours().calculateFor(timezoneOffset);
+      orderedList.add(restaurant);
+    }
+    return orderedList;
   }
 
   public Categories getScheduleByRestaurantId(Connection connection, int id) throws SQLException {

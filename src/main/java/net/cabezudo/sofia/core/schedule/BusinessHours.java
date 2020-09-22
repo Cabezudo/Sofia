@@ -145,4 +145,8 @@ public class BusinessHours {
     // TODO calculate the next day open
     return null;
   }
+
+  public Boolean isOpen() {
+    return openNow;
+  }
 }
