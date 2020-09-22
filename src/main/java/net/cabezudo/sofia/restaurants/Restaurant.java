@@ -2,6 +2,7 @@ package net.cabezudo.sofia.restaurants;
 
 import java.math.BigDecimal;
 import java.util.Currency;
+import java.util.Objects;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.addresses.Address;
@@ -12,7 +13,7 @@ import net.cabezudo.sofia.core.schedule.BusinessHours;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.08.27
  */
-public class Restaurant {
+public class Restaurant implements Comparable<Restaurant> {
 
   private final int id;
   private Company company;
@@ -150,4 +151,39 @@ public class Restaurant {
     jsonRestaurant.add(new JSONPair("address", address == null ? null : address.toJSONTree()));
     return jsonRestaurant;
   }
+
+  @Override
+  public int compareTo(Restaurant r) {
+    boolean thisIsOpen = getBusinessHours() != null && getBusinessHours().isOpen() != null && getBusinessHours().isOpen();
+    boolean otherIsOpen = r.getBusinessHours() != null && r.getBusinessHours().isOpen() != null && r.getBusinessHours().isOpen();
+    if (thisIsOpen && otherIsOpen) {
+      return this.name.compareTo(r.getName());
+    }
+    if (thisIsOpen) {
+      return -1;
+    }
+    if (otherIsOpen) {
+      return 1;
+    }
+    return this.name.compareTo(r.getName());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Restaurant) {
+      Restaurant r = (Restaurant) o;
+      return this.compareTo(r) == 0;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    boolean isOpen = getBusinessHours() != null && getBusinessHours().isOpen() != null && getBusinessHours().isOpen();
+    int hash = 7;
+    hash = 37 * hash + Objects.hashCode(isOpen);
+    hash = 37 * hash + Objects.hashCode(this.businessHours);
+    return hash;
+  }
+
 }

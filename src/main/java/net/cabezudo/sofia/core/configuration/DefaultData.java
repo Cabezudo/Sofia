@@ -571,6 +571,13 @@ public class DefaultData {
     Integer noCalories = null;
 
     Category menu = categoryManager.add(restaurant, "Menu");
+    categoryManager.add(menu, Day.MONDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.THURSDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.FRIDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
 
     DishGroup combos = dishGroupManager.add(menu, "Combos");
     DishGroup hamburguesas = dishGroupManager.add(menu, "Hamburguesas");

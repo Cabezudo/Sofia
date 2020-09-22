@@ -18,7 +18,6 @@ import net.cabezudo.sofia.core.schedule.BusinessHours;
 public final class RestaurantList extends EntityList<Restaurant> {
 
   private final Restaurants restaurants = new Restaurants();
-  private int timezoneOffset;
 
   public RestaurantList(int offset, int pageSize) {
     super(offset, pageSize);
@@ -35,8 +34,8 @@ public final class RestaurantList extends EntityList<Restaurant> {
     }
   }
 
-  public void calculateFor(int timeZoneOffset) {
-    restaurants.calculateFor(timeZoneOffset);
+  public Restaurants calculateFor(int timeZoneOffset) {
+    return restaurants.calculateFor(timeZoneOffset);
   }
 
   @Override
@@ -46,10 +45,6 @@ public final class RestaurantList extends EntityList<Restaurant> {
 
   public void add(Restaurant restaurant) throws SQLException {
     restaurants.add(restaurant);
-  }
-
-  public void setTimeZoneOffset(int timezoneOffset) {
-    this.timezoneOffset = timezoneOffset;
   }
 
   @Override
