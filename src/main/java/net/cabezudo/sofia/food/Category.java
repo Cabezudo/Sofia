@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.food;
 
+import java.util.Objects;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
@@ -10,7 +11,7 @@ import net.cabezudo.sofia.food.helpers.CategoryHelper;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.09.02
  */
-public class Category {
+public class Category implements Comparable<Category> {
 
   private final int id;
   private final String name;
@@ -52,11 +53,32 @@ public class Category {
     return schedule;
   }
 
-  JSONValue toJSONTree() {
+  public JSONValue toJSONTree() {
     JSONObject jsonCategory = new JSONObject();
     jsonCategory.add(new JSONPair("id", id));
     jsonCategory.add(new JSONPair("name", name));
     jsonCategory.add(new JSONPair("dishGroups", dishGroups.toJSONTree()));
     return jsonCategory;
+  }
+
+  @Override
+  public int compareTo(Category c) {
+    return this.getName().compareTo(c.getName());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o instanceof Category) {
+      Category c = (Category) o;
+      return this.getName().equals(c.getName());
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 67 * hash + Objects.hashCode(this.name);
+    return hash;
   }
 }

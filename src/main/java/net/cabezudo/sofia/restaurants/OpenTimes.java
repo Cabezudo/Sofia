@@ -32,4 +32,16 @@ public class OpenTimes implements Iterable<OpenTime> {
     return jsonArray;
   }
 
+  public int size() {
+    return list.size();
+  }
+
+  public OpenTime get(int i) {
+    return list.get(i);
+  }
+
+  public boolean isEmpty() {
+    return list.isEmpty();
+  }
+
 }

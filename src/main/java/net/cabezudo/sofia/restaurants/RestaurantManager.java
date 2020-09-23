@@ -52,7 +52,8 @@ public class RestaurantManager {
     return "SELECT "
             + "  r.id, `subdomain`, `imageName`, r.name AS name, `location`, `typeId`, t.name as typeName, `priceRange`, "
             + "  `currencyCode`, `shippingCost`, `minDeliveryTime`, `maxDeliveryTime`, `score`, `numberOfVotes`, "
-            + "`longitude`, `latitude`, ts.id AS timeId, tt.id AS timeTypeId, tt.name AS timeTypeName, `index` AS timeIndex, `start` AS timeStart, `end` AS timeEnd "
+            + "`longitude`, `latitude`, c.id AS categoryId, ts.id AS timeId, tt.id AS timeTypeId, tt.name AS timeTypeName, "
+            + "`index` AS timeIndex, `start` AS timeStart, `end` AS timeEnd "
             + "FROM " + RestaurantsTable.DATABASE + "." + RestaurantsTable.NAME + " AS r "
             + "LEFT JOIN " + RestaurantTypesTable.DATABASE + "." + RestaurantTypesTable.NAME + " AS t ON r.typeId = t.id "
             + "LEFT JOIN " + CategoriesTable.DATABASE + "." + CategoriesTable.NAME + " AS c ON r.id = c.restaurant "
@@ -215,6 +216,7 @@ public class RestaurantManager {
       BigDecimal longitude = rs.getBigDecimal("longitude");
       BigDecimal latitude = rs.getBigDecimal("latitude");
 
+      int categoryId = rs.getInt("categoryId");
       int timeId = rs.getInt("timeId");
       int timeTypeId = rs.getInt("timeTypeId");
       String timeTypeName = rs.getString("timeTypeName");
@@ -233,7 +235,7 @@ public class RestaurantManager {
       BusinessHours businessHours = restaurant.getBusinessHours();
       if (timeId != 0) {
         AbstractTime time = TimeFactory.get(timeId, new TimeType(timeTypeId, timeTypeName), timeIndex, timeStart, timeEnd);
-        businessHours.add(time);
+        businessHours.add(categoryId, time);
       }
     }
     List<Restaurant> orderedList = new ArrayList<>();

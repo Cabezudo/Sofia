@@ -42,9 +42,13 @@ import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.emails.EMailNotExistException;
+import net.cabezudo.sofia.food.Categories;
+import net.cabezudo.sofia.food.CategoryHoursList;
+import net.cabezudo.sofia.food.FoodManager;
+import net.cabezudo.sofia.food.Menu;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.restaurants.RestaurantList;
+import net.cabezudo.sofia.restaurants.Restaurant;
 import net.cabezudo.sofia.restaurants.RestaurantManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -81,8 +85,12 @@ public class WebServer {
     }
 
     if (false) {
-      RestaurantList list = RestaurantManager.getInstance().list(300);
-      System.out.print(list.toJSON());
+      Restaurant restaurant = RestaurantManager.getInstance().get("bariloche");
+      Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
+      Categories categories = menu.getCategories();
+      CategoryHoursList categoriesHours = new CategoryHoursList(restaurant, categories);
+
+      System.out.println(categoriesHours.toJSONTree());
 
 //
 //      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
