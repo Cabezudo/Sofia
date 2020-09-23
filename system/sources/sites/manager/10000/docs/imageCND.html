@@ -118,7 +118,12 @@ parameterOrFunction:
               <p>Load an image from the hard disk using the default base path defined in the server or code. This function take only one parameter <span class="code">name</span> for the image path.</p>
               <p>name - The path of the image to load. For web images, the base path is defined in the server configuration and the request path for the image. If you are using a script, the base path is the path defined in the server configuration. When the code is using in an application you can define any base path.</p>
               <h1>Transformation functions</h1>
-              <a name="brightness"></a>
+              <ul>
+                <li><a href="#brightness">brightness()</a></li>
+                <li><a href="#gray">gray()</a></li>
+                <li><a href="#resize">resize()</a></li>
+                <a name="brightness"></a>
+              </ul>
               <h2>brightness()</h2>
               <p>The brightness function change the brightness of the image. Accept two parameter, one optional for the model used to change the bright and a value that depends on the model used.</p>
               <ul>
@@ -132,9 +137,6 @@ parameterOrFunction:
               </ul>
               <h3>Example</h3>
               <pre>brightness(value=200,model=tv)</pre>
-
-
-
               <a name="gray"></a>
               <h2>gray()</h2>
               <p>Convert the image to grayscale. This function cat take four parameters: method, type, value, and channel.</p>
