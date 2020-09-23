@@ -26,7 +26,9 @@ public class BusinessHours {
   private final OpenTimes tomorrowEvents = new OpenTimes();
   private Event todayOpenAt = null;
   private Event tomorrowOpenAt = null;
+  private String todayShortName;
   private String todayName;
+  private String tomorrowShortName;
   private String tomorrowName;
   private List<AbstractTime> times = new ArrayList<>();
   private Instant instant;
@@ -42,9 +44,11 @@ public class BusinessHours {
     instant = Instant.now();
     OffsetDateTime now = instant.atOffset(ZoneOffset.ofHoursMinutes(-timezoneOffset / 60, -timezoneOffset % 60));
     dayOfWeek = now.getDayOfWeek().getValue();
-    todayName = Day.getShortName(dayOfWeek);
+    todayShortName = Day.getShortName(dayOfWeek);
+    todayName = Day.getName(dayOfWeek);
     tomorrowDayOfWeek = now.getDayOfWeek().plus(1).getValue();
-    tomorrowName = Day.getShortName(tomorrowDayOfWeek);
+    tomorrowShortName = Day.getShortName(tomorrowDayOfWeek);
+    tomorrowName = Day.getName(tomorrowDayOfWeek);
 
     TimeEvents temporalEvents = createEvents();
     cleanOverlapedEvents(temporalEvents);
@@ -77,6 +81,7 @@ public class BusinessHours {
     JSONObject jsonObject = new JSONObject();
 
     JSONObject jsonToday = new JSONObject();
+    jsonToday.add(new JSONPair("shortName", todayShortName));
     jsonToday.add(new JSONPair("name", todayName));
     jsonToday.add(new JSONPair("isOpen", openNow));
     jsonToday.add(new JSONPair("openAt", todayOpenAt == null ? null : Utils.toHour(todayOpenAt.getTime())));
@@ -84,6 +89,7 @@ public class BusinessHours {
     jsonObject.add(new JSONPair("today", jsonToday));
 
     JSONObject jsonTomorrow = new JSONObject();
+    jsonTomorrow.add(new JSONPair("shortName", tomorrowShortName));
     jsonTomorrow.add(new JSONPair("name", tomorrowName));
     jsonTomorrow.add(new JSONPair("openAt", tomorrowOpenAt == null ? null : Utils.toHour(tomorrowOpenAt.getTime())));
     jsonTomorrow.add(new JSONPair("times", tomorrowEvents.toJSONTree()));

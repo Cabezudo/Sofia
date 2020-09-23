@@ -81,8 +81,7 @@ public class WebServer {
     }
 
     if (false) {
-      RestaurantList list = RestaurantManager.getInstance().list();
-      list.calculateFor(300);
+      RestaurantList list = RestaurantManager.getInstance().list(300);
       System.out.print(list.toJSON());
 
 //
