@@ -3,13 +3,16 @@ package net.cabezudo.sofia.core.schedule;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.food.Categories;
+import net.cabezudo.sofia.food.Category;
+import net.cabezudo.sofia.food.CategoryHours;
 import net.cabezudo.sofia.restaurants.OpenTime;
 import net.cabezudo.sofia.restaurants.OpenTimes;
 
@@ -30,7 +33,7 @@ public class BusinessHours {
   private String todayName;
   private String tomorrowShortName;
   private String tomorrowName;
-  private List<AbstractTime> times = new ArrayList<>();
+  private final Times times = new Times();
   private Instant instant;
 
   public BusinessHours() {
@@ -103,14 +106,18 @@ public class BusinessHours {
     return jsonObject;
   }
 
-  public void add(AbstractTime time) {
-    times.add(time);
+  public void add(int id, AbstractTime time) {
+    times.add(id, time);
+  }
+
+  public Times getTimes() {
+    return times;
   }
 
   private TimeEvents createEvents() {
     TimeEvents events = new TimeEvents();
 
-    for (AbstractTime time : times) {
+    for (AbstractTime time : times.getAll()) {
       if (time.dayIs(dayOfWeek) || time.dayIs(tomorrowDayOfWeek)) {
         events.add(new StartEvent(time.getIndex(), time.getStart()));
         events.add(new EndEvent(time.getIndex(), time.getEnd()));
@@ -155,4 +162,50 @@ public class BusinessHours {
   public Boolean isOpen() {
     return openNow;
   }
+
+  public Map<Category, CategoryHours> getHoursById(Categories categories) {
+    Map<Category, CategoryHours> map = new TreeMap<>();
+
+    for (Category category : categories) {
+      TimeEvents temporalEvents = createEventsById(category.getId());
+
+      OpenTimes cleanTimes = cleanOverlapedEventsById(temporalEvents);
+      map.put(category, new CategoryHours(cleanTimes));
+    }
+    return map;
+  }
+
+  private TimeEvents createEventsById(int id) {
+    TimeEvents events = new TimeEvents();
+    for (AbstractTime time : times.getByIdl(id)) {
+      if (time.dayIs(dayOfWeek)) {
+        events.add(new StartEvent(time.getIndex(), time.getStart()));
+        events.add(new EndEvent(time.getIndex(), time.getEnd()));
+      }
+    }
+    return events;
+  }
+
+  private OpenTimes cleanOverlapedEventsById(TimeEvents temporalEvents) {
+    OpenTimes cleanTimes = new OpenTimes();
+    Event lastEvent = null;
+    int open = 0;
+
+    for (Event event : temporalEvents) {
+      if (event.isStart()) {
+        if (open == 0) {
+          lastEvent = event;
+        }
+        open++;
+      }
+      if (event.isEnd()) {
+        open--;
+        if (open == 0) {
+          cleanTimes.add(event.getDay(), lastEvent, event);
+        }
+      }
+    }
+    return cleanTimes;
+  }
+
 }

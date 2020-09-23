@@ -8,7 +8,6 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
-import net.cabezudo.sofia.core.schedule.BusinessHours;
 import net.cabezudo.sofia.core.ws.servlet.services.QueryParameters;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.restaurants.*;
@@ -41,11 +40,13 @@ public class MenuService extends Service {
 
     try {
       Restaurant restaurant = RestaurantManager.getInstance().get(path);
-      BusinessHours businessHours = restaurant.getBusinessHours();
       Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
+      Categories categories = menu.getCategories();
+      CategoryHoursList categoriesHours = new CategoryHoursList(restaurant, categories);
+
       JSONObject jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("restaurant", restaurant.toJSONTree()));
-      jsonObject.add(new JSONPair("businessHours", businessHours.toJSONTree()));
+      jsonObject.add(new JSONPair("categoriesHours", categoriesHours.toJSONTree()));
       jsonObject.add(new JSONPair("menu", menu.toJSONTree()));
       out.print(jsonObject.toJSON());
     } catch (SQLException e) {

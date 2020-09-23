@@ -349,12 +349,14 @@ public class DefaultData {
               new Money(Currency.getInstance("MXN"), 30), new DeliveryRange(35)
       );
       urlManager.add(connection, site, "bariloche.cdmx.menu", "bariloche");
+      createBarilocheDishes(restaurant);
 
       restaurant = restaurantManager.add(
               connection, "casquet", "casquet.jpg", "Casquet", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 20), new DeliveryRange(30)
       );
       urlManager.add(connection, site, "casquet.cdmx.menu", "casquet");
+      createCasquetDishes(restaurant);
 
       type = RestaurantTypeManager.getInstance().get("Postres");
       restaurant = restaurantManager.add(
@@ -362,6 +364,7 @@ public class DefaultData {
               new Money(Currency.getInstance("MXN"), 18), new DeliveryRange(20, 30)
       );
       urlManager.add(connection, site, "heladosdolphy.cdmx.menu", "heladosdolphy");
+      createheladosDolphyDishes(restaurant);
 
       type = RestaurantTypeManager.getInstance().get("Americana");
       restaurant = restaurantManager.add(
@@ -369,6 +372,7 @@ public class DefaultData {
               new Money(Currency.getInstance("MXN"), 24), new DeliveryRange(30, 40)
       );
       urlManager.add(connection, site, "pinchegringobbq.cdmx.menu", "pinchegringobbq");
+      createPincheGringoBBQDishes(restaurant);
 
       type = RestaurantTypeManager.getInstance().get("Argentina");
       restaurant = restaurantManager.add(
@@ -376,6 +380,7 @@ public class DefaultData {
               new Money(Currency.getInstance("MXN"), 20), new DeliveryRange(30, 35)
       );
       urlManager.add(connection, site, "tacosfondaargentina.cdmx.menu", "tacosfondaargentina");
+      createTacosFondaArgentinaDishes(restaurant);
     }
   }
 
@@ -619,5 +624,131 @@ public class DefaultData {
     dishManager.add(ensaladas, "Ensalada de la casa", "Lechuga, jitomate, queso mozzarella, ajonjolí garrapiñado, queso manchego, jamón, de pabo, arándanos y crotones.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 60));
     dishManager.add(ensaladas, "Ensalada con Portobello Gratinado", "Lechuga, jitomate, arándanos, portobello gratinado con queso mozzarella, crotones y ajonjolí garrapiñado.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
     dishManager.add(ensaladas, "Ensalada con Pechuga a la Parilla", "Lechuga, jitomate, arándanos, pollo a las finas hierbas, queso mozzarella, crotones y ajonjolí garrapiñado.", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
+  }
+
+  private static void createBarilocheDishes(Restaurant restaurant) throws SQLException {
+    CategoryManager categoryManager = CategoryManager.getInstance();
+    DishGroupManager dishGroupManager = DishGroupManager.getInstance();
+    DishManager dishManager = DishManager.getInstance();
+
+    String noDescription = null;
+    String noImageName = null;
+    Integer noCalories = null;
+
+    Category breakfast = categoryManager.add(restaurant, "Desayuno");
+    categoryManager.add(breakfast, Day.MONDAY, new Hour(8, 30, 0), new Hour(14, 0, 0));
+    categoryManager.add(breakfast, Day.TUESDAY, new Hour(8, 30, 0), new Hour(14, 0, 0));
+    categoryManager.add(breakfast, Day.WEDNESDAY, new Hour(8, 30, 0), new Hour(12, 0, 0));
+    categoryManager.add(breakfast, Day.THURSDAY, new Hour(8, 30, 0), new Hour(12, 0, 0));
+    categoryManager.add(breakfast, Day.FRIDAY, new Hour(8, 30, 0), new Hour(12, 0, 0));
+    categoryManager.add(breakfast, Day.SATURDAY, new Hour(8, 30, 0), new Hour(12, 0, 0));
+    categoryManager.add(breakfast, Day.SUNDAY, new Hour(8, 30, 0), new Hour(12, 0, 0));
+
+    Category menu = categoryManager.add(restaurant, "Menu");
+    categoryManager.add(menu, Day.MONDAY, new Hour(18, 30, 0), new Hour(24, 0, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(18, 30, 0), new Hour(24, 0, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.THURSDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.FRIDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+
+    DishGroup eggs = dishGroupManager.add(breakfast, "Huevos");
+    dishManager.add(eggs, "Huevo estrellado", noDescription, noImageName, noCalories, new Money(Currency.getInstance("MXN"), 20));
+
+    DishGroup hamburguesas = dishGroupManager.add(menu, "Hamburguesas");
+    dishManager.add(hamburguesas, "Clásica", "A la parrilla con queso", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
+  }
+
+  private static void createCasquetDishes(Restaurant restaurant) throws SQLException {
+    CategoryManager categoryManager = CategoryManager.getInstance();
+    DishGroupManager dishGroupManager = DishGroupManager.getInstance();
+    DishManager dishManager = DishManager.getInstance();
+
+    String noDescription = null;
+    String noImageName = null;
+    Integer noCalories = null;
+
+    Category menu = categoryManager.add(restaurant, "Menu");
+    categoryManager.add(menu, Day.MONDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.THURSDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.FRIDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+
+    DishGroup combos = dishGroupManager.add(menu, "Combos");
+
+    dishManager.add(combos, "Clásica", "A la parrilla con queso", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
+  }
+
+  private static void createheladosDolphyDishes(Restaurant restaurant) throws SQLException {
+    CategoryManager categoryManager = CategoryManager.getInstance();
+    DishGroupManager dishGroupManager = DishGroupManager.getInstance();
+    DishManager dishManager = DishManager.getInstance();
+
+    String noDescription = null;
+    String noImageName = null;
+    Integer noCalories = null;
+
+    Category menu = categoryManager.add(restaurant, "Menu");
+    categoryManager.add(menu, Day.MONDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.THURSDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.FRIDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+
+    DishGroup combos = dishGroupManager.add(menu, "Combos");
+
+    dishManager.add(combos, "Clásica", "A la parrilla con queso", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
+  }
+
+  private static void createPincheGringoBBQDishes(Restaurant restaurant) throws SQLException {
+    CategoryManager categoryManager = CategoryManager.getInstance();
+    DishGroupManager dishGroupManager = DishGroupManager.getInstance();
+    DishManager dishManager = DishManager.getInstance();
+
+    String noDescription = null;
+    String noImageName = null;
+    Integer noCalories = null;
+
+    Category menu = categoryManager.add(restaurant, "Menu");
+    categoryManager.add(menu, Day.MONDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.THURSDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.FRIDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+
+    DishGroup combos = dishGroupManager.add(menu, "Combos");
+
+    dishManager.add(combos, "Clásica", "A la parrilla con queso", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
+  }
+
+  private static void createTacosFondaArgentinaDishes(Restaurant restaurant) throws SQLException {
+    CategoryManager categoryManager = CategoryManager.getInstance();
+    DishGroupManager dishGroupManager = DishGroupManager.getInstance();
+    DishManager dishManager = DishManager.getInstance();
+
+    String noDescription = null;
+    String noImageName = null;
+    Integer noCalories = null;
+
+    Category menu = categoryManager.add(restaurant, "Menu");
+    categoryManager.add(menu, Day.MONDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.TUESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.WEDNESDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.THURSDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.FRIDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SATURDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+    categoryManager.add(menu, Day.SUNDAY, new Hour(18, 30, 0), new Hour(22, 0, 0));
+
+    DishGroup combos = dishGroupManager.add(menu, "Combos");
+
+    dishManager.add(combos, "Clásica", "A la parrilla con queso", noImageName, noCalories, new Money(Currency.getInstance("MXN"), 70));
   }
 }

@@ -36,7 +36,6 @@ public class FoodManager {
 
   private Categories getScheduleByRestaurantId(Connection connection, int id) throws SQLException {
     Categories scheduleByCategory = RestaurantManager.getInstance().getScheduleByRestaurantId(connection, id);
-    System.out.println("scheduleByCategory.toJSON(): " + scheduleByCategory.toJSON());
     return scheduleByCategory;
   }
 
