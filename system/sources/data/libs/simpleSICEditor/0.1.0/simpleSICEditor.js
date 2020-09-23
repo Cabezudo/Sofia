@@ -211,7 +211,7 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
     editor = document.createElement('div');
     editor.innerHTML = `<div>${element.innerHTML}</div>`;
     editor.setAttribute('spellcheck', "false");
-    editor.setAttribute('contenteditable', "true");
+    editor.setAttribute('contenteditable', "false");
     Core.removeChilds(element);
     element.appendChild(editor);
 
@@ -224,9 +224,16 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
     } else {
       highligth();
     }
-    if (focus) {
-      editor.focus();
-    }
+    Core.addOnScrollFunction(() => {
+      if (Core.isInsideViewport(editor)) {
+        editor.setAttribute('contenteditable', "true");
+        if (focus) {
+          editor.focus();
+        }
+      } else {
+        editor.setAttribute('contenteditable', "false");
+      }
+    });
   };
   const setFunctions = () => {
     element.getURLCode = () => {
