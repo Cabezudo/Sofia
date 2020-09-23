@@ -50,6 +50,28 @@ public class Day implements Comparable<Day> {
     }
   }
 
+  public static String getName(int day) {
+    // TODO Ver el tema de internacionalización
+    switch (day) {
+      case 1:
+        return "Lunes";
+      case 2:
+        return "Martes";
+      case 3:
+        return "Miércoles";
+      case 4:
+        return "Jueves";
+      case 5:
+        return "Viernes";
+      case 6:
+        return "Sábado";
+      case 7:
+        return "Domingo";
+      default:
+        throw new SofiaRuntimeException("Invalid day index: " + day);
+    }
+  }
+
   @Override
   public int compareTo(Day d) {
     if (id < d.id) {

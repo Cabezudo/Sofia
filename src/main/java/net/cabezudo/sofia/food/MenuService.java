@@ -42,7 +42,6 @@ public class MenuService extends Service {
     try {
       Restaurant restaurant = RestaurantManager.getInstance().get(path);
       BusinessHours businessHours = restaurant.getBusinessHours();
-      businessHours.calculateFor(offset);
       Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
       JSONObject jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("restaurant", restaurant.toJSONTree()));

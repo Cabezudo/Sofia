@@ -52,10 +52,10 @@
             let schedule = '';
             if (!businessHours.today.isOpen) {
               if (businessHours.closedUntil !== null) {
-                schedule = `Abre hasta el ${businessHours.closedUntil.name} ${businessHours.closedUntil.openAt}`;
+                schedule = `Abre hasta el ${businessHours.closedUntil.name.toLowerCase()} ${businessHours.closedUntil.openAt} hs`;
               }
               if (businessHours.tomorrow.openAt !== null) {
-                schedule = `Abre mañana ${businessHours.tomorrow.name} ${businessHours.tomorrow.openAt}`;
+                schedule = `Abre mañana ${businessHours.tomorrow.name.toLowerCase()} ${businessHours.tomorrow.openAt} hs`;
               }
               if (businessHours.today.openAt !== null) {
                 schedule = `Abre hoy ${businessHours.today.openAt}`;
@@ -147,6 +147,8 @@
 
       .cerrado {
         color: white;
+        font-size: 16px;
+        font-weight: 500;
       }
 
       .cerrado > .title {
