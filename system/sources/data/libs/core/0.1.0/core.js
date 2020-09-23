@@ -18,6 +18,8 @@ const Core = {
   onloadFunctions: [],
   onResizeFunctions: [],
   setPageFunctions: [],
+  scrollElements: [],
+  onScrollFunctions: [],
   testFunctions: [],
   screenBlockerDiv: null,
   loaderDiv: null,
@@ -38,6 +40,17 @@ const Core = {
   },
   addSetFunction: (func) => {
     Core.setPageFunctions.push(func);
+  },
+  addOnScrollElement: (element) => {
+    Core.scrollElements.push(element);
+    element.addEventListener('scroll', e => {
+      Core.onScrollFunctions.forEach(func => {
+        func();
+      });
+    });
+  },
+  addOnScrollFunction: (func) => {
+    Core.onScrollFunctions.push(func);
   },
   changeSection: section => {
     if (Core.lastSection !== null) {

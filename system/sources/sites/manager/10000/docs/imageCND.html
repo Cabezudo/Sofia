@@ -11,13 +11,22 @@
     <script lib="simpleSICEditor/0.1.0"></script>
     <script lib="button/0.1.0"></script>
     <style file="documentation.css"></style>
+    <script>
+      {
+        const createGUI = () => {
+          const content = Core.validateById('content');
+          Core.addOnScrollElement(content);
+        };
+        Core.addOnloadFunction(createGUI);
+      }
+    </script>
   </head>
   <body>
     <section file="docs/testSICExampleComponent.html"></section>
     <section id="application">
       <section id="header" template="headers/menu/simple/menu" configurationFile="menu.json"></section>
-      <section class="content">
-        <section class="container">
+      <section class="content" id="content">
+        <section class="container" id="container">
           <div class="documentation">
             <section id="introducingSofia" class="documentation">
               <span class="title">Image CND and SIC</span>
@@ -100,7 +109,7 @@ parameterOrFunction:
               <p>Is posible use a file with code in order to manipulate the image. The URL is more clear if we use code files.</p>
             </section>
             <section>
-              <h1>Functions</h1>
+              <h1>General functions</h1>
               <h2>main()</h2>
               <p></p>
               <h2>script()</h2>
@@ -108,19 +117,8 @@ parameterOrFunction:
               <h2>loadImage()</h2>
               <p>Load an image from the hard disk using the default base path defined in the server or code. This function take only one parameter <span class="code">name</span> for the image path.</p>
               <p>name - The path of the image to load. For web images, the base path is defined in the server configuration and the request path for the image. If you are using a script, the base path is the path defined in the server configuration. When the code is using in an application you can define any base path.</p>
-              <h2>resize()</h2>
-              <p>Change the size of image. This function cat take four parameters. width, height, scale and aspect.</p>
-              <ul>
-                <li><p><span class="code">width</span> - An integer with the final width size of the image or a percentage value.</p></li>
-                <li><p><span class="code">height</span> - An integer with the final height size of the image or a percentage value.</p></li>
-                <li><p><span class="code">scale</span> - A decimal value or percentage to specify the scale for the image.</p></li>
-                <li><p><span class="code">aspect</span> - A decimal value or aspect ratio in the form w:h.</p></li>
-              </ul>
-              <p>You can specify the width or height in absolute pixels or percentages relatives to the original image. If you specify only width ,height, or scale, the new image maintains the original image aspect ratio. You can specify both width and height or the aspect parameter along width and height in order to change the proportions.</p>
-              <h3>Example</h3>
-              <pre>resize(width=300)
-resize(width=300,height=300)
-resize(scale=5%)</pre>
+              <h1>Transformation functions</h1>
+              <a name="brightness"></a>
               <h2>brightness()</h2>
               <p>The brightness function change the brightness of the image. Accept two parameter, one optional for the model used to change the bright and a value that depends on the model used.</p>
               <ul>
@@ -134,7 +132,42 @@ resize(scale=5%)</pre>
               </ul>
               <h3>Example</h3>
               <pre>brightness(value=200,model=tv)</pre>
-              <p></p>
+
+
+
+              <a name="gray"></a>
+              <h2>gray()</h2>
+              <p>Convert the image to grayscale. This function cat take four parameters: method, type, value, and channel.</p>
+              <ul>
+                <li><p><span class="code">method</span> - You can use six method for grayscale conversion: <span class="code">averaging</span>, <span class="code">luma</span>, <span class="code">desaturation</span>, <span class="code">decomposition</span>, <span class="code">colorChannel</span>, and <span class="code">grayShades</span>. The difference between this method is beyond this tutorial. Feel free to check it in some image conversion site for more information.</p>
+                  <p><span class="code">averaging</span>, <span class="code">desaturation</span>, and <span class="code">grayShades</span> don't take parameters, but the others methods take different parameters:</p>
+                  <ul>
+                    <li><p><span class="code">luma</span> - use a parameter <span class="code">type</span> to specify the type of conversion. Can be <span class="code">bt601</span>, <span class="code">basic</span>, <span class="code">bt709</span>, or <span class="code">bt601</span>.
+                    <li><p><span class="code">decomposition</span> - use a parameter <span class="code">type</span> to specify the type of conversion. Can be <span class="code">maximum</span>, or <span class="code">minimum</span>.
+                    <li><p><span class="code">colorChannel</span> - use a parameter <span class="code">channel</span> to specify the channel to use. Can be <span class="code">red</span>, <span class="code">green</span>, or <span class="code">blue</span>.
+                    <li><p><span class="code">grayShades</span> - use a parameter <span class="code">value</span> to specify the number of shades to use. This value must be between 2-255.</p></li>
+                  </ul>
+                </li>
+              </ul>
+              <h3>Example</h3>
+              <pre>gray(method=averaging)
+gray(method=luma,type=bt709)
+gray(method=colorChannel,channel=red)
+gray(method=grayShades,value=7)</pre>
+              <a name="resize"></a>
+              <h2>resize()</h2>
+              <p>Change the size of image. This function cat take four parameters: width, height, scale, and aspect.</p>
+              <ul>
+                <li><p><span class="code">width</span> - An integer with the final width size of the image or a percentage value.</p></li>
+                <li><p><span class="code">height</span> - An integer with the final height size of the image or a percentage value.</p></li>
+                <li><p><span class="code">scale</span> - A decimal value or percentage to specify the scale for the image.</p></li>
+                <li><p><span class="code">aspect</span> - A decimal value or aspect ratio in the form w:h.</p></li>
+              </ul>
+              <p>You can specify the width or height in absolute pixels or percentages relatives to the original image. If you specify only width ,height, or scale, the new image maintains the original image aspect ratio. You can specify both width and height or the aspect parameter along width and height in order to change the proportions.</p>
+              <h3>Example</h3>
+              <pre>resize(width=300)
+resize(width=300,height=300)
+resize(scale=5%)</pre>
             </section>
           </div>
         </section>
