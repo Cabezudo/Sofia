@@ -72,7 +72,7 @@
               setCategorySelected();
             };
             let categoryHoursText;
-            if (categoryHours === null) {
+            if (categoryHours === null || categoriesHours.length === 0) {
               categoryHoursText = `No se sirve hoy`;
             } else {
               categoryHoursText = '';
@@ -136,11 +136,35 @@
           info = document.getElementById('info');
           info.addEventListener('response', event => {
             const detail = event.detail;
+            const businessHours = detail.hours.businessHours;
             const restaurant = detail.restaurant;
             const setData = (id, html) => {
               document.getElementById(id).innerHTML = html;
             };
-            document.getElementById('image').style.backgroundImage = `url('/images/${restaurant.imageName}')`;
+            const isOpen = detail.hours.isOpen;
+            let restaurantImage;
+            if (isOpen) {
+              restaurantImage = restaurant.imageName;
+            } else {
+              restaurantImage = `${restaurant.imageName}?brightness(model=hsb,value=30)`;
+              let closedText = '';
+              let schedule = '';
+              if (!businessHours.today.isOpen) {
+                if (businessHours.closedUntil !== null) {
+                  schedule = `Abre hasta el ${businessHours.closedUntil.name.toLowerCase()} ${businessHours.closedUntil.openAt} hs`;
+                }
+                if (businessHours.tomorrow.openAt !== null) {
+                  schedule = `Abre mañana ${businessHours.tomorrow.name.toLowerCase()} ${businessHours.tomorrow.openAt} hs`;
+                }
+                if (businessHours.today.openAt !== null) {
+                  schedule = `Abre hoy ${businessHours.today.openAt} hs`;
+                }
+                closedText = `<div class="title">Cerrado</div><div class="schedule">${schedule}</div>`;
+                const closed = document.getElementById('closed');
+                closed.innerHTML = closedText;
+              }
+            }
+            document.getElementById('image').style.backgroundImage = `url('/images/${restaurantImage}')`;
             setData('name', restaurant.name);
             let typeAndCost = '';
             if (restaurant.type) {
@@ -191,10 +215,25 @@
       }
       #info {
         background-color: white;
-        width: 70%;
+        width: 50%;
         text-align: center;
         font-size: 14px;
         padding: 20px;
+      }
+      #closed {
+        color: white;
+        width: 50%;
+        text-align: center;
+        font-size: 14px;
+        padding: 20px;
+      }
+      #closed > .title{
+        font-size: 26px;
+        font-weight: 700;
+      }
+      #closed > .schedule {
+        font-size: 16px;
+        font-weight: 400;
       }
       #name {
         font-size: 32px;
@@ -313,7 +352,6 @@
           justify-content: flex-start;
         }
         #info {
-          width: 50%;
           text-align: left;
         }
         #name {
@@ -332,7 +370,6 @@
           justify-content: flex-start;
         }
         #info {
-          width: 50%;
           text-align: left;
         }
         #name {
@@ -378,6 +415,8 @@
             <div id="typeAndCost">&nbsp;</div>
             <div id="score"></div>
             <div id="address"></div>
+          </div>
+          <div id="closed">
           </div>
         </div>
       </section>

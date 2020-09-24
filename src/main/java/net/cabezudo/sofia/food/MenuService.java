@@ -47,7 +47,7 @@ public class MenuService extends Service {
       JSONObject jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("restaurant", restaurant.toJSONTree()));
       JSONObject jsonHours = new JSONObject();
-      jsonHours.add(new JSONPair("isOpen", restaurant.getBusinessHours().isOpen()));
+      jsonHours.add(new JSONPair("businessHours", restaurant.getBusinessHours().toJSONTree()));
       jsonHours.add(new JSONPair("categories", categoriesHours.toJSONTree()));
       jsonObject.add(new JSONPair("hours", jsonHours));
       jsonObject.add(new JSONPair("menu", menu.toJSONTree()));

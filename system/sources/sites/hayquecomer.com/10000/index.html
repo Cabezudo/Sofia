@@ -58,7 +58,7 @@
                 schedule = `Abre mañana ${businessHours.tomorrow.name.toLowerCase()} ${businessHours.tomorrow.openAt} hs`;
               }
               if (businessHours.today.openAt !== null) {
-                schedule = `Abre hoy ${businessHours.today.openAt}`;
+                schedule = `Abre hoy ${businessHours.today.openAt} hs`;
               }
               closedText = `<div class="title">Cerrado</div><div class="schedule">${schedule}</div>`;
             }
