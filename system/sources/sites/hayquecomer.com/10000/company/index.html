@@ -57,7 +57,9 @@
             }
           }
         };
-        const createMenu = menu => {
+        const createMenu = detail => {
+          const menu = detail.menu;
+          const categoriesHours = detail.categoriesHours;
           // TODO Si la categoria es una sola no mostrar
           for (let i = 0; i < menu.length; i++) {
             const category = menu[i];
@@ -68,7 +70,12 @@
               elementContainerSelected = i;
               setCategorySelected();
             };
-            categoryElementContainer[i].innerHTML = `<div class="categoryName">${categoryName}</div><div class="categoryTime">Wed 12:30 PM – 6:15 PM</div>`;
+            const categoryHours = categoriesHours[categoryName];
+            console.log(categoryName);
+            console.log(categoriesHours);
+            console.log(categoriesHours[categoryName]);
+            const categoryHoursText = `${categoryHours.start} hs - ${categoryHours.end} hs`;
+            categoryElementContainer[i].innerHTML = `<div class="categoryName">${categoryName}</div><div class="categoryTime">${categoryHoursText}</div>`;
             categoriesContainerElement.appendChild(categoryElementContainer[i]);
             const categorySpace = document.createElement('DIV');
             categorySpace.className = 'categorySpace';
@@ -155,7 +162,7 @@
               setData('score', score);
             }
             setData('name', restaurant.name);
-            createMenu(detail.menu);
+            createMenu(detail);
           });
           categoriesContainerElement = document.getElementById('categories');
           dishGroupsContainerElement = document.getElementById('dishGroups');
