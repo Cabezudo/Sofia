@@ -168,7 +168,6 @@ public class BusinessHours {
 
     for (Category category : categories) {
       TimeEvents temporalEvents = createEventsById(category.getId());
-
       OpenTimes cleanTimes = cleanOverlapedEventsById(temporalEvents);
       map.put(category, new CategoryHours(cleanTimes));
     }

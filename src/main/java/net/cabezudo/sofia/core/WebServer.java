@@ -85,7 +85,7 @@ public class WebServer {
     }
 
     if (false) {
-      Restaurant restaurant = RestaurantManager.getInstance().get("bariloche");
+      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
       Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
       Categories categories = menu.getCategories();
       CategoryHoursList categoriesHours = new CategoryHoursList(restaurant, categories);
