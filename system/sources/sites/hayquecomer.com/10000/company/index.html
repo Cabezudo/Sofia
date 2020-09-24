@@ -64,17 +64,20 @@
           for (let i = 0; i < menu.length; i++) {
             const category = menu[i];
             const categoryName = category.name;
+            const categoryHours = categoriesHours[categoryName];
+            console.log(categoryHours === null);
             categoryElementContainer[i] = document.createElement('DIV');
             // TODO Si la categoría está seleccionada que no pueda hacer click
             categoryElementContainer[i].onclick = () => {
               elementContainerSelected = i;
               setCategorySelected();
             };
-            const categoryHours = categoriesHours[categoryName];
-            console.log(categoryName);
-            console.log(categoriesHours);
-            console.log(categoriesHours[categoryName]);
-            const categoryHoursText = `${categoryHours.start} hs - ${categoryHours.end} hs`;
+            let categoryHoursText;
+            if (categoryHours === null) {
+              categoryHoursText = `No se sirve hoy`;
+            } else {
+              categoryHoursText = `${categoryHours.start} hs - ${categoryHours.end} hs`;
+            }
             categoryElementContainer[i].innerHTML = `<div class="categoryName">${categoryName}</div><div class="categoryTime">${categoryHoursText}</div>`;
             categoriesContainerElement.appendChild(categoryElementContainer[i]);
             const categorySpace = document.createElement('DIV');

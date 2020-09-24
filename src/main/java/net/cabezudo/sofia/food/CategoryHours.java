@@ -14,17 +14,21 @@ public class CategoryHours {
   private final OpenTime time;
 
   public CategoryHours(OpenTimes cleanTimes) {
-    if (cleanTimes.isEmpty()) {
-      throw new SofiaRuntimeException("No times for category");
-    }
     if (cleanTimes.size() > 1) {
       // Yes is arbitrary but is more dificult to show more than one and don't have any sense to have more than one.
       throw new SofiaRuntimeException("A category can't have more than one time.");
     }
-    time = cleanTimes.get(0);
+    if (cleanTimes.isEmpty()) {
+      time = null;
+    } else {
+      time = cleanTimes.get(0);
+    }
   }
 
   public JSONObject toJSONTree() {
+    if (time == null) {
+      return null;
+    }
     return time.toJSONTree();
   }
 }
