@@ -14,7 +14,8 @@ import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Base64;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.SofiaImage;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.sic.SofiaImageCode;
@@ -31,6 +33,7 @@ import net.cabezudo.sofia.sic.elements.SICCompileTimeException;
 import net.cabezudo.sofia.sic.elements.SICUnexpectedEndOfCodeException;
 import net.cabezudo.sofia.sic.objects.SICObject;
 import net.cabezudo.sofia.sic.objects.SICRuntimeException;
+import org.apache.commons.codec.binary.Hex;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -164,7 +167,18 @@ public class ImageServlet extends HttpServlet {
     Path generatedBasePath = imagePath.getParent().resolve("cache");
 
     String unencodedCacheId = generatedBasePath + imagePartialPath + queryString;
-    String cacheId = Base64.getEncoder().encodeToString(unencodedCacheId.getBytes());
+    String cacheId = getCacheId(unencodedCacheId);
     return generatedBasePath.resolve(cacheId + "." + fileType);
+  }
+
+  private String getCacheId(String id) {
+    try {
+      MessageDigest md = MessageDigest.getInstance("MD5");
+      byte[] messageDigest = md.digest(id.getBytes());
+      char[] chars = Hex.encodeHex(messageDigest);
+      return String.valueOf(chars);
+    } catch (NoSuchAlgorithmException e) {
+      throw new SofiaRuntimeException(e);
+    }
   }
 }

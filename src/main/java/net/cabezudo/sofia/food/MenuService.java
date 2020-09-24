@@ -39,14 +39,17 @@ public class MenuService extends Service {
     }
 
     try {
-      Restaurant restaurant = RestaurantManager.getInstance().get(path);
+      Restaurant restaurant = RestaurantManager.getInstance().get(path, offset);
       Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
       Categories categories = menu.getCategories();
       CategoryHoursList categoriesHours = new CategoryHoursList(restaurant, categories);
 
       JSONObject jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("restaurant", restaurant.toJSONTree()));
-      jsonObject.add(new JSONPair("categoriesHours", categoriesHours.toJSONTree()));
+      JSONObject jsonHours = new JSONObject();
+      jsonHours.add(new JSONPair("isOpen", restaurant.getBusinessHours().isOpen()));
+      jsonHours.add(new JSONPair("categories", categoriesHours.toJSONTree()));
+      jsonObject.add(new JSONPair("hours", jsonHours));
       jsonObject.add(new JSONPair("menu", menu.toJSONTree()));
       out.print(jsonObject.toJSON());
     } catch (SQLException e) {

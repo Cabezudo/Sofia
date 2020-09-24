@@ -13,6 +13,7 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.servlet.DispatcherType;
 import net.cabezudo.json.JSON;
+import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
@@ -85,12 +86,19 @@ public class WebServer {
     }
 
     if (false) {
-      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
+      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto", 300);
       Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
       Categories categories = menu.getCategories();
       CategoryHoursList categoriesHours = new CategoryHoursList(restaurant, categories);
 
-      System.out.println(categoriesHours.toJSONTree());
+      JSONObject jsonObject = new JSONObject();
+      jsonObject.add(new JSONPair("restaurant", restaurant.toJSONTree()));
+      JSONObject jsonHours = new JSONObject();
+      jsonHours.add(new JSONPair("isOpen", categoriesHours.isOpen()));
+      jsonHours.add(new JSONPair("categories", categoriesHours.toJSONTree()));
+      jsonObject.add(new JSONPair("hours", jsonHours));
+      jsonObject.add(new JSONPair("menu", menu.toJSONTree()));
+      System.out.println(jsonHours.toJSON());
 
 //
 //      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
