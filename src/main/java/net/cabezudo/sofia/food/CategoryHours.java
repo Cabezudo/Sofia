@@ -1,8 +1,6 @@
 package net.cabezudo.sofia.food;
 
-import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
-import net.cabezudo.sofia.restaurants.OpenTime;
+import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.sofia.restaurants.OpenTimes;
 
 /**
@@ -11,24 +9,13 @@ import net.cabezudo.sofia.restaurants.OpenTimes;
  */
 public class CategoryHours {
 
-  private final OpenTime time;
+  private final OpenTimes cleanTimes;
 
   public CategoryHours(OpenTimes cleanTimes) {
-    if (cleanTimes.size() > 1) {
-      // Yes is arbitrary but is more dificult to show more than one and don't have any sense to have more than one.
-      throw new SofiaRuntimeException("A category can't have more than one time.");
-    }
-    if (cleanTimes.isEmpty()) {
-      time = null;
-    } else {
-      time = cleanTimes.get(0);
-    }
+    this.cleanTimes = cleanTimes;
   }
 
-  public JSONObject toJSONTree() {
-    if (time == null) {
-      return null;
-    }
-    return time.toJSONTree();
+  public JSONArray toJSONTree() {
+    return cleanTimes.toJSONTree();
   }
 }

@@ -62,13 +62,13 @@ public class RestaurantManager {
             + "LEFT JOIN " + TimeTypesTable.DATABASE + "." + TimeTypesTable.NAME + " AS tt ON ts.type = tt.id";
   }
 
-  public Restaurant get(String path) throws SQLException {
+  public Restaurant get(String path, int timezoneOffset) throws SQLException {
     try ( Connection connection = Database.getConnection(RestaurantsTable.DATABASE)) {
-      return get(connection, path);
+      return get(connection, path, timezoneOffset);
     }
   }
 
-  public Restaurant get(Connection connection, String path) throws SQLException {
+  public Restaurant get(Connection connection, String path, int timezoneOffset) throws SQLException {
     String query = getRestaurantQuery() + " WHERE subdomain = ?";
 
     PreparedStatement ps = null;
@@ -79,7 +79,7 @@ public class RestaurantManager {
       Logger.fine(ps);
       rs = ps.executeQuery();
 
-      List<Restaurant> list = createRestaurant(rs, 0);
+      List<Restaurant> list = createRestaurant(rs, timezoneOffset);
 
       if (list.size() == 1) {
         return list.get(0);

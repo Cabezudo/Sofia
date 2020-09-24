@@ -29,4 +29,8 @@ public class CategoryHoursList {
     }
     return jsonObject;
   }
+
+  public boolean isOpen() {
+    return businessHours.isOpen();
+  }
 }
