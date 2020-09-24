@@ -338,7 +338,7 @@ public class DefaultData {
 
       type = RestaurantTypeManager.getInstance().get("Hamburguesas");
       restaurant = restaurantManager.add(
-              connection, "elgrilloh", "elGrillOh.jpg", "El Grill Oh!", location, type, 2, Currency.getInstance("MXN"),
+              connection, "elgrilloh", "elgrilloh.jpg", "El Grill Oh!", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 0), new DeliveryRange(30, 40)
       );
       urlManager.add(connection, site, "elgrilloh.cdmx.menu", "elgrilloh");
