@@ -32,9 +32,13 @@ public class URLManager {
     Logger.debug("request on changeCompanyHost: %s", request);
     String serverName = request.getServerName();
     String requestURI = request.getRequestURI();
+    Logger.debug("requestURI: %s", requestURI);
+
+    if (requestURI.startsWith("/api") || requestURI.startsWith("/images")) {
+      return;
+    }
 
     String subdomain = null;
-
     Cache<String, RequestData> requestDataCache = RequestData.getCache();
     RequestData requestData = requestDataCache.get(serverName);
 

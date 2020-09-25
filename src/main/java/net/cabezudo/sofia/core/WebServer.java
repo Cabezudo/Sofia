@@ -236,6 +236,7 @@ public class WebServer {
     int i = 0;
     for (DomainName domainName : domainNames) {
       virtualHosts[i] = domainName.getName();
+      Logger.debug("    %s.", domainName.getName());
       virtualHosts[i + 1] = "local." + domainName.getName();
       i += 2;
     }
