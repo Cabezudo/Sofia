@@ -63,6 +63,11 @@ const Core = {
       Core.trigger(Core.messagesContainer, 'cleanMessages');
     }
   },
+  createOverlay: id => {
+    const overlay = document.createElement('DIV');
+    overlay.id = id;
+    overlay.className = 'overlay';
+  },
   disable: element => {
     Core.trigger(element, 'disabled');
   },

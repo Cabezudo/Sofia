@@ -9,11 +9,13 @@
     <script src="index.js"></script>
     <script lib="core/0.1.0"></script>
     <script lib="image/0.1.0"></script>
+    <script lib="simpleOverlay/0.1.0"></script>
     <script>
       {
         let
-                info, categoriesContainerElement, categoryElementContainer = [], elementContainerSelected = 0,
+                overlay, info, categoriesContainerElement, categoryElementContainer = [], elementContainerSelected = 0,
                 dishGroupsContainerElement, dishGroupsElement = [];
+        // TODO create a library with fontFitter
         const fontFitter = (element, fontSize) => {
           const fitFontOnElement = (element, fontSize) => {
             const running = element.getAttribute('running');
@@ -45,6 +47,9 @@
           });
           fitFontOnElement(element, fontSize);
         };
+        const showDish = (event, dish) => {
+          overlay.show();
+        };
         const setCategorySelected = () => {
           for (let i = 0; i < categoryElementContainer.length; i++) {
             // TODO Si la categoría está seleccionada no mostrar la manito
@@ -57,6 +62,7 @@
             }
           }
         };
+
         const createMenu = detail => {
           const menu = detail.menu;
           const categoriesHours = detail.hours.categories;
@@ -66,7 +72,6 @@
             const categoryName = category.name;
             const categoryHours = categoriesHours[categoryName];
             categoryElementContainer[i] = document.createElement('DIV');
-            // TODO Si la categoría está seleccionada que no pueda hacer click
             categoryElementContainer[i].onclick = () => {
               elementContainerSelected = i;
               setCategorySelected();
@@ -126,6 +131,9 @@
                   dishElement.appendChild(dishImageElement);
                   image({element: dishImageElement, src: `/images/${dish.imageName}?resize(height=180)`});
                 }
+                dishElement.addEventListener("click", e => {
+                  showDish(e, dish);
+                });
                 fontFitter(dishDataDescriptionContainerElement, 16);
               });
             });
@@ -194,6 +202,7 @@
           });
           categoriesContainerElement = document.getElementById('categories');
           dishGroupsContainerElement = document.getElementById('dishGroups');
+          overlay = simpleOverlay({id: 'overlay', scrollElement: document.body});
         };
         const loadData = () => {
           const timeZoneOffset = (new Date()).getTimezoneOffset();
@@ -319,6 +328,11 @@
         margin: 20px 0;
         border: 1px solid rgb(220, 220, 220);
         max-height: 180px;
+        transition: border .1s linear;
+      }
+      .dish:hover {
+        border: 1px solid rgb(50, 50, 50);
+        cursor: pointer;
       }
       .dishData {
         display: flex;
