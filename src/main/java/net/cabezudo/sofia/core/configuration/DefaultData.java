@@ -330,7 +330,7 @@ public class DefaultData {
 
       type = RestaurantTypeManager.getInstance().get("Argentina");
       restaurant = restaurantManager.add(
-              connection, "donbeto", "donbeto.jpg", "Parrillada Don Beto", location, type, 2, Currency.getInstance("MXN"),
+              connection, "donbeto", "donbeto/donbeto.jpg", "Parrillada Don Beto", location, type, 2, Currency.getInstance("MXN"),
               new Money(Currency.getInstance("MXN"), 25), new DeliveryRange(30)
       );
       urlManager.add(connection, site, "donbeto.cdmx.menu", "donbeto");
