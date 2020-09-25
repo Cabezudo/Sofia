@@ -70,17 +70,12 @@ public class URLManager {
     }
     if (exists(site, companyPath)) {
       Logger.debug("Found company for %s", companyPath);
-      request.getSession().setAttribute("company", companyPath);
       if (!requestURI.endsWith("variables.js")) {
         requestURI = "/company" + path.substring(companyPath.length());
         request.setRequestURI(requestURI);
         Logger.debug("The file is not variables.js");
       }
       Logger.debug("Company directory FOUND in path. Add file. Request URI: %s", request.getRequestURI());
-    } else {
-      if (requestURI.endsWith("/") || requestURI.endsWith(".html")) {
-        request.getSession().removeAttribute("company");
-      }
     }
   }
 
