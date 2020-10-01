@@ -117,13 +117,32 @@ const Core = {
   isFunction: v => {
     return Object.prototype.toString.call(v) === '[object Function]';
   },
-  isInsideViewport: element => {
-    const viewportOffset = element.getBoundingClientRect();
-    const top = viewportOffset.top;
-    const left = viewportOffset.left;
-    const windowHeight = window.innerHeight;
-    const windowWidth = window.innerWidth;
-    return inside = top > 0 && top < windowHeight && left > 0 && left < windowWidth;
+  isVisibleInScreen: element => {
+    // TODO verificar cuando la imagen se debería de ver en la pantalla pero es mas grande y agregar el viewport
+    const elementBounding = element.getBoundingClientRect();
+
+    const viewPortTop = 0;
+    const viewPortRight = window.innerWidth;
+    const viewPortBottom = window.innerHeight;
+    const viewPortLeft = 0;
+    const pointInside = (x, y) => {
+      return x >= viewPortLeft && x <= viewPortRight && y >= viewPortTop && y <= viewPortBottom;
+    };
+    const top = elementBounding.top;
+    const right = elementBounding.right;
+    const bottom = elementBounding.bottom;
+    const left = elementBounding.left;
+
+    if (pointInside(right, top))
+      return true;
+    if (pointInside(left, top))
+      return true;
+    if (pointInside(right, bottom))
+      return true;
+    if (pointInside(left, bottom))
+      return true;
+
+    return;
   },
   isLogged: () => {
     return !Core.isNotLogged();
@@ -431,7 +450,8 @@ const Core = {
     }
   }
 };
-window.onresize = () => {
+window.onresize = () =>
+{
   resizeTimer = setTimeout(() => {
     clearTimeout(resizeTimer);
     Core.onResizeFunctions.forEach(func => {
@@ -439,7 +459,8 @@ window.onresize = () => {
     });
   }, 500);
 };
-window.onload = () => {
+window.onload = () =>
+{
   Core.onloadFunctions.forEach(func => {
     func();
   });

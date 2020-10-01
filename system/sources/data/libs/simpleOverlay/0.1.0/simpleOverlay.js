@@ -24,12 +24,6 @@ const simpleOverlay = ({ id = null, scrollElementId = null, scrollElement = null
     document.body.appendChild(overlay);
   };
   const assignTriggers = () => {
-    overlay.addEventListener('click', () => {
-      overlay.style.display = 'none';
-      if (scrollElement) {
-        scrollElement.style.overflow = lastOverflowValue;
-      }
-    });
   };
   this.show = () => {
     overlay.style.display = 'block';
@@ -37,6 +31,15 @@ const simpleOverlay = ({ id = null, scrollElementId = null, scrollElement = null
       lastOverflowValue = scrollElement.style.overflow;
       scrollElement.style.overflow = 'hidden';
     }
+  };
+  this.hide = () => {
+    overlay.style.display = 'none';
+    if (scrollElement) {
+      scrollElement.style.overflow = lastOverflowValue;
+    }
+  };
+  this.setContent = content => {
+    overlay.innerHTML = content;
   };
   validateOptions();
   createGUI();
