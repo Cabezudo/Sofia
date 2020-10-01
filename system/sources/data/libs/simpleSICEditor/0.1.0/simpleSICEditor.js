@@ -225,7 +225,7 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
       highligth();
     }
     Core.addOnScrollFunction(() => {
-      if (Core.isInsideViewport(editor)) {
+      if (Core.isVisibleInScreen(editor)) {
         editor.setAttribute('contenteditable', "true");
         if (focus) {
           editor.focus();

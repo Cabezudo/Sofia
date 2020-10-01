@@ -23,7 +23,7 @@ const image = ({ id = null, element = null, src = null } = {}) => {
       if (loaded) {
         return;
       }
-      if (Core.isInsideViewport(element)) {
+      if (Core.isVisibleInScreen(element)) {
         loaded = true;
         const newImage = new Image();
         newImage.onload = () => {
