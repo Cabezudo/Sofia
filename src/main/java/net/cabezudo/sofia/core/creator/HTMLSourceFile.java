@@ -183,6 +183,13 @@ abstract class HTMLSourceFile implements SofiaSource {
             libraries.add(library);
             break;
           }
+          if (trimmedNewLine.startsWith("<script file=\"") && trimmedNewLine.endsWith("\"></script>")) {
+            String fileReference = trimmedNewLine.substring(14, trimmedNewLine.length() - 11);
+            Logger.debug("[HTMLSourceFile:loadHTMLFile] File reference name found: %s.", fileReference);
+            Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
+            js.load(null, fileReference, newCaller);
+            break;
+          }
 
           // Search for HTML tags with CSS file references
           if (trimmedNewLine.startsWith("<style file=\"") && trimmedNewLine.endsWith("\"></style>")) {

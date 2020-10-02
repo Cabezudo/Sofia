@@ -11,128 +11,14 @@
     <script lib="image/0.1.0"></script>
     <script lib="simpleOverlay/0.1.0"></script>
     <script lib="linkTo/0.1.0"></script>
+    <script lib="fontFitter/0.1.0"></script>
     <script lib="roundButton/0.1.0"></script>
+    <script file="showDish.js"></script>
     <script>
       {
         let
-                overlay, info, categoriesContainerElement, categoryElementContainer = [], elementContainerSelected = 0,
+                info, categoriesContainerElement, categoryElementContainer = [], elementContainerSelected = 0,
                 dishGroupsContainerElement, dishGroupsElement = [];
-        // TODO create a library with fontFitter
-        const fontFitter = (element, fontSize) => {
-          const fitFontOnElement = (element, fontSize) => {
-            const running = element.getAttribute('running');
-            if (running === 'true') {
-              return;
-            }
-            element.setAttribute('running', true);
-            const child = element.firstChild;
-            child.style.fontSize = `${fontSize}px`;
-            const color = child.style.color;
-            child.style.color = 'transparent';
-            const checkFont = () => {
-              if (element.clientHeight < child.scrollHeight && fontSize > 2) {
-                fontSize--;
-                child.style.fontSize = `${fontSize}px`;
-                setTimeout(checkFont, 50);
-              } else {
-                element.setAttribute('running', false);
-                child.style.color = color;
-              }
-            };
-            checkFont();
-          };
-          Core.addOnResizeFunction(() => {
-            fitFontOnElement(element, fontSize);
-          });
-          window.addEventListener('show', e => {
-            fitFontOnElement(element, fontSize);
-          });
-          fitFontOnElement(element, fontSize);
-        };
-        const showDish = (event, dish) => {
-          let quantity = 1;
-          let total;
-          const setValues = () => {
-            total = quantity * dish.price.cost;
-            document.getElementById('quantityOnButton').innerHTML = quantity;
-            document.getElementById('totalCost').innerHTML = `${dish.price.currency} ${total}`;
-          };
-          let description = dish.description;
-          if (description === null) {
-            description = '';
-          }
-          const content = `
-            <div id="overlayContainer">
-              <div id="overlayContent">
-                <div id="dishContainer">
-                  <div id="dishImage">
-                    <div id="closeButton" class="closeButton"></div>
-                  </div>
-                  <div id="dishInfo">
-                    <div id="dishTitle">${dish.name}</div>
-                    <div id="dishDescription">${description}</div>
-                    <div id="options"></div>
-                  </div>
-                  <div id="controlPanelContainer">
-                    <div id="controlPanel">
-                      <div id="buttonContainer">
-                        <div id="removeButton"></div>
-                        <div id="totalCost"></div>
-                        <div id="addButton"></div>
-                      </div>
-                      <div id="addToOrder">
-                        <div id="addToOrderText">Agregar <span id="quantityOnButton"></span> a la orden</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>`;
-          overlay.setContent(content);
-          // TODO ocultar con ESC
-          crossRoundButton({
-            id: 'closeButton',
-            onClick: () => {
-              overlay.hide();
-            }
-          });
-          const removeButton = removeRoundButton({
-            id: 'removeButton',
-            onClick: () => {
-              if (quantity > 1) {
-                quantity--;
-                setValues();
-              }
-              removeButton.enable();
-            }
-          });
-          const addButton = addRoundButton({
-            id: 'addButton',
-            onClick: () => {
-              if (quantity < 20) {
-                quantity++;
-                setValues();
-              }
-              addButton.enable();
-            }
-          });
-          linkTo({
-            id: 'addToOrder',
-            onClick: () => {
-              alert(`Add ${quantity} ${dish.name} to the order.`);
-              overlay.hide();
-            }
-          });
-          overlay.show();
-          const dishImage = document.getElementById('dishImage');
-          if (dish.imageName === null) {
-            dishImage.className = 'noDishImage';
-          } else {
-            dishImage.className = 'dishImage';
-            image({element: dishImage, src: `/images/${dish.imageName}?resize(height=400)`});
-          }
-          setValues();
-        };
         const setCategorySelected = () => {
           for (let i = 0; i < categoryElementContainer.length; i++) {
             // TODO Si la categoría está seleccionada no mostrar la manito
@@ -196,7 +82,7 @@
                 dishDataNameElement.className = 'dishName';
                 dishDataNameElement.innerHTML = `<div>${dish.name}</div>`;
                 dishDataElement.appendChild(dishDataNameElement);
-                fontFitter(dishDataNameElement, 16);
+                fontFitter({element: dishDataNameElement, fontSize: 16});
                 const dishDataDescriptionContainerElement = document.createElement('DIV');
                 dishDataDescriptionContainerElement.className = 'dishDescriptionContainer';
                 dishDataElement.appendChild(dishDataDescriptionContainerElement);
@@ -217,7 +103,7 @@
                 dishElement.addEventListener("click", e => {
                   showDish(e, dish);
                 });
-                fontFitter(dishDataDescriptionContainerElement, 16);
+                fontFitter({element: dishDataDescriptionContainerElement, fontSize: 16});
               });
             });
           }
