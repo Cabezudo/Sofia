@@ -3,9 +3,11 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -162,5 +164,31 @@ class JSSourceFile implements SofiaSource {
   @Override
   public Lines getCascadingStyleSheetLines() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  void load(Path fileBasePath, String partialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
+    Path jsFullSourceFilePath = FileHelper.resolveFullFilePath(fileBasePath, getBasePath(), partialFileName, newCaller);
+
+    if (!Files.exists(jsFullSourceFilePath)) {
+      Logger.debug("File %s NOT FOUND.", partialFileName);
+      return;
+    } else {
+      Logger.debug("JavaScript file %s FOUND.", partialFileName);
+    }
+
+    add(new CodeLine("/* " + partialFileName + " addeded by " + newCaller + " */"));
+    List<String> linesFromFile = Files.readAllLines(jsFullSourceFilePath);
+    int lineNumber = 1;
+    Logger.debug("Replace template variables on source file %s.", jsFullSourceFilePath);
+    for (String line : linesFromFile) {
+      try {
+        String newLine = getTemplateVariables().replace(line);
+        add(new CodeLine(newLine, lineNumber));
+      } catch (UndefinedLiteralException e) {
+        Position position = new Position(lineNumber, e.getRow());
+        throw new LocatedSiteCreationException(e.getMessage(), Paths.get(partialFileName), position);
+      }
+      lineNumber++;
+    }
   }
 }

@@ -13,7 +13,6 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.servlet.DispatcherType;
 import net.cabezudo.json.JSON;
-import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
@@ -21,6 +20,9 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DefaultData;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
+import net.cabezudo.sofia.core.creator.SiteCreationException;
+import net.cabezudo.sofia.core.creator.SiteCreator;
 import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
@@ -43,14 +45,8 @@ import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.emails.EMailNotExistException;
-import net.cabezudo.sofia.food.Categories;
-import net.cabezudo.sofia.food.CategoryHoursList;
-import net.cabezudo.sofia.food.FoodManager;
-import net.cabezudo.sofia.food.Menu;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.restaurants.Restaurant;
-import net.cabezudo.sofia.restaurants.RestaurantManager;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerCollection;
@@ -71,7 +67,9 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
   }
 
-  public static void main(String... args) throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException {
+  public static void main(String... args)
+          throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException, IOException, JSONParseException, JSONParseException,
+          SiteCreationException, LibraryVersionConflictException {
 
     processOptions(args);
 
@@ -86,26 +84,8 @@ public class WebServer {
     }
 
     if (false) {
-      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto", 300);
-      Menu menu = FoodManager.getInstance().getMenuByRestaurantId(restaurant.getId());
-      Categories categories = menu.getCategories();
-      CategoryHoursList categoriesHours = new CategoryHoursList(restaurant, categories);
-
-      JSONObject jsonObject = new JSONObject();
-      jsonObject.add(new JSONPair("restaurant", restaurant.toJSONTree()));
-      JSONObject jsonHours = new JSONObject();
-      jsonHours.add(new JSONPair("isOpen", categoriesHours.isOpen()));
-      jsonHours.add(new JSONPair("categories", categoriesHours.toJSONTree()));
-      jsonObject.add(new JSONPair("hours", jsonHours));
-      jsonObject.add(new JSONPair("menu", menu.toJSONTree()));
-      System.out.println(jsonHours.toJSON());
-
-//
-//      Restaurant restaurant = RestaurantManager.getInstance().get("donbeto");
-//      BusinessHours businessHours = restaurant.getBusinessHours();
-//      businessHours.calculateFor(300);
-//      System.out.println(businessHours.toJSONTree());
-//
+      Site site = SiteManager.getInstance().getByHostame("cdmx.menu");
+      SiteCreator.getInstance().createPages(site, "/company/index.html");
     } else {
       WebServer.getInstance().start();
     }

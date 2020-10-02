@@ -90,6 +90,7 @@ public class SiteCreator {
   private void createPagePermissions(Site site, HTMLSourceFile htmlSourceFile, String requestURI) throws SQLException {
     Logger.debug("Create permission for request %s of site %s.", requestURI, site.getId());
     // TODO Borrar los permisos para esta pagina en este sitio en la base de datos.
+    // TODO agregar a los permisos la companía
     AuthorizationManager.getInstance().delete(requestURI, site);
     // Search and add permission for the page
     Profiles profiles = htmlSourceFile.getProfiles();

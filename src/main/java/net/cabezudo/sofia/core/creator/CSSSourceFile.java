@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
@@ -151,13 +152,13 @@ class CSSSourceFile implements SofiaSource {
     Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(fileBasePath, getBasePath(), partialFileName, newCaller);
 
     if (!Files.exists(cssFullSourceFilePath)) {
-      Logger.debug("File %s NOT FOUND.", getPartialPath());
+      Logger.debug("File %s NOT FOUND.", partialFileName);
       return;
     } else {
-      Logger.debug("Cascading Style Sheet file %s FOUND.", getPartialPath());
+      Logger.debug("Cascading Style Sheet file %s FOUND.", partialFileName);
     }
 
-    add(new CodeLine("/* " + getPartialPath() + " addeded by " + newCaller + " */"));
+    add(new CodeLine("/* " + partialFileName + " addeded by " + newCaller + " */"));
     List<String> linesFromFile = Files.readAllLines(cssFullSourceFilePath);
     int lineNumber = 1;
     Logger.debug("Replace template variables on source file %s.", cssFullSourceFilePath);
@@ -167,7 +168,7 @@ class CSSSourceFile implements SofiaSource {
         add(new CodeLine(newLine, lineNumber));
       } catch (UndefinedLiteralException e) {
         Position position = new Position(lineNumber, e.getRow());
-        throw new LocatedSiteCreationException(e.getMessage(), getPartialPath(), position);
+        throw new LocatedSiteCreationException(e.getMessage(), Paths.get(partialFileName), position);
       }
       lineNumber++;
     }
