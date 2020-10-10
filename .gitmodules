@@ -1,0 +1,3 @@
+[submodule "system/sources/sites/hayquecomer.com"]
+	path = system/sources/sites/hayquecomer.com
+	url = git@github.com:Cabezudo/hay-que-comer-com-front.git
