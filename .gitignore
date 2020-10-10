@@ -4,9 +4,6 @@ nbproject/
 .jacocoverage/
 /dist/
 /system/sites
-/system/sources/sites/**
-!/system/sources/sites/manager
-!/system/sources/sites/playground
 sofia.configuration.properties
 **/.DS_Store
 varios/
