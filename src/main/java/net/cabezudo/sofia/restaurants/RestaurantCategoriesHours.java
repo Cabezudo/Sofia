@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.restaurant;
+package net.cabezudo.sofia.restaurants;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

@@ -61,6 +61,8 @@ import net.cabezudo.sofia.food.DishGroup;
 import net.cabezudo.sofia.food.DishGroupManager;
 import net.cabezudo.sofia.food.DishGroupsTable;
 import net.cabezudo.sofia.food.DishManager;
+import net.cabezudo.sofia.food.DishOptionsGroupsTable;
+import net.cabezudo.sofia.food.DishOptionsTable;
 import net.cabezudo.sofia.food.DishTable;
 import net.cabezudo.sofia.languages.LanguagesTable;
 import net.cabezudo.sofia.logger.Logger;
@@ -141,6 +143,8 @@ public class DefaultData {
       Database.createTable(connection, CategoriesTable.CREATION_QUERY);
       Database.createTable(connection, DishGroupsTable.CREATION_QUERY);
       Database.createTable(connection, DishTable.CREATION_QUERY);
+      Database.createTable(connection, DishOptionsGroupsTable.CREATION_QUERY);
+      Database.createTable(connection, DishOptionsTable.CREATION_QUERY);
     }
   }
 
