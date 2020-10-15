@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
+import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
@@ -18,11 +19,14 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
-import net.cabezudo.sofia.core.configuration.DefaultData;
+import net.cabezudo.sofia.core.configuration.DataCreationException;
+import net.cabezudo.sofia.core.configuration.DataCreator;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.configuration.SofiaDatabaseCreator;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
 import net.cabezudo.sofia.core.creator.SiteCreator;
+import net.cabezudo.sofia.core.database.DatabaseCreators;
 import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
@@ -38,13 +42,10 @@ import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
-import net.cabezudo.sofia.core.users.UserManager;
-import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
-import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -69,9 +70,116 @@ public class WebServer {
 
   public static void main(String... args)
           throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException, IOException, JSONParseException, JSONParseException,
-          SiteCreationException, LibraryVersionConflictException {
+          SiteCreationException, LibraryVersionConflictException, DataCreationException, FileNotFoundException, NamingException {
 
-    processOptions(args);
+    Logger.info("Check configuration.");
+    try {
+      Configuration.getInstance().checkAndCreateFile();
+    } catch (ConfigurationException e) {
+      Logger.severe(e);
+      System.exit(1);
+    }
+
+    List<String> arguments = Arrays.asList(args);
+    Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
+
+    StartOptions startOptions = new StartOptions(arguments);
+
+    if (startOptions.hasHelp() || startOptions.hasInvalidArgument()) {
+      if (startOptions.hasInvalidArgument()) {
+        Utils.consoleOutLn("Invalid argument: " + startOptions.getInvalidArgument());
+      }
+      Utils.consoleOutLn(startOptions.getHelp());
+      System.exit(0);
+    }
+
+    if (startOptions.hasDebug()) {
+      Logger.setLevel(Level.DEBUG);
+    }
+
+    StartOptionsHelper soh = new StartOptionsHelper(startOptions);
+
+    SofiaDatabaseCreator mainDefaultDataCreator = new SofiaDatabaseCreator();
+    DatabaseCreators defaultDataCreators = soh.readModuleData();
+
+    try {
+      if (startOptions.hasDropDatabase()) {
+        for (DataCreator defaultDataCreator : defaultDataCreators) {
+          defaultDataCreator.dropDatabase();
+        }
+        mainDefaultDataCreator.dropDatabase();
+      }
+    } catch (DataCreationException e) {
+      if (Environment.getInstance().isDevelopment()) {
+        e.printStackTrace();
+      } else {
+        Logger.severe(e);
+      }
+    }
+
+    if (!mainDefaultDataCreator.databaseExists()) {
+      mainDefaultDataCreator.createDatabase();
+      mainDefaultDataCreator.riseDatabaseCreatedFlag();
+      mainDefaultDataCreator.createDatabaseStructure();
+    }
+    for (DataCreator defaultDataCreator : defaultDataCreators) {
+      if (!defaultDataCreator.databaseExists()) {
+        defaultDataCreator.createDatabase();
+        defaultDataCreator.riseDatabaseCreatedFlag();
+        defaultDataCreator.createDatabaseStructure();
+      }
+    }
+
+    if (startOptions.hasConfigureAdministrator()) {
+      try {
+        soh.createAdministrator();
+        System.exit(0);
+      } catch (SQLException e) {
+        Logger.severe(e);
+        System.exit(1);
+      }
+    }
+
+    if (startOptions.hasChangeUserPassword()) {
+      try {
+        soh.changeUserPassword();
+        System.exit(0);
+      } catch (SQLException e) {
+        Logger.severe(e);
+      }
+    }
+
+    if (mainDefaultDataCreator.isDatabaseCreated()) {
+      String baseDomainName = soh.getDefaultDomainName();
+      Logger.info("Create the default sites.");
+      SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
+      SiteManager.getInstance().create("Playground", "playground");
+      soh.createAdministrator();
+      mainDefaultDataCreator.createDefaultData();
+    }
+
+    for (DataCreator defaultDataCreator : defaultDataCreators) {
+      if (defaultDataCreator.isDatabaseCreated()) {
+        defaultDataCreator.createDefaultData();
+      }
+    }
+
+    if (startOptions.hasCreateTestData()) {
+      if (mainDefaultDataCreator.isDatabaseCreated()) {
+        Logger.info("Create test data for sofia.");
+        mainDefaultDataCreator.createTestData();
+      }
+      for (DataCreator defaultDataCreator : defaultDataCreators) {
+        if (defaultDataCreator.isDatabaseCreated()) {
+          defaultDataCreator.createTestData();
+        }
+      }
+    }
+
+    if (startOptions.hasDropDatabase()) {
+      System.out.println("The database has dropped and recreated. Execution terminated.");
+      System.exit(0);
+    }
 
     Logger.info("Starting server...");
     int port = Configuration.getInstance().getServerPort();
@@ -89,89 +197,6 @@ public class WebServer {
     } else {
       WebServer.getInstance().start();
     }
-  }
-
-  private static void processOptions(String... args) {
-    List<String> arguments = Arrays.asList(args);
-    Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
-
-    StartOptions startOptions = new StartOptions(arguments);
-    if (startOptions.hasHelp() || startOptions.hasInvalidArgument()) {
-      if (startOptions.hasInvalidArgument()) {
-        Utils.consoleOutLn("Invalid argument: " + startOptions.getInvalidArgument());
-      }
-      Utils.consoleOutLn(startOptions.getHelp());
-      System.exit(0);
-    }
-
-    if (startOptions.hasDebug()) {
-      Logger.setLevel(Level.DEBUG);
-    }
-
-    Logger.info("Check configuration.");
-    try {
-      checkAndCreateConfigurationFile();
-    } catch (ConfigurationException e) {
-      Logger.severe(e);
-      System.exit(1);
-    }
-
-    if (startOptions.hasConfigureAdministrator()) {
-      try {
-        UserManager.getInstance().createAdministrator(startOptions);
-        System.exit(0);
-      } catch (SQLException e) {
-        Logger.severe(e);
-        System.exit(1);
-      }
-    }
-
-    try {
-      DefaultData.create(startOptions);
-      if (startOptions.hasDropDatabase()) {
-        System.exit(0);
-      }
-    } catch (FileNotFoundException | UserNotExistException | EMailNotExistException e) {
-      if (Environment.getInstance().isDevelopment()) {
-        e.printStackTrace();
-      } else {
-        Logger.severe(e);
-      }
-    }
-
-    if (startOptions.hasChangeUserPassword()) {
-      try {
-        UserManager.getInstance().changeUserPassword();
-        System.exit(0);
-      } catch (SQLException e) {
-        Logger.severe(e);
-      }
-    }
-  }
-
-  private static void checkAndCreateConfigurationFile() throws ConfigurationException {
-    Utils.consoleOut("Checking configuration file path... ");
-    if (Configuration.getConfigurationFilePath() == null) {
-      Utils.consoleOutLn("Not found.");
-      if (System.console() != null) {
-        Utils.consoleOut("Create configuration file example? [Y/n]: ");
-        String createConfigurationFile = System.console().readLine();
-        if (createConfigurationFile.isBlank() || "y".equalsIgnoreCase(createConfigurationFile)) {
-          try {
-            Path configurationFilePath = Configuration.createFile();
-            Utils.consoleOutLn("Configure the file " + configurationFilePath + " and run the server again.");
-            System.exit(0);
-          } catch (ConfigurationException e) {
-            Utils.consoleOutLn(e.getMessage());
-            System.exit(1);
-          }
-        }
-      }
-      Logger.severe("Configuration file not found.");
-      System.exit(1);
-    }
-    Utils.consoleOutLn("OK");
-    Configuration.validateConfiguration();
   }
 
   public static WebServer getInstance() throws ServerException, PortAlreadyInUseException, ConfigurationException {
@@ -192,7 +217,7 @@ public class WebServer {
     try {
       WebServicesUniverse.getInstance().add(apiConfiguration);
     } catch (ClassNotFoundException | PropertyNotExistException e) {
-      throw new ConfigurationException("Configuration error." + e.getMessage(), e);
+      throw new ConfigurationException("Configuration error. " + e.getMessage(), e);
     }
 
     ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
@@ -300,7 +325,7 @@ public class WebServer {
     File file = site.getVersionedSourcesCommonsFilePath().toFile();
     Logger.debug("Check for %s.", file.getAbsoluteFile());
     if (file.createNewFile()) {
-      try ( FileWriter writer = new FileWriter(file)) {
+      try (FileWriter writer = new FileWriter(file)) {
         Logger.debug("%s file created.", file.getName());
         writer.write("{\n");
         writer.write("  \"site\": {\n");
@@ -346,7 +371,7 @@ public class WebServer {
     Logger.info("Server stoped.");
   }
 
-  private void start() throws ServerException, ConfigurationException {
+  private void start() throws ServerException, IOException, ConfigurationException {
     HandlerCollection handlerCollection = new HandlerCollection();
 
     SiteList siteList;

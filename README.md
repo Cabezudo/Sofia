@@ -39,7 +39,19 @@ Una vez que hemos editado el archivo de configuración y estamos seguros de que 
 ## Ejecutando el servidor
 Para ejecutar el servidor usamos el siguiente comando:
 ```
-java -jar sofia.cabezudo.net.jar
+java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer
+```
+Si queremos que borre la base de datos podemos usar:
+```
+java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i
+```
+Y si además queremos que trabaje en modo silencioso, esto es, que no pregunte por dominio o usuario administrador y configure con el usuario por defecto podemos colocar el modificador `--ide` o simplemente `-i':
+```
+java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i
+```
+Si necesitamos datos para pruebas podemos agregarlos a nuestra librería y ejecutar con un modificador para crearlos
+```
+java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i -ctd
 ```
 Es importante tener presente que se necesitan permisos de root para ejecutar en puertos por abajo de 1024. El servidor no va a indicar que no tiene permisos para ejecutarse, solo va a quedar esperando indefinidamente.
 En este punto, luego de configurado, el servidor debe mostrar la ruta donde encuentra el archivo de configuración y la configuración leida. Luego va a crear la base de datos y las tablas y la configuración por defecto.
@@ -414,7 +426,7 @@ Todos los nombres de dominio que comienzan con api, por ejemplo api.x.com, apunt
 
 Todos los nombres de dominio que comienzan con admin, por ejemplo admin.x.com, apuntan por defecto a x.com/admin.
 
-Se puede configurar el sitio para ser un contenedor de empresas con un subdominio propio. Si un subdominio está listado como empresa, internamente se hace una transformación de nombre de ominio y URL para hacer match con los valores configurados para ese subdominio. El nombre del subdominio encontrado para el archivo HTML es colocado en una variable de sessión para que pueda ser utilizado en las otras peticiones para esa página. Si en la siguiente petición a un archivo 
+Se puede configurar el sitio para ser un contenedor de empresas con un subdominio propio. Si un subdominio está listado como empresa, internamente se hace una transformación de nombre de ominio y URL para hacer match con los valores configurados para ese subdominio. El nombre del subdominio encontrado para el archivo HTML es colocado en una variable de sessión para que pueda ser utilizado en las otras peticiones para esa página. Si en la siguiente petición a un archivo
 
 
 

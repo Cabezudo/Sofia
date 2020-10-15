@@ -16,6 +16,7 @@ public class StartOptions {
   private boolean configureAdministrator;
   private boolean changeUserPassword;
   private boolean dropDatabase;
+  private boolean createTestData;
   private boolean ide;
 
   public StartOptions(List<String> arguments) {
@@ -50,6 +51,12 @@ public class StartOptions {
           Logger.debug("Command line drop database activated.");
           dropDatabase = true;
           break;
+        case "--createTestData":
+        case "-ctd":
+          Logger.debug("Command line create default test data.");
+          createTestData = true;
+          break;
+
         case "--ide":
         case "-i":
           Logger.setLevel(Level.ALL);
@@ -70,6 +77,7 @@ public class StartOptions {
     sb.append("-cr, --createAdministrator - Configure a system administrator.").append('\n');
     sb.append("-cp, --change password - Change a user password.").append('\n');
     sb.append("-dd, --dropDatabase - Drop de database and create a new one.").append('\n');
+    sb.append("-ctd, --createTestData - Create default test data.").append('\n');
     sb.append("-i, --ide - Configure the system to work inside an IDE").append('\n');
     return sb.toString();
   }
@@ -92,6 +100,10 @@ public class StartOptions {
 
   public boolean hasDropDatabase() {
     return dropDatabase;
+  }
+
+  public boolean hasCreateTestData() {
+    return createTestData;
   }
 
   public String getInvalidArgument() {

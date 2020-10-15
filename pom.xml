@@ -10,7 +10,7 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>0.8.5</version> 
+        <version>0.8.5</version>
         <executions>
           <execution>
             <goals>
@@ -69,7 +69,7 @@
       </plugin>
     </plugins>
   </build>
-<dependencies>
+  <dependencies>
     <dependency>
       <groupId>org.junit</groupId>
       <artifactId>junit4-runner</artifactId>
@@ -152,16 +152,16 @@
       <version>9.4.26.v20200117</version>
     </dependency>
     <dependency>
-        <groupId>net.cabezudo</groupId>
-        <artifactId>json-lib</artifactId>
+      <groupId>net.cabezudo</groupId>
+      <artifactId>json-lib</artifactId>
       <version>0.9.4</version>
     </dependency>
     <dependency>
-        <groupId>${project.groupId}</groupId>
-        <artifactId>sofia-logger</artifactId>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sofia-logger</artifactId>
       <version>${project.version}</version>
     </dependency>
-</dependencies>
+  </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>

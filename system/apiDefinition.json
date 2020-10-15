@@ -70,15 +70,15 @@
     },
     {
       "path": "/api/v1/restaurants",
-      "class": "net.cabezudo.sofia.restaurants.RestaurantListService"
+      "class": "net.cabezudo.hayquecomer.restaurants.RestaurantListService"
     },
     {
       "path": "/api/v1/restaurants/{path}",
-      "class": "net.cabezudo.sofia.restaurants.RestaurantDataService"
+      "class": "net.cabezudo.hayquecomer.restaurants.RestaurantDataService"
     },
     {
       "path": "/api/v1/restaurants/{path}/menu",
-      "class": "net.cabezudo.sofia.food.MenuService"
+      "class": "net.cabezudo.hayquecomer.food.MenuService"
     }
   ],
   "post": [

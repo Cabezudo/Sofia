@@ -25,7 +25,7 @@ public class SimpleCatalogManager<T extends CatalogEntry> {
   }
 
   public T add(String name) throws SQLException {
-    try ( Connection connection = Database.getConnection(databaseName)) {
+    try (Connection connection = Database.getConnection(databaseName)) {
       return add(connection, name);
     }
   }
@@ -59,7 +59,7 @@ public class SimpleCatalogManager<T extends CatalogEntry> {
   }
 
   public T get(int id) throws SQLException {
-    try ( Connection connection = Database.getConnection(databaseName)) {
+    try (Connection connection = Database.getConnection(databaseName)) {
       return get(connection, id);
     }
   }
@@ -88,7 +88,7 @@ public class SimpleCatalogManager<T extends CatalogEntry> {
   }
 
   public T get(String name) throws SQLException {
-    try ( Connection connection = Database.getConnection(databaseName)) {
+    try (Connection connection = Database.getConnection(databaseName)) {
       return get(connection, name);
     }
   }

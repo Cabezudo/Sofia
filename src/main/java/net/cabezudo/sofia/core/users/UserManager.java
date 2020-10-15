@@ -9,8 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
-import net.cabezudo.sofia.core.StartOptions;
-import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
@@ -19,23 +17,16 @@ import net.cabezudo.sofia.core.mail.Message;
 import net.cabezudo.sofia.core.passwords.Hash;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.sites.Site;
-import net.cabezudo.sofia.core.sites.SiteManager;
-import net.cabezudo.sofia.core.sites.Sites;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.templates.EMailTemplate;
 import net.cabezudo.sofia.core.templates.TemplatesManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
-import net.cabezudo.sofia.core.users.profiles.ProfileManager;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.customers.CustomerService;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
-import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailManager;
-import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailNotExistException;
-import net.cabezudo.sofia.emails.EMailValidator;
 import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.people.PeopleList;
@@ -60,170 +51,6 @@ public class UserManager {
       INSTANCE = new UserManager();
     }
     return INSTANCE;
-  }
-
-  public void createAdministrator(StartOptions startOptions) throws SQLException {
-    if (System.console() == null || startOptions.hasIDE()) {
-      UserManager.getInstance().createSofiaAdministrator("Esteban", "Cabezudo", "esteban@cabezudo.net", Password.createFromPlain("1234"));
-    } else {
-      Utils.consoleOutLn("Create administrator user.");
-
-      String address = getEMailAddress();
-
-      EMail eMail = EMailManager.getInstance().get(address);
-      if (eMail != null) {
-        Utils.consoleOut("The user already exist. Set administrador privileges? [y/N]");
-        String setPrivileges = System.console().readLine();
-        if (setPrivileges.isBlank() || "n".equalsIgnoreCase(setPrivileges)) {
-          System.exit(0);
-        } else {
-          setAdministratorPrivileges(address);
-          System.exit(0);
-        }
-      }
-
-      Utils.consoleOut("Name: ");
-      String name = System.console().readLine();
-      Utils.consoleOut("Lastname: ");
-      String lastName = System.console().readLine();
-
-      Password password = getPassword();
-      createSofiaAdministrator(name, lastName, address, password);
-    }
-  }
-
-  public void changeUserPassword() throws SQLException {
-    Utils.consoleOutLn("Change user password.");
-    String address = getEMailAddress();
-    EMail eMail = EMailManager.getInstance().get(address);
-    if (eMail == null) {
-      Utils.consoleOut("The email address doesn't exist.");
-      System.exit(0);
-    }
-
-    Sites sites = SiteManager.getInstance().getByUserEMail(eMail);
-    if (sites.size() > 0) {
-      for (Site site : sites) {
-        Utils.consoleOutLn(site.getId() + " - " + site.getName());
-      }
-    }
-    boolean valid = false;
-    Site selectedSite = null;
-    do {
-      Utils.consoleOut("Select site for user: ");
-      String siteValue = System.console().readLine();
-      int siteId;
-      try {
-        siteId = Integer.parseInt(siteValue);
-        valid = true;
-      } catch (NumberFormatException e) {
-        valid = false;
-        continue;
-      }
-      selectedSite = sites.getById(siteId);
-      if (selectedSite == null) {
-        valid = false;
-      }
-    } while (!valid);
-
-    Password password = getPassword();
-
-    User user = UserManager.getInstance().getByEMail(address, selectedSite);
-    try {
-      changePassword(user, password);
-    } catch (MailServerException | IOException | EMailNotExistException | UserNotFoundByHashException | NullHashException | HashTooOldException e) {
-      Utils.consoleOutLn(e.getMessage());
-    }
-  }
-
-  private String getEMailAddress() throws SQLException {
-    boolean validAddress = false;
-    String address;
-    do {
-      Utils.consoleOut("e-Mail: ");
-      address = System.console().readLine();
-      try {
-        EMailValidator.validate(address);
-        validAddress = true;
-      } catch (EMailMaxSizeException | DomainNameMaxSizeException | EMailAddressValidationException e) {
-        // FIX The message show the key for the error not the text
-        Utils.consoleOut(e.getMessage());
-      }
-    } while (!validAddress);
-    return address;
-  }
-
-  private void setAdministratorPrivileges(String address) throws SQLException {
-    Site site = SiteManager.getInstance().getById(1);
-    User user = getByEMail(address, site);
-    if (user == null) {
-      Password password = getPassword();
-      try {
-        UserManager.getInstance().set(site, address, password);
-      } catch (EMailAddressNotExistException e) {
-        throw new SofiaRuntimeException(e);
-      }
-    }
-    setProfile(user, Profile.ADMINISTRATOR);
-  }
-
-  private Password getPassword() {
-    boolean match;
-    String plainPassword;
-    do {
-      Utils.consoleOut("Password: ");
-      char[] charPasswrod = System.console().readPassword();
-      plainPassword = new String(charPasswrod);
-
-      Utils.consoleOut("Repeat password: ");
-      char[] otherCharPasswrod = System.console().readPassword();
-      String otherPlainPassword = new String(otherCharPasswrod);
-
-      match = plainPassword.equals(otherPlainPassword);
-      if (!match) {
-        Utils.consoleOutLn("The passwords don't match.");
-      }
-    } while (!match);
-
-    return Password.createFromPlain(plainPassword);
-  }
-
-  public void createSofiaAdministrator(String name, String lastName, String address, Password password) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
-      connection.setAutoCommit(false);
-      Site managerSite = SiteManager.getInstance().getById(1);
-      Person person = addPerson(connection, name, lastName, 1);
-      EMail eMail = EMailManager.getInstance().create(connection, person.getId(), address);
-      PeopleManager.getInstance().setPrimaryEMail(connection, person, eMail);
-
-      try {
-        User user = UserManager.getInstance().set(connection, managerSite, address, password);
-        ProfileManager.getInstance().create(connection, "administrator", managerSite);
-        UserManager.getInstance().add(connection, user, Profile.ADMINISTRATOR, 1);
-      } catch (EMailAddressNotExistException e) {
-        connection.rollback();
-        throw new SofiaRuntimeException(e);
-      }
-
-      Site playgroundSite = SiteManager.getInstance().getById(2);
-      try {
-        User user = UserManager.getInstance().set(connection, playgroundSite, address, password);
-        ProfileManager.getInstance().create(connection, "administrator", playgroundSite);
-        UserManager.getInstance().add(connection, user, Profile.ADMINISTRATOR, 1);
-      } catch (EMailAddressNotExistException e) {
-        connection.rollback();
-        throw new SofiaRuntimeException(e);
-      }
-      connection.commit();
-    }
-  }
-
-  private void setProfile(User user, Profile profile) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
-      connection.setAutoCommit(false);
-      UserManager.getInstance().add(connection, user, profile, 1);
-      connection.commit();
-    }
   }
 
   public User getAdministrator() throws SQLException {
@@ -258,7 +85,7 @@ public class UserManager {
     }
   }
 
-  private Person addPerson(Connection connection, String name, String lastName, int ownerId) throws SQLException {
+  public Person addPerson(Connection connection, String name, String lastName, int ownerId) throws SQLException {
     String query = "INSERT INTO " + PeopleTable.NAME + " (name, lastName, owner) VALUES (?, ?, ?)";
     PreparedStatement ps = null;
     ResultSet rs = null;
@@ -306,7 +133,7 @@ public class UserManager {
   }
 
   public User login(Site site, String emailAddress, Password password) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       String query
               = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate "
               + "FROM " + UsersTable.NAME + " AS u "
@@ -350,7 +177,7 @@ public class UserManager {
   }
 
   public Message getRecoveryEMailData(Site site, String address, Hash hash) throws SQLException, IOException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       updateHash(connection, address, hash);
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordRecoveryTemplate(person.getLocale());
@@ -385,7 +212,7 @@ public class UserManager {
             = "UPDATE " + UsersTable.NAME + " "
             + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
             + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
-    try ( PreparedStatement ps = connection.prepareStatement(query)) {
+    try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setString(1, hash.toString());
       Timestamp timestamp = new Timestamp(new Date().getTime());
       ps.setTimestamp(2, timestamp);
@@ -396,7 +223,7 @@ public class UserManager {
   }
 
   public Message getPasswordChangedEMailData(Site site, String address) throws SQLException, IOException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
 
       EMailTemplate emailRecoveryTemplate = TemplatesManager.getInstance().getEMailPasswordChangedTemplate(person.getLocale());
@@ -420,7 +247,7 @@ public class UserManager {
   }
 
   public void set(Site site, String address, Password password) throws SQLException, EMailAddressNotExistException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       set(connection, site, address, password);
     }
   }
@@ -462,7 +289,7 @@ public class UserManager {
 
   private void deactivateAllPasswords(Connection connection, EMail eMail) throws SQLException {
     String query = "UPDATE " + UsersTable.NAME + " SET activated = false WHERE eMail = ?";
-    try ( PreparedStatement ps = connection.prepareStatement(query)) {
+    try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, eMail.getId());
       Logger.fine(ps);
       ps.executeUpdate();
@@ -471,7 +298,7 @@ public class UserManager {
   }
 
   public User getByEMail(String address, Site site) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       String query
               = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
               + "FROM " + UsersTable.NAME + " AS u "
@@ -513,7 +340,7 @@ public class UserManager {
   }
 
   public Users getByEMail(String address) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       Users users = new Users();
       String query
               = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
@@ -556,7 +383,7 @@ public class UserManager {
   }
 
   public User getByPersonId(int personId) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       return getByPersonId(connection, personId);
     }
   }
@@ -602,7 +429,7 @@ public class UserManager {
   }
 
   public User get(int id) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, id);
     }
   }
@@ -688,7 +515,7 @@ public class UserManager {
   }
 
   public void changePassword(Site site, Hash hash, Password password) throws SQLException, MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       User user = UserManager.getInstance().getByHash(connection, hash);
       if (user == null) {
         throw new UserNotFoundByHashException("change.password.user.not.found.by.hash");
@@ -705,7 +532,7 @@ public class UserManager {
       }
 
       String query = "UPDATE " + UsersTable.NAME + " SET passwordRecoveryUUID = ?, password = ? WHERE site = ? AND passwordRecoveryUUID = ?";
-      try ( PreparedStatement ps = connection.prepareStatement(query)) {
+      try (PreparedStatement ps = connection.prepareStatement(query)) {
         ps.setString(1, hash.toString());
         ps.setBytes(2, password.getBytes());
         ps.setInt(3, site.getId());
@@ -720,9 +547,9 @@ public class UserManager {
   }
 
   public void changePassword(User user, Password password) throws SQLException, MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       String query = "UPDATE " + UsersTable.NAME + " SET password=? WHERE id=?";
-      try ( PreparedStatement ps = connection.prepareStatement(query)) {
+      try (PreparedStatement ps = connection.prepareStatement(query)) {
         ps.setBytes(1, password.getBytes());
         ps.setInt(2, user.getId());
         Logger.fine(ps);
@@ -736,7 +563,7 @@ public class UserManager {
   }
 
   public Message getRegistrationRetryAlertEMailData(String address) throws SQLException, IOException {
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
 
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
 
@@ -766,7 +593,7 @@ public class UserManager {
 
     PreparedStatement ps = null;
     ResultSet rs = null;
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       String query = "SELECT p.id, p.name, p.site FROM usersProfiles AS up LEFT JOIN profiles AS p ON up.profile = p.id WHERE up.user = ?";
       ps = connection.prepareStatement(query);
       ps.setInt(1, user.getId());
@@ -793,9 +620,9 @@ public class UserManager {
 
   }
 
-  private void add(Connection connection, User user, Profile profile, int ownerId) throws SQLException {
+  public void add(Connection connection, User user, Profile profile, int ownerId) throws SQLException {
     String query = "INSERT INTO " + UsersProfilesTable.NAME + " (user, profile, owner) VALUES (?, ?, ?)";
-    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setInt(1, user.getId());
       ps.setInt(2, profile.getId());
       ps.setInt(3, ownerId);

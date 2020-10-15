@@ -2,6 +2,7 @@ package net.cabezudo.sofia.core.catalogs;
 
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,6 +14,9 @@ public class CatalogEntry {
   private final String name;
 
   public CatalogEntry(CatalogEntry entry) {
+    if (entry == null) {
+      throw new SofiaRuntimeException("null parameter");
+    }
     this.id = entry.id;
     this.name = entry.name;
   }
