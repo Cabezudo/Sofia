@@ -6,7 +6,6 @@ import java.util.TreeSet;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.food.helpers.ScheduleHelper;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

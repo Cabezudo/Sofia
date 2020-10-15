@@ -1,10 +1,8 @@
-package net.cabezudo.sofia.food.helpers;
+package net.cabezudo.sofia.core.schedule;
 
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
-import net.cabezudo.sofia.core.schedule.AbstractTime;
-import net.cabezudo.sofia.core.schedule.Schedule;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -15,13 +13,13 @@ public class ScheduleHelper implements Iterable<AbstractTime> {
   private Set<AbstractTime> set;
   private int id;
 
-  ScheduleHelper(Schedule schedule) {
+  public ScheduleHelper(Schedule schedule) {
     this();
     this.id = schedule.getId();
     set.addAll(schedule.getTimeList());
   }
 
-  ScheduleHelper() {
+  public ScheduleHelper() {
     this.set = new TreeSet<>();
   }
 
@@ -38,7 +36,7 @@ public class ScheduleHelper implements Iterable<AbstractTime> {
     return set.isEmpty();
   }
 
-  void add(AbstractTime time) {
+  public void add(AbstractTime time) {
     set.add(time);
   }
 }

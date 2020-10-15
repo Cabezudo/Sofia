@@ -67,6 +67,7 @@ public final class Configuration {
   private final int serverPort;
   private final Path systemPath;
   private final Path systemDataPath;
+  private final Path systemLibsPath;
   private final Path sitesDataPath;
   private final Path commonsFontsPath;
   private final Path commonsLibsPath;
@@ -113,6 +114,8 @@ public final class Configuration {
       checkPath(systemPath);
       systemDataPath = systemPath.resolve("data");
       Files.createDirectories(systemDataPath);
+      systemLibsPath = systemDataPath.resolve("libs");
+      Files.createDirectories(systemLibsPath);
       commonSourcesPath = systemPath.resolve("sources");
       Files.createDirectories(commonSourcesPath);
       sitesDataPath = commonSourcesPath.resolve("data");
@@ -201,6 +204,10 @@ public final class Configuration {
 
   public Path getSystemDataPath() {
     return systemDataPath;
+  }
+
+  public Path getSystemLibsPath() {
+    return systemLibsPath;
   }
 
   public Path getCommonsFontsPath() {
@@ -312,7 +319,7 @@ public final class Configuration {
         throw new ConfigurationException("Can't create the file. " + e.getMessage());
       }
       try {
-        try ( FileWriter out = new FileWriter(filePath.toFile())) {
+        try (FileWriter out = new FileWriter(filePath.toFile())) {
           out.write("environment=production\n");
           out.write("database.driver=com.mysql.cj.jdbc.Driver\n");
           out.write("database.hostname=localhost\n");
@@ -345,5 +352,30 @@ public final class Configuration {
     } catch (SQLException e) {
       throw new ConfigurationException("Invalid configuration for database. " + e.getMessage(), e);
     }
+  }
+
+  public void checkAndCreateFile() throws ConfigurationException {
+    Utils.consoleOut("Checking configuration file path... ");
+    if (Configuration.getConfigurationFilePath() == null) {
+      Utils.consoleOutLn("Not found.");
+      if (System.console() != null) {
+        Utils.consoleOut("Create configuration file example? [Y/n]: ");
+        String createConfigurationFile = System.console().readLine();
+        if (createConfigurationFile.isBlank() || "y".equalsIgnoreCase(createConfigurationFile)) {
+          try {
+            Path configurationFilePath = Configuration.createFile();
+            Utils.consoleOutLn("Configure the file " + configurationFilePath + " and run the server again.");
+            System.exit(0);
+          } catch (ConfigurationException e) {
+            Utils.consoleOutLn(e.getMessage());
+            System.exit(1);
+          }
+        }
+      }
+      Logger.severe("Configuration file not found.");
+      System.exit(1);
+    }
+    Utils.consoleOutLn("OK");
+    Configuration.validateConfiguration();
   }
 }

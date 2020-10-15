@@ -11,28 +11,24 @@ import java.util.TreeMap;
  */
 public class Times {
 
-  private final Map<Integer, List<AbstractTime>> times = new TreeMap<>();
+  private final Map<Integer, List<AbstractTime>> map = new TreeMap<>();
 
   public void add(int id, AbstractTime time) {
-    List<AbstractTime> list = times.get(id);
+    List<AbstractTime> list = map.get(id);
     if (list == null) {
       list = new ArrayList<>();
-      times.put(id, list);
+      map.put(id, list);
     }
     list.add(time);
   }
 
-  Iterable<AbstractTime> getAll() {
+  public Iterable<AbstractTime> getAll() {
     List<AbstractTime> list = new ArrayList<>();
-    for (Map.Entry<Integer, List<AbstractTime>> entry : times.entrySet()) {
-      for (AbstractTime time : entry.getValue()) {
-        list.add(time);
-      }
-    }
+    map.entrySet().forEach(entry -> entry.getValue().forEach(time -> list.add(time)));
     return list;
   }
 
-  Iterable<AbstractTime> getByIdl(int id) {
-    return times.get(id);
+  public Iterable<AbstractTime> getByIdl(int id) {
+    return map.get(id);
   }
 }

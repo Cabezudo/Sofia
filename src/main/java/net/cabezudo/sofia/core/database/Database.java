@@ -55,7 +55,7 @@ public class Database {
   public static void createDatabase(String databaseName) throws SQLException {
     Logger.info("Create database.");
     Statement statement = null;
-    try ( Connection connection = getConnection(null, 5)) {
+    try (Connection connection = getConnection(null, 5)) {
       statement = connection.createStatement();
 
       String query = "CREATE DATABASE IF NOT EXISTS " + databaseName;
@@ -70,16 +70,10 @@ public class Database {
     }
   }
 
-  public static void drop() throws SQLException {
-    Database.drop("nutricionDigital");
-    Database.drop("hayQueComer");
-    Database.drop("sofia");
-  }
-
   public static void drop(String database) throws SQLException {
     Logger.info("Drop " + database + " database.");
     Connection connection = getConnection(null);
-    try ( Statement statement = connection.createStatement()) {
+    try (Statement statement = connection.createStatement()) {
       String query = "DROP DATABASE IF EXISTS " + database;
       statement.executeUpdate(query);
     }
@@ -89,7 +83,7 @@ public class Database {
     Connection connection = getConnection();
     File in = new File(Configuration.getInstance().get("database.backup.file.name"));
     Statement statement = null;
-    try ( Scanner scanner = new Scanner(in)) {
+    try (Scanner scanner = new Scanner(in)) {
 
       statement = connection.createStatement();
       statement.execute("SET FOREIGN_KEY_CHECKS=0");
@@ -123,7 +117,7 @@ public class Database {
   }
 
   public static void createTable(Connection connection, String query) throws SQLException {
-    try ( Statement statement = connection.createStatement()) {
+    try (Statement statement = connection.createStatement()) {
       Logger.debug("Create table using: " + query);
       statement.executeUpdate(query);
     }
@@ -132,7 +126,7 @@ public class Database {
   public static boolean exist(String databaseName) throws SQLException {
     ResultSet rs = null;
     boolean next;
-    try ( Connection connection = getConnection(null, 5);  Statement statement = connection.createStatement()) {
+    try (Connection connection = getConnection(null, 5); Statement statement = connection.createStatement()) {
       String query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + databaseName + "'";
       rs = statement.executeQuery(query);
       next = rs.next();

@@ -2,7 +2,9 @@ package net.cabezudo.sofia.core.schedule;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import net.cabezudo.sofia.core.catalogs.CatalogEntry;
 import net.cabezudo.sofia.core.catalogs.SimpleCatalogManager;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -33,6 +35,10 @@ public class TimeTypeManager extends SimpleCatalogManager<TimeType> {
 
   @Override
   public TimeType get(Connection connection, String name) throws SQLException {
-    return new TimeType(super.get(connection, name));
+    CatalogEntry catalogEntry = super.get(connection, name);
+    if (catalogEntry == null) {
+      throw new SofiaRuntimeException("Invalid time type '" + name + "'. Time type not found in database.");
+    }
+    return new TimeType(catalogEntry);
   }
 }

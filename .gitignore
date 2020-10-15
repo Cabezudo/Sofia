@@ -12,3 +12,4 @@ sql.tests.txt
 nbactions.xml
 /target/
 nb-configuration.xml
+/system/data/libs/**

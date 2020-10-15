@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.restaurants;
+package net.cabezudo.sofia.core.schedule;
 
 import java.util.ArrayList;
 import java.util.Iterator;

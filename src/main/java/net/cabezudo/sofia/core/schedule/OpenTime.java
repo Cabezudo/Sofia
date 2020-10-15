@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.restaurants;
+package net.cabezudo.sofia.core.schedule;
 
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
