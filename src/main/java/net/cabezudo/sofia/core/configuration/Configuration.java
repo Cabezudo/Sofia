@@ -13,8 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Properties;
+import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.DatabaseCreators;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -57,6 +59,10 @@ public final class Configuration {
   private static final String SERVER_PORT_PROPERTY_NAME = "server.port";
   private static final String SYSTEM_HOME_PROPERTY_NAME = "system.home";
 
+  public static Charset getDefaultCharset() {
+    return StandardCharsets.UTF_8;
+  }
+
   private final String environment;
   private final String databaseDriver;
   private final String databaseHostname;
@@ -78,6 +84,7 @@ public final class Configuration {
   private final Path sitesSourcesPath;
   private final Path commonSourcesPath;
   private final Path sitesPath;
+  private final APIConfiguration apiConfiguration = new APIConfiguration();
 
   public static void validateConfiguration() throws ConfigurationException {
     Utils.consoleOutLn("Validate environment configuration.");
@@ -250,6 +257,10 @@ public final class Configuration {
     return sitesDataPath;
   }
 
+  public APIConfiguration getAPIConfiguration() {
+    return apiConfiguration;
+  }
+
   public String getEMailPasswordRecoveryTemplateName() {
     return "eMailPasswordRecovery";
   }
@@ -342,7 +353,7 @@ public final class Configuration {
     return "/login.html";
   }
 
-  public Path getAPIConfigurationFile() {
+  public Path getSofiaAPIConfigurationPath() {
     return systemPath.resolve("apiDefinition.json");
   }
 
@@ -377,5 +388,15 @@ public final class Configuration {
     }
     Utils.consoleOutLn("OK");
     Configuration.validateConfiguration();
+  }
+
+  public void loadAPIConfiguration(DatabaseCreators dataCreators) throws ConfigurationException {
+    Path apiConfigurationFilePath = Configuration.getInstance().getSofiaAPIConfigurationPath();
+    Logger.debug("Load Sofia API configuration file: %s", apiConfigurationFilePath);
+    apiConfiguration.add(apiConfigurationFilePath);
+
+    for (DataCreator dataCreator : dataCreators) {
+      apiConfiguration.add(dataCreator);
+    }
   }
 }

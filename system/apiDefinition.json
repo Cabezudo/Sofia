@@ -67,18 +67,6 @@
     {
       "path": "/api/v1/clients/{clientId}",
       "class": "net.cabezudo.sofia.clients.DetailClientsService"
-    },
-    {
-      "path": "/api/v1/restaurants",
-      "class": "net.cabezudo.hayquecomer.restaurants.RestaurantListService"
-    },
-    {
-      "path": "/api/v1/restaurants/{path}",
-      "class": "net.cabezudo.hayquecomer.restaurants.RestaurantDataService"
-    },
-    {
-      "path": "/api/v1/restaurants/{path}/menu",
-      "class": "net.cabezudo.hayquecomer.food.MenuService"
     }
   ],
   "post": [
@@ -151,26 +139,6 @@
       "class": ""
     },
     {
-      "path": "/api/v1/restaurant",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}/person/{personId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}/dish",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}/year/{year}/month/{month}/day/{day}/course",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}/year/{year}/month/{month}/day/{day}/course/{courseId}",
-      "class": ""
-    },
-    {
       "path": "/api/v1/course/{courseId}/dish/{dishId}",
       "class": ""
     }
@@ -193,19 +161,11 @@
       "class": ""
     },
     {
-      "path": "/api/v1/restaurant/{restaurantId}",
-      "class": ""
-    },
-    {
       "path": "/api/v1/dish/{dishId}",
       "class": ""
     },
     {
       "path": "/api/v1/course/{courseId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}/ingredient/{ingredientId}",
       "class": ""
     },
     {
@@ -240,18 +200,6 @@
     },
     {
       "path": "/api/v1/enterprise/{enterpriseId}/person/{personId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}/person/{personId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/restaurant/{restaurantId}/dish/{dishId}",
       "class": ""
     },
     {

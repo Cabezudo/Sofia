@@ -1,9 +1,11 @@
 package net.cabezudo.sofia.core;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
@@ -15,7 +17,11 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
+import net.cabezudo.json.JSON;
+import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DataCreationException;
@@ -186,6 +192,8 @@ class StartOptionsHelper {
     Path jarFileName = systemLibsPath.resolve("hay-que-comer-com-back-1.0-SNAPSHOT.jar");
     Logger.debug("Check for %s.", jarFileName);
 
+    DataCreator databaseCreator = null;
+    JSONObject jsonAPIDefinition = null;
     try (JarFile jarFile = new JarFile(jarFileName.toFile());) {
 
       Enumeration<JarEntry> entries = jarFile.entries();
@@ -193,6 +201,17 @@ class StartOptionsHelper {
         JarEntry jarEntry = entries.nextElement();
         String fileName = jarEntry.getName();
         ZipEntry zipEntry = jarFile.getEntry(fileName);
+        if ("META-INF/apiDefinition.json".equals(fileName)) {
+          InputStream is = jarFile.getInputStream(zipEntry);
+          try (InputStreamReader isr = new InputStreamReader(is)) {
+            String apiDefinition = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
+            try {
+              jsonAPIDefinition = JSON.parse(apiDefinition).toJSONObject();
+            } catch (JSONParseException e) {
+              throw new ConfigurationException("Can't parse the JAR entry META-INF/apiDefinition.json. " + e.getMessage(), e);
+            }
+          }
+        }
         if (fileName.endsWith(".class")) {
           Path classFilePath = systemClassesPath.resolve(fileName);
           Path directoryName = classFilePath.getParent();
@@ -221,7 +240,6 @@ class StartOptionsHelper {
           }
           if (clazz.isAnnotationPresent(DatabaseDataCreator.class)) {
             Logger.info("Found DatabaseDataCreator class %s.", clazz.getName());
-            DataCreator databaseCreator;
             try {
               databaseCreator = (DataCreator) clazz.getDeclaredConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -235,6 +253,9 @@ class StartOptionsHelper {
             databaseCreators.add(databaseCreator);
           }
         }
+      }
+      if (databaseCreator != null && jsonAPIDefinition != null) {
+        databaseCreator.addAPIConfiguration(jsonAPIDefinition);
       }
     }
     return databaseCreators;

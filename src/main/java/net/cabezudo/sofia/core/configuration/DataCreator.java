@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.configuration;
 
 import java.sql.SQLException;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -11,6 +12,7 @@ import net.cabezudo.sofia.logger.Logger;
 public abstract class DataCreator {
 
   private boolean databaseCreated = false;
+  private final JSONObject jsonAPIConfiguration = new JSONObject();
 
   public abstract void dropDatabase() throws DataCreationException;
 
@@ -64,4 +66,12 @@ public abstract class DataCreator {
   public abstract void createDefaultData() throws DataCreationException;
 
   public abstract void createTestData() throws DataCreationException;
+
+  public void addAPIConfiguration(JSONObject jsonObject) {
+    jsonAPIConfiguration.merge(jsonObject);
+  }
+
+  public JSONObject getAPIConfiguration() {
+    return jsonAPIConfiguration;
+  }
 }
