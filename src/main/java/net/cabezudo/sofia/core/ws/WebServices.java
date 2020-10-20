@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
-import net.cabezudo.json.values.JSONArray;
-import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.APIEntries;
+import net.cabezudo.sofia.core.APIEntry;
 import net.cabezudo.sofia.logger.Logger;
 import org.eclipse.jetty.http.HttpMethod;
 
@@ -18,14 +17,13 @@ abstract class WebServices implements Iterable<WebService> {
 
   private final List<WebService> methods = new ArrayList<>();
 
-  void add(JSONArray jsonArray) throws PropertyNotExistException, ClassNotFoundException {
-    if (jsonArray == null) {
+  void add(APIEntries apiEntries) throws PropertyNotExistException, ClassNotFoundException {
+    if (apiEntries == null) {
       return;
     }
-    for (JSONValue jsonValue : jsonArray) {
-      JSONObject jsonObject = jsonValue.toJSONObject();
-      String path = jsonObject.getString("path");
-      String className = jsonObject.getString("class");
+    for (APIEntry apiEntry : apiEntries) {
+      String path = apiEntry.getPath();
+      String className = apiEntry.getClassName();
       if (className.isEmpty()) {
         Logger.debug("Skip %s %s", getMethod(), path);
       } else {

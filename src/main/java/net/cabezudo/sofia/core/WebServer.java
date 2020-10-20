@@ -13,10 +13,8 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
-import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
-import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DataCreationException;
@@ -181,6 +179,8 @@ public class WebServer {
       System.exit(0);
     }
 
+    Configuration.getInstance().loadAPIConfiguration(defaultDataCreators);
+
     Logger.info("Starting server...");
     int port = Configuration.getInstance().getServerPort();
     try {
@@ -204,16 +204,7 @@ public class WebServer {
   }
 
   private Handler setServer(Site site) throws ServerException, ConfigurationException {
-    Path apiConfigurationFilePath = Configuration.getInstance().getAPIConfigurationFile();
-    Logger.debug("Load API configuration file: %s", apiConfigurationFilePath);
-    JSONObject apiConfiguration;
-    try {
-      apiConfiguration = JSON.parse(apiConfigurationFilePath, Configuration.getInstance().getEncoding().name()).toJSONObject();
-    } catch (JSONParseException e) {
-      throw new ConfigurationException("Error in api configuration file " + apiConfigurationFilePath + ". " + e.getMessage(), e);
-    } catch (IOException e) {
-      throw new ServerException(e);
-    }
+    APIConfiguration apiConfiguration = Configuration.getInstance().getAPIConfiguration();
     try {
       WebServicesUniverse.getInstance().add(apiConfiguration);
     } catch (ClassNotFoundException | PropertyNotExistException e) {

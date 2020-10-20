@@ -5,10 +5,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
-import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -27,14 +27,15 @@ public class WebServicesUniverse {
   }
 
   private WebServicesUniverse() {
-    // TODO nothing to do here
+    // Nothing to do here
   }
 
-  public void add(JSONObject apiConfiguration) throws PropertyNotExistException, ClassNotFoundException {
-    get.add(apiConfiguration.getNullJSONArray("get"));
-    post.add(apiConfiguration.getNullJSONArray("post"));
-    delete.add(apiConfiguration.getNullJSONArray("delete"));
-    put.add(apiConfiguration.getNullJSONArray("put"));
+// TODO add web services for site using all the site hostnames
+  public void add(APIConfiguration apiConfiguration) throws PropertyNotExistException, ClassNotFoundException {
+    get.add(apiConfiguration.get("get"));
+    post.add(apiConfiguration.get("post"));
+    delete.add(apiConfiguration.get("delete"));
+    put.add(apiConfiguration.get("put"));
   }
 
   public void runGET(HttpServletRequest request, HttpServletResponse response, URLTokens tokens)
