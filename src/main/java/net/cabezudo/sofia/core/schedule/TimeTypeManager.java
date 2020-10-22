@@ -2,6 +2,8 @@ package net.cabezudo.sofia.core.schedule;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import net.cabezudo.sofia.core.cache.Cache;
+import net.cabezudo.sofia.core.cache.CacheManager;
 import net.cabezudo.sofia.core.catalogs.CatalogEntry;
 import net.cabezudo.sofia.core.catalogs.SimpleCatalogManager;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
@@ -29,8 +31,14 @@ public class TimeTypeManager extends SimpleCatalogManager<TimeType> {
 
   @Override
   public TimeType get(String name) throws SQLException {
-    // TODO add a cache here
-    return new TimeType(super.get(name));
+    Cache<String, TimeType> cache = CacheManager.getInstance().getCache("TimeType");
+    TimeType timeType = cache.get(name);
+    if (timeType == null) {
+      timeType = new TimeType(super.get(name));
+      cache.put(name, timeType);
+      return timeType;
+    }
+    return timeType;
   }
 
   @Override

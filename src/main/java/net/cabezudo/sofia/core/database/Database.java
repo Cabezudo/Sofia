@@ -116,6 +116,14 @@ public class Database {
     }
   }
 
+  public static void createTable(Connection connection, String[] queries) throws SQLException {
+    connection.setAutoCommit(false);
+    for (String query : queries) {
+      createTable(connection, query);
+    }
+    connection.setAutoCommit(true);
+  }
+
   public static void createTable(Connection connection, String query) throws SQLException {
     try (Statement statement = connection.createStatement()) {
       Logger.debug("Create table using: " + query);
