@@ -15,7 +15,7 @@ import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
+import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.core.ws.responses.Response;
 
 /**
@@ -57,12 +57,12 @@ public abstract class Service<T extends Response> {
     }
   }
 
-  protected void setClientData(ClientData clientData) {
+  protected void setClientData(WebUserData clientData) {
     request.getSession().setAttribute("clientData", clientData);
   }
 
-  protected ClientData getClientData() throws SQLException {
-    ClientData clientData = (ClientData) request.getSession().getAttribute("clientData");
+  protected WebUserData getClientData() throws SQLException {
+    WebUserData clientData = (WebUserData) request.getSession().getAttribute("clientData");
     if (clientData == null) {
       WebUserDataManager clientDataManager = WebUserDataManager.getInstance();
       clientData = clientDataManager.get(request);

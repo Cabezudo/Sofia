@@ -24,7 +24,7 @@ import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
 import net.cabezudo.sofia.core.users.permission.PermissionTypeManager;
 import net.cabezudo.sofia.core.users.profiles.PermissionType;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
+import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -47,7 +47,7 @@ public class HTMLAuthorizationFilter implements Filter {
       SofiaHTMLServletRequest request = (SofiaHTMLServletRequest) req;
       HttpServletResponse response = (HttpServletResponse) res;
 
-      ClientData clientData = (ClientData) request.getSession().getAttribute("clientData");
+      WebUserData clientData = (WebUserData) request.getSession().getAttribute("clientData");
       User user = null;
       try {
         if (clientData != null) {

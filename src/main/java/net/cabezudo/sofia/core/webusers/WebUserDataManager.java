@@ -4,12 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.logger.Logger;
@@ -32,8 +34,9 @@ public class WebUserDataManager {
     return INSTANCE;
   }
 
-  public class ClientData {
+  public class WebUserData {
 
+    private final int id;
     private final String sessionId;
     private final long failLoginResponseTime;
     private final String languageCode;
@@ -43,11 +46,12 @@ public class WebUserDataManager {
     private User user;
     private JSONObject jsonObject;
 
-    private ClientData(String sessionId, long failLoginResponseTime, String languageCode, String languageCountryCode) {
-      this(sessionId, failLoginResponseTime, languageCode, languageCountryCode, 0);
+    private WebUserData(int id, String sessionId, long failLoginResponseTime, String languageCode, String languageCountryCode) {
+      this(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, 0);
     }
 
-    private ClientData(String sessionId, long failLoginResponseTime, String languageCode, String languageCountryCode, int userId) {
+    private WebUserData(int id, String sessionId, long failLoginResponseTime, String languageCode, String languageCountryCode, int userId) {
+      this.id = id;
       this.sessionId = sessionId;
       this.failLoginResponseTime = failLoginResponseTime;
       this.languageCode = languageCode;
@@ -55,8 +59,8 @@ public class WebUserDataManager {
       this.userId = userId;
     }
 
-    private ClientData(String sessionId) {
-      this(sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, "es", "MX");
+    public int getId() {
+      return id;
     }
 
     public String getSessionId() {
@@ -83,6 +87,7 @@ public class WebUserDataManager {
       if (jsonObject == null) {
         jsonObject = new JSONObject();
 
+        jsonObject.add(new JSONPair("id", id));
         jsonObject.add(new JSONPair("sessionId", sessionId));
         jsonObject.add(new JSONPair("failLoginResponseTime", failLoginResponseTime));
         JSONObject jsonLanguageObject = new JSONObject();
@@ -101,9 +106,9 @@ public class WebUserDataManager {
       return jsonObject.toString();
     }
 
-    private ClientData setLoginResponseTime(long failLoginResponseTime) {
+    private WebUserData setLoginResponseTime(long failLoginResponseTime) {
       jsonObject = null;
-      return new ClientData(sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
+      return new WebUserData(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
     }
 
     public User getUser() throws SQLException {
@@ -124,41 +129,46 @@ public class WebUserDataManager {
     }
   }
 
-  public synchronized ClientData get(HttpServletRequest request) throws SQLException {
+  public synchronized WebUserData get(HttpServletRequest request) throws SQLException {
     HttpSession session = request.getSession();
     String sessionId = session.getId();
 
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       connection.setAutoCommit(false);
-      ClientData clientData = get(connection, sessionId);
+      WebUserData clientData = get(connection, sessionId);
 
       if (clientData == null) {
-        clientData = new ClientData(sessionId);
-        insert(connection, clientData);
+        clientData = insert(connection, sessionId);
       }
       connection.commit();
       return clientData;
     }
   }
 
-  public ClientData resetFailLoginResponseTime(ClientData clientData) throws SQLException {
+  public WebUserData resetFailLoginResponseTime(WebUserData clientData) throws SQLException {
     clientData = clientData.setLoginResponseTime(INITIAL_FAIL_LOGIN_RESPONSE_TIME);
     update("failLoginResponseTime", clientData.failLoginResponseTime, clientData.getSessionId());
     return clientData;
   }
 
-  public ClientData incrementFailLoginResponseTime(ClientData clientData) throws SQLException {
+  public WebUserData incrementFailLoginResponseTime(WebUserData clientData) throws SQLException {
     clientData = clientData.setLoginResponseTime(clientData.getFailLoginResponseTime() * 2);
     update("failLoginResponseTime", clientData.failLoginResponseTime, clientData.getSessionId());
     return clientData;
   }
 
-  public ClientData get(Connection connection, String sessionId) throws SQLException {
+  public WebUserData get(String sessionId) throws SQLException {
+    try (Connection connection = Database.getConnection()) {
+      return get(connection, sessionId);
+    }
+  }
+
+  public WebUserData get(Connection connection, String sessionId) throws SQLException {
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
       String query = "SELECT "
-              + "`failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
+              + "id, `failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
               + "FROM " + WebUserDataTable.NAME + " WHERE sessionId = ?";
       ps = connection.prepareStatement(query);
       ps.setString(1, sessionId);
@@ -166,12 +176,12 @@ public class WebUserDataManager {
       rs = ps.executeQuery();
       if (rs.next()) {
         Logger.fine("Client data FOUND using " + sessionId + ".");
+        int id = rs.getInt("id");
         long failLoginResponseTime = rs.getLong("failLoginResponseTime");
         String languageCode = rs.getString("languageCode");
         String languageCountryCode = rs.getString("languageCountryCode");
         int userId = rs.getInt("user");
-        ClientData clientData = new ClientData(sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
-        return clientData;
+        return new WebUserData(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
       }
       Logger.fine("Client data NOT FOUND using " + sessionId + ".");
       return null;
@@ -185,40 +195,85 @@ public class WebUserDataManager {
     }
   }
 
-  public ClientData get(String sessionId) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
-      return get(connection, sessionId);
+  public WebUserData get(int id) throws SQLException {
+    try (Connection connection = Database.getConnection()) {
+      return get(connection, id);
     }
   }
 
-  private void insert(Connection connection, ClientData clientData) throws SQLException {
+  public WebUserData get(Connection connection, int id) throws SQLException {
     PreparedStatement ps = null;
+    ResultSet rs = null;
     try {
-      String query = "INSERT INTO " + WebUserDataTable.NAME + " (`sessionId`, `failLoginResponseTime`, `languageCode`, `languageCountryCode`) VALUES (?, ?, ?, ?)";
+      String query = "SELECT "
+              + "sessionId, `failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
+              + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " WHERE id = ?";
       ps = connection.prepareStatement(query);
-      ps.setString(1, clientData.sessionId);
-      ps.setLong(2, clientData.failLoginResponseTime);
-      ps.setString(3, clientData.languageCode);
-      ps.setString(4, clientData.languageCountryCode);
-
+      ps.setInt(1, id);
       Logger.fine(ps);
-      ps.executeUpdate();
+      rs = ps.executeQuery();
+      if (rs.next()) {
+        Logger.fine("Client data FOUND using " + id + ".");
+        String sessionId = rs.getString("sessionId");
+        long failLoginResponseTime = rs.getLong("failLoginResponseTime");
+        String languageCode = rs.getString("languageCode");
+        String languageCountryCode = rs.getString("languageCountryCode");
+        int userId = rs.getInt("user");
+        return new WebUserData(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
+      }
+      Logger.fine("Client data NOT FOUND using " + id + ".");
+      return null;
     } finally {
+      if (rs != null) {
+        rs.close();
+      }
       if (ps != null) {
         ps.close();
       }
     }
   }
 
-  public void insert(ClientData clientData) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
-      insert(connection, clientData);
+  private WebUserData insert(Connection connection, String sessionId) throws SQLException {
+    PreparedStatement ps = null;
+    ResultSet rs = null;
+    try {
+      String query = "INSERT INTO " + WebUserDataTable.NAME + " (`sessionId`, `failLoginResponseTime`, `languageCode`, `languageCountryCode`) VALUES (?, ?, ?, ?)";
+      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+      ps.setString(1, sessionId);
+      // TODO take the default values from configuration database for the site
+      ps.setLong(2, INITIAL_FAIL_LOGIN_RESPONSE_TIME);
+      ps.setString(3, "es");
+      ps.setString(4, "MX");
+
+      Logger.fine(ps);
+      ps.executeUpdate();
+
+      rs = ps.getGeneratedKeys();
+      if (rs.next()) {
+        int id = rs.getInt(1);
+        return new WebUserData(id, sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, "es", "MX");
+      }
+      throw new SofiaRuntimeException("Can't get the generated key");
+
+    } finally {
+      if (rs != null) {
+        rs.close();
+      }
+      if (ps != null) {
+        ps.close();
+      }
+    }
+  }
+
+  public void insert(String sessionId) throws SQLException {
+    try (Connection connection = Database.getConnection()) {
+      insert(connection, sessionId);
     }
   }
 
   private void update(String column, Object o, String sessionId) throws SQLException {
     PreparedStatement ps = null;
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ? WHERE sessionId = ?";
       ps = connection.prepareStatement(query);
       ps.setObject(1, o);
