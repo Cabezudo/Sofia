@@ -34,6 +34,10 @@
   color: #fff;
 }
 
+.button:not([disabled]):hover {
+  cursor: pointer;
+}
+
 .button[disabled] {
   color: lightgray;
   background-color: white;
@@ -46,7 +50,6 @@
 
 .blueButton:not([disabled]):hover {
   background-color: #0023D0;
-  cursor: pointer;
 }
 
 .redButton {
@@ -63,6 +66,14 @@
 
 .greenButton:not([disabled]):hover {
   background-color: #00D015;
+}
+
+.blackButton {
+  background-color: #000;
+}
+
+.blackButton:not([disabled]):hover {
+  background-color: #333;
 }
 
 @media all and ( min-width: 480px ) {

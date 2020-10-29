@@ -17,7 +17,7 @@ public class LogoutHolder extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
-      WebUserDataManager.ClientData clientData = (WebUserDataManager.ClientData) request.getSession().getAttribute("clientData");
+      WebUserDataManager.WebUserData clientData = (WebUserDataManager.WebUserData) request.getSession().getAttribute("clientData");
       if (clientData != null) {
         clientData.setUser(null);
       }

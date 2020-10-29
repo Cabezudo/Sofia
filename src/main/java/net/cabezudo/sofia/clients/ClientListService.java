@@ -9,7 +9,7 @@ import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
+import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 import net.cabezudo.sofia.logger.Logger;
@@ -27,7 +27,7 @@ public class ClientListService extends ListService {
   @Override
   public void execute() throws ServletException {
 
-    ClientData clientData;
+    WebUserData clientData;
     try {
       clientData = getClientData();
     } catch (SQLException e) {

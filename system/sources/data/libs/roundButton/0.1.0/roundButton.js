@@ -5,64 +5,69 @@
 
 /* global Core */
 
-const roundButton = ({id = null, element = null, type = null, enabled = true, onClick = null, onResponse = null} = {}) => {
-  const validateOptions = () => {
-    this.element = Core.validateIdOrElement(id, element);
-    if (type === null) {
-      throw Error('You must specify a button type.');
-    }
-  };
-  const createGUI = () => {
-    switch (type) {
-      case 'cross':
-        this.element.className = "roundButton crossButton";
-        this.element.innerHTML = `<div class="drawContainer"><div class="patty"></div><div class="patty"></div></div`;
-        break;
-      case 'add':
-        this.element.className = "roundButton addButton";
-        this.element.innerHTML = `<div class="drawContainer"><div class="patty"></div><div class="patty"></div></div`;
-        break;
-      case 'remove':
-        this.element.className = "roundButton removeButton";
-        this.element.innerHTML = `<div class="drawContainer"><div class="patty"></div></div></div`;
-        break;
-      default:
-        throw new Error(`Invalid button Type: ${type}`);
-    }
+class RoundButton {
+  constructor(p = {id = null, element = null, type = null, enabled = true, onClick = null, onResponse = null} = {}) {
+    this.enabled = p.enabled;
 
-    if (!enabled) {
-      this.element.setAttribute('disabled', true);
-    }
-  };
-  const assignTriggers = () => {
-    this.element.addEventListener('click', event => {
-      if (this.element.getAttribute('disabled')) {
-        return;
+    const validateOptions = () => {
+      this.element = Core.validateIdOrElement(p.id, p.element);
+      if (p.type === null) {
+        throw Error('You must specify a button type.');
       }
-      if (event.button === 0 && Core.isFunction(onClick)) {
-        this.element.setAttribute('disabled', true);
-        onClick();
+    };
+    const createGUI = () => {
+      switch (p.type) {
+        case 'cross':
+          this.element.className = "roundButton crossButton";
+          this.element.innerHTML = `<div class="drawContainer"><div class="patty"></div><div class="patty"></div></div`;
+          break;
+        case 'add':
+          this.element.className = "roundButton addButton";
+          this.element.innerHTML = `<div class="drawContainer"><div class="patty"></div><div class="patty"></div></div`;
+          break;
+        case 'remove':
+          this.element.className = "roundButton removeButton";
+          this.element.innerHTML = `<div class="drawContainer"><div class="patty"></div></div></div`;
+          break;
+        default:
+          throw new Error(`Invalid button Type: ${p.type}`);
       }
-    });
-  };
-  this.disable = () => {
+
+      if (!this.enabled) {
+        this.disable();
+      }
+    };
+    const assignTriggers = () => {
+      this.element.addEventListener('click', event => {
+        if (this.element.getAttribute('disabled')) {
+          return;
+        }
+        if (event.button === 0 && Core.isFunction(p.onClick)) {
+          this.disable();
+          p.onClick();
+        }
+      });
+    };
+    validateOptions();
+    createGUI();
+    assignTriggers();
+  }
+
+  disable() {
     this.element.setAttribute('disabled', true);
-  };
-  this.enable = () => {
-    this.element.removeAttribute('disabled');
-  };
+  }
 
-  validateOptions();
-  createGUI();
-  assignTriggers();
-  return this;
-};
+  enable() {
+    this.element.removeAttribute('disabled');
+  }
+}
+
 const crossRoundButton = ({ id = null, element = null, enabled = true, onClick = null, onResponse = null } = {}) => {
-  return roundButton({id: id, element: element, type: 'cross', enabled: enabled, onClick: onClick, onResponse: onResponse});
+  return new RoundButton({id: id, element: element, type: 'cross', enabled: enabled, onClick: onClick, onResponse: onResponse});
 };
 const addRoundButton = ({ id = null, element = null, enabled = true, onClick = null, onResponse = null } = {}) => {
-  return roundButton({id: id, element: element, type: 'add', enabled: enabled, onClick: onClick, onResponse: onResponse});
+  return new RoundButton({id: id, element: element, type: 'add', enabled: enabled, onClick: onClick, onResponse: onResponse});
 };
 const removeRoundButton = ({ id = null, element = null, enabled = true, onClick = null, onResponse = null } = {}) => {
-  return roundButton({id: id, element: element, type: 'remove', enabled: enabled, onClick: onClick, onResponse: onResponse});
+  return new RoundButton({id: id, element: element, type: 'remove', enabled: enabled, onClick: onClick, onResponse: onResponse});
 };
