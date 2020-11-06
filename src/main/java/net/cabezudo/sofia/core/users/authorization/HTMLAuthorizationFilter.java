@@ -47,12 +47,12 @@ public class HTMLAuthorizationFilter implements Filter {
       SofiaHTMLServletRequest request = (SofiaHTMLServletRequest) req;
       HttpServletResponse response = (HttpServletResponse) res;
 
-      WebUserData clientData = (WebUserData) request.getSession().getAttribute("clientData");
+      WebUserData webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
       User user = null;
       try {
-        if (clientData != null) {
-          Logger.fine("User FOUND in client data.");
-          user = clientData.getUser();
+        if (webUserData != null) {
+          Logger.fine("User FOUND in web user data.");
+          user = webUserData.getUser();
         } else {
           Logger.fine("User NOT FOUND in client data.");
         }
@@ -63,11 +63,11 @@ public class HTMLAuthorizationFilter implements Filter {
             String email = userParameterList.get(0);
             Logger.fine("User email FOUND in url parameters: " + email);
             user = UserManager.getInstance().getByEMail(email, site);
-            if (clientData == null) {
-              clientData = WebUserDataManager.getInstance().get(request);
+            if (webUserData == null) {
+              webUserData = WebUserDataManager.getInstance().get(request);
             }
-            clientData.setUser(user);
-            request.getSession().setAttribute("clientData", clientData);
+            webUserData.setUser(user);
+            request.getSession().setAttribute("webUserData", webUserData);
           }
         }
       } catch (SQLException e) {

@@ -135,26 +135,26 @@ public class WebUserDataManager {
 
     try (Connection connection = Database.getConnection()) {
       connection.setAutoCommit(false);
-      WebUserData clientData = get(connection, sessionId);
+      WebUserData webUserData = get(connection, sessionId);
 
-      if (clientData == null) {
-        clientData = insert(connection, sessionId);
+      if (webUserData == null) {
+        webUserData = insert(connection, sessionId);
       }
       connection.commit();
-      return clientData;
+      return webUserData;
     }
   }
 
-  public WebUserData resetFailLoginResponseTime(WebUserData clientData) throws SQLException {
-    clientData = clientData.setLoginResponseTime(INITIAL_FAIL_LOGIN_RESPONSE_TIME);
-    update("failLoginResponseTime", clientData.failLoginResponseTime, clientData.getSessionId());
-    return clientData;
+  public WebUserData resetFailLoginResponseTime(WebUserData webUserData) throws SQLException {
+    webUserData = webUserData.setLoginResponseTime(INITIAL_FAIL_LOGIN_RESPONSE_TIME);
+    update("failLoginResponseTime", webUserData.failLoginResponseTime, webUserData.getSessionId());
+    return webUserData;
   }
 
-  public WebUserData incrementFailLoginResponseTime(WebUserData clientData) throws SQLException {
-    clientData = clientData.setLoginResponseTime(clientData.getFailLoginResponseTime() * 2);
-    update("failLoginResponseTime", clientData.failLoginResponseTime, clientData.getSessionId());
-    return clientData;
+  public WebUserData incrementFailLoginResponseTime(WebUserData webUserData) throws SQLException {
+    webUserData = webUserData.setLoginResponseTime(webUserData.getFailLoginResponseTime() * 2);
+    update("failLoginResponseTime", webUserData.failLoginResponseTime, webUserData.getSessionId());
+    return webUserData;
   }
 
   public WebUserData get(String sessionId) throws SQLException {

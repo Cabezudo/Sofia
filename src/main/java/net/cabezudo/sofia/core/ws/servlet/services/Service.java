@@ -51,24 +51,24 @@ public abstract class Service<T extends Response> {
 
   protected void sendResponse(T response) throws ServletException {
     try {
-      out.print(response.toJSON(getSite(), getClientData().getLocale()));
+      out.print(response.toJSON(getSite(), getWebUserData().getLocale()));
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     }
   }
 
-  protected void setClientData(WebUserData clientData) {
-    request.getSession().setAttribute("clientData", clientData);
+  protected void setWebUserData(WebUserData webUserData) {
+    request.getSession().setAttribute("webUserData", webUserData);
   }
 
-  protected WebUserData getClientData() throws SQLException {
-    WebUserData clientData = (WebUserData) request.getSession().getAttribute("clientData");
-    if (clientData == null) {
-      WebUserDataManager clientDataManager = WebUserDataManager.getInstance();
-      clientData = clientDataManager.get(request);
-      setClientData(clientData);
+  protected WebUserData getWebUserData() throws SQLException {
+    WebUserData webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
+    if (webUserData == null) {
+      WebUserDataManager webUserDataManager = WebUserDataManager.getInstance();
+      webUserData = webUserDataManager.get(request);
+      setWebUserData(webUserData);
     }
-    return clientData;
+    return webUserData;
   }
 
   private String readPayload() throws ServletException {

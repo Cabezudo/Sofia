@@ -19,9 +19,9 @@ import net.cabezudo.sofia.emails.EMailNotExistException;
 public class VariablesJSServlet {
 
   public String getScript(HttpServletRequest request) throws ServletException, IOException, SQLException, EMailNotExistException {
-    WebUserData clientData = WebUserDataManager.getInstance().get(request);
+    WebUserData webUserData = WebUserDataManager.getInstance().get(request);
 
-    User user = clientData.getUser();
+    User user = webUserData.getUser();
 
     String requestURI = request.getRequestURI();
 

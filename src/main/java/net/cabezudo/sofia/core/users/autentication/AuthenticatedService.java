@@ -23,7 +23,7 @@ public class AuthenticatedService extends Service {
   public void execute() throws ServletException {
     try {
       Logger.fine("Call the web service to return if the user is logged");
-      if (getClientData().isLogged()) {
+      if (getWebUserData().isLogged()) {
         sendResponse(new Response(Response.Status.OK, Response.Type.ACTION, "login.logged"));
       } else {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, "login.notLogged"));
