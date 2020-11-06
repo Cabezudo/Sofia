@@ -242,9 +242,9 @@ const Core = {
       }
     }
   },
-  sendGet: (url, originElement) => {
-    if (!originElement) {
-      throw new Error(`Invalid origin for sendGet: ${originElement}`);
+  sendGet: (url, targetElement) => {
+    if (!targetElement) {
+      throw new Error(`Invalid origin for sendGet: ${targetElement}`);
     }
     const requestId = Core.getNextRequestId();
     fetch(url, {
@@ -260,8 +260,20 @@ const Core = {
                 let jsonData;
                 try {
                   jsonData = JSON.parse(text);
+                  if (!text) {
+                    throw new Error(`Empty response.`);
+                  }
                   jsonData.requestId = requestId;
-                  Core.trigger(originElement, 'response', jsonData);
+                  do {
+                    if (Core.isFunction(targetElement)) {
+                      targetElement(jsonData);
+                      break;
+                    }
+                    if (targetElement) {
+                      Core.trigger(targetElement, 'response', jsonData);
+                      break;
+                    }
+                  } while (false);
                 } catch (error) {
                   console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
                 }
@@ -272,7 +284,7 @@ const Core = {
     return {requestId}
     ;
   },
-  sendDelete: (url, origin) => {
+  sendDelete: (url, targetElement) => {
     const requestId = Core.getNextRequestId();
     fetch(url, {
       method: "DELETE",
@@ -291,10 +303,20 @@ const Core = {
                 let jsonData;
                 try {
                   jsonData = JSON.parse(text);
-                  jsonData.requestId = requestId;
-                  if (origin) {
-                    Core.trigger(origin, 'response', jsonData);
+                  if (!text) {
+                    throw new Error(`Empty response.`);
                   }
+                  jsonData.requestId = requestId;
+                  do {
+                    if (Core.isFunction(targetElement)) {
+                      targetElement(jsonData);
+                      break;
+                    }
+                    if (targetElement) {
+                      Core.trigger(targetElement, 'response', jsonData);
+                      break;
+                    }
+                  } while (false);
                 } catch (error) {
                   console.log(`%cCore : sendDelete : ${error.message}\n${text}`, 'color: red');
                 }
@@ -305,7 +327,7 @@ const Core = {
     return {requestId}
     ;
   },
-  sendPost: (url, origin, data) => {
+  sendPost: (url, targetElement, data) => {
     const requestId = Core.getNextRequestId();
     let body;
     if (typeof data === 'object') {
@@ -332,22 +354,31 @@ const Core = {
                 response.text().then(text => {
                   let jsonData;
                   try {
+                    if (!text) {
+                      throw new Error(`Empty response.`);
+                    }
                     jsonData = JSON.parse(text);
                     jsonData.requestId = requestId;
-                    if (origin) {
-                      Core.trigger(origin, 'response', jsonData);
-                    }
+                    do {
+                      if (Core.isFunction(targetElement)) {
+                        targetElement(jsonData);
+                        break;
+                      }
+                      if (targetElement) {
+                        Core.trigger(targetElement, 'response', jsonData);
+                        break;
+                      }
+                    } while (false);
                   } catch (error) {
-                    console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
+                    console.log(`%cCore : sendPost : ${error.message}\n${text}`, 'color: red');
                   }
-                })
-                        ;
+                });
               }
             })
             ;
     return {requestId};
   },
-  sendPut: (url, origin, formObject) => {
+  sendPut: (url, targetElement, formObject) => {
     const requestId = Core.getNextRequestId();
     fetch(url, {
       method: "PUT",
@@ -367,12 +398,22 @@ const Core = {
                 let jsonData;
                 try {
                   jsonData = JSON.parse(text);
-                  jsonData.requestId = requestId;
-                  if (origin) {
-                    Core.trigger(origin, 'response', jsonData);
+                  if (!text) {
+                    throw new Error(`Empty response.`);
                   }
+                  jsonData.requestId = requestId;
+                  do {
+                    if (Core.isFunction(targetElement)) {
+                      targetElement(jsonData);
+                      break;
+                    }
+                    if (targetElement) {
+                      Core.trigger(targetElement, 'response', jsonData);
+                      break;
+                    }
+                  } while (false);
                 } catch (error) {
-                  console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
+                  console.log(`%cCore : sendPut : ${error.message}\n${text}`, 'color: red');
                 }
               });
             })
@@ -399,22 +440,16 @@ const Core = {
     element.hidden = false;
     Core.trigger(element, 'show');
     Core.trigger(window, 'show', {id});
-//    const display = element.getAttribute('lastDisplay');
-//    if (display) {
-//      element.style.display = display;
-//    } else {
-//      element.style.display = '';
-//    }
   },
   tests: {
     add: testFunction => {
       Core.testFunctions.push(testFunction);
     }
   },
-  trigger: (target, eventName, detail) => {
-    console.log(`Core : trigger : Event ${eventName} to ${target.id} ${detail === undefined ? 'with no data' : `using data ${JSON.stringify(detail)}`}.`);
+  trigger: (targetElement, eventName, detail) => {
+    console.log(`Core : trigger : Event ${eventName} to ${targetElement.id} ${detail === undefined ? 'with no data' : `using data ${JSON.stringify(detail)}`}.`);
     const event = new CustomEvent(eventName, {detail});
-    target.dispatchEvent(event);
+    targetElement.dispatchEvent(event);
   },
   validateById: (id) => {
     if (id === null) {
