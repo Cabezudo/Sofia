@@ -362,7 +362,7 @@ public class WebServer {
     Logger.info("Server stoped.");
   }
 
-  private void start() throws ServerException, IOException, ConfigurationException {
+  public void start() throws ServerException, IOException, ConfigurationException {
     HandlerCollection handlerCollection = new HandlerCollection();
 
     SiteList siteList;

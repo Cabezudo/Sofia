@@ -7,10 +7,10 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -27,9 +27,9 @@ public class ClientListService extends ListService {
   @Override
   public void execute() throws ServletException {
 
-    WebUserData clientData;
+    WebUserData webUserData;
     try {
-      clientData = getClientData();
+      webUserData = getWebUserData();
     } catch (SQLException e) {
       Logger.severe(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
@@ -37,7 +37,7 @@ public class ClientListService extends ListService {
     }
 
     try {
-      User owner = clientData.getUser();
+      User owner = webUserData.getUser();
 
       ClientList list = ClientManager.getInstance().list(getFilters(), getSort(), getOffset(), getLimit(), owner);
 

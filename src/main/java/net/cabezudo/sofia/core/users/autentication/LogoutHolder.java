@@ -17,14 +17,14 @@ public class LogoutHolder extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     try {
-      WebUserDataManager.WebUserData clientData = (WebUserDataManager.WebUserData) request.getSession().getAttribute("clientData");
-      if (clientData != null) {
-        clientData.setUser(null);
+      WebUserDataManager.WebUserData webUserData = (WebUserDataManager.WebUserData) request.getSession().getAttribute("webUserData");
+      if (webUserData != null) {
+        webUserData.setUser(null);
       }
       request.removeAttribute("user");
       response.sendRedirect("/index.html");
     } catch (SQLException e) {
-      // TODO responder algo mejor 
+      // TODO responder algo mejor
       throw new ServletException(e);
     }
   }

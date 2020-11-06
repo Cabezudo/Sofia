@@ -15,7 +15,7 @@ import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.ClientData;
+import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.emails.EMail;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.CookieStore;
@@ -349,8 +349,8 @@ public class WebServicesTest {
       if (sessionCookie == null) {
         throw new RuntimeException("Session cookie NOT exist.");
       }
-      ClientData clientData = WebUserDataManager.getInstance().get(sessionCookie.getValue());
-      Assert.assertEquals(2000, clientData.getFailLoginResponseTime());
+      WebUserData webUserData = WebUserDataManager.getInstance().get(sessionCookie.getValue());
+      Assert.assertEquals(2000, webUserData.getFailLoginResponseTime());
 
       HttpEntity httpEntity = response.getEntity();
       body = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
@@ -376,8 +376,8 @@ public class WebServicesTest {
       if (sessionCookie == null) {
         throw new RuntimeException("Session cookie NOT exist.");
       }
-      clientData = WebUserDataManager.getInstance().get(sessionCookie.getValue());
-      Assert.assertEquals(4000, clientData.getFailLoginResponseTime());
+      webUserData = WebUserDataManager.getInstance().get(sessionCookie.getValue());
+      Assert.assertEquals(4000, webUserData.getFailLoginResponseTime());
 
       httpEntity = response.getEntity();
       body = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
