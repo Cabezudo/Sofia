@@ -37,7 +37,7 @@ public class SiteHostnameAddService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void post() throws ServletException {
 
     URLToken siteIdToken = tokens.getValue("siteId");
 

@@ -11,6 +11,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
@@ -18,7 +19,6 @@ import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.passwords.PasswordValidator;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.customers.CustomerService;
@@ -43,12 +43,12 @@ public class AddUserService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void post() throws ServletException {
 
     User owner = super.getUser();
     Site site = super.getSite();
 
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       String payload = getPayload();
       JSONObject jsonPayload = JSON.parse(payload).toJSONObject();
 

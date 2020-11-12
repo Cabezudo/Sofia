@@ -64,7 +64,10 @@
         <artifactId>maven-compiler-plugin</artifactId>
         <version>2.3.2</version>
         <configuration>
-          <showDeprecation>true</showDeprecation>
+          <showDeprecation>false</showDeprecation>
+          <compilerArgs>
+            <arg>--enable-preview</arg>
+          </compilerArgs>
         </configuration>
       </plugin>
     </plugins>
@@ -74,11 +77,6 @@
       <groupId>org.junit</groupId>
       <artifactId>junit4-runner</artifactId>
       <version>5.0.0-ALPHA</version>
-    </dependency>
-    <dependency>
-      <groupId>net.cabezudo.sofia</groupId>
-      <artifactId>sofia-image-code</artifactId>
-      <version>${project.version}</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -152,20 +150,25 @@
       <version>9.4.26.v20200117</version>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
-      <artifactId>sofia-logger</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
       <groupId>net.cabezudo</groupId>
       <artifactId>json-lib</artifactId>
       <version>0.9.4</version>
     </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sofia-image-code</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>sofia-logger</artifactId>
+      <version>${project.version}</version>
+    </dependency>
   </dependencies>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <name>sofia-web-server</name>
 </project>

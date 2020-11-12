@@ -22,7 +22,7 @@ public class SiteService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     URLToken token = tokens.getValue("siteId");
     int siteId;
     try {

@@ -19,7 +19,7 @@ public class UserListService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     String queryString = request.getQueryString();
     if (queryString != null) {
       // TODO agregar los filtros, el orden y demas

@@ -70,7 +70,6 @@ class Button {
   toggle() {
     this.element.setAttribute('disabled', !getAttribute('disabled'));
   }
-
 }
 const redButton = ({ id = null, element = null, text = null, enabled = true, onClick = null, onResponse = null } = {}) => {
   return new Button({id: id, element: element, type: 'red', text: text, enabled: enabled, onClick: onClick, onResponse: onResponse});

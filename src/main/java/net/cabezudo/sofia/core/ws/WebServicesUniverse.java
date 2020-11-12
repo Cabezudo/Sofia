@@ -71,7 +71,25 @@ public class WebServicesUniverse {
         arguments[2] = URLTokens.class;
 
         Service service = (Service) classToLoad.getDeclaredConstructor(arguments).newInstance(request, response, tokens);
-        service.execute();
+        switch (webService.getMethod()) {
+          case GET:
+            service.get();
+            break;
+          case POST:
+            service.post();
+            break;
+          case PUT:
+            service.put();
+            break;
+          case OPTIONS:
+            service.options();
+            break;
+          case DELETE:
+            service.delete();
+            break;
+          default:
+            throw new WebServiceNotFoundException("Invalid web service method: " + webService.getMethod());
+        }
         return;
       }
     }

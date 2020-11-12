@@ -27,7 +27,7 @@ public class DeleteSiteService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
 
     User owner = super.getUser();
 

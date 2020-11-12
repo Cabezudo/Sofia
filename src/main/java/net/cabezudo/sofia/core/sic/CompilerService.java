@@ -11,8 +11,8 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.Utils;
-import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
+import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.sic.Message;
@@ -33,7 +33,7 @@ public class CompilerService extends Service<ValidationResponse> {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void post() throws ServletException {
     Site site = (Site) request.getAttribute("site");
 
     JSONObject jsonPayload;

@@ -8,6 +8,11 @@ import org.eclipse.jetty.http.HttpMethod;
  */
 class WebService {
 
+  public static final int GET = 1;
+  public static final int POST = 2;
+  public static final int DELETE = 3;
+  public static final int PUT = 4;
+
   private final HttpMethod method;
   private final String path;
   private final String className;
@@ -32,5 +37,13 @@ class WebService {
 
   String getClassName() {
     return className;
+  }
+
+  Class<?> getServiceClass() {
+    return clazz;
+  }
+
+  HttpMethod getMethod() {
+    return method;
   }
 }

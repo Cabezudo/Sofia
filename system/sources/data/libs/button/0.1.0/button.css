@@ -76,7 +76,7 @@
   background-color: #333;
 }
 
-@media all and ( min-width: 480px ) {
+@media all and ( min-width: 550px ) {
   .button {
     margin: 10px;
     width: 50%;

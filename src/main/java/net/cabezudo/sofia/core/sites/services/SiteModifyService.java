@@ -31,7 +31,7 @@ public class SiteModifyService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     User owner = super.getUser();
 
     URLToken token = tokens.getValue("siteId");

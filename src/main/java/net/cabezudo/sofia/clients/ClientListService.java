@@ -25,7 +25,7 @@ public class ClientListService extends ListService {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
 
     WebUserData webUserData;
     try {

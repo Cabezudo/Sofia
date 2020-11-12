@@ -28,7 +28,7 @@ public class SiteHostnameNameValidationService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     int siteId;
     String name;
     URLToken token;
