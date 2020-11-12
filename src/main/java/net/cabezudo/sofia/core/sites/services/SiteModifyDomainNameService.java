@@ -34,7 +34,7 @@ public class SiteModifyDomainNameService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     User owner = super.getUser();
 
     URLToken siteIdToken = tokens.getValue("siteId");

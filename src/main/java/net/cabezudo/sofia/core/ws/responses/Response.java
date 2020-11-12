@@ -27,11 +27,11 @@ public class Response {
   private final String message;
   private final Object[] os;
 
-  public Response(Status status, Type messageType, String message, Object... os) {
+  public Response(Status status, Type messageType, String message, String... os) {
     this(status, messageType, null, message, os);
   }
 
-  public Response(Status status, Type messageType, JSONObject data, String message, Object... os) {
+  public Response(Status status, Type messageType, JSONObject data, String message, String... os) {
     this.status = status;
     this.messageType = messageType;
     this.data = data;

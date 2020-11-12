@@ -7,12 +7,13 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -25,7 +26,8 @@ public class SiteListService extends ListService {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
+    Logger.debug("Run get method in web service %s.", this.getClass().getName());
     try {
       User owner = super.getUser();
 

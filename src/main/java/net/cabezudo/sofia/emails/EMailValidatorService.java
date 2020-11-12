@@ -3,11 +3,11 @@ package net.cabezudo.sofia.emails;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -20,7 +20,7 @@ public class EMailValidatorService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     String address = tokens.getValue("email").toString();
     try {
       String messageKey = EMailValidator.validate(address);

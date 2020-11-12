@@ -259,11 +259,13 @@ const Core = {
               response.text().then(text => {
                 let jsonData;
                 try {
-                  jsonData = JSON.parse(text);
                   if (!text) {
                     throw new Error(`Empty response.`);
                   }
-                  jsonData.requestId = requestId;
+                  jsonData = {
+                    requestId,
+                    data: JSON.parse(text)
+                  }
                   do {
                     if (Core.isFunction(targetElement)) {
                       targetElement(jsonData);
@@ -302,11 +304,13 @@ const Core = {
               response.text().then(text => {
                 let jsonData;
                 try {
-                  jsonData = JSON.parse(text);
                   if (!text) {
                     throw new Error(`Empty response.`);
                   }
-                  jsonData.requestId = requestId;
+                  jsonData = {
+                    requestId,
+                    data: JSON.parse(text)
+                  }
                   do {
                     if (Core.isFunction(targetElement)) {
                       targetElement(jsonData);
@@ -357,8 +361,10 @@ const Core = {
                     if (!text) {
                       throw new Error(`Empty response.`);
                     }
-                    jsonData = JSON.parse(text);
-                    jsonData.requestId = requestId;
+                    jsonData = {
+                      requestId,
+                      data: JSON.parse(text)
+                    }
                     do {
                       if (Core.isFunction(targetElement)) {
                         targetElement(jsonData);
@@ -397,11 +403,13 @@ const Core = {
               response.text().then(text => {
                 let jsonData;
                 try {
-                  jsonData = JSON.parse(text);
                   if (!text) {
                     throw new Error(`Empty response.`);
                   }
-                  jsonData.requestId = requestId;
+                  jsonData = {
+                    requestId,
+                    data: JSON.parse(text)
+                  }
                   do {
                     if (Core.isFunction(targetElement)) {
                       targetElement(jsonData);
@@ -471,10 +479,10 @@ const Core = {
     return element;
   },
   validateIdOrElement: (id, element) => {
-    if (id === null && element === null) {
+    if (!id && !element) {
       throw new Error(`You must specify an id or element.`);
     }
-    if (id !== null && element !== null && element.id !== id) {
+    if (id && element && element.id !== id) {
       throw new Error(`The element and the id don't belong to the same element.`);
     }
     if (id !== null) {
@@ -486,31 +494,31 @@ const Core = {
   }
 };
 window.onresize = () =>
-{
-  resizeTimer = setTimeout(() => {
-    clearTimeout(resizeTimer);
-    Core.onResizeFunctions.forEach(func => {
-      func();
-    });
-  }, 500);
-};
+        {
+          resizeTimer = setTimeout(() => {
+            clearTimeout(resizeTimer);
+            Core.onResizeFunctions.forEach(func => {
+              func();
+            });
+          }, 500);
+        };
 window.onload = () =>
-{
-  Core.onloadFunctions.forEach(func => {
-    func();
-  });
-  Core.setPageFunctions.forEach(func => {
-    func();
-  });
-  if (Core.pageParameters.has('section')) {
-    Core.changeSection(Core.pageParameters.get('section'));
-  }
-  console.log(templateVariables);
-  Core.testFunctions.forEach(func => {
-    func();
-  });
-  document.body.style.opacity = "1";
-  if (variables.message !== null) {
-    Core.showMessage(variables.message);
-  }
-};
+        {
+          Core.onloadFunctions.forEach(func => {
+            func();
+          });
+          Core.setPageFunctions.forEach(func => {
+            func();
+          });
+          if (Core.pageParameters.has('section')) {
+            Core.changeSection(Core.pageParameters.get('section'));
+          }
+          console.log(templateVariables);
+          Core.testFunctions.forEach(func => {
+            func();
+          });
+          document.body.style.opacity = "1";
+          if (variables.message !== null) {
+            Core.showMessage(variables.message);
+          }
+        };

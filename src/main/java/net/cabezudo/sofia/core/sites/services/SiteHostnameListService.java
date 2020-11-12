@@ -32,7 +32,7 @@ public class SiteHostnameListService extends ListService {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     int siteId;
     User owner = super.getUser();
 

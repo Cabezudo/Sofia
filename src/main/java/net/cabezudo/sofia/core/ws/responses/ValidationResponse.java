@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.ParametrizedException;
  */
 public class ValidationResponse extends Response {
 
-  public ValidationResponse(Status status, String message, Object... os) {
+  public ValidationResponse(Status status, String message, String... os) {
     super(status, Response.Type.VALIDATION, message, os);
   }
 

@@ -21,7 +21,7 @@ public class AddMessageService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void post() throws ServletException {
     try {
       String payload = getPayload();
       JSONObject jsonData = JSON.parse(payload).toJSONObject();

@@ -25,7 +25,7 @@ public class HostnameNameValidationService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     String name = tokens.getValue("name").toString();
 
     try {
@@ -34,21 +34,20 @@ public class HostnameNameValidationService extends Service {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, "site.hostname.exist.for.other.site", name, siteWithHostname.getName()));
         return;
       }
-
-      try {
-        HostnameValidator.getInstance().validate(name);
-      } catch (HostnameMaxSizeException e) {
-        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage()));
-        return;
-      } catch (HostnameValidationException e) {
-        sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
-        return;
-      }
-
-      sendResponse(new Response(Response.Status.OK, Response.Type.VALIDATION, "site.name.ok"));
     } catch (SQLException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     }
+
+    try {
+      HostnameValidator.getInstance().validate(name);
+    } catch (HostnameMaxSizeException e) {
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage()));
+      return;
+    } catch (HostnameValidationException e) {
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage(), e.getParameters()));
+      return;
+    }
+    sendResponse(new Response(Response.Status.OK, Response.Type.VALIDATION, "site.name.ok"));
   }
 }

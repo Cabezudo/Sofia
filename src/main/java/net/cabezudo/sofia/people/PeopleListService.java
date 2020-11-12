@@ -4,9 +4,9 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -20,7 +20,7 @@ public class PeopleListService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
     try {
       User owner = super.getUser();
       if (owner == null) {

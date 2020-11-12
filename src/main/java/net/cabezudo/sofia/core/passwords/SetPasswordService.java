@@ -9,17 +9,17 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.logger.Logger;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.HashTooOldException;
 import net.cabezudo.sofia.core.users.NullHashException;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotFoundByHashException;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.emails.EMailNotExistException;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -32,7 +32,7 @@ public class SetPasswordService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void post() throws ServletException {
     Logger.fine("Change the password using a hash.");
 
     Hash hash = new Hash(tokens.getValue("hash").toString());

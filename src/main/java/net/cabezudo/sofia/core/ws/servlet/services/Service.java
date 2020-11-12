@@ -17,6 +17,7 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.core.ws.responses.Response;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -47,7 +48,30 @@ public abstract class Service<T extends Response> {
     response.setHeader("RequestId", requestId);
   }
 
-  public abstract void execute() throws ServletException;
+  public void get() throws ServletException {
+    Logger.debug("Service not found using GET method.");
+    sendError(HttpServletResponse.SC_NOT_FOUND, "Sofia service not found.");
+  }
+
+  public void post() throws ServletException {
+    Logger.debug("Service not found using POST method.");
+    sendError(HttpServletResponse.SC_NOT_FOUND, "Sofia service not found.");
+  }
+
+  public void delete() throws ServletException {
+    Logger.debug("Service not found using DELETE method.");
+    sendError(HttpServletResponse.SC_NOT_FOUND, "Sofia service not found.");
+  }
+
+  public void put() throws ServletException {
+    Logger.debug("Service not found using PUT method.");
+    sendError(HttpServletResponse.SC_NOT_FOUND, "Sofia service not found.");
+  }
+
+  public void options() throws ServletException {
+    Logger.debug("Service not found using OPTIONS method.");
+    sendError(HttpServletResponse.SC_NOT_FOUND, "Sofia service not found.");
+  }
 
   protected void sendResponse(T response) throws ServletException {
     try {

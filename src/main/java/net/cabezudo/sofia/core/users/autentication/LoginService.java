@@ -8,13 +8,13 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
@@ -32,7 +32,7 @@ public class LoginService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void post() throws ServletException {
     Logger.fine("Calling the web service to authorize");
     try {
 

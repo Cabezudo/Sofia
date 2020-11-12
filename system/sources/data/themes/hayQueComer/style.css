@@ -10,6 +10,12 @@ body {
   font-weight: 300;
   opacity: 0;
   transition: opacity .2s;
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+body::-webkit-scrollbar {
+  display: none;  /* Safari and Chrome */
 }
 
 input, select, textarea {

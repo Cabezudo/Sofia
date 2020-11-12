@@ -11,13 +11,13 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
 import net.cabezudo.sofia.core.hostname.HostnameValidator;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.SiteValidationException;
 import net.cabezudo.sofia.core.sites.validators.SiteNameValidator;
 import net.cabezudo.sofia.core.sites.validators.SiteVersionException;
 import net.cabezudo.sofia.core.sites.validators.SiteVersionValidator;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -32,7 +32,7 @@ public class AddSiteService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void post() throws ServletException {
     JSONObject data;
     try {
       data = JSON.parse(getPayload()).toJSONObject();

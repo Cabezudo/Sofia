@@ -29,7 +29,7 @@ public class DeleteSiteHostnameService extends Service {
   }
 
   @Override
-  public void execute() throws ServletException {
+  public void get() throws ServletException {
 
     URLToken siteIdToken = tokens.getValue("siteId");
     int siteId;

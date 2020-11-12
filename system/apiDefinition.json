@@ -87,22 +87,6 @@
       "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
     },
     {
-      "path": "/api/v1/password/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
-    },
-    {
-      "path": "/api/v1/password/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
-    },
-    {
-      "path": "/api/v1/password/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
-    },
-    {
-      "path": "/api/v1/password/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
-    },
-    {
       "path": "/api/v1/password/pair/validate",
       "class": "net.cabezudo.sofia.core.passwords.PasswordPairValidatorService"
     },
