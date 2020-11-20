@@ -39,6 +39,11 @@ const simpleOverlay = ({ id = null, scrollElementId = null, scrollElement = null
     }
   };
   this.setContent = content => {
+    if (Core.isDIV(content)) {
+      Core.removeChilds(overlay);
+      overlay.appendChild(content);
+      return;
+    }
     overlay.innerHTML = content;
   };
   validateOptions();

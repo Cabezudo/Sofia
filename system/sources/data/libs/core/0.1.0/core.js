@@ -111,6 +111,9 @@ const Core = {
   isEnter: event => {
     return event.key === 'Enter';
   },
+  isDIV: o => {
+    return o !== null && o.tagName === 'DIV';
+  },
   isTab: event => {
     return event.key === 'Tab';
   },
