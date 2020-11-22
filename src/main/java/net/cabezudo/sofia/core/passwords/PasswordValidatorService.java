@@ -22,7 +22,7 @@ public class PasswordValidatorService extends Service {
   }
 
   @Override
-  public void get() throws ServletException {
+  public void post() throws ServletException {
     String payload = getPayload();
     try {
       JSONObject jsonPayload = JSON.parse(payload).toJSONObject();

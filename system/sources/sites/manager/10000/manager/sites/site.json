@@ -8,6 +8,9 @@
     "menu": {
       "name": "#{site.shortName}",
       "description": "web for people",
+      "font": {
+        "family": "Kanit"
+      },
       "items": [
         {
           "name": {

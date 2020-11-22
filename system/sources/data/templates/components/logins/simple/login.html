@@ -75,15 +75,16 @@
           sendLoginInformation();
         },
         onResponse: event => {
-          const detail = event.detail;
-          if (detail.status === 'LOGGED') {
+          const {detail} = event;
+          const {data} = detail;
+          if (data.status === 'LOGGED') {
             if (variables.goBackPage === null) {
               location.assign('#{afterLoginSucessfullPage}');
             } else {
               location.assign(variables.goBackPage);
             }
           } else {
-            Core.showMessage({status: 'ERROR', message: detail.message});
+            Core.showMessage({status: 'ERROR', message: data.message});
           }
         }
       });

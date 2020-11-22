@@ -7,6 +7,9 @@
   "header": {
     "menu": {
       "name": "#{site.shortName}",
+      "font": {
+        "family": "Kanit"
+      },
       "description": "web for people",
       "items": [
         {

@@ -262,8 +262,9 @@ const simpleSICEditor = ({ id = null, element = null, height = null, autoFormat 
     editor.addEventListener('response', event => {
       for (let i = 0; waitForResponse && i < 100000; i++)
         ;
-      const data = event.detail;
-      if (data.requestId < lastRequestId || contentModified) {
+      const {detail} = event;
+      const {data} = detail;
+      if (detail.requestId < lastRequestId || contentModified) {
         return;
       }
       setMessage(`Get response from the server.`);

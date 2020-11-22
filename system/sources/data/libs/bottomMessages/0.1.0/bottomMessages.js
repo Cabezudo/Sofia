@@ -24,7 +24,9 @@ const bottomMessages = ({ id = null, element = null } = {}) => {
     });
     element.addEventListener('add', event => {
       messageContainer.style.opacity = 1;
-      const data = event.detail;
+      const {detail} = event;
+      const {data} = detail;
+
       messageContainer.innerText = data.message;
       switch (data.status) {
         case 'OK':

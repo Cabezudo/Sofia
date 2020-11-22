@@ -112,7 +112,6 @@ body, html {
   flex-direction: column;
   flex-grow: 1;
   overflow: auto;
-  padding: 30px 20px;
   width: auto;
 }
 
@@ -221,7 +220,7 @@ footer {
 
 @media all and ( min-width: 480px ) {
   .content {
-    padding: 40px 30px;
+    padding: 30px 20px;
   }
 
   .application .title:not(:last-child) {

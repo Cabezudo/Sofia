@@ -1,6 +1,9 @@
 {
   "elements": {},
   "attributes": {
+    "template": {
+      "context": "section"
+    },
     "file": {
       "context": "style"
     },

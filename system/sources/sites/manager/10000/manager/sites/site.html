@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/manager/sites/site.css">
+    <style file="../../commons.css"></style>
     <script src="/manager/sites/site.js"></script>
     <script src="/variables.js"></script>
     <script lib="core/0.1.0"></script>
@@ -37,7 +38,9 @@
           cancelAddHostButton = Core.validateById('cancelAddHostButton');
           detailDiv = Core.validateById('detail');
           detailDiv.addEventListener('response', event => {
-            siteData = event.detail;
+            const {detail} = event;
+            siteData = detail.data;
+
             editableField({
               id: 'nameInput',
               validationURI: `/api/v1/sites/${siteData.id}/names/{value}/validate`,
@@ -54,10 +57,11 @@
                 Core.sendDelete(`/api/v1/sites/${siteData.id}`, deleteSiteButton);
               },
               onResponse: event => {
-                const detail = event.detail;
-                if (detail.status === 'OK') {
+                const {detail} = event;
+                const {data} = detail;
+                if (data.status === 'OK') {
                   Core.setSessionMessage({
-                    status: "OK", message: `${detail.message}`
+                    status: "OK", message: `${data.message}`
                   });
                   if (variables.goBackPage === null) {
                     location.assign('/manager/sites/sites.html');
@@ -66,7 +70,7 @@
                   }
                 } else {
                   Core.screenBlocker.unblock();
-                  Core.showMessage({status: 'ERROR', message: detail.message});
+                  Core.showMessage({status: 'ERROR', message: data.message});
                 }
               }
             });
@@ -77,15 +81,16 @@
                 addBlankHost();
               },
               onResponse: event => {
-                const detail = event.detail;
-                if (detail.status === 'OK') {
+                const {detail} = event;
+                const {data} = detail;
+                if (data.status === 'OK') {
                   if (variables.goBackPage === null) {
                     location.assign('/manager/sites/sites.html');
                   } else {
                     location.assign(variables.goBackPage);
                   }
                 } else {
-                  Core.showMessage({status: 'ERROR', message: detail.message});
+                  Core.showMessage({status: 'ERROR', message: data.message});
                 }
               }
             });
@@ -96,16 +101,16 @@
                 addNewHostOnServer();
               },
               onResponse: event => {
-                const detail = event.detail;
-                if (detail.status === 'OK') {
+                const {detail} = event;
+                const {data} = detail;
+                if (data.status === 'OK') {
                   removeNewHostInput();
-                  const data = detail.data;
                   savingNewHost = false;
-                  addDomainToList(siteData.id, data.id, data.name);
+                  addDomainToList(siteData.id, data.data.id, data.data.name);
                   updateView();
                 } else {
                   savingNewHost = false;
-                  Core.showMessage({status: 'ERROR', message: detail.message});
+                  Core.showMessage({status: 'ERROR', message: data.message});
                   updateView();
                 }
               }
@@ -161,14 +166,15 @@
                   Core.sendDelete(`/api/v1/sites/${siteId}/hosts/${hostId}`, deleteHostButtonDiv);
                 },
                 onResponse: event => {
-                  const detail = event.detail;
-                  const status = detail.status;
+                  const {detail} = event;
+                  const {data} = detail;
+                  const status = data.status;
                   if (status === 'OK') {
-                    Core.showMessage({status: "OK", message: detail.message});
-                    const fieldId = `host:${detail.data.id}`;
+                    Core.showMessage({status: "OK", message: data.message});
+                    const fieldId = `host:${data.data.id}`;
                     document.getElementById(fieldId).parentElement.remove();
                   } else {
-                    Core.showMessage({status: 'ERROR', message: detail.message});
+                    Core.showMessage({status: 'ERROR', message: data.message});
                   }
                 }
               });

@@ -29,7 +29,7 @@ public class DeleteSiteHostnameService extends Service {
   }
 
   @Override
-  public void get() throws ServletException {
+  public void delete() throws ServletException {
 
     URLToken siteIdToken = tokens.getValue("siteId");
     int siteId;
@@ -68,9 +68,9 @@ public class DeleteSiteHostnameService extends Service {
 
     try {
 
-      DomainNameManager.getInstance().delete(hostId);
       DomainName domainName = DomainNameManager.getInstance().get(hostId);
       WebServer.delete(domainName);
+      DomainNameManager.getInstance().delete(hostId);
 
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", hostId));
