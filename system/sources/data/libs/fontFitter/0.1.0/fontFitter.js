@@ -17,7 +17,7 @@ const fontFitter = ({id = null, element = null, fontSize = null} = {}) => {
     const color = child.style.color;
     child.style.color = 'transparent';
     const checkFont = () => {
-      if (element.clientHeight < child.scrollHeight && fontSize > 2) {
+      if (element.clientHeight < child.scrollHeight || element.clientWidth < child.scrollWidth && fontSize > 2) {
         fontSize--;
         child.style.fontSize = `${fontSize}px`;
         setTimeout(checkFont, 50);
