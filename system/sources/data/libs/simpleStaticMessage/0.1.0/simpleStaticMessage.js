@@ -32,34 +32,37 @@ const simpleStaticMessage = ({ id = null, element = null, onShow = null } = {}) 
       clearMessage();
     });
     element.addEventListener('setDefaultMessage', event => {
-      defaultMessage = event.detail;
+      const {detail} = event;
+      defaultMessage = detail;
       console.log(`simpleStaticMessage : trigger: setDefaultMessage : ${defaultMessage}`);
       messageContainer.innerText = defaultMessage;
     });
     element.addEventListener('showMessage', event => {
-      const payload = event.detail;
-      console.log(`simpleStaticMessage : trigger : showMessage : ${JSON.stringify(payload)}`);
-      switch (payload.status) {
+      // detail format {"status":"OK","message":"La contraseña tiene la forma correcta"}
+      const {detail} = event;
+      const data = detail;
+      console.log(`simpleStaticMessage : trigger : showMessage : ${JSON.stringify(data)}`);
+      switch (data.status) {
         case 'ERROR':
-          messageContainer.innerText = payload.message;
+          messageContainer.innerText = data.message;
           element.classList.remove('ok');
           element.classList.remove('message');
           element.classList.add('error');
           break;
         case 'OK':
-          messageContainer.innerText = payload.message;
+          messageContainer.innerText = data.message;
           element.classList.remove('error');
           element.classList.remove('message');
           element.classList.add('ok');
           break;
         case 'MESSAGE':
-          messageContainer.innerText = payload.message;
+          messageContainer.innerText = data.message;
           element.classList.remove('ok');
           element.classList.remove('error');
           element.classList.add('message');
           break;
         default:
-          throw new Error(`Invalid status: ${payload.status}`);
+          throw new Error(`Invalid status: ${data.status}`);
       }
       if (Core.isFunction(onShow)) {
         onShow();

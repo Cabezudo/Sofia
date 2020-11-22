@@ -21,8 +21,10 @@ const inputPasswordPairValidator = ({ element = null, repetitionElement = null, 
   };
   const assignTriggers = () => {
     element.addEventListener('response', event => {
-      const data = event.detail;
-      const messages = event.detail.messages;
+      const {detail} = event;
+      const {data} = detail;
+
+      const messages = data.messages;
       element.classList.remove('error');
       messages.forEach(message => {
         Core.showMessage(message);

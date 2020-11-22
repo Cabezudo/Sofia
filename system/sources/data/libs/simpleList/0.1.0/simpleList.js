@@ -249,7 +249,8 @@ const simpleList = async ({ id = null, source = null, filterInputElement = null,
   const assignTriggers = () => {
     if (filterInput !== null) {
       filterInput.addEventListener('setFilter', event => {
-        const data = event.detail;
+        const {detail} = event;
+        const {data} = detail;
         filterInput.value = data;
         loadTable();
       });

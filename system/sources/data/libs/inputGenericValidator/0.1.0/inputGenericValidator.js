@@ -25,11 +25,15 @@ const inputGenericValidator = ({ element = null, id = null, getValidationURL = n
   };
   const assignTriggers = () => {
     element.addEventListener('response', event => {
-      const data = event.detail;
+      const {detail} = event;
+      const {data} = detail;
+
       const element = event.srcElement;
-      if (requestId === data.requestId) {
-        const data = event.detail;
-        data.elementId = element.id;
+      if (requestId === detail.requestId) {
+        const {detail} = event;
+        const {data} = detail;
+
+        detail.elementId = element.id;
         if (data.status === 'ERROR') {
           element.classList.add('error');
           if (Core.isFunction(onNotValid)) {
@@ -61,7 +65,8 @@ const inputGenericValidator = ({ element = null, id = null, getValidationURL = n
       }, 500);
     });
     element.addEventListener("type", event => {
-      element.value = event.detail;
+      const {detail} = event;
+      element.value = detail;
       sendValidationRequest(element);
     });
   };

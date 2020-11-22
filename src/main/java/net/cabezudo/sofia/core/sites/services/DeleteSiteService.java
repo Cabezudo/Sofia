@@ -12,7 +12,6 @@ import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -27,21 +26,19 @@ public class DeleteSiteService extends Service {
   }
 
   @Override
-  public void get() throws ServletException {
-
-    User owner = super.getUser();
+  public void delete() throws ServletException {
 
     URLToken siteIdToken = tokens.getValue("siteId");
+    int siteId;
+
     try {
-      int siteId;
+      siteId = siteIdToken.toInteger();
+    } catch (InvalidPathParameterException e) {
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
+      return;
+    }
 
-      try {
-        siteId = siteIdToken.toInteger();
-      } catch (InvalidPathParameterException e) {
-        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
-        return;
-      }
-
+    try {
       if (siteId == 1 || siteId == 2) {
         sendError(HttpServletResponse.SC_FORBIDDEN, "The resource " + siteId + " can't be deleted.");
         return;

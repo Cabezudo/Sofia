@@ -81,8 +81,9 @@ const editableField = ({ element = null, id = null, disabled = false, validation
       sendUpdateRequest(event);
     });
     inputElement.addEventListener('response', event => {
-      const data = event.detail;
-      console.log(data);
+      const {detail} = event;
+      const {data} = detail;
+
       if (data.status === 'OK') {
         if (data.type === 'UPDATE') {
           Core.showMessage({status: "OK", message: `Saved ${field}.`});
@@ -92,7 +93,7 @@ const editableField = ({ element = null, id = null, disabled = false, validation
           }
         }
       }
-      if (requestId === data.requestId) {
+      if (requestId === detail.requestId) {
         element.classList.remove('error');
         Core.showMessage(data);
         if (data.status === 'ERROR') {

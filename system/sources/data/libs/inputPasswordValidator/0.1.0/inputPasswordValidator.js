@@ -19,12 +19,13 @@ const inputPasswordValidator = ({ element = null, onValid = null, onNotValid = n
   };
   const assignTriggers = () => {
     element.addEventListener('response', event => {
-      const data = event.detail;
+      const {detail} = event;
+      const {data} = detail;
 
       const element = event.srcElement;
-      if (requestId === data.requestId) {
-        data.elementId = element.id;
-        if (data.status === 'ERROR') {
+      if (requestId === detail.requestId) {
+        detail.elementId = element.id;
+        if (detail.status === 'ERROR') {
           Core.showMessage(data);
           element.classList.add('error');
         }

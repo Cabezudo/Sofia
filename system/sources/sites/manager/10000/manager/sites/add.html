@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/manager/sites/add.css">
+    <style file="../../commons.css"></style>
     <script src="/manager/sites/add.js"></script>
     <script src="/variables.js"></script>
     <script lib="core/0.1.0"></script>
@@ -83,15 +84,17 @@
               sendAddSiteInformation();
             },
             onResponse: event => {
-              const payload = event.detail;
-              if (payload.status === 'OK') {
+              const {detail} = event;
+              const {data} = detail;
+
+              if (data.status === 'OK') {
                 if (variables.goBackPage === null) {
                   location.assign('/manager/sites/sites.html');
                 } else {
                   location.assign(variables.goBackPage);
                 }
               } else {
-                Core.showMessage({status: 'ERROR', message: payload.message});
+                Core.showMessage({status: 'ERROR', message: data.message});
               }
             }
           });

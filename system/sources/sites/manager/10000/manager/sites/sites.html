@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Página principal</title>
     <link rel="stylesheet" type="text/css" href="/manager/sites/sites.css">
+    <style file="../../commons.css"></style>
     <script src="/variables.js"></script>
     <script src="/manager/sites/sites.js"></script>
     <script lib="button/0.1.0"></script>
@@ -21,15 +22,16 @@
               document.location.href = 'add.html';
             },
             onResponse: event => {
-              const detail = event.detail;
-              if (detail.status === 'OK') {
+              const {detail} = event;
+              const {data} = detail;
+              if (data.status === 'OK') {
                 if (variables.goBackPage === null) {
                   location.assign('/manager/sites/sites.html');
                 } else {
                   location.assign(variables.goBackPage);
                 }
               } else {
-                Core.showMessage({status: 'ERROR', message: detail.message});
+                Core.showMessage({status: 'ERROR', message: data.message});
               }
             }
           });

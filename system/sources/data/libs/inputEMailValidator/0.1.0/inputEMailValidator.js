@@ -26,12 +26,12 @@ const inputEMailValidator = ({ element = null, onValid = null, onNotValid = null
   };
   const assignTriggers = () => {
     element.addEventListener('response', event => {
-      const data = event.detail;
+      const {detail} = event;
+      const {data} = detail;
 
       const element = event.srcElement;
-      if (requestId === data.requestId) {
-        const data = event.detail;
-        data.elementId = element.id;
+      if (requestId === detail.requestId) {
+        detail.elementId = element.id;
         Core.showMessage(data);
         if (data.status === 'ERROR') {
           element.classList.add('error');

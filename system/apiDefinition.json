@@ -37,14 +37,6 @@
       "class": "net.cabezudo.sofia.emails.EMailValidatorService"
     },
     {
-      "path": "/api/v1/password/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
-    },
-    {
-      "path": "/api/v1/password/validate",
-      "class": "net.cabezudo.sofia.core.passwords.PasswordValidatorService"
-    },
-    {
       "path": "/api/v1/users/logged",
       "class": "net.cabezudo.sofia.core.users.autentication.AuthenticatedService"
     },
