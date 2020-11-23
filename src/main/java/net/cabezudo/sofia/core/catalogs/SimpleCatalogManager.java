@@ -55,7 +55,6 @@ public class SimpleCatalogManager<T extends CatalogEntry> {
         ps.close();
       }
     }
-
   }
 
   public T get(int id) throws SQLException {

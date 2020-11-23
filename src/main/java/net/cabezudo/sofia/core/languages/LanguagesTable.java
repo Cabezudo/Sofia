@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.languages;
+package net.cabezudo.sofia.core.languages;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -6,13 +6,13 @@ package net.cabezudo.sofia.languages;
  */
 public class LanguagesTable {
 
+  public static final String DATABASE = "sofia";
   public static final String NAME = "languages";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
-          + "`code` VARCHAR(3) NOT NULL, "
-          + "`name` INT NOT NULL, "
+          + "`twoLettersCode` VARCHAR(2) NOT NULL, "
           + "PRIMARY KEY (`id`)"
           + ") "
           + "CHARACTER SET = UTF8";

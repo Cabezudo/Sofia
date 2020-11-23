@@ -9,9 +9,13 @@ import net.cabezudo.sofia.cities.CitiesTable;
 import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.words.Word;
+import net.cabezudo.sofia.core.words.WordsTable;
 import net.cabezudo.sofia.countries.CountriesTable;
 import net.cabezudo.sofia.countries.Country;
+import net.cabezudo.sofia.countries.CountryNamesTable;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.municipalities.MunicipalitiesTable;
 import net.cabezudo.sofia.municipalities.Municipality;
@@ -35,13 +39,13 @@ public class SettlementManager {
     return INSTANCE;
   }
 
-  public Settlement get(SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
-      return get(connection, settlementType, municipality, zone, name, owner);
+  public Settlement get(Language language, SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
+    try (Connection connection = Database.getConnection()) {
+      return get(connection, language, settlementType, municipality, zone, name, owner);
     }
   }
 
-  public Settlement get(Connection connection, SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
+  public Settlement get(Connection connection, Language language, SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
     String query = "SELECT "
             + "s.id AS id, "
             + "st.id AS typeId, "
@@ -53,9 +57,11 @@ public class SettlementManager {
             + "t.id AS stateId, "
             + "t.name AS stateName, "
             + "o.id AS countryId, "
-            + "o.name AS countryName, "
             + "o.phoneCode AS countryPhoneCode, "
             + "o.twoLettersCountryCode AS countryTwoLettersCountryCode, "
+            + "w.value AS wordValue, "
+            + "w.value AS wordValue, "
+            + "w.value AS wordValue, "
             + "z.id AS zoneId, "
             + "z.name AS zoneName, "
             + "s.name AS name "
@@ -65,23 +71,29 @@ public class SettlementManager {
             + "LEFT JOIN " + MunicipalitiesTable.NAME + " AS m ON s.municipality = m.id "
             + "LEFT JOIN " + StatesTable.NAME + " AS t ON m.state = t.id "
             + "LEFT JOIN " + CountriesTable.NAME + " AS o ON t.country = o.id "
+            + "LEFT JOIN " + CountryNamesTable.NAME + " AS cn ON c.id = cn.country "
+            + "LEFT JOIN " + WordsTable.NAME + " AS w ON cb.name = w.id "
             + "LEFT JOIN " + ZonesTable.NAME + " AS z ON s.zone = z.id "
-            + "WHERE st.id = ? AND m.id = ? AND z.id = ? AND s.name = ? AND (s.owner = ? OR s.owner = 1)";
+            + "WHERE w.language = ?, st.id = ? AND m.id = ? AND z.id = ? AND s.name = ? AND (s.owner = ? OR s.owner = 1)";
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
       ps = connection.prepareStatement(query);
-      ps.setInt(1, settlementType.getId());
-      ps.setInt(2, municipality.getId());
-      ps.setInt(3, zone.getId());
-      ps.setString(4, name);
-      ps.setInt(5, owner.getId());
+      ps.setInt(1, language.getId());
+      ps.setInt(2, settlementType.getId());
+      ps.setInt(3, municipality.getId());
+      ps.setInt(4, zone.getId());
+      ps.setString(5, name);
+      ps.setInt(6, owner.getId());
       Logger.fine(ps);
       rs = ps.executeQuery();
 
       if (rs.next()) {
         settlementType = new SettlementType(rs.getInt("typeId"), rs.getString("typeName"));
-        Country country = new Country(rs.getInt("countryId"), rs.getString("countryName"), rs.getInt("countryPhoneCode"), rs.getString("countryTwoLettersCountryCode"));
+        int wordId = rs.getInt("wordId");
+        String wordValue = rs.getString("wordValue");
+        Word word = new Word(wordId, language, wordValue);
+        Country country = new Country(rs.getInt("countryId"), word, rs.getInt("countryPhoneCode"), rs.getString("countryTwoLettersCountryCode"));
         State state = new State(rs.getInt("stateId"), country, rs.getString("stateName"));
         City city = null;
         if (rs.getInt("cityId") != 0) {
@@ -102,21 +114,21 @@ public class SettlementManager {
     return null;
   }
 
-  public Settlement add(SettlementType settlementType, City city, Municipality municipality, Zone zone, String settlementName, User owner) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
-      return add(connection, settlementType, city, municipality, zone, settlementName, owner);
+  public Settlement add(Language language, SettlementType settlementType, City city, Municipality municipality, Zone zone, String settlementName, User owner) throws SQLException {
+    try (Connection connection = Database.getConnection()) {
+      return add(connection, language, settlementType, city, municipality, zone, settlementName, owner);
     }
   }
 
-  public Settlement add(Connection connection, SettlementType settlementType, City city, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
-    Settlement settlement = get(connection, settlementType, municipality, zone, name, owner);
+  public Settlement add(Connection connection, Language language, SettlementType settlementType, City city, Municipality municipality, Zone zone, String name, User owner) throws SQLException {
+    Settlement settlement = get(connection, language, settlementType, municipality, zone, name, owner);
     if (settlement != null) {
       return settlement;
     }
 
     String query = "INSERT INTO " + SettlementsTable.NAME + " (type, city, municipality, zone, name, owner) VALUES (?, ?, ?, ?, ?, ?)";
     ResultSet rs = null;
-    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlementType.getId());
       if (city == null) {
         ps.setInt(2, 0);

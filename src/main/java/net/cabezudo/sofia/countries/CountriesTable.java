@@ -6,16 +6,15 @@ package net.cabezudo.sofia.countries;
  */
 public class CountriesTable {
 
+  public static final String DATABASE = "sofia";
   public static final String NAME = "countries";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + CountriesTable.NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
-          + "`name` VARCHAR(100) NOT NULL, "
           + "`phoneCode` INT NOT NULL, "
           + "`twoLettersCountryCode` CHAR(2) NOT NULL, "
-          + "PRIMARY KEY (`id`), "
-          + "UNIQUE INDEX `iName` (`name`)"
+          + "PRIMARY KEY (`id`)"
           + ") "
           + "CHARACTER SET = UTF8";
 
