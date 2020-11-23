@@ -15,6 +15,10 @@ import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.clients.ClientTable;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.languages.Language;
+import net.cabezudo.sofia.core.languages.LanguageManager;
+import net.cabezudo.sofia.core.languages.LanguagesTable;
 import net.cabezudo.sofia.core.schedule.TimeEntriesTable;
 import net.cabezudo.sofia.core.schedule.TimeTypeManager;
 import net.cabezudo.sofia.core.schedule.TimeTypesTable;
@@ -31,11 +35,12 @@ import net.cabezudo.sofia.core.users.permission.ProfilesPermissionsTable;
 import net.cabezudo.sofia.core.users.profiles.ProfilesTable;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.core.webusers.WebUserDataTable;
+import net.cabezudo.sofia.core.words.WordsTable;
 import net.cabezudo.sofia.countries.CountriesTable;
 import net.cabezudo.sofia.countries.Country;
 import net.cabezudo.sofia.countries.CountryManager;
+import net.cabezudo.sofia.countries.CountryNamesTable;
 import net.cabezudo.sofia.emails.EMailsTable;
-import net.cabezudo.sofia.languages.LanguagesTable;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.municipalities.MunicipalitiesTable;
 import net.cabezudo.sofia.municipalities.Municipality;
@@ -102,6 +107,8 @@ public class SofiaDatabaseCreator extends DataCreator {
   @Override
   public void createDatabaseStructure() throws DataCreationException {
     try (Connection connection = Database.getConnection()) {
+      Database.createTable(connection, LanguagesTable.CREATION_QUERY);
+      Database.createTable(connection, WordsTable.CREATION_QUERY);
       Database.createTable(connection, SitesTable.CREATION_QUERY);
       Database.createTable(connection, URLTable.CREATION_QUERY);
       Database.createTable(connection, DomainNamesTable.CREATION_QUERY);
@@ -110,9 +117,9 @@ public class SofiaDatabaseCreator extends DataCreator {
       Database.createTable(connection, UsersTable.CREATION_QUERY);
       Database.createTable(connection, WebUserDataTable.CREATION_QUERY);
       Database.createTable(connection, ClientTable.CREATION_QUERY);
-      Database.createTable(connection, LanguagesTable.CREATION_QUERY);
       Database.createTable(connection, PhoneNumbersTable.CREATION_QUERY);
       Database.createTable(connection, CountriesTable.CREATION_QUERY);
+      Database.createTable(connection, CountryNamesTable.CREATION_QUERY);
       Database.createTable(connection, StatesTable.CREATION_QUERY);
       Database.createTable(connection, MunicipalitiesTable.CREATION_QUERY);
       Database.createTable(connection, CitiesTable.CREATION_QUERY);
@@ -139,8 +146,10 @@ public class SofiaDatabaseCreator extends DataCreator {
   @Override
   public void createDefaultData() throws DataCreationException {
     try {
+      createLanguages();
       Country country = createCountries();
-      createPostalCodes(country, null);
+      Language language = LanguageManager.getInstance().get("es");
+      createPostalCodes(language, country, null);
       createTimeTypes();
     } catch (SQLException e) {
       throw new DataCreationException(e);
@@ -152,19 +161,30 @@ public class SofiaDatabaseCreator extends DataCreator {
     // Nothing to create for now
   }
 
-  private Country createCountries() throws SQLException {
-    return CountryManager.getInstance().add("México", 52, "MX");
-  }
-
-  private void createPostalCodes(Country country, User owner) throws SQLException {
-    Logger.info("Create postal codes.");
-    Path postalCodesPath = Configuration.getInstance().getSystemDataPath().resolve("postalCodes.csv");
-    if (Files.exists(postalCodesPath)) {
-      createPostalCodesFromFile(country, owner, postalCodesPath);
+  private void createLanguages() throws SQLException {
+    try (Connection connection = Database.getConnection()) {
+      LanguageManager.getInstance().add(connection, "en");
+      LanguageManager.getInstance().add(connection, "es");
     }
   }
 
-  private void createPostalCodesFromFile(Country country, User owner, Path postalCodesPath) throws SQLException {
+  private Country createCountries() throws SQLException {
+    Language language = LanguageManager.getInstance().get("es");
+    if (language == null) {
+      throw new SofiaRuntimeException("Langauge NOT FOUND");
+    }
+    return CountryManager.getInstance().add(language, "México", 52, "MX");
+  }
+
+  private void createPostalCodes(Language language, Country country, User owner) throws SQLException {
+    Logger.info("Create postal codes.");
+    Path postalCodesPath = Configuration.getInstance().getSystemDataPath().resolve("postalCodes.csv");
+    if (Files.exists(postalCodesPath)) {
+      createPostalCodesFromFile(language, country, owner, postalCodesPath);
+    }
+  }
+
+  private void createPostalCodesFromFile(Language language, Country country, User owner, Path postalCodesPath) throws SQLException {
     try (BufferedReader br = new BufferedReader(new FileReader(postalCodesPath.toFile()))) {
       String line;
       boolean headers = true;
@@ -202,7 +222,7 @@ public class SofiaDatabaseCreator extends DataCreator {
             SettlementType settlementType = SettlementTypeManager.getInstance().add(connection, settlementTypeName);
             Municipality municipality = MunicipalityManager.getInstance().add(connection, state, municipalityName, owner);
             Zone zone = ZoneManager.getInstance().add(connection, zoneName);
-            Settlement settlement = SettlementManager.getInstance().add(connection, settlementType, city, municipality, zone, settlementName, owner);
+            Settlement settlement = SettlementManager.getInstance().add(connection, language, settlementType, city, municipality, zone, settlementName, owner);
             PostalCodeManager.getInstance().add(connection, settlement, Integer.parseInt(postalCodeNumber), owner);
           }
         }
