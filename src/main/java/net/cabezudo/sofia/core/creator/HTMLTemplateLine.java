@@ -8,6 +8,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -29,6 +30,13 @@ class HTMLTemplateLine extends HTMLFileLine {
   }
 
   @Override
+  Path getConfigurationFilePath(Caller caller) {
+    Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+    String templateName = getTag().getValue("template");
+    return templatesBasePath.resolve(templateName + ".json");
+  }
+
+  @Override
   Path getFilePath() {
     String templateName = getTag().getValue("template");
     return Paths.get(templateName + ".html");
@@ -38,6 +46,7 @@ class HTMLTemplateLine extends HTMLFileLine {
   @Override
   HTMLSourceFile getHTMLSourceFile(Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException {
     Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+    Logger.debug("[HTMLTemplateLine:getHTMLSourceFile] Create new HTMLTemplateSectionSourceFile using %s.", templatesBasePath);
     return new HTMLTemplateSectionSourceFile(getSite(), templatesBasePath, getFilePath(), getTag().getId(), getTemplateVariables(), caller);
   }
 }

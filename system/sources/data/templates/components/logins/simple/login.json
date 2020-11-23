@@ -4,40 +4,40 @@
     "caption": {
       "title": {
         "font": {
-          "family": "#{theme.caption.title.font.family}",
+          "family": "'Ubuntu', sans-serif",
           "size": {
-            "default": "#{theme.caption.title.font.size.default}",
-            "480": "#{theme.caption.title.font.size.480}",
-            "750": "#{theme.caption.title.font.size.750}",
-            "1024": "#{theme.caption.title.font.size.1024}",
-            "1250": "#{theme.caption.title.font.size.1250}",
-            "1800": "#{theme.caption.title.font.size.1800}"
+            "default": "34px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
           }
         }
       },
       "option": {
         "font": {
-          "family": "#{theme.caption.option.font.family}",
+          "family": "Roboto Condensed",
           "size": {
-            "default": "#{theme.caption.option.font.size.default}",
-            "480": "#{theme.caption.option.font.size.480}",
-            "750": "#{theme.caption.option.font.size.750}",
-            "1024": "#{theme.caption.option.font.size.1024}",
-            "1250": "#{theme.caption.option.font.size.1250}",
-            "1800": "#{theme.caption.option.font.size.1800}"
+            "default": "38px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
           }
         }
       },
       "text": {
         "font": {
-          "family": "#{theme.text.font.family}",
+          "family": "Roboto Condensed",
           "size": {
-            "default": "#{theme.caption.text.font.size.default}",
-            "480": "#{theme.caption.text.font.size.480}",
-            "750": "#{theme.caption.text.font.size.750}",
-            "1024": "#{theme.caption.text.font.size.1024}",
-            "1250": "#{theme.caption.text.font.size.1250}",
-            "1800": "#{theme.caption.text.font.size.1800}"
+            "default": "22px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
           }
         }
       }

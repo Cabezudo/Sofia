@@ -9,7 +9,7 @@
     flex-direction: row;
     justify-content: space-between;
     padding-top: #{menu.padding.top.default};
-    padding-right: 0;
+    padding-right: #{menu.padding.right.default};
     padding-bottom: #{menu.padding.bottom.default};
     padding-left: #{menu.padding.left.default};
   }
@@ -69,6 +69,7 @@
     font-size: #{menu.font.size.default};
     padding-bottom: 20px;
     padding-left: #{menu.padding.left.default};
+    padding-right: #{menu.padding.right.default};
   }
   #itemsContainer > .menu > .item {
     color: #4a4a4a;
@@ -197,7 +198,11 @@
             const itemElement = document.createElement('div');
             menu.appendChild(itemElement);
             itemElement.className = 'item';
-            itemElement.innerHTML = item.name.en;
+            let text = item.name[variables.site.language];
+            if (!text) {
+              text = item.name.en;
+            }
+            itemElement.innerHTML = text;
             linkTo({
               onClick: item.url,
               element: itemElement
