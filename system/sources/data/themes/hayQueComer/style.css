@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Darker+Grotesque:wght@300;400;500;600;700;800;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Chathura:wght@100;300;400;700;800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@600;900&display=swap');
 
 body {
   color: #4a4a4a;
@@ -21,6 +22,7 @@ body::-webkit-scrollbar {
 input, select, textarea {
   margin: 0;
   padding: 0;
+  font-weight: 300;
 }
 
 input.error {
@@ -29,17 +31,13 @@ input.error {
   box-shadow: 0px 0px 12px -3px rgba(255,0,0,0.8);
 }
 
-input, select, textarea {
-  font-weight: 300;
-}
-
-input[type='text'], textarea {
+input[type='text'], input[type='email'], input[type='password'], textarea {
   box-shadow: none;
   max-width: 100%;
   width: 100%;
 }
 
-input[type='text'], select, textarea {
+input[type='text'], input[type='email'], input[type='password'], select, textarea {
   align-items: center;
   background-color: #fff;
   border: 1px solid #eee;
@@ -59,10 +57,6 @@ input[type='text'], select, textarea {
 
 input:active, input:focus, select select:active, select select:focus, textarea:active, textarea:focus {
   outline: none;
-}
-
-input, select, textarea {
-  margin: 0;
 }
 
 input:disabled, textarea:disabled {

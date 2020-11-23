@@ -64,7 +64,7 @@ public class VariablesJSServlet {
     request.getSession().setAttribute("", requestURI);
     sb.append("  user: ");
     if (user == null) {
-      sb.append("null\n");
+      sb.append("null,\n");
     } else {
       sb.append("{\n");
       sb.append("  id: '").append(user.getId()).append("',\n");
@@ -84,8 +84,11 @@ public class VariablesJSServlet {
         sb.append("      }");
       }
       sb.append("\n    ]\n");
-      sb.append("  }\n");
+      sb.append("  },\n");
     }
+    sb.append("  site: {\n");
+    sb.append("    language: \"es\"\n");
+    sb.append("  }\n");
     sb.append("};\n");
     sb.append("\n");
     return sb.toString();

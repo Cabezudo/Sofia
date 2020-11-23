@@ -5,8 +5,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -19,6 +21,15 @@ public class HTMLFragmentLine extends HTMLFileLine {
   }
 
   @Override
+  Path getConfigurationFilePath(Caller caller) {
+    Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+    String fileName = getFilePath().toString();
+    int i = fileName.lastIndexOf(".");
+    String partialFile = fileName.substring(0, i);
+    return templatesBasePath.resolve(partialFile + ".json");
+  }
+
+  @Override
   Path getFilePath() {
     String fileName = getTag().getValue("file");
     return Paths.get(fileName);
@@ -27,6 +38,7 @@ public class HTMLFragmentLine extends HTMLFileLine {
   @Override
   HTMLSourceFile getHTMLSourceFile(Caller caller)
           throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
+    Logger.debug("[HTMLFragmentLine:getHTMLSourceFile]");
     Path fullFileBasePath;
     String partialFilePathString = getFilePath().toString();
     // FIX This fail with relative paths like file="this.html". Take the root site path
