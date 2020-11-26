@@ -25,13 +25,13 @@ public class LanguageManager {
     return INSTANCE;
   }
 
-  public Language get(String twoLettersCode) throws SQLException {
+  public Language get(String twoLettersCode) throws SQLException, InvalidTwoLettersCodeException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, twoLettersCode);
     }
   }
 
-  public Language get(Connection connection, String twoLettersCode) throws SQLException {
+  public Language get(Connection connection, String twoLettersCode) throws SQLException, InvalidTwoLettersCodeException {
     String query
             = "SELECT id, twoLettersCode "
             + "FROM " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " "
@@ -54,7 +54,7 @@ public class LanguageManager {
         ps.close();
       }
     }
-    return null;
+    throw new InvalidTwoLettersCodeException(twoLettersCode);
   }
 
   public Language add(Connection connection, String twoLettersCode) throws SQLException {

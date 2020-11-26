@@ -14,12 +14,12 @@ import net.cabezudo.sofia.logger.Logger;
  * @version 0.01.00, 2020.08.31
  * @param <T>
  */
-public class SimpleCatalogManager<T extends CatalogEntry> {
+public abstract class SimpleCatalogManager<T extends CatalogEntry> {
 
   private final String databaseName;
   private final String tableName;
 
-  public SimpleCatalogManager(String databaseName, String tableName) {
+  protected SimpleCatalogManager(String databaseName, String tableName) {
     this.databaseName = databaseName;
     this.tableName = tableName;
   }

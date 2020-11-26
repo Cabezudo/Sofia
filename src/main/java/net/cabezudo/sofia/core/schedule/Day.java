@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.schedule;
 import java.time.DayOfWeek;
 import java.util.Objects;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.languages.Language;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -50,25 +51,47 @@ public class Day implements Comparable<Day> {
     }
   }
 
-  public static String getName(int day) {
+  public static String getName(Language language, int day) {
     // TODO Ver el tema de internacionalización
-    switch (day) {
-      case 1:
-        return "Lunes";
-      case 2:
-        return "Martes";
-      case 3:
-        return "Miércoles";
-      case 4:
-        return "Jueves";
-      case 5:
-        return "Viernes";
-      case 6:
-        return "Sábado";
-      case 7:
-        return "Domingo";
+    switch (language.getTwoLettersCode()) {
+      case "es":
+        switch (day) {
+          case 1:
+            return "Lunes";
+          case 2:
+            return "Martes";
+          case 3:
+            return "Miércoles";
+          case 4:
+            return "Jueves";
+          case 5:
+            return "Viernes";
+          case 6:
+            return "Sábado";
+          case 7:
+            return "Domingo";
+          default:
+            throw new SofiaRuntimeException("Invalid day index: " + day);
+        }
       default:
-        throw new SofiaRuntimeException("Invalid day index: " + day);
+        switch (day) {
+          case 1:
+            return "Monday";
+          case 2:
+            return "Tuesday";
+          case 3:
+            return "Wednesday";
+          case 4:
+            return "Thursday";
+          case 5:
+            return "Friday";
+          case 6:
+            return "Saturday";
+          case 7:
+            return "Sunday";
+          default:
+            throw new SofiaRuntimeException("Invalid day index: " + day);
+        }
     }
   }
 

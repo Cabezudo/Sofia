@@ -5,13 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
+import net.cabezudo.sofia.core.languages.Language;
+import net.cabezudo.sofia.core.languages.LanguageManager;
+import net.cabezudo.sofia.core.languages.LanguagesTable;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.logger.Logger;
@@ -34,28 +37,32 @@ public class WebUserDataManager {
     return INSTANCE;
   }
 
+  public WebUserData createFakeWebUserData() throws SQLException, InvalidTwoLettersCodeException {
+    Language spanish = LanguageManager.getInstance().get("es");
+    return new WebUserData(1, "fackeSessionId", 0, spanish, spanish);
+  }
+
   public class WebUserData {
 
     private final int id;
     private final String sessionId;
     private final long failLoginResponseTime;
-    private final String languageCode;
-    private final String languageCountryCode;
-    private Locale locale;
+    private Language countryLanguage;
+    private Language actualLanguage;
     private int userId;
     private User user;
     private JSONObject jsonObject;
 
-    private WebUserData(int id, String sessionId, long failLoginResponseTime, String languageCode, String languageCountryCode) {
-      this(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, 0);
+    private WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage) {
+      this(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, 0);
     }
 
-    private WebUserData(int id, String sessionId, long failLoginResponseTime, String languageCode, String languageCountryCode, int userId) {
+    private WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage, int userId) {
       this.id = id;
       this.sessionId = sessionId;
       this.failLoginResponseTime = failLoginResponseTime;
-      this.languageCode = languageCode;
-      this.languageCountryCode = languageCountryCode;
+      this.countryLanguage = countryLanguage;
+      this.actualLanguage = actualLanguage;
       this.userId = userId;
     }
 
@@ -67,11 +74,12 @@ public class WebUserDataManager {
       return sessionId;
     }
 
-    public Locale getLocale() {
-      if (locale == null) {
-        locale = new Locale(languageCode, languageCountryCode);
-      }
-      return locale;
+    public Language getCountryLanguage() {
+      return countryLanguage;
+    }
+
+    public Language getActualLanguage() {
+      return actualLanguage;
     }
 
     public long getFailLoginResponseTime() {
@@ -90,10 +98,8 @@ public class WebUserDataManager {
         jsonObject.add(new JSONPair("id", id));
         jsonObject.add(new JSONPair("sessionId", sessionId));
         jsonObject.add(new JSONPair("failLoginResponseTime", failLoginResponseTime));
-        JSONObject jsonLanguageObject = new JSONObject();
-        jsonLanguageObject.add(new JSONPair("code", languageCode));
-        jsonLanguageObject.add(new JSONPair("countryCode", languageCountryCode));
-        jsonObject.add(new JSONPair("language", jsonLanguageObject));
+        jsonObject.add(new JSONPair("countryLanguage", countryLanguage.toJSONTree()));
+        jsonObject.add(new JSONPair("actualLanguage", actualLanguage.toJSONTree()));
         jsonObject.add(new JSONPair("logged", isLogged()));
         try {
           user = getUser();
@@ -108,7 +114,7 @@ public class WebUserDataManager {
 
     private WebUserData setLoginResponseTime(long failLoginResponseTime) {
       jsonObject = null;
-      return new WebUserData(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
+      return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
     }
 
     public User getUser() throws SQLException {
@@ -126,6 +132,12 @@ public class WebUserDataManager {
         update("user", user.getId(), this.sessionId);
       }
       this.user = user;
+    }
+
+    public void setLanguage(String twoLetterCodeLanguage) throws SQLException, InvalidTwoLettersCodeException {
+      Language language = LanguageManager.getInstance().get(twoLetterCodeLanguage);
+      this.actualLanguage = language;
+      update("actualLanguage", language.getId(), this.sessionId);
     }
   }
 
@@ -167,21 +179,28 @@ public class WebUserDataManager {
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
-      String query = "SELECT "
-              + "id, `failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
-              + "FROM " + WebUserDataTable.NAME + " WHERE sessionId = ?";
+      String query
+              = "SELECT "
+              + "w.id AS WebUserDataId, `failLoginResponseTime`, "
+              + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
+              + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
+              + "`user` "
+              + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
+              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
+              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+              + "WHERE sessionId = ?";
       ps = connection.prepareStatement(query);
       ps.setString(1, sessionId);
       Logger.fine(ps);
       rs = ps.executeQuery();
       if (rs.next()) {
         Logger.fine("Client data FOUND using " + sessionId + ".");
-        int id = rs.getInt("id");
+        int id = rs.getInt("WebUserDataId");
         long failLoginResponseTime = rs.getLong("failLoginResponseTime");
-        String languageCode = rs.getString("languageCode");
-        String languageCountryCode = rs.getString("languageCountryCode");
+        Language actualLanguage = new Language(rs.getInt("actualLanguageId"), rs.getString("actualLanguageTwoLettersCode"));
+        Language countryLanguage = new Language(rs.getInt("countryLanguageId"), rs.getString("countryLanguageTwoLettersCode"));
         int userId = rs.getInt("user");
-        return new WebUserData(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
+        return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
       }
       Logger.fine("Client data NOT FOUND using " + sessionId + ".");
       return null;
@@ -205,9 +224,16 @@ public class WebUserDataManager {
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
-      String query = "SELECT "
-              + "sessionId, `failLoginResponseTime`, `languageCode`, `languageCountryCode`, `user` "
-              + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " WHERE id = ?";
+      String query
+              = "SELECT "
+              + "sessionId, `failLoginResponseTime`, "
+              + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
+              + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
+              + "`user` "
+              + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
+              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
+              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+              + "WHERE w.id = ?";
       ps = connection.prepareStatement(query);
       ps.setInt(1, id);
       Logger.fine(ps);
@@ -216,10 +242,14 @@ public class WebUserDataManager {
         Logger.fine("Client data FOUND using " + id + ".");
         String sessionId = rs.getString("sessionId");
         long failLoginResponseTime = rs.getLong("failLoginResponseTime");
-        String languageCode = rs.getString("languageCode");
-        String languageCountryCode = rs.getString("languageCountryCode");
+        int countryLanguageId = rs.getInt("countryLanguageId");
+        String countryLanguageTwoLettersCode = rs.getString("countryLanguageTwoLettersCode");
+        Language countryLanguage = new Language(countryLanguageId, countryLanguageTwoLettersCode);
+        int actualLanguageId = rs.getInt("actualLanguageId");
+        String actualLanguageTwoLettersCode = rs.getString("actualLanguageTwoLettersCode");
+        Language actualLanguage = new Language(actualLanguageId, actualLanguageTwoLettersCode);
         int userId = rs.getInt("user");
-        return new WebUserData(id, sessionId, failLoginResponseTime, languageCode, languageCountryCode, userId);
+        return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
       }
       Logger.fine("Client data NOT FOUND using " + id + ".");
       return null;
@@ -237,21 +267,30 @@ public class WebUserDataManager {
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {
-      String query = "INSERT INTO " + WebUserDataTable.NAME + " (`sessionId`, `failLoginResponseTime`, `languageCode`, `languageCountryCode`) VALUES (?, ?, ?, ?)";
+      String query
+              = "INSERT INTO " + WebUserDataTable.NAME + " "
+              + "(`sessionId`, `failLoginResponseTime`, `countryLanguage`, `actualLanguage`) "
+              + "VALUES (?, ?, ?, ?)";
       ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
       ps.setString(1, sessionId);
       // TODO take the default values from configuration database for the site
       ps.setLong(2, INITIAL_FAIL_LOGIN_RESPONSE_TIME);
-      ps.setString(3, "es");
-      ps.setString(4, "MX");
+      try {
+        Language spanish = LanguageManager.getInstance().get("es");
+        ps.setInt(3, spanish.getId());
+        ps.setInt(4, spanish.getId());
 
-      Logger.fine(ps);
-      ps.executeUpdate();
+        Logger.fine(ps);
+        ps.executeUpdate();
 
-      rs = ps.getGeneratedKeys();
-      if (rs.next()) {
-        int id = rs.getInt(1);
-        return new WebUserData(id, sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, "es", "MX");
+        rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+          int id = rs.getInt(1);
+          // TODO Detect the langauage using the localization. IP and Web localization
+          return new WebUserData(id, sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, spanish, spanish);
+        }
+      } catch (InvalidTwoLettersCodeException e) {
+        throw new SofiaRuntimeException(e);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
 
@@ -265,7 +304,7 @@ public class WebUserDataManager {
     }
   }
 
-  public void insert(String sessionId) throws SQLException {
+  public void insert(String sessionId) throws SQLException, InvalidTwoLettersCodeException {
     try (Connection connection = Database.getConnection()) {
       insert(connection, sessionId);
     }

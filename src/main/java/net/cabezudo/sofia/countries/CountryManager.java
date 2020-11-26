@@ -8,7 +8,6 @@ import java.sql.Statement;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.words.Word;
-import net.cabezudo.sofia.core.words.WordManager;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -63,11 +62,6 @@ public class CountryManager {
 
   public Country add(Connection connection, Language language, String name, int phoneCode, String twoLettersCountryCode) throws SQLException {
 
-    Word word = WordManager.getInstance().get(connection, language, name);
-    if (word == null) {
-      word = WordManager.getInstance().add(connection, language, name);
-    }
-
     connection.setAutoCommit(false);
     String query = "INSERT INTO " + CountriesTable.NAME + " (phoneCode, twoLettersCountryCode) VALUES (?, ?)";
     PreparedStatement ps = null;
@@ -82,8 +76,14 @@ public class CountryManager {
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         Integer id = rs.getInt(1);
-        addCountryName(connection, id, word);
-        return new Country(id, word, phoneCode, twoLettersCountryCode);
+
+        CountryName countryName = ContryNamesManager.getInstance().get(connection, language, name);
+        if (countryName == null) {
+          countryName = ContryNamesManager.getInstance().add(connection, id, language, name);
+        }
+
+        addCountryName(connection, id, countryName);
+        return new Country(id, countryName, phoneCode, twoLettersCountryCode);
       }
     } finally {
       if (rs != null) {
@@ -98,11 +98,12 @@ public class CountryManager {
     throw new SQLException("Can't get the generated key");
   }
 
-  private void addCountryName(Connection connection, int countryId, Word word) throws SQLException {
-    String query = "INSERT INTO " + CountryNamesTable.DATABASE + "." + CountryNamesTable.NAME + " (country, name) VALUES (?, ?)";
+  private void addCountryName(Connection connection, int countryId, CountryName countryName) throws SQLException {
+    String query = "INSERT IGNORE INTO " + CountryNamesTable.DATABASE + "." + CountryNamesTable.NAME + " (id, language, value) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, countryId);
-      ps.setInt(2, word.getId());
+      ps.setInt(2, countryName.getLanguage().getId());
+      ps.setString(3, countryName.getValue());
       Logger.fine(ps);
       ps.executeUpdate();
     }

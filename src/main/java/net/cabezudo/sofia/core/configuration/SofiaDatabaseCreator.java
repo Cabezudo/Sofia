@@ -16,6 +16,7 @@ import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.clients.ClientTable;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.languages.LanguageManager;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
@@ -35,7 +36,6 @@ import net.cabezudo.sofia.core.users.permission.ProfilesPermissionsTable;
 import net.cabezudo.sofia.core.users.profiles.ProfilesTable;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.core.webusers.WebUserDataTable;
-import net.cabezudo.sofia.core.words.WordsTable;
 import net.cabezudo.sofia.countries.CountriesTable;
 import net.cabezudo.sofia.countries.Country;
 import net.cabezudo.sofia.countries.CountryManager;
@@ -108,7 +108,6 @@ public class SofiaDatabaseCreator extends DataCreator {
   public void createDatabaseStructure() throws DataCreationException {
     try (Connection connection = Database.getConnection()) {
       Database.createTable(connection, LanguagesTable.CREATION_QUERY);
-      Database.createTable(connection, WordsTable.CREATION_QUERY);
       Database.createTable(connection, SitesTable.CREATION_QUERY);
       Database.createTable(connection, URLTable.CREATION_QUERY);
       Database.createTable(connection, DomainNamesTable.CREATION_QUERY);
@@ -148,11 +147,14 @@ public class SofiaDatabaseCreator extends DataCreator {
     try {
       createLanguages();
       Country country = createCountries();
-      Language language = LanguageManager.getInstance().get("es");
+      Language language;
+      language = LanguageManager.getInstance().get("es");
       createPostalCodes(language, country, null);
       createTimeTypes();
     } catch (SQLException e) {
       throw new DataCreationException(e);
+    } catch (InvalidTwoLettersCodeException e) {
+      throw new SofiaRuntimeException(e);
     }
   }
 
@@ -169,9 +171,11 @@ public class SofiaDatabaseCreator extends DataCreator {
   }
 
   private Country createCountries() throws SQLException {
-    Language language = LanguageManager.getInstance().get("es");
-    if (language == null) {
-      throw new SofiaRuntimeException("Langauge NOT FOUND");
+    Language language;
+    try {
+      language = LanguageManager.getInstance().get("es");
+    } catch (InvalidTwoLettersCodeException e) {
+      throw new SofiaRuntimeException(e);
     }
     return CountryManager.getInstance().add(language, "México", 52, "MX");
   }

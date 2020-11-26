@@ -12,7 +12,6 @@ import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.words.Word;
-import net.cabezudo.sofia.core.words.WordsTable;
 import net.cabezudo.sofia.countries.CountriesTable;
 import net.cabezudo.sofia.countries.Country;
 import net.cabezudo.sofia.countries.CountryNamesTable;
@@ -72,9 +71,8 @@ public class SettlementManager {
             + "LEFT JOIN " + StatesTable.NAME + " AS t ON m.state = t.id "
             + "LEFT JOIN " + CountriesTable.NAME + " AS o ON t.country = o.id "
             + "LEFT JOIN " + CountryNamesTable.NAME + " AS cn ON c.id = cn.country "
-            + "LEFT JOIN " + WordsTable.NAME + " AS w ON cb.name = w.id "
             + "LEFT JOIN " + ZonesTable.NAME + " AS z ON s.zone = z.id "
-            + "WHERE w.language = ?, st.id = ? AND m.id = ? AND z.id = ? AND s.name = ? AND (s.owner = ? OR s.owner = 1)";
+            + "WHERE cn.language = ?, st.id = ? AND m.id = ? AND z.id = ? AND s.name = ? AND (s.owner = ? OR s.owner = 1)";
     PreparedStatement ps = null;
     ResultSet rs = null;
     try {

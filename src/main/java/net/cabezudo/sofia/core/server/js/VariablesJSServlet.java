@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
@@ -22,6 +23,7 @@ public class VariablesJSServlet {
     WebUserData webUserData = WebUserDataManager.getInstance().get(request);
 
     User user = webUserData.getUser();
+    Language actualLanguage = webUserData.getActualLanguage();
 
     String requestURI = request.getRequestURI();
 
@@ -87,7 +89,7 @@ public class VariablesJSServlet {
       sb.append("  },\n");
     }
     sb.append("  site: {\n");
-    sb.append("    language: \"es\"\n");
+    sb.append("    language: \"").append(actualLanguage.getTwoLettersCode()).append("\"\n");
     sb.append("  }\n");
     sb.append("};\n");
     sb.append("\n");

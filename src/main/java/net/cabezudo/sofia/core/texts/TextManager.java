@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.texts;
 
-import java.util.Locale;
+import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**
@@ -13,7 +13,7 @@ public class TextManager {
     // Nothing to do here. Utility classes should not have public constructors.
   }
 
-  public static String get(Site site, Locale locale, String messageKey, Object... parameters) {
+  public static String get(Site site, Language language, String messageKey, Object... parameters) {
     switch (messageKey) {
       case "change.password.user.not.found.by.hash":
         return "El enlace utilizado ya no es válido";
@@ -106,7 +106,7 @@ public class TextManager {
       case "user.notLogged":
         return "El usuario no ha accedido al sistema";
       default:
-        throw new InvalidKeyException("I can't found the text key " + messageKey + " for the locale " + locale);
+        throw new InvalidKeyException("I can't found the text key " + messageKey + " for the locale " + language);
     }
   }
 }

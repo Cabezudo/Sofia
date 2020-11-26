@@ -189,7 +189,13 @@ class StartOptionsHelper {
       throw new SofiaRuntimeException("No class found in class paths.");
     }
     Path systemLibsPath = Configuration.getInstance().getSystemLibsPath();
+    // TODO read all the jar in directory
     Path jarFileName = systemLibsPath.resolve("hay-que-comer-com-back-1.0-SNAPSHOT.jar");
+    readJAR(databaseCreators, systemClassesPath, jarFileName);
+    return databaseCreators;
+  }
+
+  private void readJAR(DatabaseCreators databaseCreators, Path systemClassesPath, Path jarFileName) throws IOException, ConfigurationException {
     Logger.debug("Check for %s.", jarFileName);
 
     DataCreator databaseCreator = null;
@@ -258,7 +264,6 @@ class StartOptionsHelper {
         databaseCreator.addAPIConfiguration(jsonAPIDefinition);
       }
     }
-    return databaseCreators;
   }
 
   public String getDefaultDomainName() throws DataCreationException {

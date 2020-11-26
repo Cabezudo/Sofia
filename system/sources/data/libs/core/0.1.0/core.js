@@ -25,6 +25,7 @@ const Core = {
   loaderDiv: null,
   pageParameters: new URLSearchParams(location.search),
   lastSection: null,
+  texts: {},
   showMessage: (messageObject) => {
     if (Core.messagesContainer !== null) {
       Core.trigger(Core.messagesContainer, 'showMessage', messageObject);
@@ -38,9 +39,6 @@ const Core = {
   addOnResizeFunction: (func) => {
     Core.onResizeFunctions.push(func);
   },
-  addSetFunction: (func) => {
-    Core.setPageFunctions.push(func);
-  },
   addOnScrollElement: (element) => {
     Core.scrollElements.push(element);
     element.addEventListener('scroll', e => {
@@ -51,6 +49,12 @@ const Core = {
   },
   addOnScrollFunction: (func) => {
     Core.onScrollFunctions.push(func);
+  },
+  addSetFunction: (func) => {
+    Core.setPageFunctions.push(func);
+  },
+  addTexts: texts => {
+    Core.texts = Object.assign(Core.texts, texts);
   },
   changeSection: section => {
     if (Core.lastSection !== null) {
@@ -79,6 +83,9 @@ const Core = {
   },
   getRequestId: () => {
     return Core.requestId;
+  },
+  getText: key => {
+    return Core.texts[variables.site.language][key];
   },
   getURLParameterByName: (name, url) => {
     if (!url) {
@@ -268,7 +275,7 @@ const Core = {
                   jsonData = {
                     requestId,
                     data: JSON.parse(text)
-                  }
+                  };
                   do {
                     if (Core.isFunction(targetElement)) {
                       targetElement(jsonData);
@@ -313,7 +320,7 @@ const Core = {
                   jsonData = {
                     requestId,
                     data: JSON.parse(text)
-                  }
+                  };
                   do {
                     if (Core.isFunction(targetElement)) {
                       targetElement(jsonData);
@@ -367,7 +374,7 @@ const Core = {
                     jsonData = {
                       requestId,
                       data: JSON.parse(text)
-                    }
+                    };
                     do {
                       if (Core.isFunction(targetElement)) {
                         targetElement(jsonData);
@@ -412,7 +419,7 @@ const Core = {
                   jsonData = {
                     requestId,
                     data: JSON.parse(text)
-                  }
+                  };
                   do {
                     if (Core.isFunction(targetElement)) {
                       targetElement(jsonData);
@@ -497,31 +504,31 @@ const Core = {
   }
 };
 window.onresize = () =>
-        {
-          resizeTimer = setTimeout(() => {
-            clearTimeout(resizeTimer);
-            Core.onResizeFunctions.forEach(func => {
-              func();
-            });
-          }, 500);
-        };
+{
+  resizeTimer = setTimeout(() => {
+    clearTimeout(resizeTimer);
+    Core.onResizeFunctions.forEach(func => {
+      func();
+    });
+  }, 500);
+};
 window.onload = () =>
-        {
-          Core.onloadFunctions.forEach(func => {
-            func();
-          });
-          Core.setPageFunctions.forEach(func => {
-            func();
-          });
-          if (Core.pageParameters.has('section')) {
-            Core.changeSection(Core.pageParameters.get('section'));
-          }
-          console.log(templateVariables);
-          Core.testFunctions.forEach(func => {
-            func();
-          });
-          document.body.style.opacity = "1";
-          if (variables.message !== null) {
-            Core.showMessage(variables.message);
-          }
-        };
+{
+  Core.onloadFunctions.forEach(func => {
+    func();
+  });
+  Core.setPageFunctions.forEach(func => {
+    func();
+  });
+  if (Core.pageParameters.has('section')) {
+    Core.changeSection(Core.pageParameters.get('section'));
+  }
+  console.log(templateVariables);
+  Core.testFunctions.forEach(func => {
+    func();
+  });
+  document.body.style.opacity = "1";
+  if (variables.message !== null) {
+    Core.showMessage(variables.message);
+  }
+};
