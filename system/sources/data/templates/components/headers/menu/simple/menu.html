@@ -144,6 +144,43 @@
   }
 </style>
 <script lib="linkTo/0.1.0"></script>
+<style>
+  .languageFlagContainer {
+    padding-left: 10px;
+  }
+  .languageFlag {
+    width: 16px;
+    height: 11px;
+    display: none;
+  }
+  .languageFlag:hover {
+    cursor: pointer;
+  }
+</style>
+<script>
+  class TwoLanguageFlag {
+    constructor(data) {
+      this.data = data;
+      const createGUI = () => {
+        this.element = document.createElement('DIV');
+        this.element.className = 'languageFlagContainer';
+        this.data.languages.forEach(language => {
+          const flagElement = document.createElement('DIV');
+          flagElement.className = 'languageFlag';
+          if (variables.site.language !== language.twoLetterCode) {
+            flagElement.style.display = 'block';
+          }
+          flagElement.style.backgroundImage = `url('${language.image}')`;
+          flagElement.addEventListener('click', () => {
+            window.location.href = `/changeLanguage?${language.twoLetterCode}`;
+          });
+          this.element.appendChild(flagElement);
+        });
+      };
+      createGUI();
+    }
+  }
+</script>
 <script>
   {
     const createGUI = () => {
@@ -235,6 +272,10 @@
                 menu.appendChild(itemElement);
                 break;
               }
+              case 'languages':
+                const flag = new TwoLanguageFlag(item.template.data);
+                menu.appendChild(flag.element);
+                break;
               default:
                 throw new Error(`Invalid template name ${templateName}`);
             }

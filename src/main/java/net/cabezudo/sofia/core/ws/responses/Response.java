@@ -1,8 +1,8 @@
 package net.cabezudo.sofia.core.ws.responses;
 
-import java.util.Locale;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.texts.TextManager;
 
@@ -39,12 +39,12 @@ public class Response {
     this.os = os;
   }
 
-  public JSONObject toJSON(Site site, Locale locale) {
+  public JSONObject toJSON(Site site, Language language) {
     if (jsonObject == null) {
       jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("status", status.toString()));
       jsonObject.add(new JSONPair("type", messageType.toString()));
-      jsonObject.add(new JSONPair("message", TextManager.get(site, locale, message, os)));
+      jsonObject.add(new JSONPair("message", TextManager.get(site, language, message, os)));
       if (data != null) {
         jsonObject.add(new JSONPair("data", data));
       }

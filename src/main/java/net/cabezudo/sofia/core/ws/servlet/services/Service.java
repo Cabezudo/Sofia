@@ -32,6 +32,7 @@ public abstract class Service<T extends Response> {
   private final HttpSession session;
   protected final PrintWriter out;
   private String payload;
+  private WebUserData webUserData;
 
   protected Service(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     this.request = request;
@@ -75,7 +76,7 @@ public abstract class Service<T extends Response> {
 
   protected void sendResponse(T response) throws ServletException {
     try {
-      out.print(response.toJSON(getSite(), getWebUserData().getLocale()));
+      out.print(response.toJSON(getSite(), getWebUserData().getActualLanguage()));
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     }
@@ -86,11 +87,13 @@ public abstract class Service<T extends Response> {
   }
 
   protected WebUserData getWebUserData() throws SQLException {
-    WebUserData webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
     if (webUserData == null) {
-      WebUserDataManager webUserDataManager = WebUserDataManager.getInstance();
-      webUserData = webUserDataManager.get(request);
-      setWebUserData(webUserData);
+      webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
+      if (webUserData == null) {
+        WebUserDataManager webUserDataManager = WebUserDataManager.getInstance();
+        webUserData = webUserDataManager.get(request);
+        setWebUserData(webUserData);
+      }
     }
     return webUserData;
   }

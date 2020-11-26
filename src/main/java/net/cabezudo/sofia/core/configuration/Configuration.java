@@ -73,6 +73,7 @@ public final class Configuration {
   private final int serverPort;
   private final Path systemPath;
   private final Path systemDataPath;
+  private final Path systemImagesPath;
   private final Path systemLibsPath;
   private final Path sitesDataPath;
   private final Path commonsFontsPath;
@@ -121,6 +122,8 @@ public final class Configuration {
       checkPath(systemPath);
       systemDataPath = systemPath.resolve("data");
       Files.createDirectories(systemDataPath);
+      systemImagesPath = systemDataPath.resolve("images");
+      Files.createDirectories(systemImagesPath);
       systemLibsPath = systemDataPath.resolve("libs");
       Files.createDirectories(systemLibsPath);
       commonSourcesPath = systemPath.resolve("sources");
@@ -211,6 +214,10 @@ public final class Configuration {
 
   public Path getSystemDataPath() {
     return systemDataPath;
+  }
+
+  public Path getSystemImagesPath() {
+    return systemImagesPath;
   }
 
   public Path getSystemLibsPath() {

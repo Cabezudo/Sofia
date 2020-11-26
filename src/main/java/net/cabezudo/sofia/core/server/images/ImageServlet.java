@@ -61,7 +61,15 @@ public class ImageServlet extends HttpServlet {
     }
 
     Path basePath = site.getVersionedSourcesPath();
-    Path imagePath = getImagePath(basePath, imagePartialPathName, queryString);
+    Path imagePath = basePath.resolve(imagePartialPathName);
+    if (!Files.exists(imagePath)) {
+      basePath = Configuration.getInstance().getSystemDataPath();
+      Logger.debug("File %s DO NOT EXISTS.", imagePath);
+      imagePath = basePath.resolve(imagePartialPathName);
+      Logger.debug("Trying with %s.", imagePath);
+    }
+
+    imagePath = getImagePath(basePath, imagePartialPathName, queryString);
     Logger.debug("Image full path: %s.", imagePath);
 
     if (!Files.exists(imagePath) || Environment.getInstance().isProduction()) {
@@ -77,8 +85,8 @@ public class ImageServlet extends HttpServlet {
         returnErrorImage(text, response);
       }
     } else {
-      Logger.info("[ImageServlet:doGet] File %s allready exists.", imagePath);
-      try ( FileInputStream in = new FileInputStream(imagePath.toFile());  OutputStream out = response.getOutputStream();) {
+      Logger.info("File %s allready exists.", imagePath);
+      try (FileInputStream in = new FileInputStream(imagePath.toFile()); OutputStream out = response.getOutputStream();) {
         byte[] buffer = new byte[1024];
         int count = in.read(buffer);
         while (count >= 0) {
@@ -157,6 +165,8 @@ public class ImageServlet extends HttpServlet {
 
   private Path getImagePath(Path basePath, String imagePartialPath, String queryString) {
     Path imagePath = basePath.resolve(imagePartialPath);
+    Logger.info("Image path: %s", imagePath);
+
     int i = imagePartialPath.lastIndexOf('.');
     String fileType = imagePartialPath.substring(i + 1);
     Path generatedBasePath = imagePath.getParent().resolve("cache");

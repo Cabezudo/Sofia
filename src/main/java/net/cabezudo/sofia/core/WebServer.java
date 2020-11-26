@@ -29,6 +29,7 @@ import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
+import net.cabezudo.sofia.core.languages.ChangeLanguageServlet;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.CompanyPathTransformationFilter;
@@ -254,6 +255,9 @@ public class WebServer {
 
     ServletHolder imageHolder = new ServletHolder("image", ImageServlet.class);
     context.addServlet(imageHolder, "/images/*");
+
+    ServletHolder changeLanguageHolder = new ServletHolder("changeLanguage", ChangeLanguageServlet.class);
+    context.addServlet(changeLanguageHolder, "/changeLanguage");
 
     ServletHolder qrImageHolder = new ServletHolder("qrImage", QRImageServlet.class);
     context.addServlet(qrImageHolder, "/images/upload/qr.png");

@@ -12,17 +12,16 @@ public class WordsTable {
     // Nothing to do here. Utility classes should not have public constructors.
   }
 
-  public static final String DATABASE = "sofia";
-  public static final String NAME = "words";
-  public static final String CREATION_QUERY
-          = "CREATE TABLE " + NAME + " "
-          + "("
-          + "`id` INT NOT NULL AUTO_INCREMENT, "
-          + "`language` INT NOT NULL, "
-          + "`value` VARCHAR(100) NOT NULL, "
-          + "PRIMARY KEY (`id`, `language`), "
-          + "FOREIGN KEY (`language`) REFERENCES " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + "(`id`)"
-          + ") "
-          + "CHARACTER SET = UTF8";
-
+  public static String getCreationQuery(String targetDatabaseName, String targetTableName, String databaseName, String tableName) {
+    return "CREATE TABLE " + databaseName + "." + tableName + " "
+            + "("
+            + "`id` INT NOT NULL, "
+            + "`language` INT NOT NULL, "
+            + "`value` VARCHAR(1000), "
+            + "PRIMARY KEY (`id`, `language`), "
+            + "FOREIGN KEY (`id`) REFERENCES " + targetDatabaseName + "." + targetTableName + "(`id`), "
+            + "FOREIGN KEY (`language`) REFERENCES " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + "(`id`)"
+            + ") "
+            + "CHARACTER SET = UTF8";
+  }
 }
