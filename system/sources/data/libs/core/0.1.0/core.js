@@ -15,7 +15,9 @@ const Core = {
   messagesContainer: null,
   requestId: 0,
   resizeTimer: null,
-  onloadFunctions: [],
+  onChangeLanguageFunctions: [],
+  onCreateFunctions: [],
+  onLoadFunctions: [],
   onResizeFunctions: [],
   setPageFunctions: [],
   scrollElements: [],
@@ -33,8 +35,14 @@ const Core = {
       throw new Error('No messages container defined.');
     }
   },
+  addOnChangeLanguageFunction: (func) => {
+    Core.onChangeLanguageFunctions.push(func);
+  },
+  addOnCreateFunction: (func) => {
+    Core.onCreateFunctions.push(func);
+  },
   addOnloadFunction: (func) => {
-    Core.onloadFunctions.push(func);
+    Core.onLoadFunctions.push(func);
   },
   addOnResizeFunction: (func) => {
     Core.onResizeFunctions.push(func);
@@ -56,6 +64,15 @@ const Core = {
   addTexts: texts => {
     Core.texts = Object.assign(Core.texts, texts);
   },
+  changeLanguageTo: language => {
+    variables.site.language = language;
+    Core.onChangeLanguageFunctions.forEach(func => {
+      console.log(func);
+      func(language);
+    });
+    Core.displayTexts();
+  }
+  ,
   changeSection: section => {
     if (Core.lastSection !== null) {
       Core.hide(Core.lastSection);
@@ -75,6 +92,24 @@ const Core = {
   disable: element => {
     Core.trigger(element, 'disabled');
   },
+  displayTexts: () => {
+    const language = variables.site.language;
+    console.log('displayTexts');
+    console.log(language);
+    const languageData = Core.texts[language];
+    console.log(languageData);
+    if (languageData) {
+      for (const [key, value] of Object.entries(languageData)) {
+        console.log(`${key} ${value}`);
+        const element = document.getElementById(key);
+        console.log(element);
+        if (element) {
+          element.innerHTML = value;
+        }
+      }
+    }
+    ;
+  },
   enable: element => {
     Core.trigger(element, 'enabled');
   },
@@ -85,7 +120,16 @@ const Core = {
     return Core.requestId;
   },
   getText: key => {
-    return Core.texts[variables.site.language][key];
+    console.log(`Get the text for de key ${key}`);
+    const text = Core.texts[variables.site.language][key];
+    if (text) {
+      return text;
+    }
+    const englishText = Core.texts['en'][key];
+    if (englishText) {
+      return englishText;
+    }
+    return `[${key}]`;
   },
   getURLParameterByName: (name, url) => {
     if (!url) {
@@ -253,9 +297,6 @@ const Core = {
     }
   },
   sendGet: (url, targetElement) => {
-    if (!targetElement) {
-      throw new Error(`Invalid origin for sendGet: ${targetElement}`);
-    }
     const requestId = Core.getNextRequestId();
     fetch(url, {
       headers: {
@@ -503,8 +544,7 @@ const Core = {
     }
   }
 };
-window.onresize = () =>
-{
+window.onresize = () => {
   resizeTimer = setTimeout(() => {
     clearTimeout(resizeTimer);
     Core.onResizeFunctions.forEach(func => {
@@ -512,9 +552,11 @@ window.onresize = () =>
     });
   }, 500);
 };
-window.onload = () =>
-{
-  Core.onloadFunctions.forEach(func => {
+window.onload = () => {
+  Core.onCreateFunctions.forEach(func => {
+    func();
+  });
+  Core.onLoadFunctions.forEach(func => {
     func();
   });
   Core.setPageFunctions.forEach(func => {
@@ -531,4 +573,5 @@ window.onload = () =>
   if (variables.message !== null) {
     Core.showMessage(variables.message);
   }
+  Core.displayTexts();
 };

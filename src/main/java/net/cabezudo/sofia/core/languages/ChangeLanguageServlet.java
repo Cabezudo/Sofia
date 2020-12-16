@@ -26,11 +26,11 @@ public class ChangeLanguageServlet extends HttpServlet {
     try {
       webUserData.setLanguage(twoLetterCodeLanguage);
       request.getSession().setAttribute("webUserData", webUserData);
+      response.getWriter().print("{ \"language\": " + webUserData.getActualLanguage().toJSONTree() + " }");
     } catch (SQLException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Can't set the language");
     } catch (InvalidTwoLettersCodeException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
     }
-    response.sendRedirect(referrer);
   }
 }
