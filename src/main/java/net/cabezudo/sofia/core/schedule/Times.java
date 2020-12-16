@@ -31,4 +31,12 @@ public class Times {
   public Iterable<AbstractTime> getByIdl(int id) {
     return map.get(id);
   }
+
+  public int size() {
+    return map.size();
+  }
+
+  public boolean isNotEmpty() {
+    return !map.isEmpty();
+  }
 }

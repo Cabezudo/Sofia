@@ -160,35 +160,62 @@
 <script>
   class TwoLanguageFlag {
     constructor(data) {
+      const language = variables.site.language;
       this.data = data;
+      const setFlag = () => {
+        this.data.languages.forEach(language => {
+          if (variables.site.language === language.twoLetterCode) {
+            language.element.style.display = 'none';
+          } else {
+            language.element.style.display = 'block';
+          }
+        });
+      };
       const createGUI = () => {
         this.element = document.createElement('DIV');
         this.element.className = 'languageFlagContainer';
         this.data.languages.forEach(language => {
           const flagElement = document.createElement('DIV');
           flagElement.className = 'languageFlag';
-          if (variables.site.language !== language.twoLetterCode) {
-            flagElement.style.display = 'block';
-          }
+          language.element = flagElement;
           flagElement.style.backgroundImage = `url('${language.image}')`;
           flagElement.addEventListener('click', () => {
-            window.location.href = `/changeLanguage?${language.twoLetterCode}`;
+            Core.sendGet(`/changeLanguage?${language.twoLetterCode}`, response => {
+              Core.changeLanguageTo(language.twoLetterCode);
+              setFlag();
+            });
           });
           this.element.appendChild(flagElement);
         });
+        setFlag();
       };
       createGUI();
+      Core.addOnChangeLanguageFunction(setFlag);
     }
   }
 </script>
 <script>
   {
+    const setText = (texts, element) => {
+      if (texts) {
+        let text = texts[variables.site.language];
+        if (!text) {
+          text = texts.en;
+        }
+        element.innerHTML = text;
+      }
+    };
+    const setTexts = () => {
+      menu.childNodes.forEach(item => {
+        const texts = item.texts;
+        setText(texts, item);
+      });
+    };
     const createGUI = () => {
       const items = #{menu}.items;
       const menu = Core.validateById('menu');
       for (const i in items) {
         const item = items[i];
-        console.log(`item: ${JSON.stringify(item)}`);
         let profileAccepted = false;
         const menuProfiles = item.profiles;
         const user = variables.user;
@@ -235,11 +262,8 @@
             const itemElement = document.createElement('div');
             menu.appendChild(itemElement);
             itemElement.className = 'item';
-            let text = item.name[variables.site.language];
-            if (!text) {
-              text = item.name.en;
-            }
-            itemElement.innerHTML = text;
+            itemElement.texts = item.name;
+            setText(item.name, itemElement);
             linkTo({
               onClick: item.url,
               element: itemElement
@@ -284,6 +308,11 @@
             const itemElement = createSVG(item.svg, item.url);
             menu.appendChild(itemElement);
           }
+          if (item.element !== undefined) {
+            const itemElement = document.createElement('DIV');
+            itemElement.id = item.element.id;
+            menu.appendChild(itemElement);
+          }
         }
       }
       const menuButton = Core.validateById('menuButton');
@@ -307,7 +336,8 @@
         }
       });
     };
-    Core.addOnloadFunction(createGUI);
+    Core.addOnCreateFunction(createGUI);
+    Core.addOnChangeLanguageFunction(setTexts);
   }
 </script>
 <div class="headerContainer">

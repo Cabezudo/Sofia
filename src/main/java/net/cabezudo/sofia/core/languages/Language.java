@@ -10,11 +10,11 @@ import net.cabezudo.json.values.JSONObject;
 public class Language {
 
   private final int id;
-  private final String code;
+  private final String twoLetterCode;
 
-  public Language(int id, String code) {
+  public Language(int id, String twoLetterCode) {
     this.id = id;
-    this.code = code;
+    this.twoLetterCode = twoLetterCode;
   }
 
   public int getId() {
@@ -22,13 +22,18 @@ public class Language {
   }
 
   public String getTwoLettersCode() {
-    return code;
+    return twoLetterCode;
+  }
+
+  @Override
+  public String toString() {
+    return "[ " + id + ", " + twoLetterCode + " ]";
   }
 
   public JSONObject toJSONTree() {
     JSONObject jsonRestaurantType = new JSONObject();
     jsonRestaurantType.add(new JSONPair("id", id));
-    jsonRestaurantType.add(new JSONPair("code", code));
+    jsonRestaurantType.add(new JSONPair("twoLetterCode", twoLetterCode));
     return jsonRestaurantType;
   }
 }
