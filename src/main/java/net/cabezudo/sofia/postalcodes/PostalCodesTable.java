@@ -29,6 +29,3 @@ public class PostalCodesTable {
           + "CHARACTER SET = UTF8";
 
 }
-
-// Numero de cuenta total play: 0105320307
-
