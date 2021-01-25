@@ -94,10 +94,10 @@ const Core = {
   },
   displayTexts: () => {
     const language = variables.site.language;
-    console.log('displayTexts');
-    console.log(language);
+    console.log('run displayTexts()');
+    console.log(`variables.site.language: ${language}`);
     const languageData = Core.texts[language];
-    console.log(languageData);
+    console.log(`languageData: ${languageData}`);
     if (languageData) {
       for (const [key, value] of Object.entries(languageData)) {
         console.log(`${key} ${value}`);
@@ -113,9 +113,42 @@ const Core = {
   enable: element => {
     Core.trigger(element, 'enabled');
   },
+  getGeoLocation: async () => {
+    if (navigator.geolocation) {
+      try {
+        const getCurrentPositionPromiseFunction = (resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        };
+        const locationData = await new Promise(getCurrentPositionPromiseFunction);
+        return {
+          status: "OK",
+          message: "OK",
+          code: 0,
+          data: locationData
+        };
+      } catch (error) {
+        return {
+          status: "ERROR",
+          message: error.message,
+          code: error.code,
+          data: null
+        };
+      }
+    } else {
+      console.log("*** get end without support");
+      return {
+        status: "NOT_SUPPORTED",
+        message: "Geolocation is not supported by this browser.",
+        code: 0,
+        data: null
+      }
+      ;
+    }
+  },
   getNextRequestId: () => {
     return Core.requestId++;
-  },
+  }
+  ,
   getRequestId: () => {
     return Core.requestId;
   },
@@ -130,6 +163,9 @@ const Core = {
       return englishText;
     }
     return `[${key}]`;
+  },
+  getTimezoneOffset: () => {
+    return  (new Date()).getTimezoneOffset();
   },
   getURLParameterByName: (name, url) => {
     if (!url) {
@@ -174,7 +210,6 @@ const Core = {
   isVisibleInScreen: element => {
     // TODO verificar cuando la imagen se debería de ver en la pantalla pero es mas grande y agregar el viewport
     const elementBounding = element.getBoundingClientRect();
-
     const viewPortTop = 0;
     const viewPortRight = window.innerWidth;
     const viewPortBottom = window.innerHeight;
@@ -186,7 +221,6 @@ const Core = {
     const right = elementBounding.right;
     const bottom = elementBounding.bottom;
     const left = elementBounding.left;
-
     if (pointInside(right, top))
       return true;
     if (pointInside(left, top))
@@ -195,7 +229,6 @@ const Core = {
       return true;
     if (pointInside(left, bottom))
       return true;
-
     return;
   },
   isLogged: () => {
