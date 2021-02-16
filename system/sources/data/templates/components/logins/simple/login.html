@@ -75,11 +75,15 @@
           sendLoginInformation();
         },
         onResponse: event => {
+          console.log(event);
           const {detail} = event;
           const {data} = detail;
+          console.log(`Data status: ${data.status}`);
           if (data.status === 'LOGGED') {
+            console.log(`Go back page: ${variables.goBackPage}`);
             if (variables.goBackPage === null) {
-              location.assign('#{afterLoginSucessfullPage}');
+              const url = '#{afterLoginSucessfullPage}';
+              location.assign(url);
             } else {
               location.assign(variables.goBackPage);
             }

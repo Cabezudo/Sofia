@@ -13,7 +13,6 @@ import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.system.SystemMonitor;
-import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -32,8 +31,6 @@ public class SiteHostnameNameValidationService extends Service {
     int siteId;
     String name;
     URLToken token;
-
-    User owner = super.getUser();
 
     token = tokens.getValue("siteId");
 

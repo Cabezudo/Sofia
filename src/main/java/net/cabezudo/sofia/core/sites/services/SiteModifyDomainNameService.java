@@ -35,7 +35,12 @@ public class SiteModifyDomainNameService extends Service {
 
   @Override
   public void get() throws ServletException {
-    User owner = super.getUser();
+    User owner = null;
+    try {
+      owner = super.getUser();
+    } catch (SQLException ex) {
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+    }
 
     URLToken siteIdToken = tokens.getValue("siteId");
     URLToken hostIdToken = tokens.getValue("hostId");
