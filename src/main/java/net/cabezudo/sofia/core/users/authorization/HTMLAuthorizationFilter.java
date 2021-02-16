@@ -48,26 +48,30 @@ public class HTMLAuthorizationFilter implements Filter {
       HttpServletResponse response = (HttpServletResponse) res;
 
       WebUserData webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
+      System.out.println(webUserData);
       User user = null;
       try {
-        if (webUserData != null) {
-          Logger.fine("User FOUND in web user data.");
-          user = webUserData.getUser();
+        if (webUserData == null) {
+          Logger.fine("No user data FOUND.");
         } else {
-          Logger.fine("User NOT FOUND in client data.");
+          Logger.fine("User data FOUND.");
+          user = webUserData.getUser();
+          Logger.fine("User: " + user);
         }
         if (Environment.getInstance().isDevelopment()) {
           QueryString queryString = new QueryString(request);
           List<String> userParameterList = queryString.get("user");
           if (userParameterList != null && !userParameterList.isEmpty()) {
             String email = userParameterList.get(0);
-            Logger.fine("User email FOUND in url parameters: " + email);
+            Logger.debug("User email FOUND in url parameters: " + email);
             user = UserManager.getInstance().getByEMail(email, site);
             if (webUserData == null) {
               webUserData = WebUserDataManager.getInstance().get(request);
             }
             webUserData.setUser(user);
             request.getSession().setAttribute("webUserData", webUserData);
+          } else {
+            Logger.debug("User email NOT FOUND in url parameters.");
           }
         }
       } catch (SQLException e) {
@@ -76,11 +80,10 @@ public class HTMLAuthorizationFilter implements Filter {
         return;
       }
 
-      request.getSession().setAttribute("user", user);
-
       String requestURI = request.getRequestURI();
       Logger.fine("Server name: " + request.getServerName());
       Logger.fine("Request uri: " + requestURI);
+      Logger.fine("User: " + user);
       Path path = Paths.get(requestURI);
       if (path.toString().endsWith("html")) {
         try {

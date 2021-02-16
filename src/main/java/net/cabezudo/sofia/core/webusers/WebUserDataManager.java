@@ -310,6 +310,22 @@ public class WebUserDataManager {
     }
   }
 
+  public void updateUser(WebUserData webUserData) throws SQLException {
+    PreparedStatement ps = null;
+    try (Connection connection = Database.getConnection()) {
+      String query = "UPDATE " + WebUserDataTable.NAME + " SET failLoginResponseTime = " + INITIAL_FAIL_LOGIN_RESPONSE_TIME + ", user = ? WHERE sessionId = ?";
+      ps = connection.prepareStatement(query);
+      ps.setInt(1, webUserData.getUser().getId());
+      ps.setString(2, webUserData.getSessionId());
+      Logger.fine(ps);
+      ps.executeUpdate();
+    } finally {
+      if (ps != null) {
+        ps.close();
+      }
+    }
+  }
+
   private void update(String column, Object o, String sessionId) throws SQLException {
     PreparedStatement ps = null;
     try (Connection connection = Database.getConnection()) {
