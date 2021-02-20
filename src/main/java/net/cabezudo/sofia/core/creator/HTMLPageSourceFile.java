@@ -28,8 +28,8 @@ class HTMLPageSourceFile extends HTMLSourceFile {
       if (i > 0) {
         String profileString = line.substring(i + 10, line.length() - 2);
         Logger.debug("Profiles: " + profileString);
-        String[] profilesArray = profileString.split(",");
-        Profiles profiles = ProfileManager.getInstance().createFromNames(profilesArray, getSite());
+        String[] ps = profileString.split(",");
+        Profiles profiles = ProfileManager.getInstance().createFromNames(ps, getSite());
         setProfiles(profiles);
       }
       add(new CodeLine("<html>\n", lineNumber));

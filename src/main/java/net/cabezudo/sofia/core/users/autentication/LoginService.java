@@ -15,7 +15,6 @@ import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
@@ -35,75 +34,61 @@ public class LoginService extends Service {
   @Override
   public void post() throws ServletException {
     Logger.fine("Calling the web service to authorize");
-    JSONObject jsonPayload = null;
     try {
+
       String payload = getPayload();
-      jsonPayload = JSON.parse(payload).toJSONObject();
-    } catch (JSONParseException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid payload format. " + e.getMessage());
-      return;
-    }
+      JSONObject jsonPayload = JSON.parse(payload).toJSONObject();
 
-    String email;
-    try {
-      email = jsonPayload.getString("email");
-    } catch (PropertyNotExistException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property");
-      return;
-    }
+      String email;
+      try {
+        email = jsonPayload.getString("email");
+      } catch (PropertyNotExistException e) {
+        sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property");
+        return;
+      }
 
-    String base64Password;
-    try {
-      base64Password = jsonPayload.getString("password");
-    } catch (PropertyNotExistException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property");
-      return;
-    }
-    Password password = Password.createFromBase64(base64Password);
+      String base64Password;
+      try {
+        base64Password = jsonPayload.getString("password");
+      } catch (PropertyNotExistException e) {
+        sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property");
+        return;
+      }
+      Password password = Password.createFromBase64(base64Password);
 
-    Authenticator authenticator = new Authenticator();
+      Authenticator authenticator = new Authenticator();
 
-    User user = null;
-    try {
-      user = authenticator.authorize(super.getSite(), email, password);
-    } catch (SQLException sqle) {
-      Logger.severe(sqle);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "I have problems with the database. Please try in a few minutes.");
+      User user;
+      try {
+        user = authenticator.authorize(super.getSite(), email, password);
+      } catch (EMailAddressValidationException | PasswordValidationException e) {
+        sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, e.getMessage(), e.getParameters()));
+        return;
+      }
+      if (user == null) {
+        long loginResponseTime = getWebUserData().getFailLoginResponseTime();
+        try {
+          Thread.sleep(loginResponseTime);
+        } catch (InterruptedException e) {
+          sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
+          return;
+        }
+        WebUserDataManager.getInstance().incrementFailLoginResponseTime(getWebUserData());
+        sendResponse(new Response(Response.Status.FAIL, Response.Type.ACTION, "login.fail"));
+      } else {
+        setWebUserData(WebUserDataManager.getInstance().resetFailLoginResponseTime(getWebUserData()));
+        getWebUserData().setUser(user);
+        request.getSession().removeAttribute("goBackPage");
+        sendResponse(new Response(Response.Status.LOGGED, Response.Type.ACTION, "user.logged"));
+      }
     } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request.");
-    } catch (EMailAddressValidationException | PasswordValidationException e) {
-      sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, e.getMessage(), e.getParameters()));
-      return;
-    }
-    if (user == null) {
-      Logger.debug("User not found.");
-      try {
-        long loginResponseTime = getWebUserData().getFailLoginResponseTime();
-        Thread.sleep(loginResponseTime);
-        WebUserDataManager.getInstance().incrementFailLoginResponseTime(getWebUserData());
-      } catch (SQLException sqle) {
-        Logger.severe(sqle);
-        sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "I have problems with the database. Please try in a few minutes.");
-      } catch (InterruptedException e) {
-        Thread.currentThread().interrupt();
-        sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
-        return;
-      }
-      sendResponse(new Response(Response.Status.FAIL, Response.Type.ACTION, "login.fail"));
-    } else {
-      Logger.debug("User found: %s", user.getId());
-      try {
-        WebUserData webUserData = getWebUserData();
-        webUserData.setUser(user);
-        WebUserDataManager.getInstance().updateUser(webUserData);
-      } catch (SQLException sqle) {
-        Logger.severe(sqle);
-        sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "I have problems with the database. Please try in a few minutes.");
-        return;
-      }
-      request.getSession().removeAttribute("goBackPage");
-      sendResponse(new Response(Response.Status.LOGGED, Response.Type.ACTION, "user.logged"));
+    } catch (SQLException sqle) {
+      Logger.severe(sqle);
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "I have problems with the database. Please try in a few minutes.");
+    } catch (JSONParseException e) {
+      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid payload format. " + e.getMessage());
     }
   }
 }

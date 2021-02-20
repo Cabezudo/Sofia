@@ -24,8 +24,8 @@ public class UserListService extends Service {
     if (queryString != null) {
       // TODO agregar los filtros, el orden y demas
     }
+    User owner = super.getUser();
     try {
-      User owner = super.getUser();
       PeopleList list = UserManager.getInstance().list(owner);
       out.print(list.toJSON());
     } catch (SQLException e) {
