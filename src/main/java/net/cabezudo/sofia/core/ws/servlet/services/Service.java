@@ -76,9 +76,7 @@ public abstract class Service<T extends Response> {
 
   protected void sendResponse(T response) throws ServletException {
     try {
-      String jsonResponse = response.toJSON(getSite(), getWebUserData().getActualLanguage()).toString();
-      Logger.debug(jsonResponse);
-      out.print(jsonResponse);
+      out.print(response.toJSON(getSite(), getWebUserData().getActualLanguage()));
     } catch (SQLException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     }
@@ -140,11 +138,8 @@ public abstract class Service<T extends Response> {
     return (Site) request.getAttribute("site");
   }
 
-  protected User getUser() throws SQLException {
-    if (webUserData == null) {
-      return null;
-    }
-    return webUserData.getUser();
+  protected User getUser() {
+    return (User) request.getAttribute("user");
   }
 
   public QueryParameters getQueryParmeters() {

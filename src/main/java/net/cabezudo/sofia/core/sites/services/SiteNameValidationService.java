@@ -4,12 +4,14 @@ import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.SiteValidationException;
 import net.cabezudo.sofia.core.sites.validators.SiteNameValidator;
 import net.cabezudo.sofia.core.system.SystemMonitor;
+import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -26,7 +28,12 @@ public class SiteNameValidationService extends Service {
 
   @Override
   public void get() throws ServletException {
+    int siteId;
     String name;
+    URLToken token;
+
+    User owner = super.getUser();
+
     name = tokens.getValue("name").toString();
 
     try {

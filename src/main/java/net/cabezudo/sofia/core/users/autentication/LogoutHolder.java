@@ -21,6 +21,7 @@ public class LogoutHolder extends HttpServlet {
       if (webUserData != null) {
         webUserData.setUser(null);
       }
+      request.removeAttribute("user");
       response.sendRedirect("/index.html");
     } catch (SQLException e) {
       // TODO responder algo mejor
