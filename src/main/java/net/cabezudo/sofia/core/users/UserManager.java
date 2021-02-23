@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.users;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.mail.MailServerException;
@@ -53,19 +55,16 @@ public class UserManager {
     return INSTANCE;
   }
 
-  public User getAdministrator() throws SQLException {
+  public User getAdministrator() throws ClusterException {
     return this.get(1);
   }
 
-  public Person getPerson(Connection connection, EMail eMail) throws SQLException {
+  public Person getPerson(Connection connection, EMail eMail) throws ClusterException {
     String query = "SELECT id, name, lastName, owner FROM " + PeopleTable.NAME + " WHERE primaryEMailId=? AND owner=1";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, eMail.getId());
-      Logger.fine(ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
 
       if (rs.next()) {
         int id = rs.getInt(1);
@@ -75,27 +74,22 @@ public class UserManager {
       } else {
         throw new SofiaRuntimeException("Key not generated.");
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public Person addPerson(Connection connection, String name, String lastName, int ownerId) throws SQLException {
+  public Person add(Connection connection, String name, String lastName, int ownerId) throws ClusterException {
     String query = "INSERT INTO " + PeopleTable.NAME + " (name, lastName, owner) VALUES (?, ?, ?)";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
       ps.setString(2, lastName);
       ps.setInt(3, ownerId);
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
@@ -104,79 +98,63 @@ public class UserManager {
       } else {
         throw new SofiaRuntimeException("Key not generated.");
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public Person updatePerson(Connection connection, int id, String name, String lastName, int ownerId) throws SQLException {
+  public Person updatePerson(Connection connection, int id, String name, String lastName, int ownerId) throws ClusterException {
     String query = "UPDATE " + PeopleTable.NAME + " SET name=?, lastName=?, owner=? WHERE id=?";
-    PreparedStatement ps = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
       ps.setString(2, lastName);
       ps.setInt(3, ownerId);
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
       return new Person(id, name, lastName, ownerId);
-    } finally {
-      if (ps != null) {
-        ps.close();
-      }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public User login(Site site, String emailAddress, Password password) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
-      String query
-              = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate "
-              + "FROM " + UsersTable.NAME + " AS u "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-              + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
-              + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-      try {
-        ps = connection.prepareStatement(query);
-        ps.setString(1, emailAddress);
-        ps.setInt(2, site.getId());
-        ps.setBytes(3, password.getBytes());
-        Logger.fine(ps);
-        rs = ps.executeQuery();
+  public User login(Site site, String emailAddress, Password password) throws ClusterException {
+    ResultSet rs = null;
+    String query
+            = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate "
+            + "FROM " + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
+    try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
+      ps.setString(1, emailAddress);
+      ps.setInt(2, site.getId());
+      ps.setBytes(3, password.getBytes());
 
-        if (rs.next()) {
-          int id = rs.getInt("id");
-          int siteId = rs.getInt("site");
-          int eMailId = rs.getInt("eMailId");
-          int personId = rs.getInt("personId");
-          String address = rs.getString("address");
-          EMail eMail = new EMail(eMailId, personId, address);
-          Date creationDate = rs.getDate("creationDate");
-          boolean activated = rs.getBoolean("activated");
-          String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
-          Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
+      rs = ClusterManager.getInstance().executeQuery(ps);
 
-          return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
-        }
-        return null;
-      } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+      if (rs.next()) {
+        int id = rs.getInt("id");
+        int siteId = rs.getInt("site");
+        int eMailId = rs.getInt("eMailId");
+        int personId = rs.getInt("personId");
+        String address = rs.getString("address");
+        EMail eMail = new EMail(eMailId, personId, address);
+        Date creationDate = rs.getDate("creationDate");
+        boolean activated = rs.getBoolean("activated");
+        String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
+        Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
+
+        return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
+      return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Message getRecoveryEMailData(Site site, String address, Hash hash) throws SQLException, IOException {
+  public Message getRecoveryEMailData(Site site, String address, Hash hash) throws IOException, ClusterException, ConfigurationException {
     try (Connection connection = Database.getConnection()) {
       updateHash(connection, address, hash);
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
@@ -184,11 +162,7 @@ public class UserManager {
 
       emailRecoveryTemplate.set("name", person.getName());
       emailRecoveryTemplate.set("site.name", site.getName());
-      try {
-        emailRecoveryTemplate.set("password.change.uri", site.getPasswordChangeURI() + "?" + hash);
-      } catch (URISyntaxException e) {
-        throw new SofiaRuntimeException(e);
-      }
+      emailRecoveryTemplate.set("password.change.uri", site.getPasswordChangeURI() + "?" + hash);
       // TODO Set the hash time on the site configuration
       emailRecoveryTemplate.set("password.change.hash.time", "120");
       emailRecoveryTemplate.set("site.uri", site.getURL().toString());
@@ -204,10 +178,12 @@ public class UserManager {
               emailRecoveryTemplate.getSubject(),
               emailRecoveryTemplate.getPlainText(),
               emailRecoveryTemplate.getHtmlText());
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  private void updateHash(Connection connection, String address, Hash hash) throws SQLException {
+  private void updateHash(Connection connection, String address, Hash hash) throws ClusterException {
     String query
             = "UPDATE " + UsersTable.NAME + " "
             + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
@@ -217,12 +193,14 @@ public class UserManager {
       Timestamp timestamp = new Timestamp(new Date().getTime());
       ps.setTimestamp(2, timestamp);
       ps.setString(3, address);
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Message getPasswordChangedEMailData(Site site, String address) throws SQLException, IOException {
+  public Message getPasswordChangedEMailData(Site site, String address) throws IOException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
 
@@ -243,166 +221,140 @@ public class UserManager {
               emailRecoveryTemplate.getSubject(),
               emailRecoveryTemplate.getPlainText(),
               emailRecoveryTemplate.getHtmlText());
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void set(Site site, String address, Password password) throws SQLException, EMailAddressNotExistException {
+  public void set(Site site, String address, Password password) throws EMailAddressNotExistException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       set(connection, site, address, password);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public User set(Connection connection, Site site, String address, Password password) throws SQLException, EMailAddressNotExistException {
-    EMail eMail = EMailManager.getInstance().get(connection, address);
-    if (eMail == null) {
-      throw new EMailAddressNotExistException("Can't find the e-mail with address " + address + ".", address);
-    }
-
-    deactivateAllPasswords(connection, eMail);
-
-    String query = "INSERT INTO " + UsersTable.NAME + " (site, eMail, password, activated) VALUES (?, ?, ?, TRUE)";
-    PreparedStatement ps = null;
+  public User set(Connection connection, Site site, String address, Password password) throws EMailAddressNotExistException, ClusterException {
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    String query = "INSERT INTO " + UsersTable.NAME + " (site, eMail, password, activated) VALUES (?, ?, ?, TRUE)";
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+      EMail eMail = EMailManager.getInstance().get(connection, address);
+      if (eMail == null) {
+        throw new EMailAddressNotExistException("Can't find the e-mail with address " + address + ".", address);
+      }
+      deactivateAllPasswords(connection, eMail);
       ps.setInt(1, site.getId());
       ps.setInt(2, eMail.getId());
       ps.setBytes(3, password.getBytes());
-      Logger.debug(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int userId = rs.getInt(1);
         boolean activated = true;
         return new User(userId, site.getId(), eMail, null, activated, null, null);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
-    throw new SQLException("Can't get the generated key");
+    throw new ClusterException("Can't get the generated key");
   }
 
-  private void deactivateAllPasswords(Connection connection, EMail eMail) throws SQLException {
+  private void deactivateAllPasswords(Connection connection, EMail eMail) throws ClusterException {
     String query = "UPDATE " + UsersTable.NAME + " SET activated = false WHERE eMail = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, eMail.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
 
   }
 
-  public User getByEMail(String address, Site site) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
-      String query
-              = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-              + "FROM " + UsersTable.NAME + " AS u "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-              + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
-              + "WHERE address = ? AND site = ?";
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-      try {
-        ps = connection.prepareStatement(query);
-        ps.setString(1, address);
-        ps.setInt(2, site.getId());
-        Logger.fine(ps);
-        rs = ps.executeQuery();
-
-        if (rs.next()) {
-          int id = rs.getInt("id");
-          int siteId = rs.getInt("site");
-          int eMailId = rs.getInt("eMailId");
-          int personId = rs.getInt("personId");
-          EMail eMail = new EMail(eMailId, personId, address);
-          Date creationDate = rs.getDate("creationDate");
-          boolean activated = rs.getBoolean("activated");
-          String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
-          Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
-
-          return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
-        }
-        return null;
-      } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+  public User getByEMail(String address, Site site) throws ClusterException {
+    ResultSet rs = null;
+    String query
+            = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
+            + "FROM " + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "WHERE address = ? AND site = ?";
+    try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
+      ps.setString(1, address);
+      ps.setInt(2, site.getId());
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      if (rs.next()) {
+        int id = rs.getInt("id");
+        int siteId = rs.getInt("site");
+        int eMailId = rs.getInt("eMailId");
+        int personId = rs.getInt("personId");
+        EMail eMail = new EMail(eMailId, personId, address);
+        Date creationDate = rs.getDate("creationDate");
+        boolean activated = rs.getBoolean("activated");
+        String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
+        Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
+        return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
+      return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public Users getByEMail(String address) throws SQLException {
-    try (Connection connection = Database.getConnection()) {
+  public Users getByEMail(String address) throws ClusterException {
+    ResultSet rs = null;
+    String query
+            = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
+            + "FROM " + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "WHERE address = ?";
+    try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       Users users = new Users();
-      String query
-              = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-              + "FROM " + UsersTable.NAME + " AS u "
-              + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-              + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
-              + "WHERE address = ?";
-      PreparedStatement ps = null;
-      ResultSet rs = null;
-      try {
-        ps = connection.prepareStatement(query);
-        ps.setString(1, address);
-        Logger.fine(ps);
-        rs = ps.executeQuery();
+      ps.setString(1, address);
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        int siteId = rs.getInt("site");
+        int eMailId = rs.getInt("eMailId");
+        int personId = rs.getInt("personId");
+        EMail eMail = new EMail(eMailId, personId, address);
+        Date creationDate = rs.getDate("creationDate");
+        boolean activated = rs.getBoolean("activated");
+        String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
+        Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
 
-        while (rs.next()) {
-          int id = rs.getInt("id");
-          int siteId = rs.getInt("site");
-          int eMailId = rs.getInt("eMailId");
-          int personId = rs.getInt("personId");
-          EMail eMail = new EMail(eMailId, personId, address);
-          Date creationDate = rs.getDate("creationDate");
-          boolean activated = rs.getBoolean("activated");
-          String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
-          Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
-
-          User user = new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
-          users.add(user);
-        }
-        return null;
-      } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+        User user = new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+        users.add(user);
       }
+      return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public User getByPersonId(int personId) throws SQLException {
+  public User getByPersonId(int personId) throws SQLException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       return getByPersonId(connection, personId);
     }
   }
 
-  public User getByPersonId(Connection connection, int personId) throws SQLException {
+  public User getByPersonId(Connection connection, int personId) throws ClusterException {
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
             + "FROM " + UsersTable.NAME + " AS u "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
             + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE personId = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, personId);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("site");
@@ -417,38 +369,32 @@ public class UserManager {
         return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
-
   }
 
-  public User get(int id) throws SQLException {
+  public User get(int id) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, id);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public User get(Connection connection, int id) throws SQLException {
+  public User get(Connection connection, int id) throws ClusterException {
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
             + "FROM " + UsersTable.NAME + " AS u "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
             + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE u.id = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, id);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int siteId = rs.getInt("site");
         int eMailId = rs.getInt("eMailId");
@@ -463,32 +409,25 @@ public class UserManager {
         return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
 
   }
 
-  public User getByHash(Connection connection, Hash hash) throws SQLException {
+  public User getByHash(Connection connection, Hash hash) throws ClusterException {
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
             + "FROM " + UsersTable.NAME + " AS u "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
             + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE passwordRecoveryUUID = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, hash.toString());
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("site");
@@ -500,21 +439,17 @@ public class UserManager {
         boolean activated = rs.getBoolean("activated");
         String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
         Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
-
         return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
       }
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public void changePassword(Site site, Hash hash, Password password) throws SQLException, MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException {
+  public void changePassword(Site site, Hash hash, Password password) throws MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       User user = UserManager.getInstance().getByHash(connection, hash);
       if (user == null) {
@@ -537,32 +472,36 @@ public class UserManager {
         ps.setBytes(2, password.getBytes());
         ps.setInt(3, site.getId());
         ps.setString(4, hash.toString());
-        Logger.fine(ps);
-        ps.executeUpdate();
+
+        ClusterManager.getInstance().executeUpdate(ps);
 
         EMail email = EMailManager.getInstance().get(connection, user.getMail().getId());
         CustomerService.sendPasswordChangedEMail(site, email.getAddress());
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void changePassword(User user, Password password) throws SQLException, MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException {
+  public void changePassword(User user, Password password) throws MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       String query = "UPDATE " + UsersTable.NAME + " SET password=? WHERE id=?";
       try (PreparedStatement ps = connection.prepareStatement(query)) {
         ps.setBytes(1, password.getBytes());
         ps.setInt(2, user.getId());
-        Logger.fine(ps);
-        ps.executeUpdate();
+
+        ClusterManager.getInstance().executeUpdate(ps);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public PeopleList list(User owner) throws SQLException, UserNotExistException {
+  public PeopleList list(User user) throws UserNotExistException, ClusterException {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  public Message getRegistrationRetryAlertEMailData(String address) throws SQLException, IOException {
+  public Message getRegistrationRetryAlertEMailData(String address) throws IOException, ClusterException {
     try (Connection connection = Database.getConnection()) {
 
       Person person = PeopleManager.getInstance().getByEMailAddress(connection, address);
@@ -585,21 +524,18 @@ public class UserManager {
               emailRegistrationRetryAlertTemplate.getSubject(),
               emailRegistrationRetryAlertTemplate.getPlainText(),
               emailRegistrationRetryAlertTemplate.getHtmlText());
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Profiles getProfiles(User user) throws SQLException {
+  public Profiles getProfiles(User user) throws ClusterException {
     Logger.fine("User profile list for %s.", user);
-
-    PreparedStatement ps = null;
+    String query = "SELECT p.id, p.name, p.site FROM usersProfiles AS up LEFT JOIN profiles AS p ON up.profile = p.id WHERE up.user = ?";
     ResultSet rs = null;
-    try (Connection connection = Database.getConnection()) {
-      String query = "SELECT p.id, p.name, p.site FROM usersProfiles AS up LEFT JOIN profiles AS p ON up.profile = p.id WHERE up.user = ?";
-      ps = connection.prepareStatement(query);
+    try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, user.getId());
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       Profiles list = new Profiles();
       while (rs.next()) {
         int id = rs.getInt("id");
@@ -609,25 +545,23 @@ public class UserManager {
         list.add(profile);
       }
       return list;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
-
   }
 
-  public void add(Connection connection, User user, Profile profile, int ownerId) throws SQLException {
+  public void add(Connection connection, User user, Profile profile, int ownerId) throws ClusterException {
     String query = "INSERT INTO " + UsersProfilesTable.NAME + " (user, profile, owner) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setInt(1, user.getId());
       ps.setInt(2, profile.getId());
       ps.setInt(3, ownerId);
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 }

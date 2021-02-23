@@ -5,11 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -30,74 +31,68 @@ public abstract class InternationalizedCatalogManager<T extends Internationalize
     this.wordsTableName = wordsTableName;
   }
 
-  public T add(Language language, String value) throws SQLException {
+  public T add(Language language, String value) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return add(connection, language, value);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public T add(Connection connection, Language language, String value) throws SQLException {
+  public T add(Connection connection, Language language, String value) throws ClusterException {
     String query = "INSERT INTO " + catalogDatabaseName + "." + catalogTableName + " () VALUES ()";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
-      Logger.fine(ps);
-      ps.executeUpdate();
-
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
         return (T) addWordEntry(connection, id, language, value);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public InternationalizedCatalogEntry add(Connection connection, InternationalizedCatalogEntry entry, Language language, String value) throws SQLException {
+  public InternationalizedCatalogEntry add(Connection connection, InternationalizedCatalogEntry entry, Language language, String value) throws ClusterException {
     return addWordEntry(connection, entry.getId(), language, value);
   }
 
-  private InternationalizedCatalogEntry addWordEntry(Connection connection, int targetId, Language language, String value) throws SQLException {
+  private InternationalizedCatalogEntry addWordEntry(Connection connection, int targetId, Language language, String value) throws ClusterException {
     String query = "INSERT INTO " + wordsDatabaseName + "." + wordsTableName + " (id, language, value) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, targetId);
       ps.setInt(2, language.getId());
       ps.setString(3, value);
-      Logger.fine(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
       return new InternationalizedCatalogEntry(targetId, language, value);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public T get(int id) throws SQLException {
+  public T get(int id) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, id);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public T get(Connection connection, int id) throws SQLException {
+  public T get(Connection connection, int id) throws ClusterException {
     String query
             = "SELECT w.value AS value, l.id AS languageId, l.twoLettersCode AS twoLettersCode "
             + "FROM " + catalogDatabaseName + "." + catalogTableName + " AS c "
             + "LEFT JOIN " + wordsDatabaseName + "." + wordsTableName + " AS w ON c.id = w.id "
             + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
             + "WHERE id = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, id);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int languageId = rs.getInt("languageId");
         String twoLettersCode = rs.getString("twoLettersCode");
@@ -105,24 +100,23 @@ public abstract class InternationalizedCatalogManager<T extends Internationalize
         Language language = new Language(languageId, twoLettersCode);
         return (T) new InternationalizedCatalogEntry(id, language, value);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     return null;
   }
 
-  public T get(Language language, String value) throws SQLException {
+  public T get(Language language, String value) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, language, value);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public T get(Connection connection, Language language, String value) throws SQLException {
+  public T get(Connection connection, Language language, String value) throws ClusterException {
 
     String query
             = "SELECT c.id AS id "
@@ -130,25 +124,19 @@ public abstract class InternationalizedCatalogManager<T extends Internationalize
             + "LEFT JOIN " + wordsDatabaseName + "." + wordsTableName + " AS w ON c.id = w.id "
             + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
             + " WHERE language = ? AND value = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, language.getId());
       ps.setString(2, value);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int id = rs.getInt("id");
         return (T) new InternationalizedCatalogEntry(id, language, value);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     return null;
   }

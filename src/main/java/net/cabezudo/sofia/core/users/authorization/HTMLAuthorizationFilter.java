@@ -3,7 +3,6 @@ package net.cabezudo.sofia.core.users.authorization;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.QueryString;
@@ -70,7 +70,7 @@ public class HTMLAuthorizationFilter implements Filter {
             request.getSession().setAttribute("webUserData", webUserData);
           }
         }
-      } catch (SQLException e) {
+      } catch (ClusterException e) {
         SystemMonitor.log(e);
         response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return;
@@ -101,7 +101,7 @@ public class HTMLAuthorizationFilter implements Filter {
           Logger.debug("Not logged. Redirect to login.");
           response.sendRedirect(Configuration.getInstance().getLoginURL());
           return;
-        } catch (SQLException e) {
+        } catch (ClusterException e) {
           SystemMonitor.log(e);
           response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
           return;

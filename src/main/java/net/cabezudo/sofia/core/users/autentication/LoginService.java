@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.users.autentication;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +7,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
@@ -84,7 +84,7 @@ public class LoginService extends Service {
     } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request.");
-    } catch (SQLException sqle) {
+    } catch (ClusterException sqle) {
       Logger.severe(sqle);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "I have problems with the database. Please try in a few minutes.");
     } catch (JSONParseException e) {

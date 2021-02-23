@@ -5,9 +5,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -25,61 +26,50 @@ public class LanguageManager {
     return INSTANCE;
   }
 
-  public Language get(String twoLettersCode) throws SQLException, InvalidTwoLettersCodeException {
+  public Language get(String twoLettersCode) throws InvalidTwoLettersCodeException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, twoLettersCode);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Language get(Connection connection, String twoLettersCode) throws SQLException, InvalidTwoLettersCodeException {
+  public Language get(Connection connection, String twoLettersCode) throws InvalidTwoLettersCodeException, ClusterException {
     String query
             = "SELECT id, twoLettersCode "
             + "FROM " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " "
             + "WHERE twoLettersCode = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, twoLettersCode);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         return new Language(rs.getInt("id"), rs.getString("twoLettersCode"));
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     throw new InvalidTwoLettersCodeException(twoLettersCode);
   }
 
-  public Language add(Connection connection, String twoLettersCode) throws SQLException {
+  public Language add(Connection connection, String twoLettersCode) throws ClusterException {
     String query = "INSERT INTO " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " (twoLettersCode) VALUES (?)";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, twoLettersCode);
-      Logger.fine(ps);
-      ps.executeUpdate();
-
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
         return new Language(id, twoLettersCode);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 }

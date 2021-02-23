@@ -12,6 +12,7 @@ import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.WebServer;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
@@ -70,7 +71,7 @@ public class SiteHostnameAddService extends Service {
       sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, data, messageKey, domainName.getName()));
     } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
-    } catch (SQLException e) {
+    } catch (SQLException | ClusterException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     } catch (HostnameValidationException e) {

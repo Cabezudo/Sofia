@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.server.html;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -9,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 
@@ -38,7 +38,7 @@ public class CompanyPathTransformationFilter implements Filter {
         request.setAttribute("site", site);
 
         changeURL(site, request);
-      } catch (SQLException e) {
+      } catch (ClusterException e) {
         throw new ServletException(e);
       }
       chain.doFilter(request, res);
@@ -52,7 +52,7 @@ public class CompanyPathTransformationFilter implements Filter {
     // Nothing to do here
   }
 
-  private void changeURL(Site site, SofiaHTMLServletRequest request) throws SQLException {
+  private void changeURL(Site site, SofiaHTMLServletRequest request) throws ClusterException {
     URLManager.getInstance().changeCompanyHost(site, request);
     URLManager.getInstance().changeCompanyPath(site, request);
     URLManager.getInstance().changeDomainName(request);

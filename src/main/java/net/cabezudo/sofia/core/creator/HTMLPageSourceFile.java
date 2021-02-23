@@ -3,7 +3,7 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.profiles.ProfileManager;
@@ -17,12 +17,12 @@ import net.cabezudo.sofia.logger.Logger;
 class HTMLPageSourceFile extends HTMLSourceFile {
 
   HTMLPageSourceFile(Site site, Path basePath, Path htmlPartialPath, TemplateVariables templateVariables, Caller caller)
-          throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+          throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag {
     super(site, basePath, htmlPartialPath, null, templateVariables, caller);
   }
 
   @Override
-  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws InvalidFragmentTag, ClusterException {
     if (line.startsWith("<html")) {
       int i = line.indexOf("profiles");
       if (i > 0) {

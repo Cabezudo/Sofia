@@ -5,10 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.settlements.Settlement;
 
 /**
@@ -26,25 +27,27 @@ public class PostalCodeManager {
     return INSTANCE;
   }
 
-  public PostalCode add(Settlement settlement, int postalCode, User owner) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public PostalCode add(Settlement settlement, int postalCode, User owner) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return add(connection, settlement, postalCode, owner);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public PostalCode add(Connection connection, Settlement settlement, int postalCode, User owner) throws SQLException {
+  public PostalCode add(Connection connection, Settlement settlement, int postalCode, User owner) throws SQLException, ClusterException {
     PostalCode state = get(connection, settlement, postalCode, owner);
     if (state != null) {
       return state;
     }
     String query = "INSERT INTO " + PostalCodesTable.NAME + " (settlement, postalCode, owner) VALUES (?, ?, ?)";
     ResultSet rs = null;
-    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlement.getId());
       ps.setInt(2, postalCode);
       ps.setInt(3, owner.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
@@ -52,31 +55,29 @@ public class PostalCodeManager {
         return new PostalCode(id, settlement, postalCode);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  private PostalCode get(Connection connection, Settlement settlement, int postalCode, User owner) throws SQLException {
+  private PostalCode get(Connection connection, Settlement settlement, int postalCode, User owner) throws ClusterException {
     String query = "SELECT id, settlement, postalCode FROM " + PostalCodesTable.NAME + " WHERE settlement = ? AND postalCode = ? AND (owner = ? OR owner = 1)";
     ResultSet rs = null;
-    try ( PreparedStatement ps = connection.prepareStatement(query);) {
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, settlement.getId());
       ps.setInt(2, postalCode);
       ps.setInt(3, owner.getId());
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         return new PostalCode(rs.getInt("id"), settlement, postalCode);
       }
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 }

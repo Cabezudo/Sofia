@@ -1,0 +1,55 @@
+{
+  "messages": {
+    "message": {
+      "default": "Select one user in order to modify"
+    }
+  },
+  "header": {
+    "menu": {
+      "name": "#{site.shortName}",
+      "description": "web for people",
+      "font": {
+        "family": "Kanit"
+      },
+      "items": [
+        {
+          "name": {
+            "en": "Home"
+          },
+          "url": "/"
+        },
+        {
+          "name": {
+            "en": "Manager"
+          },
+          "url": "../index.html"
+        },
+        {
+          "name": {
+            "en": "Add"
+          },
+          "url": "add.html"
+        },
+        {
+          "name": {
+            "en": "Logout"
+          },
+          "logged": true,
+          "url": "/logout"
+        },
+        {
+          "template": {
+            "name": "userProfile",
+            "url": ""
+          }
+        },
+        {
+          "template": {
+            "name": "twitter",
+            "url": "#{site.socialMedia.twitter.url}"
+          }
+        }
+      ]
+    }
+  }
+}

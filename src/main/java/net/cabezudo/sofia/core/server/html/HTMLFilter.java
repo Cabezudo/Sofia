@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.server.html;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -10,6 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
@@ -71,7 +71,7 @@ public class HTMLFilter implements Filter {
       Logger.debug("Create pages for URI %s.", requestURI);
       try {
         SiteCreator.getInstance().createPages(site, requestURI);
-      } catch (SQLException | IOException | InvalidFragmentTag e) {
+      } catch (ClusterException | IOException | InvalidFragmentTag e) {
         if (Environment.getInstance().isDevelopment()) {
           e.printStackTrace();
         }

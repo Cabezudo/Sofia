@@ -1,7 +1,7 @@
 package net.cabezudo.sofia.core.users;
 
-import java.sql.SQLException;
 import java.util.Date;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.SiteNotExistException;
@@ -50,7 +50,7 @@ public class User {
     return siteId;
   }
 
-  public Site getSite(User owner) throws SQLException, SiteNotExistException {
+  public Site getSite(User owner) throws SiteNotExistException, ClusterException {
     if (site == null) {
       site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
@@ -60,7 +60,7 @@ public class User {
     return site;
   }
 
-  public EMail getMail() throws EMailNotExistException, SQLException {
+  public EMail getMail() throws EMailNotExistException {
     return eMail;
   }
 

@@ -1,12 +1,12 @@
 package net.cabezudo.sofia.people;
 
-import java.sql.SQLException;
 import java.util.Iterator;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
 import net.cabezudo.sofia.core.EntityList;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMails;
@@ -28,7 +28,7 @@ public class PeopleList extends EntityList<Person> {
     return people.iterator();
   }
 
-  public void add(Person person) throws SQLException, UserNotExistException {
+  public void add(Person person) throws UserNotExistException, ClusterException {
     people.add(person);
   }
 

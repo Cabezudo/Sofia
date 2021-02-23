@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.files.FileHelper;
@@ -147,7 +146,7 @@ class JSSourceFile implements SofiaSource {
   }
 
   @Override
-  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws InvalidFragmentTag {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
@@ -37,13 +39,13 @@ public class AuthorizationManager {
   private AuthorizationManager() {
   }
 
-  public boolean hasAuthorization(String requestURI, User user, PermissionType permissionType, Site site) throws NotLoggedException, SQLException {
+  public boolean hasAuthorization(String requestURI, User user, PermissionType permissionType, Site site) throws NotLoggedException, ClusterException {
     if (permissionType == null) {
       Logger.debug("Permission type was not specified for user %s in uri %s on site %s", user, requestURI, site.getBaseDomainName().getName());
       return false;
     }
     Logger.debug("Looking for authorization for uri %s, user %s, permissionType %s and site %s", requestURI, user, permissionType.getName(), site.getBaseDomainName().getName());
-    try ( Connection connection = Database.getConnection()) {
+    try (Connection connection = Database.getConnection()) {
       Profiles profiles;
       if (user == null) {
         Profile profile = ProfileManager.getInstance().get(connection, "all", site);
@@ -67,16 +69,18 @@ public class AuthorizationManager {
       }
       Logger.debug("Permission not found.");
       return false;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void add(Profiles profiles, String requestURI, PermissionType permissionType, Site site) throws SQLException {
+  public void add(Profiles profiles, String requestURI, PermissionType permissionType, Site site) throws ClusterException {
     for (Profile profile : profiles) {
       add(profile, requestURI, permissionType, site);
     }
   }
 
-  public void add(Profile profile, String requestURI, PermissionType permissionType, Site site) throws SQLException {
+  public void add(Profile profile, String requestURI, PermissionType permissionType, Site site) throws ClusterException {
     Logger.debug("Add authorization '%s' for uri %s on site %s,", permissionType.getName(), requestURI, site.getName());
 
     Permission permission = PermissionManager.getInstance().get(requestURI, site);
@@ -93,19 +97,23 @@ public class AuthorizationManager {
     }
   }
 
-  public void delete(String requestURI, Site site) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public void delete(String requestURI, Site site) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       delete(connection, requestURI, site);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void delete(Connection connection, String requestURI, Site site) throws SQLException {
+  public void delete(Connection connection, String requestURI, Site site) throws ClusterException {
     String query = "DELETE FROM " + ProfilesPermissionsTable.NAME + " WHERE permission = (SELECT id FROM " + PermissionsTable.NAME + " WHERE uri = ? AND site = ?)";
-    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, requestURI);
       ps.setInt(2, site.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 }
