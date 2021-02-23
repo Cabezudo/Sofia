@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.passwords;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,6 +8,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.sites.Site;
@@ -65,7 +65,7 @@ public class SetPasswordService extends Service {
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
     } catch (UserNotFoundByHashException | HashTooOldException | EMailNotExistException | MailServerException | IOException e) {
       super.sendResponse(new Response(Response.Status.ERROR, Response.Type.SET, e.getMessage()));
-    } catch (SQLException | NullHashException e) {
+    } catch (ClusterException | NullHashException e) {
       sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
     } catch (PasswordValidationException e) {
       super.sendResponse(new Response(Response.Status.ERROR, Response.Type.SET, e.getMessage(), e.getParameters()));

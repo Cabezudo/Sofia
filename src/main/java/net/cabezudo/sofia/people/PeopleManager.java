@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
@@ -35,24 +37,22 @@ public class PeopleManager {
     return instance;
   }
 
-  public Person create(String name, String lastName, User owner) throws SQLException {
+  public Person create(String name, String lastName, User owner) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return create(connection, name, lastName, owner);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Person create(Connection connection, String name, String lastName, User owner) throws SQLException {
+  public Person create(Connection connection, String name, String lastName, User owner) throws ClusterException {
     String query = "INSERT INTO " + PeopleTable.NAME + " (name, lastName, owner) VALUES (?, ?, ?)";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
       ps.setString(2, lastName);
       ps.setInt(3, owner.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
-
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
@@ -61,17 +61,14 @@ public class PeopleManager {
       } else {
         throw new SofiaRuntimeException("Key not generated.");
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public void setPrimaryEMail(Connection connection, Person person, EMail eMail) throws SQLException {
+  public void setPrimaryEMail(Connection connection, Person person, EMail eMail) throws ClusterException {
     if (eMail == null) {
       return;
     }
@@ -82,19 +79,22 @@ public class PeopleManager {
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, eMail.getId());
       ps.setLong(2, person.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
 
   }
 
-  public Person getByEMailAddress(String address) throws SQLException {
+  public Person getByEMailAddress(String address) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return getByEMailAddress(connection, address);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Person getByEMailAddress(Connection connection, String address) throws SQLException {
+  public Person getByEMailAddress(Connection connection, String address) throws ClusterException {
     Logger.fine("Get person using the email address'" + address + "'.");
 
     String query
@@ -102,14 +102,10 @@ public class PeopleManager {
             + "FROM " + PeopleTable.NAME + " AS p "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
             + "WHERE address = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, address);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int id = rs.getInt("id");
         String name = rs.getString("name");
@@ -120,24 +116,23 @@ public class PeopleManager {
         eMails.setPrimaryEMailById(primaryEMailId);
         return new Person(id, name, lastName, eMails, owner);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     return null;
   }
 
-  public Person get(int id) throws SQLException {
+  public Person get(int id) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, id);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Person get(Connection connection, int id) throws SQLException {
+  public Person get(Connection connection, int id) throws ClusterException {
     Logger.fine("Get person using the id " + id + ".");
 
     String query
@@ -145,14 +140,10 @@ public class PeopleManager {
             + "FROM " + PeopleTable.NAME + " AS p "
             + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
             + "WHERE p.id = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, id);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         String name = rs.getString("name");
         String lastName = rs.getString("lastName");
@@ -162,20 +153,19 @@ public class PeopleManager {
         User owner = UserManager.getInstance().get(connection, id);
         return new Person(id, name, lastName, eMails, owner);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     return null;
   }
 
-  public EMail addEMailAddress(Person person, String address) throws SQLException {
+  public EMail addEMailAddress(Person person, String address) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return EMailManager.getInstance().create(connection, person.getId(), address);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 

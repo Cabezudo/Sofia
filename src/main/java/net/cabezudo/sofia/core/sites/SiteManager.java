@@ -18,6 +18,8 @@ import net.cabezudo.sofia.core.api.options.list.Filters;
 import net.cabezudo.sofia.core.api.options.list.Limit;
 import net.cabezudo.sofia.core.api.options.list.Offset;
 import net.cabezudo.sofia.core.api.options.list.Sort;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
@@ -47,47 +49,44 @@ public class SiteManager {
     return instance;
   }
 
-  public Site getById(int id) throws SQLException {
+  public Site getById(int id) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return getById(connection, id);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Site getById(Connection connection, int siteId) throws SQLException {
+  public Site getById(Connection connection, int siteId) throws ClusterException {
+    ResultSet rs = null;
     String query
             = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
             + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.id = ? ORDER BY domainName";
-
-    PreparedStatement ps = null;
-    ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, siteId);
-      Logger.fine("SiteManager", "getById", ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (!rs.next()) {
         return null;
       }
       return new Site(rs);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public Site getByHostame(String domainName) throws SQLException {
+  public Site getByHostame(String domainName) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return getByHostame(connection, domainName);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Site getByHostame(Connection connection, String requestDomainNameName) throws SQLException {
+  public Site getByHostame(Connection connection, String requestDomainNameName) throws ClusterException {
     DomainName domainName = DomainNameManager.getInstance().getByDomainNameName(requestDomainNameName);
     if (domainName == null) {
       return null;
@@ -95,13 +94,15 @@ public class SiteManager {
     return getById(connection, domainName.getSiteId());
   }
 
-  public Site create(String name, String... domainNames) throws SQLException, IOException {
+  public Site create(String name, String... domainNames) throws IOException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       return add(connection, name, domainNames);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Site add(Connection connection, String name, String... domainNameNames) throws SQLException, IOException {
+  public Site add(Connection connection, String name, String... domainNameNames) throws IOException, ClusterException {
     if (name == null || name.isEmpty()) {
       throw new InvalidParameterException("Invalid parameter name: " + name);
     }
@@ -110,31 +111,24 @@ public class SiteManager {
     }
     // TODO revisar que haya dominios que agregar
 
-    String query = "INSERT INTO " + SitesTable.DATABASE + "." + SitesTable.NAME + " (name) VALUES (?)";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    String query = "INSERT INTO " + SitesTable.DATABASE + "." + SitesTable.NAME + " (name) VALUES (?)";
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
-      Logger.fine(ps);
-      ps.executeUpdate();
-
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         return createSite(connection, rs, name, domainNameNames);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  private Site createSite(Connection connection, ResultSet rs, String name, String... domainNameNames) throws SQLException, IOException {
+  private Site createSite(Connection connection, ResultSet rs, String name, String... domainNameNames) throws IOException, ClusterException, SQLException {
     int siteId = rs.getInt(1);
     DomainName baseDomainName = null;
     DomainNameList domainNames = new DomainNameList();
@@ -158,24 +152,25 @@ public class SiteManager {
     return site;
   }
 
-  public Site update(Connection connection, Site site) throws SQLException {
+  public Site update(Connection connection, Site site) throws ClusterException {
     // TODO Update the domain name list
     String query = "UPDATE " + SitesTable.NAME + " SET name = ?, domainName = ? WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, site.getName());
       ps.setInt(2, site.getBaseDomainName().getId());
       ps.setInt(3, site.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
       return site;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public SiteList list() throws SQLException {
+  public SiteList list() throws ClusterException {
     return list(null, null, null, null, null);
   }
 
-  public SiteList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public SiteList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws ClusterException {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection()) {
@@ -193,25 +188,17 @@ public class SiteManager {
       String sqlSort = QueryHelper.getOrderString(sort, "domainName", new String[]{"id", "name"});
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
-
       String query
               = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
               + "FROM " + SitesTable.NAME + " AS s "
               + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
               + where + sqlSort + sqlLimit;
-
-      PreparedStatement ps = null;
       ResultSet rs = null;
       SiteList list;
-      try {
-        ps = connection.prepareStatement(query);
+      try (PreparedStatement ps = connection.prepareStatement(query);) {
         setSiteFilters(filters, ps);
-
-        Logger.fine(ps);
-        rs = ps.executeQuery();
-
+        rs = ClusterManager.getInstance().executeQuery(ps);
         list = new SiteList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
-
         while (rs.next()) {
           int id = rs.getInt("siteId");
           String name = rs.getString("siteName");
@@ -222,19 +209,15 @@ public class SiteManager {
           list.add(id, name, baseDomainNameId, siteVersion, domainNameId, domainNameName);
         }
         list.create();
+      } catch (SQLException e) {
+        throw new ClusterException(e);
       } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+        ClusterManager.getInstance().close(rs);
       }
-      try {
-        query = "SELECT FOUND_ROWS() AS total";
-        ps = connection.prepareStatement(query);
-        Logger.fine(ps);
-        rs = ps.executeQuery();
+
+      query = "SELECT FOUND_ROWS() AS total";
+      try (PreparedStatement ps = connection.prepareStatement(query);) {
+        rs = ClusterManager.getInstance().executeQuery(ps);
         if (!rs.next()) {
           throw new SofiaRuntimeException("The select to count the number of sites fail.");
         }
@@ -243,24 +226,25 @@ public class SiteManager {
         list.setTotal(total);
 
         return list;
+      } catch (SQLException e) {
+        throw new ClusterException(e);
       } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+        ClusterManager.getInstance().close(rs);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void update(int siteId, String field, String value, User owner) throws SQLException, InvalidSiteVersionException, EmptySiteNameException {
+  public void update(int siteId, String field, String value, User owner) throws InvalidSiteVersionException, EmptySiteNameException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       update(connection, siteId, field, value, owner);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void update(Connection connection, int siteId, String field, String value, User owner) throws SQLException, InvalidSiteVersionException, EmptySiteNameException {
+  public void update(Connection connection, int siteId, String field, String value, User owner) throws InvalidSiteVersionException, EmptySiteNameException, ClusterException {
     switch (field) {
       case "name":
         validateName(value);
@@ -275,8 +259,10 @@ public class SiteManager {
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, value);
       ps.setInt(2, siteId);
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
@@ -300,38 +286,32 @@ public class SiteManager {
     // TODO Max length and size
   }
 
-  public Site getByName(String name) throws SQLException {
+  public Site getByName(String name) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return getByName(connection, name);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Site getByName(Connection connection, String name) throws SQLException {
+  public Site getByName(Connection connection, String name) throws ClusterException {
     String query
             = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
             + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.name = ? ORDER BY domainName";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
-      Logger.fine("SiteManager", "getByName", ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (!rs.next()) {
         return null;
       }
-
       return new Site(rs);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
@@ -352,7 +332,7 @@ public class SiteManager {
     }
   }
 
-  public synchronized void update(Site site, DomainName domainName, User owner) throws SQLException {
+  public synchronized void update(Site site, DomainName domainName, User owner) throws ClusterException {
     DomainName baseDomainName = site.getBaseDomainName();
     DomainNameManager.getInstance().update(domainName, owner);
     if (baseDomainName.getId() == domainName.getId()) {
@@ -365,48 +345,43 @@ public class SiteManager {
     }
   }
 
-  public void delete(int siteId) throws SQLException {
+  public void delete(int siteId) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       delete(connection, siteId);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void delete(Connection connection, int siteId) throws SQLException {
-    PreparedStatement dhps = null;
-    PreparedStatement dsps = null;
-    try {
+  public void delete(Connection connection, int siteId) throws ClusterException {
+    String deleteHostsQuery = "DELETE FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
+    String deleteSiteQuery = "DELETE FROM " + SitesTable.NAME + " WHERE id = ?";
+    try (PreparedStatement dhps = connection.prepareStatement(deleteHostsQuery); PreparedStatement dsps = connection.prepareStatement(deleteSiteQuery);) {
       connection.setAutoCommit(false);
-      String deleteHostsQuery = "DELETE FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
-      dhps = connection.prepareStatement(deleteHostsQuery);
       dhps.setInt(1, siteId);
-      Logger.fine(dhps);
-      dhps.executeUpdate();
-      String deleteSiteQuery = "DELETE FROM " + SitesTable.NAME + " WHERE id = ?";
-      dsps = connection.prepareStatement(deleteSiteQuery);
+      ClusterManager.getInstance().executeQuery(dhps);
       dsps.setInt(1, siteId);
-      Logger.fine(dsps);
-      dsps.executeUpdate();
+      ClusterManager.getInstance().executeQuery(dsps);
       connection.commit();
     } catch (SQLException e) {
-      connection.rollback();
-      throw e;
-    } finally {
-      if (dsps != null) {
-        dsps.close();
+      try {
+        connection.rollback();
+      } catch (SQLException rbe) {
+        throw new ClusterException(rbe);
       }
-      if (dhps != null) {
-        dhps.close();
-      }
+      throw new ClusterException(e);
     }
   }
 
-  public Sites getByUserEMail(EMail eMail) throws SQLException {
+  public Sites getByUserEMail(EMail eMail) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return getByUserEMail(connection, eMail);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Sites getByUserEMail(Connection connection, EMail eMail) throws SQLException {
+  public Sites getByUserEMail(Connection connection, EMail eMail) throws ClusterException {
     String query
             = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, h.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
@@ -417,16 +392,11 @@ public class SiteManager {
             + "WHERE address = ? "
             + "ORDER BY siteId";
 
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, eMail.getAddress());
-      Logger.fine("SiteManager", "getByUserEMail", ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       Sites sites = new Sites();
-
       while (rs.next()) {
         int id = rs.getInt("siteId");
         String name = rs.getString("name");
@@ -438,17 +408,14 @@ public class SiteManager {
       }
       sites.create();
       return sites;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public int getTotal(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public int getTotal(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws ClusterException {
     Logger.fine("Site list total");
 
     try (Connection connection = Database.getConnection()) {
@@ -466,28 +433,20 @@ public class SiteManager {
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query = "SELECT count(*) AS total FROM " + SitesTable.NAME + where + sqlSort + sqlLimit;
-      PreparedStatement ps = null;
       ResultSet rs = null;
-      try {
-        ps = connection.prepareStatement(query);
+      try (PreparedStatement ps = connection.prepareStatement(query);) {
         setSiteFilters(filters, ps);
-
-        Logger.fine(ps);
-        rs = ps.executeQuery();
-
+        rs = ClusterManager.getInstance().executeQuery(ps);
         if (rs.next()) {
           return rs.getInt("total");
         } else {
           throw new SofiaRuntimeException("Column expected.");
         }
       } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+        ClusterManager.getInstance().close(rs);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
@@ -516,53 +475,41 @@ public class SiteManager {
     }
   }
 
-  public int getHostsTotal(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public int getHostsTotal(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws ClusterException {
     Logger.fine("Site host list total");
 
-    PreparedStatement ps = null;
-    ResultSet rs = null;
-    try (Connection connection = Database.getConnection()) {
-      String where = getHostWhere(filters);
+    String where = getHostWhere(filters);
 
-      long sqlOffsetValue = 0;
-      if (offset != null) {
-        sqlOffsetValue = offset.getValue();
-      }
-      long sqlLimitValue = SiteList.MAX_PAGE_SIZE;
-      if (limit != null) {
-        sqlLimitValue = limit.getValue();
-      }
-
-      String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
-
-      String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
-
-      String query = "SELECT count(*) AS total FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
-      ps = connection.prepareStatement(query);
-
-      int i = 1;
-      ps.setInt(i, site.getId());
-
-      setHostFilters(filters, ps);
-
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
-      if (rs.next()) {
-        int total = rs.getInt("total");
-        return total;
-      } else {
-        throw new RuntimeException("Column expected.");
-      }
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+    long sqlOffsetValue = 0;
+    if (offset != null) {
+      sqlOffsetValue = offset.getValue();
+    }
+    long sqlLimitValue = SiteList.MAX_PAGE_SIZE;
+    if (limit != null) {
+      sqlLimitValue = limit.getValue();
     }
 
+    String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
+
+    String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
+
+    String query = "SELECT count(*) AS total FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
+    ResultSet rs = null;
+    try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
+      int i = 1;
+      ps.setInt(i, site.getId());
+      setHostFilters(filters, ps);
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      if (rs.next()) {
+        return rs.getInt("total");
+      } else {
+        throw new SofiaRuntimeException("Column expected.");
+      }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
+    }
   }
 
   private String getHostWhere(Filters filter) {
@@ -590,7 +537,7 @@ public class SiteManager {
     }
   }
 
-  public DomainNameList listDomainName(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws SQLException {
+  public DomainNameList listDomainName(Site site, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws ClusterException {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection()) {
@@ -606,21 +553,17 @@ public class SiteManager {
       }
 
       String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
-
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-      String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
-      PreparedStatement ps = null;
       ResultSet rs = null;
       DomainNameList list;
       int i = 1;
-      try {
-        ps = connection.prepareStatement(query);
+      String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
+      try (PreparedStatement ps = connection.prepareStatement(query);) {
         ps.setInt(i, site.getId());
         setHostFilters(filters, ps);
 
-        Logger.fine(ps);
-        rs = ps.executeQuery();
+        rs = ClusterManager.getInstance().executeQuery(ps);
 
         list = new DomainNameList(offset == null ? 0 : offset.getValue());
         while (rs.next()) {
@@ -632,35 +575,23 @@ public class SiteManager {
           list.add(domainName);
         }
       } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+        ClusterManager.getInstance().close(rs);
       }
 
       query = "SELECT FOUND_ROWS() AS total";
-      try {
-        ps = connection.prepareStatement(query);
-        Logger.fine(ps);
-        rs = ps.executeQuery();
+      try (PreparedStatement ps = connection.prepareStatement(query);) {
+        rs = ClusterManager.getInstance().executeQuery(ps);
         if (!rs.next()) {
           throw new SofiaRuntimeException("The select to count the number of sites fail.");
         }
         int total = rs.getInt("total");
-
         list.setTotal(total);
       } finally {
-        if (rs != null) {
-          rs.close();
-        }
-        if (ps != null) {
-          ps.close();
-        }
+        ClusterManager.getInstance().close(rs);
       }
-
       return list;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 }

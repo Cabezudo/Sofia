@@ -2,7 +2,6 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**
@@ -12,7 +11,7 @@ import net.cabezudo.sofia.core.sites.Site;
 class JSONTemplateHTMLSourceFile extends HTMLTemplateSourceFile {
 
   JSONTemplateHTMLSourceFile(Site site, Path commonsComponentsTemplatePath, Path voidTemplatePath, TemplateVariables templateVariables, Caller caller)
-          throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+          throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag {
     super(site, commonsComponentsTemplatePath, voidTemplatePath, null, templateVariables, caller);
   }
 }

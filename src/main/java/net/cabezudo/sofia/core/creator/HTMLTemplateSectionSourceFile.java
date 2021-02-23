@@ -2,7 +2,6 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import net.cabezudo.sofia.core.sites.Site;
 
 /**
@@ -12,7 +11,7 @@ import net.cabezudo.sofia.core.sites.Site;
 public class HTMLTemplateSectionSourceFile extends HTMLTemplateSourceFile {
 
   public HTMLTemplateSectionSourceFile(Site site, Path templatesBasePath, Path templatePath, String id, TemplateVariables templateVariables, Caller caller)
-          throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag {
+          throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag {
     super(site, templatesBasePath, templatePath, id, templateVariables, caller);
   }
 }

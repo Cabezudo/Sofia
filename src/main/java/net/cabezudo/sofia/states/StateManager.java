@@ -5,10 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.countries.Country;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -25,64 +26,52 @@ public class StateManager {
     return instance;
   }
 
-  public State add(Country country, String name) throws SQLException {
+  public State add(Country country, String name) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return add(connection, country, name);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  private State add(Connection connection, Country country, String name) throws SQLException {
+  private State add(Connection connection, Country country, String name) throws ClusterException {
+    ResultSet rs = null;
     State state = get(connection, country, name);
     if (state != null) {
       return state;
     }
     String query = "INSERT INTO " + StatesTable.NAME + " (country, name) VALUES (?, ?)";
-    PreparedStatement ps = null;
-    ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setLong(1, country.getId());
       ps.setString(2, name);
-      Logger.fine(ps);
-      ps.executeUpdate();
-
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
         return new State(id, country, name);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     throw new SofiaRuntimeException("Can't get the generated key");
   }
 
-  private State get(Connection connection, Country country, String name) throws SQLException {
+  private State get(Connection connection, Country country, String name) throws ClusterException {
     String query = "SELECT id, country, name FROM " + StatesTable.NAME + " WHERE country = ? AND name = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setLong(1, country.getId());
       ps.setString(2, name);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         return new State(rs.getInt("id"), country, rs.getString("name"));
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     return null;
   }

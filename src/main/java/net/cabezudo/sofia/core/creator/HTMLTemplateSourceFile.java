@@ -2,7 +2,6 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -13,12 +12,12 @@ import net.cabezudo.sofia.logger.Logger;
 abstract class HTMLTemplateSourceFile extends HTMLSourceFile {
 
   HTMLTemplateSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller)
-          throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+          throws IOException, LocatedSiteCreationException, SiteCreationException, InvalidFragmentTag {
     super(site, basePath, partialPath, id, templateVariables, caller);
   }
 
   @Override
-  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws InvalidFragmentTag {
     if (line.startsWith("<html")) {
       throw new InvalidFragmentTag("A HTML template can't have the <html> tag.", getPartialFilePath(), new Position(lineNumber, 0));
     }

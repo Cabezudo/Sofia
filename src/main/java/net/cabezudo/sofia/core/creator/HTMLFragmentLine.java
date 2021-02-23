@@ -3,7 +3,6 @@ package net.cabezudo.sofia.core.creator;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.html.Tag;
@@ -16,7 +15,8 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class HTMLFragmentLine extends HTMLFileLine {
 
-  public HTMLFragmentLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
+  public HTMLFragmentLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller)
+          throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     super(site, basePath, parentPath, templateVariables, tag, lineNumber, caller);
   }
 
@@ -37,7 +37,7 @@ public class HTMLFragmentLine extends HTMLFileLine {
 
   @Override
   HTMLSourceFile getHTMLSourceFile(Caller caller)
-          throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
+          throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     Logger.debug("[HTMLFragmentLine:getHTMLSourceFile]");
     Path fullFileBasePath;
     String partialFilePathString = getFilePath().toString();
@@ -47,7 +47,6 @@ public class HTMLFragmentLine extends HTMLFileLine {
     } else {
       fullFileBasePath = caller.getBasePath().resolve(partialFilePathString);
     }
-    HTMLFragmentSourceFile fragmentSourceFile = new HTMLFragmentSourceFile(getSite(), fullFileBasePath, getFilePath(), null, getTemplateVariables(), caller);
-    return fragmentSourceFile;
+    return new HTMLFragmentSourceFile(getSite(), fullFileBasePath, getFilePath(), null, getTemplateVariables(), caller);
   }
 }

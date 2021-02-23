@@ -6,7 +6,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import net.cabezudo.json.annotations.JSONProperty;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
@@ -21,10 +23,15 @@ public class Site implements Comparable<Integer> {
   public static final String COMMONS_FILE_NAME = "commons.json";
   public static final int NAME_MAX_LENGTH = 80;
 
+  @JSONProperty
   private final Integer id;
+  @JSONProperty
   private final String name;
+  @JSONProperty
   private final DomainName baseDomainName;
+  @JSONProperty
   private final DomainNameList domainNames;
+  @JSONProperty
   private final int version;
 
   Site(int id, String name, DomainName baseDomainName, DomainNameList domainNameList, int version) {
@@ -181,8 +188,12 @@ public class Site implements Comparable<Integer> {
   }
 
   // TODO Get this value from a site configuration file
-  public URI getPasswordChangeURI() throws URISyntaxException {
-    return new URI("https://" + baseDomainName.getName() + "/changePassword.html");
+  public URI getPasswordChangeURI() throws ConfigurationException {
+    try {
+      return new URI("https://" + baseDomainName.getName() + "/changePassword.html");
+    } catch (URISyntaxException e) {
+      throw new ConfigurationException(e);
+    }
   }
 
   public String getNoReplyName() {

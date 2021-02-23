@@ -1,11 +1,11 @@
 package net.cabezudo.sofia.core.languages;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 
 /**
@@ -27,7 +27,7 @@ public class ChangeLanguageServlet extends HttpServlet {
       webUserData.setLanguage(twoLetterCodeLanguage);
       request.getSession().setAttribute("webUserData", webUserData);
       response.getWriter().print("{ \"language\": " + webUserData.getActualLanguage().toJSONTree() + " }");
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Can't set the language");
     } catch (InvalidTwoLettersCodeException e) {
       response.sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());

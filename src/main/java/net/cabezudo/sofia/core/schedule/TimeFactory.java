@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.schedule;
 
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 
 /**
@@ -13,7 +13,7 @@ public class TimeFactory {
     // Nothing to do here
   }
 
-  public static AbstractTime get(int id, TimeType type, int index, int start, int end) throws SQLException {
+  public static AbstractTime get(int id, TimeType type, int index, int start, int end) throws ClusterException {
     switch (type.getName()) {
       case "time":
         return new Time(id, index, start, end);

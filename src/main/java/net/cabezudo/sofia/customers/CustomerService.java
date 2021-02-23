@@ -1,7 +1,8 @@
 package net.cabezudo.sofia.customers;
 
 import java.io.IOException;
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.mail.MailServer;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.mail.Message;
@@ -20,7 +21,7 @@ public class CustomerService {
     // Nothing to do here. Utility classes should not have public constructors.
   }
 
-  public static Hash sendPasswordRecoveryEMail(Site site, String address) throws SQLException, MailServerException, IOException {
+  public static Hash sendPasswordRecoveryEMail(Site site, String address) throws MailServerException, IOException, ClusterException, ConfigurationException {
     Hash hash = new Hash();
 
     Message message = UserManager.getInstance().getRecoveryEMailData(site, address, hash);
@@ -30,13 +31,13 @@ public class CustomerService {
     return hash;
   }
 
-  public static void sendPasswordChangedEMail(Site site, String address) throws MailServerException, SQLException, IOException {
+  public static void sendPasswordChangedEMail(Site site, String address) throws MailServerException, IOException, ClusterException {
     Message message = UserManager.getInstance().getPasswordChangedEMailData(site, address);
     Messages messages = new Messages(message);
     MailServer.getInstance().send(messages);
   }
 
-  public static void sendRegistrationRetryAlert(String address) throws MailServerException, SQLException, IOException {
+  public static void sendRegistrationRetryAlert(String address) throws MailServerException, IOException, ClusterException {
     Message message = UserManager.getInstance().getRegistrationRetryAlertEMailData(address);
     Messages messages = new Messages(message);
     MailServer.getInstance().send(messages);

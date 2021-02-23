@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
@@ -29,7 +29,7 @@ public class SiteCreator {
     return INSTANCE;
   }
 
-  public void createPages(Site site, String requestURI) throws IOException, SQLException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException {
+  public void createPages(Site site, String requestURI) throws IOException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, ClusterException {
     String htmlPartialPathName = requestURI.substring(1);
     String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPathName.length() - 5); // Used to create the javascript and css files for this html page
     Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");
@@ -87,7 +87,7 @@ public class SiteCreator {
     baseFile.save(htmlFilePath);
   }
 
-  private void createPagePermissions(Site site, HTMLSourceFile htmlSourceFile, String requestURI) throws SQLException {
+  private void createPagePermissions(Site site, HTMLSourceFile htmlSourceFile, String requestURI) throws ClusterException {
     Logger.debug("Create permission for request %s of site %s.", requestURI, site.getId());
     // TODO Borrar los permisos para esta pagina en este sitio en la base de datos.
     // TODO agregar a los permisos la companía

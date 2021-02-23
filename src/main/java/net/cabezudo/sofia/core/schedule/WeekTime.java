@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.schedule;
 
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -8,7 +8,7 @@ import java.sql.SQLException;
  */
 public class WeekTime extends AbstractTime {
 
-  public WeekTime(int id, int index, int start, int end) throws SQLException {
+  public WeekTime(int id, int index, int start, int end) throws ClusterException {
     super(id, TimeTypeManager.getInstance().get("week"), index, start, end);
   }
 

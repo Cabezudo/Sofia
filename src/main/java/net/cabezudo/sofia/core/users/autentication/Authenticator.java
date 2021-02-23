@@ -1,14 +1,14 @@
 package net.cabezudo.sofia.core.users.autentication;
 
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.passwords.PasswordValidator;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
-import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
 import net.cabezudo.sofia.emails.EMailMaxSizeException;
 import net.cabezudo.sofia.emails.EMailValidator;
@@ -19,10 +19,10 @@ import net.cabezudo.sofia.emails.EMailValidator;
  */
 public class Authenticator {
 
-  public User authorize(Site site, String address, Password password) throws EMailMaxSizeException, DomainNameMaxSizeException, PasswordMaxSizeException, SQLException, EMailAddressValidationException, PasswordValidationException {
+  public User authorize(Site site, String address, Password password)
+          throws EMailMaxSizeException, DomainNameMaxSizeException, PasswordMaxSizeException, EMailAddressValidationException, PasswordValidationException, ClusterException {
     EMailValidator.validate(address);
     PasswordValidator.validate(password);
-    User user = UserManager.getInstance().login(site, address, password);
-    return user;
+    return UserManager.getInstance().login(site, address, password);
   }
 }
