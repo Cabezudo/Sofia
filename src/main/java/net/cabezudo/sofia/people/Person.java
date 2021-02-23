@@ -1,11 +1,11 @@
 package net.cabezudo.sofia.people;
 
-import java.sql.SQLException;
 import java.util.Locale;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.JSONable;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -24,7 +24,7 @@ public class Person implements JSONable {
   private final int ownerId;
   private User owner;
 
-  public Person(Person person) throws SQLException, UserNotExistException {
+  public Person(Person person) throws UserNotExistException, ClusterException {
     this.id = person.getId();
     this.name = person.getName();
     this.lastName = person.getLastName();
@@ -88,7 +88,7 @@ public class Person implements JSONable {
     return ownerId;
   }
 
-  public User getOwner() throws SQLException, UserNotExistException {
+  public User getOwner() throws UserNotExistException, ClusterException {
     if (owner == null) {
       owner = UserManager.getInstance().get(ownerId);
       if (owner == null) {

@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.schedule;
 
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -8,7 +8,7 @@ import java.sql.SQLException;
  */
 public class YearTime extends AbstractTime {
 
-  public YearTime(int id, int index, int start, int end) throws SQLException {
+  public YearTime(int id, int index, int start, int end) throws ClusterException {
     super(id, TimeTypeManager.getInstance().get("year"), index, start, end);
   }
 

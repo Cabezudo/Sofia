@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.core.server.js;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
@@ -19,7 +19,7 @@ import net.cabezudo.sofia.emails.EMailNotExistException;
  */
 public class VariablesJSServlet {
 
-  public String getScript(HttpServletRequest request) throws ServletException, IOException, SQLException, EMailNotExistException {
+  public String getScript(HttpServletRequest request) throws ServletException, IOException, EMailNotExistException, ClusterException {
     WebUserData webUserData = WebUserDataManager.getInstance().get(request);
 
     User user = webUserData.getUser();

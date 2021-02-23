@@ -85,6 +85,8 @@ public final class Configuration {
   private final Path sitesSourcesPath;
   private final Path commonSourcesPath;
   private final Path sitesPath;
+  private final Path clusterFilesPath;
+  private final Path clusterFileLogPath;
   private final APIConfiguration apiConfiguration = new APIConfiguration();
 
   public static void validateConfiguration() throws ConfigurationException {
@@ -146,6 +148,10 @@ public final class Configuration {
       Files.createDirectories(sitesSourcesPath);
       sitesPath = systemPath.resolve("sites");
       Files.createDirectories(sitesPath);
+      clusterFilesPath = systemDataPath.resolve("cluster");
+      Files.createDirectories(clusterFilesPath);
+      clusterFileLogPath = clusterFilesPath.resolve("data.log");
+
     } else {
       throw new FileNotFoundException(file.getAbsolutePath());
     }
@@ -405,5 +411,13 @@ public final class Configuration {
     for (DataCreator dataCreator : dataCreators) {
       apiConfiguration.add(dataCreator);
     }
+  }
+
+  public Path getClusterFilesPath() {
+    return clusterFilesPath;
+  }
+
+  public Path getClusterFileLogPath() {
+    return clusterFileLogPath;
   }
 }

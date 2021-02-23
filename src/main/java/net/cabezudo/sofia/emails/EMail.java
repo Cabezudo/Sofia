@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.emails;
 
-import java.sql.SQLException;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.people.PeopleManager;
 import net.cabezudo.sofia.people.Person;
 import net.cabezudo.sofia.people.PersonNotExistException;
@@ -43,7 +43,7 @@ public class EMail implements Comparable<EMail> {
     return personId;
   }
 
-  public Person getPerson() throws PersonNotExistException, SQLException {
+  public Person getPerson() throws PersonNotExistException, ClusterException {
     if (person == null) {
       person = PeopleManager.getInstance().get(personId);
       if (person == null) {

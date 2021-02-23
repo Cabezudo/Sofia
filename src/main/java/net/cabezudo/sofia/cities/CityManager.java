@@ -5,10 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.states.State;
 
 /**
@@ -30,68 +31,57 @@ public class CityManager {
     return INSTANCE;
   }
 
-  public City add(State state, String name, User owner) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public City add(State state, String name, User owner) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return add(connection, state, name, owner);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  private City add(Connection connection, State state, String name, User owner) throws SQLException {
-    City city = get(connection, state, name, owner);
-    if (city != null) {
-      return city;
-    }
-    String query = "INSERT INTO " + CitiesTable.NAME + " (state, name, owner) VALUES (?, ?, ?)";
-    PreparedStatement ps = null;
+  private City add(Connection connection, State state, String name, User owner) throws ClusterException {
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    String query = "INSERT INTO " + CitiesTable.NAME + " (state, name, owner) VALUES (?, ?, ?)";
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+      City city = get(connection, state, name, owner);
+      if (city != null) {
+        return city;
+      }
       ps.setInt(1, state.getId());
       ps.setString(2, name);
       ps.setInt(3, owner.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
 
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
-        return new City(id, state, name);
+        city = new City(id, state, name);
+        return city;
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     throw new SofiaRuntimeException("Can't get the generated key");
   }
 
-  private City get(Connection connection, State state, String name, User owner) throws SQLException {
+  private City get(Connection connection, State state, String name, User owner) throws ClusterException {
     String query = "SELECT id, state, name FROM " + CitiesTable.NAME + " WHERE state = ? AND name = ? AND (owner = ? OR owner = 1)";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, state.getId());
       ps.setString(2, name);
       ps.setInt(3, owner.getId());
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         return new City(rs.getInt("id"), state, rs.getString("name"));
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
-
     return null;
   }
 

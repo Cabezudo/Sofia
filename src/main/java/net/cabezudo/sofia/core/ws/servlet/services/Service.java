@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
@@ -77,7 +77,7 @@ public abstract class Service<T extends Response> {
   protected void sendResponse(T response) throws ServletException {
     try {
       out.print(response.toJSON(getSite(), getWebUserData().getActualLanguage()));
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     }
   }
@@ -86,7 +86,7 @@ public abstract class Service<T extends Response> {
     request.getSession().setAttribute("webUserData", webUserData);
   }
 
-  protected WebUserData getWebUserData() throws SQLException {
+  protected WebUserData getWebUserData() throws ClusterException {
     if (webUserData == null) {
       webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
       if (webUserData == null) {

@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.users.profiles;
 
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.users.User;
@@ -43,7 +43,7 @@ public class Profile {
     return siteId;
   }
 
-  public Site getSite(User owner) throws SQLException {
+  public Site getSite(User owner) throws ClusterException {
     if (site == null) {
       site = SiteManager.getInstance().getById(siteId);
     }

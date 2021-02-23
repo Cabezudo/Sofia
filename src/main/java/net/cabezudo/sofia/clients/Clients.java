@@ -1,11 +1,11 @@
 package net.cabezudo.sofia.clients;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.emails.EMails;
 
@@ -23,7 +23,7 @@ public class Clients implements Iterable<Client> {
     return list.iterator();
   }
 
-  void add(Client p) throws SQLException, UserNotExistException {
+  void add(Client p) throws UserNotExistException, ClusterException {
     int id = p.getId();
     Client client = map.get(id);
     if (client == null) {

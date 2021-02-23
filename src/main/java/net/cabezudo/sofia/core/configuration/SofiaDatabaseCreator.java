@@ -14,6 +14,7 @@ import net.cabezudo.sofia.cities.CitiesTable;
 import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.clients.ClientTable;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
@@ -137,7 +138,7 @@ public class SofiaDatabaseCreator extends DataCreator {
       Database.createTable(connection, TimeEntriesTable.CREATION_QUERY);
       Database.createTable(connection, TimeTypesTable.CREATION_QUERY);
       Database.createTable(connection, TimesTable.CREATION_QUERY);
-    } catch (SQLException e) {
+    } catch (SQLException | ClusterException e) {
       throw new DataCreationException(e);
     }
   }
@@ -151,7 +152,7 @@ public class SofiaDatabaseCreator extends DataCreator {
       language = LanguageManager.getInstance().get("es");
       createPostalCodes(language, country, null);
       createTimeTypes();
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       throw new DataCreationException(e);
     } catch (InvalidTwoLettersCodeException e) {
       throw new SofiaRuntimeException(e);
@@ -163,14 +164,16 @@ public class SofiaDatabaseCreator extends DataCreator {
     // Nothing to create for now
   }
 
-  private void createLanguages() throws SQLException {
+  private void createLanguages() throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       LanguageManager.getInstance().add(connection, "en");
       LanguageManager.getInstance().add(connection, "es");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  private Country createCountries() throws SQLException {
+  private Country createCountries() throws ClusterException {
     Language language;
     try {
       language = LanguageManager.getInstance().get("es");
@@ -180,7 +183,7 @@ public class SofiaDatabaseCreator extends DataCreator {
     return CountryManager.getInstance().add(language, "México", 52, "MX");
   }
 
-  private void createPostalCodes(Language language, Country country, User owner) throws SQLException {
+  private void createPostalCodes(Language language, Country country, User owner) throws ClusterException {
     Logger.info("Create postal codes.");
     Path postalCodesPath = Configuration.getInstance().getSystemDataPath().resolve("postalCodes.csv");
     if (Files.exists(postalCodesPath)) {
@@ -188,7 +191,7 @@ public class SofiaDatabaseCreator extends DataCreator {
     }
   }
 
-  private void createPostalCodesFromFile(Language language, Country country, User owner, Path postalCodesPath) throws SQLException {
+  private void createPostalCodesFromFile(Language language, Country country, User owner, Path postalCodesPath) throws ClusterException {
     try (BufferedReader br = new BufferedReader(new FileReader(postalCodesPath.toFile()))) {
       String line;
       boolean headers = true;
@@ -228,6 +231,8 @@ public class SofiaDatabaseCreator extends DataCreator {
             Zone zone = ZoneManager.getInstance().add(connection, zoneName);
             Settlement settlement = SettlementManager.getInstance().add(connection, language, settlementType, city, municipality, zone, settlementName, owner);
             PostalCodeManager.getInstance().add(connection, settlement, Integer.parseInt(postalCodeNumber), owner);
+          } catch (SQLException e) {
+            throw new ClusterException(e);
           }
         }
       }
@@ -236,7 +241,7 @@ public class SofiaDatabaseCreator extends DataCreator {
     }
   }
 
-  private void createTimeTypes() throws SQLException {
+  private void createTimeTypes() throws ClusterException {
     TimeTypeManager.getInstance().add("time");
     TimeTypeManager.getInstance().add("day");
     TimeTypeManager.getInstance().add("week");

@@ -8,6 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -48,25 +50,20 @@ public class Database {
     return DriverManager.getConnection(url, username, password);
   }
 
-  public static void createDatabase() throws SQLException {
+  public static void createDatabase() throws ClusterException {
     createDatabase(Configuration.getInstance().getDatabaseName());
   }
 
-  public static void createDatabase(String databaseName) throws SQLException {
+  public static void createDatabase(String databaseName) throws ClusterException {
     Logger.info("Create database.");
-    Statement statement = null;
-    try (Connection connection = getConnection(null, 5)) {
-      statement = connection.createStatement();
-
+    try (Connection connection = getConnection(null, 5); Statement statement = connection.createStatement();) {
       String query = "CREATE DATABASE IF NOT EXISTS " + databaseName;
-      statement.executeUpdate(query);
-
+      ClusterManager.getInstance().executeUpdate(statement, query);
       query = "SET @@global.time_zone='+00:00'";
+      ClusterManager.getInstance().execute(statement, query);
       statement.execute(query);
-    } finally {
-      if (statement != null) {
-        statement.close();
-      }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
@@ -116,32 +113,38 @@ public class Database {
     }
   }
 
-  public static void createTable(Connection connection, String[] queries) throws SQLException {
-    connection.setAutoCommit(false);
-    for (String query : queries) {
-      createTable(connection, query);
+  public static void createTable(Connection connection, String[] queries) throws ClusterException {
+    try {
+      connection.setAutoCommit(false);
+      for (String query : queries) {
+        createTable(connection, query);
+      }
+      connection.setAutoCommit(true);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
-    connection.setAutoCommit(true);
   }
 
-  public static void createTable(Connection connection, String query) throws SQLException {
+  public static void createTable(Connection connection, String query) throws ClusterException {
     try (Statement statement = connection.createStatement()) {
       Logger.debug("Create table using: " + query);
-      statement.executeUpdate(query);
+      ClusterManager.getInstance().executeUpdate(statement, query);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public static boolean exist(String databaseName) throws SQLException {
+  public static boolean exist(String databaseName) throws ClusterException {
     ResultSet rs = null;
     boolean next;
     try (Connection connection = getConnection(null, 5); Statement statement = connection.createStatement()) {
       String query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + databaseName + "'";
       rs = statement.executeQuery(query);
       next = rs.next();
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     return next;
   }

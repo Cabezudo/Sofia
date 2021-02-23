@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.schedule;
 
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -8,7 +8,7 @@ import java.sql.SQLException;
  */
 public class Time extends AbstractTime {
 
-  public Time(int id, int index, int start, int end) throws SQLException {
+  public Time(int id, int index, int start, int end) throws ClusterException {
     super(id, TimeTypeManager.getInstance().get("time"), index, start, end);
   }
 

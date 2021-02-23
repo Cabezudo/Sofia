@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.clients;
 
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.emails.EMails;
 import net.cabezudo.sofia.people.Person;
-import net.cabezudo.sofia.core.users.UserNotExistException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -15,7 +15,7 @@ public class Client extends Person {
     super(id, name, lastName, eMails, owner);
   }
 
-  public Client(Person person) throws SQLException, UserNotExistException {
+  public Client(Person person) throws UserNotExistException, ClusterException {
     super(person);
   }
 }

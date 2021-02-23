@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.JSONPair;
@@ -23,7 +22,7 @@ class JSONConfiguration {
   private final StringBuilder sb = new StringBuilder();
 
   JSONObject load(HTMLSourceFile htmlSourceFile)
-          throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
+          throws IOException, LocatedSiteCreationException, SiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     jsonPartialPath = Paths.get(htmlSourceFile.getVoidPartialPathName() + ".json");
     Path jsonSourceFilePath = htmlSourceFile.getBasePath().resolve(jsonPartialPath);
     Logger.debug("Search configuration file %s for HTML source file %s.", jsonPartialPath, htmlSourceFile.getPartialFilePath());

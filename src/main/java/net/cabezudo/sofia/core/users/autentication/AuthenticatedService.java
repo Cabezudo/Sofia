@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.core.users.autentication;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -28,7 +28,7 @@ public class AuthenticatedService extends Service {
       } else {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, "login.notLogged"));
       }
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
     }
   }

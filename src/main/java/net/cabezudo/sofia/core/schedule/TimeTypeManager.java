@@ -1,11 +1,11 @@
 package net.cabezudo.sofia.core.schedule;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import net.cabezudo.sofia.core.cache.Cache;
 import net.cabezudo.sofia.core.cache.CacheManager;
 import net.cabezudo.sofia.core.catalogs.CatalogEntry;
 import net.cabezudo.sofia.core.catalogs.SimpleCatalogManager;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 
 /**
@@ -25,12 +25,12 @@ public class TimeTypeManager extends SimpleCatalogManager<TimeType> {
   }
 
   @Override
-  public TimeType get(int id) throws SQLException {
+  public TimeType get(int id) throws ClusterException {
     return new TimeType(super.get(id));
   }
 
   @Override
-  public TimeType get(String name) throws SQLException {
+  public TimeType get(String name) throws ClusterException {
     Cache<String, TimeType> cache = CacheManager.getInstance().getCache("TimeType");
     TimeType timeType = cache.get(name);
     if (timeType == null) {
@@ -42,7 +42,7 @@ public class TimeTypeManager extends SimpleCatalogManager<TimeType> {
   }
 
   @Override
-  public TimeType get(Connection connection, String name) throws SQLException {
+  public TimeType get(Connection connection, String name) throws ClusterException {
     CatalogEntry catalogEntry = super.get(connection, name);
     if (catalogEntry == null) {
       throw new SofiaRuntimeException("Invalid time type '" + name + "'. Time type not found in database.");

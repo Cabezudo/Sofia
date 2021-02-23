@@ -5,11 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.sites.Site;
@@ -23,7 +23,6 @@ public abstract class HTMLFileLine extends Line {
 
   private final Site site;
   private final Path basePath;
-  private final Path parentPath;
   private final TemplateVariables templateVariables;
   private final Tag tag;
   private final Caller caller;
@@ -32,12 +31,11 @@ public abstract class HTMLFileLine extends Line {
   private HTMLSourceFile htmlSourceFile;
 
   HTMLFileLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller)
-          throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
+          throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     super(lineNumber);
 
     this.site = site;
     this.basePath = basePath;
-    this.parentPath = parentPath;
     this.templateVariables = templateVariables;
     this.tag = tag;
     this.caller = caller;
@@ -47,7 +45,7 @@ public abstract class HTMLFileLine extends Line {
     endLine = new CodeLine(tag.getEndTag(), lineNumber);
   }
 
-  void load() throws InvalidFragmentTag, IOException, SiteCreationException, LocatedSiteCreationException, SQLException, LibraryVersionConflictException, JSONParseException {
+  void load() throws InvalidFragmentTag, IOException, SiteCreationException, LocatedSiteCreationException, LibraryVersionConflictException, JSONParseException, ClusterException {
     Logger.debug("[HTMLFileLine:load] Load file line %s.", getFilePath());
 
     readJSONFile();
@@ -76,7 +74,7 @@ public abstract class HTMLFileLine extends Line {
   abstract Path getFilePath();
 
   abstract HTMLSourceFile getHTMLSourceFile(Caller caller)
-          throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, LibraryVersionConflictException, JSONParseException;
+          throws IOException, SiteCreationException, LocatedSiteCreationException, LibraryVersionConflictException, JSONParseException;
 
   private void readJSONFile() throws JSONParseException, IOException {
     Path configurationFilePath = getConfigurationFilePath(caller);

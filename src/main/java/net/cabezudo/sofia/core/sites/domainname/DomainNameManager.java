@@ -11,11 +11,12 @@ import net.cabezudo.sofia.core.api.options.list.Filters;
 import net.cabezudo.sofia.core.api.options.list.Limit;
 import net.cabezudo.sofia.core.api.options.list.Offset;
 import net.cabezudo.sofia.core.api.options.list.Sort;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -32,25 +33,21 @@ public class DomainNameManager {
     return INSTANCE;
   }
 
-  public DomainNameList get(Site site) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public DomainNameList get(Site site) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, site);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public DomainNameList get(Connection connection, Site site) throws SQLException {
+  public DomainNameList get(Connection connection, Site site) throws ClusterException {
     String query = "SELECT id, name FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
-
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, site.getId());
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       DomainNameList list = new DomainNameList(0);
-
       while (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("siteId");
@@ -59,62 +56,47 @@ public class DomainNameManager {
         list.add(domainName);
       }
       return list;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public DomainName add(Connection connection, int siteId, String domainNameName) throws SQLException {
-
+  public DomainName add(Connection connection, int siteId, String domainNameName) throws ClusterException {
     String query = "INSERT INTO " + DomainNamesTable.NAME + " (siteId, name) VALUES (?, ?)";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, siteId);
       ps.setString(2, domainNameName);
-      Logger.fine(ps);
-      ps.executeUpdate();
-
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
-        DomainName domainName = new DomainName(id, siteId, domainNameName);
-        return domainName;
+        return new DomainName(id, siteId, domainNameName);
       }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
     throw new SofiaRuntimeException("Can't get the generated key");
   }
 
-  public DomainName get(int domainNameId) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public DomainName get(int domainNameId) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return get(connection, domainNameId);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public DomainName get(Connection connection, int domainNameId) throws SQLException {
+  public DomainName get(Connection connection, int domainNameId) throws ClusterException {
     String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + " WHERE id = ?";
-
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, domainNameId);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("siteId");
@@ -122,13 +104,10 @@ public class DomainNameManager {
         return new DomainName(id, siteId, name);
       }
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
@@ -165,23 +144,21 @@ public class DomainNameManager {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  public DomainName getByDomainNameName(String domainNameName) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public DomainName getByDomainNameName(String domainNameName) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return getByDomainNameName(connection, domainNameName);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public DomainName getByDomainNameName(Connection connection, String domainNameName) throws SQLException {
+  public DomainName getByDomainNameName(Connection connection, String domainNameName) throws ClusterException {
     // TODO agregar una cache aquí. No olvidar modificar los registros que se modifiquen.
     String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + " WHERE name = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, domainNameName);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
-
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int id = rs.getInt("id");
         int siteId = rs.getInt("siteId");
@@ -189,45 +166,49 @@ public class DomainNameManager {
         return new DomainName(id, siteId, name);
       }
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public DomainName update(DomainName domainName, User owner) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public DomainName update(DomainName domainName, User owner) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return update(connection, domainName);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public DomainName update(Connection connection, DomainName domainName) throws SQLException {
+  public DomainName update(Connection connection, DomainName domainName) throws ClusterException {
     String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
-    try ( PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, domainName.getName());
       ps.setInt(2, domainName.getId());
-      Logger.fine(ps);
-      ps.executeUpdate();
+
+      ClusterManager.getInstance().executeUpdate(ps);
       return domainName;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void delete(int hostId) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public void delete(int hostId) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       delete(connection, hostId);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public void delete(Connection connection, int hostId) throws SQLException {
+  public void delete(Connection connection, int hostId) throws ClusterException {
     String query = "DELETE FROM " + DomainNamesTable.NAME + " WHERE id = ?";
-    try ( PreparedStatement ps = connection.prepareStatement(query)) {
+    try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, hostId);
-      Logger.fine(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 }

@@ -10,6 +10,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
@@ -120,7 +121,7 @@ public class AddUserService extends Service {
       sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, "user.added"));
     } catch (EMailAddressNotExistException e) {
       super.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e);
-    } catch (SQLException e) {
+    } catch (SQLException | ClusterException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     } catch (JSONParseException e) {
       super.sendError(HttpServletResponse.SC_BAD_REQUEST, e);
