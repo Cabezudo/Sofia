@@ -5,10 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.words.Word;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -22,21 +23,20 @@ public class CountryManager {
     return INSTANCE;
   }
 
-  public Country get(Language language, String name) throws SQLException {
+  public Country get(Language language, String name) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, language, name);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Country get(Connection connection, Language language, String name) throws SQLException {
+  public Country get(Connection connection, Language language, String name) throws ClusterException {
     String query = "SELECT id, w.id AS wordId, w.value AS wordValue, phoneCode, twoLettersCountryCode FROM " + CountriesTable.NAME + " WHERE name =  ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         int wordId = rs.getInt("wordId");
         String wordValue = rs.getString("wordValue");
@@ -44,68 +44,60 @@ public class CountryManager {
         return new Country(rs.getInt("id"), word, rs.getInt("phoneCode"), rs.getString("twoLettersCountryCode"));
       }
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public Country add(Language language, String name, int phoneCode, String twoLettersCountryCode) throws SQLException {
+  public Country add(Language language, String name, int phoneCode, String twoLettersCountryCode) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return add(connection, language, name, phoneCode, twoLettersCountryCode);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public Country add(Connection connection, Language language, String name, int phoneCode, String twoLettersCountryCode) throws SQLException {
-
-    connection.setAutoCommit(false);
-    String query = "INSERT INTO " + CountriesTable.NAME + " (phoneCode, twoLettersCountryCode) VALUES (?, ?)";
-    PreparedStatement ps = null;
-    ResultSet rs = null;
+  public Country add(Connection connection, Language language, String name, int phoneCode, String twoLettersCountryCode) throws ClusterException {
     try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-      ps.setInt(1, phoneCode);
-      ps.setString(2, twoLettersCountryCode);
-      Logger.fine(ps);
-      ps.executeUpdate();
-
-      rs = ps.getGeneratedKeys();
-      if (rs.next()) {
-        Integer id = rs.getInt(1);
-
-        CountryName countryName = ContryNamesManager.getInstance().get(connection, language, name);
-        if (countryName == null) {
-          countryName = ContryNamesManager.getInstance().add(connection, id, language, name);
+      connection.setAutoCommit(false);
+      String query = "INSERT INTO " + CountriesTable.NAME + " (phoneCode, twoLettersCountryCode) VALUES (?, ?)";
+      ResultSet rs = null;
+      try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+        ps.setInt(1, phoneCode);
+        ps.setString(2, twoLettersCountryCode);
+        ClusterManager.getInstance().executeUpdate(ps);
+        rs = ps.getGeneratedKeys();
+        if (rs.next()) {
+          Integer id = rs.getInt(1);
+          CountryName countryName = ContryNamesManager.getInstance().get(connection, language, name);
+          if (countryName == null) {
+            countryName = ContryNamesManager.getInstance().add(connection, id, language, name);
+          }
+          addCountryName(connection, id, countryName);
+          return new Country(id, countryName, phoneCode, twoLettersCountryCode);
         }
-
-        addCountryName(connection, id, countryName);
-        return new Country(id, countryName, phoneCode, twoLettersCountryCode);
+      } finally {
+        ClusterManager.getInstance().close(rs);
+        connection.setAutoCommit(true);
       }
-    } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
-      connection.setAutoCommit(true);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
-
-    throw new SQLException("Can't get the generated key");
+    throw new ClusterException("Can't get the generated key");
   }
 
-  private void addCountryName(Connection connection, int countryId, CountryName countryName) throws SQLException {
+  private void addCountryName(Connection connection, int countryId, CountryName countryName) throws ClusterException {
+    // The IGNORE is to allow add existent words without check if exists
     String query = "INSERT IGNORE INTO " + CountryNamesTable.DATABASE + "." + CountryNamesTable.NAME + " (id, language, value) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, countryId);
       ps.setInt(2, countryName.getLanguage().getId());
       ps.setString(3, countryName.getValue());
-      Logger.fine(ps);
-      ps.executeUpdate();
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 }

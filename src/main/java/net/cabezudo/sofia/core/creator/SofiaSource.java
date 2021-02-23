@@ -1,7 +1,7 @@
 package net.cabezudo.sofia.core.creator;
 
 import java.nio.file.Path;
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -27,6 +27,6 @@ interface SofiaSource {
 
   String getVoidPartialPathName();
 
-  boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag;
+  boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws ClusterException, InvalidFragmentTag;
 
 }

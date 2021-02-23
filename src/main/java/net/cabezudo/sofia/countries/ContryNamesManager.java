@@ -1,7 +1,7 @@
 package net.cabezudo.sofia.countries;
 
 import java.sql.Connection;
-import java.sql.SQLException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.words.Word;
 import net.cabezudo.sofia.core.words.WordManager;
@@ -23,7 +23,7 @@ public class ContryNamesManager extends WordManager<CountryName> {
   }
 
   @Override
-  public CountryName get(Connection connection, Language language, String value) throws SQLException {
+  public CountryName get(Connection connection, Language language, String value) throws ClusterException {
     Word word = super.get(connection, language, value);
     if (word == null) {
       return null;
@@ -32,7 +32,7 @@ public class ContryNamesManager extends WordManager<CountryName> {
   }
 
   @Override
-  public CountryName add(Connection connection, int targetId, Language language, String value) throws SQLException {
+  public CountryName add(Connection connection, int targetId, Language language, String value) throws ClusterException {
     Word word = super.add(connection, targetId, language, value);
     return new CountryName(word);
   }

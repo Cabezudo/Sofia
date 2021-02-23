@@ -1,12 +1,12 @@
 package net.cabezudo.sofia.clients;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -30,7 +30,7 @@ public class ClientListService extends ListService {
     WebUserData webUserData;
     try {
       webUserData = getWebUserData();
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       Logger.severe(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
       return;
@@ -95,7 +95,7 @@ public class ClientListService extends ListService {
 
         out.print(jsonObject.toJSON());
       }
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       Logger.severe(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     } catch (UserNotExistException e) {

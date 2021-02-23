@@ -2,7 +2,6 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -12,12 +11,13 @@ import net.cabezudo.sofia.logger.Logger;
  */
 class HTMLFragmentSourceFile extends HTMLSourceFile {
 
-  HTMLFragmentSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+  HTMLFragmentSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller)
+          throws IOException, LocatedSiteCreationException, SiteCreationException, InvalidFragmentTag {
     super(site, basePath, partialPath, id, templateVariables, caller);
   }
 
   @Override
-  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag {
+  public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws InvalidFragmentTag {
     if (line.startsWith("<html")) {
       throw new InvalidFragmentTag("A HTML fragment can't have the <html> tag", filePath, new Position(lineNumber, 0));
     }

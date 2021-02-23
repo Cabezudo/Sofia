@@ -1,6 +1,5 @@
 package net.cabezudo.sofia.core.sites.services;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -8,6 +7,7 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.WebServer;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
@@ -61,13 +61,12 @@ public class DeleteSiteHostnameService extends Service {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.DELETE, "site.host.base.can.not.be.deleted"));
         return;
       }
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     }
 
     try {
-
       DomainName domainName = DomainNameManager.getInstance().get(hostId);
       WebServer.delete(domainName);
       DomainNameManager.getInstance().delete(hostId);
@@ -75,7 +74,7 @@ public class DeleteSiteHostnameService extends Service {
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", hostId));
       sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.host.deleted"));
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     }

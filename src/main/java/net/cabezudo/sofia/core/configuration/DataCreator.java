@@ -2,6 +2,7 @@ package net.cabezudo.sofia.core.configuration;
 
 import java.sql.SQLException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -30,7 +31,7 @@ public abstract class DataCreator {
   protected boolean databaseExists(String databaseName) throws DataCreationException {
     try {
       return Database.exist(databaseName);
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       throw new DataCreationException(e);
     }
   }
@@ -40,7 +41,7 @@ public abstract class DataCreator {
   protected void createDatabase(String databaseName) throws DataCreationException {
     try {
       Database.createDatabase(databaseName);
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       throw new DataCreationException(e);
     }
   }
@@ -50,7 +51,7 @@ public abstract class DataCreator {
   void createDatabaseStructure(String databaseName) throws DataCreationException {
     try {
       Database.createDatabase(databaseName);
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       throw new DataCreationException(e);
     }
   }

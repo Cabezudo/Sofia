@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import net.cabezudo.sofia.core.cache.Cache;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.domains.DomainName;
@@ -28,7 +30,7 @@ public class URLManager {
     return INSTANCE;
   }
 
-  void changeCompanyHost(Site site, SofiaHTMLServletRequest request) throws SQLException {
+  void changeCompanyHost(Site site, SofiaHTMLServletRequest request) throws ClusterException {
     Logger.debug("request on changeCompanyHost: %s", request);
     String serverName = request.getServerName();
     String requestURI = request.getRequestURI();
@@ -60,7 +62,7 @@ public class URLManager {
     }
   }
 
-  void changeCompanyPath(Site site, SofiaHTMLServletRequest request) throws SQLException {
+  void changeCompanyPath(Site site, SofiaHTMLServletRequest request) throws ClusterException {
     Logger.debug("request on changeCompanyPath: %s", request);
     String requestURI = request.getRequestURI();
 
@@ -92,88 +94,72 @@ public class URLManager {
     }
   }
 
-  public int add(Connection connection, Site site, String serverName, String companyPath) throws SQLException {
+  public int add(Connection connection, Site site, String serverName, String companyPath) throws ClusterException {
     String query = "INSERT INTO " + URLTable.NAME + " (siteId, serverName, companyPath) VALUES (?, ?, ?)";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, site.getId());
       ps.setString(2, serverName);
       ps.setString(3, companyPath);
-      Logger.fine(ps);
-      ps.executeUpdate();
-
+      ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         return rs.getInt(1);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  private String getCompanyPathByServerName(Site site, String serverName) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  private String getCompanyPathByServerName(Site site, String serverName) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return getCompanyPathByServerName(connection, site, serverName);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public String getCompanyPathByServerName(Connection connection, Site site, String serverName) throws SQLException {
+  public String getCompanyPathByServerName(Connection connection, Site site, String serverName) throws ClusterException {
     String query = "SELECT id, siteId, serverName, companyPath FROM " + URLTable.NAME + " WHERE siteId = ? AND serverName = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, site.getId());
       ps.setString(2, serverName);
-      Logger.fine("URLManager", "getCompanyHostByServerName", ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (!rs.next()) {
         return null;
       }
       return rs.getString("companyPath");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public boolean exists(Site site, String companyPath) throws SQLException {
-    try ( Connection connection = Database.getConnection()) {
+  public boolean exists(Site site, String companyPath) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
       return URLManager.this.exists(connection, site, companyPath);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public boolean exists(Connection connection, Site site, String companyPath) throws SQLException {
+  public boolean exists(Connection connection, Site site, String companyPath) throws ClusterException {
     String query = "SELECT id, siteId, serverName, companyPath FROM " + URLTable.NAME + " WHERE siteId = ? AND companyPath = ?";
-    PreparedStatement ps = null;
     ResultSet rs = null;
-    try {
-      ps = connection.prepareStatement(query);
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, site.getId());
       ps.setString(2, companyPath);
-      Logger.fine("URLManager", "exist", ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       return rs.next();
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
-
 }

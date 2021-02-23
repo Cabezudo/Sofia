@@ -1,10 +1,10 @@
 package net.cabezudo.sofia.core.sites.services;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
@@ -58,7 +58,7 @@ public class SiteNamesValidationService extends Service {
     } catch (SiteValidationException e) {
       sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage()));
       return;
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     }

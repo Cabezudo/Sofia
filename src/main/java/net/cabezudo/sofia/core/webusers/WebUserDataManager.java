@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
@@ -37,7 +39,7 @@ public class WebUserDataManager {
     return INSTANCE;
   }
 
-  public WebUserData createFakeWebUserData() throws SQLException, InvalidTwoLettersCodeException {
+  public WebUserData createFakeWebUserData() throws InvalidTwoLettersCodeException, ClusterException {
     Language spanish = LanguageManager.getInstance().get("es");
     return new WebUserData(1, "fackeSessionId", 0, spanish, spanish);
   }
@@ -103,7 +105,7 @@ public class WebUserDataManager {
         jsonObject.add(new JSONPair("logged", isLogged()));
         try {
           user = getUser();
-        } catch (SQLException e) {
+        } catch (ClusterException e) {
           Logger.warning(e);
           user = null;
         }
@@ -117,14 +119,14 @@ public class WebUserDataManager {
       return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
     }
 
-    public User getUser() throws SQLException {
+    public User getUser() throws ClusterException {
       if (userId != 0 && user == null) {
         user = UserManager.getInstance().get(userId);
       }
       return user;
     }
 
-    public void setUser(User user) throws SQLException {
+    public void setUser(User user) throws ClusterException {
       jsonObject = null;
       if (user == null) {
         update("user", 0, this.sessionId);
@@ -134,14 +136,14 @@ public class WebUserDataManager {
       this.user = user;
     }
 
-    public void setLanguage(String twoLetterCodeLanguage) throws SQLException, InvalidTwoLettersCodeException {
+    public void setLanguage(String twoLetterCodeLanguage) throws InvalidTwoLettersCodeException, ClusterException {
       Language language = LanguageManager.getInstance().get(twoLetterCodeLanguage);
       this.actualLanguage = language;
       update("actualLanguage", language.getId(), this.sessionId);
     }
   }
 
-  public synchronized WebUserData get(HttpServletRequest request) throws SQLException {
+  public synchronized WebUserData get(HttpServletRequest request) throws ClusterException {
     HttpSession session = request.getSession();
     String sessionId = session.getId();
 
@@ -154,45 +156,46 @@ public class WebUserDataManager {
       }
       connection.commit();
       return webUserData;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public WebUserData resetFailLoginResponseTime(WebUserData webUserData) throws SQLException {
+  public WebUserData resetFailLoginResponseTime(WebUserData webUserData) throws ClusterException {
     webUserData = webUserData.setLoginResponseTime(INITIAL_FAIL_LOGIN_RESPONSE_TIME);
     update("failLoginResponseTime", webUserData.failLoginResponseTime, webUserData.getSessionId());
     return webUserData;
   }
 
-  public WebUserData incrementFailLoginResponseTime(WebUserData webUserData) throws SQLException {
+  public WebUserData incrementFailLoginResponseTime(WebUserData webUserData) throws ClusterException {
     webUserData = webUserData.setLoginResponseTime(webUserData.getFailLoginResponseTime() * 2);
     update("failLoginResponseTime", webUserData.failLoginResponseTime, webUserData.getSessionId());
     return webUserData;
   }
 
-  public WebUserData get(String sessionId) throws SQLException {
+  public WebUserData get(String sessionId) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, sessionId);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public WebUserData get(Connection connection, String sessionId) throws SQLException {
-    PreparedStatement ps = null;
+  public WebUserData get(Connection connection, String sessionId) throws ClusterException {
     ResultSet rs = null;
-    try {
-      String query
-              = "SELECT "
-              + "w.id AS WebUserDataId, `failLoginResponseTime`, "
-              + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
-              + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
-              + "`user` "
-              + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
-              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
-              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
-              + "WHERE sessionId = ?";
-      ps = connection.prepareStatement(query);
+    String query
+            = "SELECT "
+            + "w.id AS WebUserDataId, `failLoginResponseTime`, "
+            + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
+            + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
+            + "`user` "
+            + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
+            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
+            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+            + "WHERE sessionId = ?";
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, sessionId);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         Logger.fine("Client data FOUND using " + sessionId + ".");
         int id = rs.getInt("WebUserDataId");
@@ -204,40 +207,36 @@ public class WebUserDataManager {
       }
       Logger.fine("Client data NOT FOUND using " + sessionId + ".");
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public WebUserData get(int id) throws SQLException {
+  public WebUserData get(int id) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       return get(connection, id);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  public WebUserData get(Connection connection, int id) throws SQLException {
-    PreparedStatement ps = null;
+  public WebUserData get(Connection connection, int id) throws ClusterException {
     ResultSet rs = null;
-    try {
-      String query
-              = "SELECT "
-              + "sessionId, `failLoginResponseTime`, "
-              + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
-              + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
-              + "`user` "
-              + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
-              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
-              + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
-              + "WHERE w.id = ?";
-      ps = connection.prepareStatement(query);
+    String query
+            = "SELECT "
+            + "sessionId, `failLoginResponseTime`, "
+            + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
+            + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
+            + "`user` "
+            + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
+            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
+            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+            + "WHERE w.id = ?";
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, id);
-      Logger.fine(ps);
-      rs = ps.executeQuery();
+      rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         Logger.fine("Client data FOUND using " + id + ".");
         String sessionId = rs.getString("sessionId");
@@ -253,25 +252,20 @@ public class WebUserDataManager {
       }
       Logger.fine("Client data NOT FOUND using " + id + ".");
       return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  private WebUserData insert(Connection connection, String sessionId) throws SQLException {
-    PreparedStatement ps = null;
+  private WebUserData insert(Connection connection, String sessionId) throws SQLException, ClusterException {
     ResultSet rs = null;
-    try {
-      String query
-              = "INSERT INTO " + WebUserDataTable.NAME + " "
-              + "(`sessionId`, `failLoginResponseTime`, `countryLanguage`, `actualLanguage`) "
-              + "VALUES (?, ?, ?, ?)";
-      ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+    String query
+            = "INSERT INTO " + WebUserDataTable.NAME + " "
+            + "(`sessionId`, `failLoginResponseTime`, `countryLanguage`, `actualLanguage`) "
+            + "VALUES (?, ?, ?, ?)";
+    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, sessionId);
       // TODO take the default values from configuration database for the site
       ps.setLong(2, INITIAL_FAIL_LOGIN_RESPONSE_TIME);
@@ -279,10 +273,7 @@ public class WebUserDataManager {
         Language spanish = LanguageManager.getInstance().get("es");
         ps.setInt(3, spanish.getId());
         ps.setInt(4, spanish.getId());
-
-        Logger.fine(ps);
-        ps.executeUpdate();
-
+        ClusterManager.getInstance().executeUpdate(ps);
         rs = ps.getGeneratedKeys();
         if (rs.next()) {
           int id = rs.getInt(1);
@@ -293,36 +284,30 @@ public class WebUserDataManager {
         throw new SofiaRuntimeException(e);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
-
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     } finally {
-      if (rs != null) {
-        rs.close();
-      }
-      if (ps != null) {
-        ps.close();
-      }
+      ClusterManager.getInstance().close(rs);
     }
   }
 
-  public void insert(String sessionId) throws SQLException, InvalidTwoLettersCodeException {
+  public void insert(String sessionId) throws InvalidTwoLettersCodeException, ClusterException {
     try (Connection connection = Database.getConnection()) {
       insert(connection, sessionId);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
-  private void update(String column, Object o, String sessionId) throws SQLException {
-    PreparedStatement ps = null;
-    try (Connection connection = Database.getConnection()) {
-      String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ? WHERE sessionId = ?";
-      ps = connection.prepareStatement(query);
+  private void update(String column, Object o, String sessionId) throws ClusterException {
+    String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ? WHERE sessionId = ?";
+    try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setObject(1, o);
       ps.setString(2, sessionId);
-      Logger.fine(ps);
-      ps.executeUpdate();
-    } finally {
-      if (ps != null) {
-        ps.close();
-      }
+
+      ClusterManager.getInstance().executeUpdate(ps);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 }

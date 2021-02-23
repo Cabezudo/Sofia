@@ -15,6 +15,7 @@ import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DataCreationException;
@@ -68,8 +69,8 @@ public class WebServer {
   }
 
   public static void main(String... args)
-          throws ServerException, PortAlreadyInUseException, ConfigurationException, SQLException, IOException, JSONParseException, JSONParseException,
-          SiteCreationException, LibraryVersionConflictException, DataCreationException, FileNotFoundException, NamingException {
+          throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
+          SiteCreationException, LibraryVersionConflictException, DataCreationException, FileNotFoundException, NamingException, ClusterException {
 
     Logger.info("Check configuration.");
     try {
@@ -103,6 +104,10 @@ public class WebServer {
 
     try {
       if (startOptions.hasDropDatabase()) {
+
+        Path path = Configuration.getInstance().getClusterFileLogPath();
+        Files.deleteIfExists(path);
+
         for (DataCreator defaultDataCreator : defaultDataCreators) {
           defaultDataCreator.dropDatabase();
         }
@@ -133,7 +138,7 @@ public class WebServer {
       try {
         soh.createAdministrator();
         System.exit(0);
-      } catch (SQLException e) {
+      } catch (ClusterException e) {
         Logger.severe(e);
         System.exit(1);
       }
@@ -143,7 +148,7 @@ public class WebServer {
       try {
         soh.changeUserPassword();
         System.exit(0);
-      } catch (SQLException e) {
+      } catch (ClusterException e) {
         Logger.severe(e);
       }
     }
@@ -372,7 +377,7 @@ public class WebServer {
     SiteList siteList;
     try {
       siteList = SiteManager.getInstance().list();
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       throw new ServerException("Can't start server. " + e.getMessage(), e);
     }
 

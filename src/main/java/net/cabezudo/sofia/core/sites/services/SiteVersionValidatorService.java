@@ -1,10 +1,10 @@
 package net.cabezudo.sofia.core.sites.services;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.InvalidSiteVersionException;
@@ -49,7 +49,7 @@ public class SiteVersionValidatorService extends Service {
 
       SiteManager.getInstance().validateVersion(versionParameter);
       sendResponse(new ValidationResponse(Response.Status.OK, "site.name.ok"));
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     } catch (InvalidSiteVersionException e) {

@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.core.hostname.services;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
 import net.cabezudo.sofia.core.hostname.HostnameValidator;
@@ -34,7 +34,7 @@ public class HostnameNameValidationService extends Service {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, "site.hostname.exist.for.other.site", name, siteWithHostname.getName()));
         return;
       }
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       SystemMonitor.log(e);
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
     }

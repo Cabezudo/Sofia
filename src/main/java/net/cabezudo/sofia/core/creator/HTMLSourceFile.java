@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.SQLException;
 import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.html.HTMLTagFactory;
@@ -38,7 +38,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   private final String id;
 
   HTMLSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller)
-          throws IOException, LocatedSiteCreationException, SiteCreationException, SQLException, InvalidFragmentTag {
+          throws IOException, LocatedSiteCreationException, SiteCreationException, InvalidFragmentTag {
     this.site = site;
     this.basePath = basePath;
     this.partialFilePath = partialPath;
@@ -87,7 +87,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   abstract Path getSourceFilePath(Caller caller) throws SiteCreationException;
 
   void loadHTMLFile()
-          throws IOException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException, JSONParseException {
+          throws IOException, LocatedSiteCreationException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException, JSONParseException, ClusterException {
 
     if (caller == null) {
       Logger.debug("[HTMLSourceFile:loadHTMLFile] Load HTML %s requested.", partialFilePath);
@@ -253,7 +253,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   abstract String replaceTemplateVariables(String line, int lineNumber, Path htmlSourceFilePath) throws LocatedSiteCreationException;
 
   Line getProcessedLine(Path htmlSourceFilePath, String line, int lineNumber)
-          throws IOException, SiteCreationException, LocatedSiteCreationException, SQLException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
+          throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException, ClusterException {
     Tag tag = HTMLTagFactory.get(line);
     Path actualPath = htmlSourceFilePath.getParent();
 
@@ -307,7 +307,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   }
 
   @Override
-  public abstract boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws SQLException, InvalidFragmentTag;
+  public abstract boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws ClusterException, InvalidFragmentTag;
 
   @Override
   public Lines getLines() {

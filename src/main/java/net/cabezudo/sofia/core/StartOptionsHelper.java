@@ -22,6 +22,7 @@ import java.util.zip.ZipEntry;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DataCreationException;
@@ -71,7 +72,7 @@ class StartOptionsHelper {
     this.startOptions = startOptions;
   }
 
-  public void createAdministrator() throws SQLException {
+  public void createAdministrator() throws ClusterException {
     if (System.console() == null || startOptions.hasIDE()) {
       createSofiaAdministrator("Esteban", "Cabezudo", "esteban@cabezudo.net", Password.createFromPlain("1234"));
     } else {
@@ -101,7 +102,7 @@ class StartOptionsHelper {
     }
   }
 
-  private String getEMailAddress() throws SQLException {
+  private String getEMailAddress() {
     boolean validAddress = false;
     String address;
     do {
@@ -118,7 +119,7 @@ class StartOptionsHelper {
     return address;
   }
 
-  private void setAdministratorPrivileges(String address) throws SQLException {
+  private void setAdministratorPrivileges(String address) throws ClusterException {
     Site site = SiteManager.getInstance().getById(1);
     User user = UserManager.getInstance().getByEMail(address, site);
     if (user == null) {
@@ -132,11 +133,13 @@ class StartOptionsHelper {
     setProfile(user, Profile.ADMINISTRATOR);
   }
 
-  private void setProfile(User user, Profile profile) throws SQLException {
+  private void setProfile(User user, Profile profile) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       connection.setAutoCommit(false);
       UserManager.getInstance().add(connection, user, profile, 1);
       connection.commit();
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
@@ -311,7 +314,7 @@ class StartOptionsHelper {
     return baseDomainName;
   }
 
-  public void changeUserPassword() throws SQLException {
+  public void changeUserPassword() throws ClusterException {
     Utils.consoleOutLn("Change user password.");
     String address = getEMailAddress();
     EMail eMail = EMailManager.getInstance().get(address);
@@ -355,11 +358,11 @@ class StartOptionsHelper {
     }
   }
 
-  public void createSofiaAdministrator(String name, String lastName, String address, Password password) throws SQLException {
+  public void createSofiaAdministrator(String name, String lastName, String address, Password password) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
       connection.setAutoCommit(false);
       Site managerSite = SiteManager.getInstance().getById(1);
-      Person person = UserManager.getInstance().addPerson(connection, name, lastName, 1);
+      Person person = UserManager.getInstance().add(connection, name, lastName, 1);
       EMail eMail = EMailManager.getInstance().create(connection, person.getId(), address);
       PeopleManager.getInstance().setPrimaryEMail(connection, person, eMail);
 
@@ -382,6 +385,8 @@ class StartOptionsHelper {
         throw new SofiaRuntimeException(e);
       }
       connection.commit();
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 

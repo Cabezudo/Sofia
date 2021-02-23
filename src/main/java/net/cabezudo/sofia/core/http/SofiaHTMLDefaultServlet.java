@@ -2,10 +2,10 @@ package net.cabezudo.sofia.core.http;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.domains.DomainName;
 import net.cabezudo.sofia.core.server.html.SofiaHTMLServletRequest;
 import net.cabezudo.sofia.core.server.js.VariablesJSServlet;
@@ -46,7 +46,7 @@ public class SofiaHTMLDefaultServlet extends DefaultServlet {
         Logger.debug("Request URI: %s", request.getRequestURI());
         super.doGet(request, response);
       }
-    } catch (SQLException | EMailNotExistException e) {
+    } catch (ClusterException | EMailNotExistException e) {
       throw new ServletException(e);
     }
   }

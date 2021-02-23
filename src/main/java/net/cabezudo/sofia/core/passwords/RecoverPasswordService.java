@@ -1,10 +1,11 @@
 package net.cabezudo.sofia.core.passwords;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.sites.Site;
@@ -39,9 +40,9 @@ public class RecoverPasswordService extends Service {
     } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {
       Logger.warning(e);
       sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
-    } catch (SQLException | MailServerException e) {
+    } catch (ClusterException | MailServerException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
-    } catch (IOException e) {
+    } catch (ConfigurationException | IOException e) {
       sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
     } catch (EMailAddressValidationException e) {
       sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, e.getMessage(), e.getParameters()));
