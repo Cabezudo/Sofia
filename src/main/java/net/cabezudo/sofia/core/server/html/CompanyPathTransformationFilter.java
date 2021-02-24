@@ -9,8 +9,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -30,6 +32,7 @@ public class CompanyPathTransformationFilter implements Filter {
 
       try {
         String serverName = request.getServerName();
+        Logger.debug("Company path transformation filter for %s.", serverName);
         Site site;
         site = SiteManager.getInstance().getByHostame(serverName);
         if (site == null) {
@@ -39,6 +42,9 @@ public class CompanyPathTransformationFilter implements Filter {
 
         changeURL(site, request);
       } catch (ClusterException e) {
+        if (Environment.getInstance().isDevelopment()) {
+          e.printStackTrace();
+        }
         throw new ServletException(e);
       }
       chain.doFilter(request, res);

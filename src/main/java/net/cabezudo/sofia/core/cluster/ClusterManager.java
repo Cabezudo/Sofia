@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.configuration.RuntimeConfigurationException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -22,32 +21,23 @@ public class ClusterManager {
 
   private int counter;
   private long lastTimestamp;
-  private final BufferedWriter writer;
 
   public static ClusterManager getInstance() {
     return INSTANCE;
   }
 
   private ClusterManager() {
-    File filename = Configuration.getInstance().getClusterFileLogPath().toFile();
-    FileWriter fw;
-    try {
-      fw = new FileWriter(filename, true);
-    } catch (IOException e) {
-      throw new RuntimeConfigurationException(e);
-    }
-    writer = new BufferedWriter(fw);
+    // Nothng to do here. Just protect the constructor
   }
 
-  public String getCommand(PreparedStatement ps) throws IOException, SQLException {
+  public String getEntryLog(PreparedStatement ps) throws IOException {
     String psString = ps.toString();
     int i = psString.indexOf(": ");
     String query = psString.substring(i + 2);
-    return getCommand(query);
+    return getEntryLog(query);
   }
 
-  public String getCommand(String query) throws IOException, SQLException {
-
+  public String getEntryLog(String query) throws IOException {
     long newTimestamp = new Date().getTime();
     if (lastTimestamp == newTimestamp) {
       counter++;
@@ -56,25 +46,39 @@ public class ClusterManager {
     }
     long id = (new Date().getTime() * 100) + counter;
     String log = id + " : " + query + "\n";
-
     lastTimestamp = newTimestamp;
-    writer.write(log);
     return log;
   }
 
-  public void executeUpdate(PreparedStatement ps) throws ClusterException {
-    try {
-      getCommand(ps);
-      ps.executeUpdate();
-    } catch (SQLException | IOException e) {
-      throw new ClusterException(e);
+  private void writeUpdateLog(PreparedStatement ps) throws IOException {
+    String log = getEntryLog(ps);
+    writeUpdateLog(log);
+  }
+
+  private void writeUpdateLog(String log) throws IOException {
+    File filenameForUpdates = Configuration.getInstance().getClusterFileLogPath().toFile();
+    try (FileWriter fw = new FileWriter(filenameForUpdates, true); BufferedWriter writer = new BufferedWriter(fw);) {
+      writer.write(log);
+    }
+  }
+
+  private void writeSelectLog(PreparedStatement ps) throws IOException {
+    String log = getEntryLog(ps);
+    writeSelectLog(log);
+  }
+
+  private void writeSelectLog(String log) throws IOException {
+    File filenameForSelects = Configuration.getInstance().getClusterFileSelectLogPath().toFile();
+    try (FileWriter fw = new FileWriter(filenameForSelects, true); BufferedWriter writer = new BufferedWriter(fw);) {
+      writer.write(log);
     }
   }
 
   public ResultSet executeQuery(PreparedStatement ps) throws ClusterException {
     try {
+      writeSelectLog(ps);
       return ps.executeQuery();
-    } catch (SQLException e) {
+    } catch (SQLException | IOException e) {
       throw new ClusterException(e);
     }
   }
@@ -91,7 +95,7 @@ public class ClusterManager {
 
   public void executeUpdate(Statement statement, String query) throws ClusterException {
     try {
-      getCommand(query);
+      writeUpdateLog(query);
       statement.executeUpdate(query);
     } catch (SQLException | IOException e) {
       throw new ClusterException(e);
@@ -102,6 +106,15 @@ public class ClusterManager {
     try {
       statement.execute(query);
     } catch (SQLException e) {
+      throw new ClusterException(e);
+    }
+  }
+
+  public void executeUpdate(PreparedStatement ps) throws ClusterException {
+    try {
+      writeUpdateLog(ps);
+      ps.executeUpdate();
+    } catch (SQLException | IOException e) {
       throw new ClusterException(e);
     }
   }

@@ -33,19 +33,19 @@ public class SiteHostnameNameValidationService extends Service {
     String name;
     URLToken token;
 
-    User owner = super.getUser();
-
-    token = tokens.getValue("siteId");
-
     try {
-      siteId = token.toInteger();
-      name = tokens.getValue("name").toString();
-    } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter: " + token.toString());
-      return;
-    }
+      User owner = super.getUser();
 
-    try {
+      token = tokens.getValue("siteId");
+
+      try {
+        siteId = token.toInteger();
+        name = tokens.getValue("name").toString();
+      } catch (InvalidPathParameterException e) {
+        sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter: " + token.toString());
+        return;
+      }
+
       Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");

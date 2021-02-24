@@ -169,7 +169,7 @@ public class PeopleManager {
     }
   }
 
-  public PeopleList list(User owner) throws SQLException, UserNotExistException {
+  public PeopleList list(User owner) throws UserNotExistException {
     Logger.fine("Users list");
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }

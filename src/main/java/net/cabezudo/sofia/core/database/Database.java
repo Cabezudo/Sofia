@@ -127,7 +127,6 @@ public class Database {
 
   public static void createTable(Connection connection, String query) throws ClusterException {
     try (Statement statement = connection.createStatement()) {
-      Logger.debug("Create table using: " + query);
       ClusterManager.getInstance().executeUpdate(statement, query);
     } catch (SQLException e) {
       throw new ClusterException(e);

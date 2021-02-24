@@ -34,17 +34,17 @@ public class SiteHostnameListService extends ListService {
   @Override
   public void get() throws ServletException {
     int siteId;
-    User owner = super.getUser();
-
-    URLToken token = tokens.getValue("siteId");
     try {
-      siteId = token.toInteger();
-    } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
-      return;
-    }
+      User owner = super.getUser();
 
-    try {
+      URLToken token = tokens.getValue("siteId");
+      try {
+        siteId = token.toInteger();
+      } catch (InvalidPathParameterException e) {
+        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+        return;
+      }
+
       Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");

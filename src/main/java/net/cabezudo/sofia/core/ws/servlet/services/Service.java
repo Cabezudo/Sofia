@@ -11,11 +11,11 @@ import javax.servlet.http.HttpSession;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.http.SessionManager;
+import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -32,7 +32,8 @@ public abstract class Service<T extends Response> {
   private final HttpSession session;
   protected final PrintWriter out;
   private String payload;
-  private WebUserData webUserData;
+  protected final SessionManager sessionManager;
+  protected final WebUserData webUserData;
 
   protected Service(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     this.request = request;
@@ -47,6 +48,13 @@ public abstract class Service<T extends Response> {
     }
     String requestId = request.getHeader("RequestId");
     response.setHeader("RequestId", requestId);
+
+    sessionManager = new SessionManager(request);
+    try {
+      webUserData = sessionManager.getWebUserData();
+    } catch (ClusterException e) {
+      throw new ServletException(e);
+    }
   }
 
   public void get() throws ServletException {
@@ -75,27 +83,7 @@ public abstract class Service<T extends Response> {
   }
 
   protected void sendResponse(T response) throws ServletException {
-    try {
-      out.print(response.toJSON(getSite(), getWebUserData().getActualLanguage()));
-    } catch (ClusterException e) {
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
-    }
-  }
-
-  protected void setWebUserData(WebUserData webUserData) {
-    request.getSession().setAttribute("webUserData", webUserData);
-  }
-
-  protected WebUserData getWebUserData() throws ClusterException {
-    if (webUserData == null) {
-      webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
-      if (webUserData == null) {
-        WebUserDataManager webUserDataManager = WebUserDataManager.getInstance();
-        webUserData = webUserDataManager.get(request);
-        setWebUserData(webUserData);
-      }
-    }
-    return webUserData;
+    out.print(response.toJSON(getSite(), webUserData.getActualLanguage()));
   }
 
   private String readPayload() throws ServletException {
@@ -138,8 +126,8 @@ public abstract class Service<T extends Response> {
     return (Site) request.getAttribute("site");
   }
 
-  protected User getUser() {
-    return (User) request.getAttribute("user");
+  protected User getUser() throws ClusterException {
+    return webUserData.getUser();
   }
 
   public QueryParameters getQueryParmeters() {

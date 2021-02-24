@@ -86,6 +86,7 @@ public final class Configuration {
   private final Path commonSourcesPath;
   private final Path sitesPath;
   private final Path clusterFilesPath;
+  private final Path clusterFileSelectLogPath;
   private final Path clusterFileLogPath;
   private final APIConfiguration apiConfiguration = new APIConfiguration();
 
@@ -150,8 +151,8 @@ public final class Configuration {
       Files.createDirectories(sitesPath);
       clusterFilesPath = systemDataPath.resolve("cluster");
       Files.createDirectories(clusterFilesPath);
+      clusterFileSelectLogPath = clusterFilesPath.resolve("select.log");
       clusterFileLogPath = clusterFilesPath.resolve("data.log");
-
     } else {
       throw new FileNotFoundException(file.getAbsolutePath());
     }
@@ -415,6 +416,10 @@ public final class Configuration {
 
   public Path getClusterFilesPath() {
     return clusterFilesPath;
+  }
+
+  public Path getClusterFileSelectLogPath() {
+    return clusterFileSelectLogPath;
   }
 
   public Path getClusterFileLogPath() {

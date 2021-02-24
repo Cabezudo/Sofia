@@ -13,4 +13,4 @@ nbactions.xml
 /target/
 nb-configuration.xml
 /system/data/libs/**
-**/cluster/data.log
+**/cluster/

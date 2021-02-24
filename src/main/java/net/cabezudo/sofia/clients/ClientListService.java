@@ -10,7 +10,6 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -26,16 +25,6 @@ public class ClientListService extends ListService {
 
   @Override
   public void get() throws ServletException {
-
-    WebUserData webUserData;
-    try {
-      webUserData = getWebUserData();
-    } catch (ClusterException e) {
-      Logger.severe(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
-      return;
-    }
-
     try {
       User owner = webUserData.getUser();
 

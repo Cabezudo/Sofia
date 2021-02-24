@@ -3,7 +3,6 @@ package net.cabezudo.sofia.core.users.autentication;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -21,15 +20,11 @@ public class AuthenticatedService extends Service {
 
   @Override
   public void get() throws ServletException {
-    try {
-      Logger.fine("Call the web service to return if the user is logged");
-      if (getWebUserData().isLogged()) {
-        sendResponse(new Response(Response.Status.OK, Response.Type.ACTION, "login.logged"));
-      } else {
-        sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, "login.notLogged"));
-      }
-    } catch (ClusterException e) {
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
+    Logger.fine("Call the web service to return if the user is logged");
+    if (webUserData.isLogged()) {
+      sendResponse(new Response(Response.Status.OK, Response.Type.ACTION, "login.logged"));
+    } else {
+      sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, "login.notLogged"));
     }
   }
 }
