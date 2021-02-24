@@ -46,16 +46,19 @@ public class URLTransformationFilter implements Filter {
       request.setServerName(domainName.parent().toString());
       Logger.debug("local.** change : serverName is now %s", domainName);
     }
+    Logger.debug("%s no match with local.**", domainName);
 
     if (domainName.match("api.**")) {
       request.setServerName(domainName.parent().toString());
       request.setRequestURI("/api" + requestURI);
     }
+    Logger.debug("%s no match with api.**", domainName);
 
     if (domainName.match("admin.**")) {
       request.setServerName(domainName.parent().toString());
       request.setRequestURI("/admin" + requestURI);
     }
+    Logger.debug("%s no match with admin.**", domainName);
   }
 
   @Override

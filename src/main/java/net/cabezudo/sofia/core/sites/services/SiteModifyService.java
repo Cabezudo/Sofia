@@ -32,18 +32,19 @@ public class SiteModifyService extends Service {
 
   @Override
   public void get() throws ServletException {
-    User owner = super.getUser();
-
-    URLToken token = tokens.getValue("siteId");
     int siteId;
-    try {
-      siteId = token.toInteger();
-    } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
-      return;
-    }
 
     try {
+      User owner = super.getUser();
+
+      try {
+        URLToken token = tokens.getValue("siteId");
+        siteId = token.toInteger();
+      } catch (InvalidPathParameterException e) {
+        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+        return;
+      }
+
       Site site = SiteManager.getInstance().getById(siteId);
       if (site == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");

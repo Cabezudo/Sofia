@@ -15,6 +15,8 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.QueryString;
+import net.cabezudo.sofia.core.http.SessionManager;
+import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.server.html.SofiaHTMLServletRequest;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.system.SystemMonitor;
@@ -24,7 +26,6 @@ import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
 import net.cabezudo.sofia.core.users.permission.PermissionTypeManager;
 import net.cabezudo.sofia.core.users.profiles.PermissionType;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -47,14 +48,15 @@ public class HTMLAuthorizationFilter implements Filter {
       SofiaHTMLServletRequest request = (SofiaHTMLServletRequest) req;
       HttpServletResponse response = (HttpServletResponse) res;
 
-      WebUserData webUserData = (WebUserData) request.getSession().getAttribute("webUserData");
       User user = null;
       try {
+        SessionManager sessionManager = new SessionManager(request);
+        WebUserData webUserData = sessionManager.getWebUserData();
         if (webUserData != null) {
-          Logger.fine("User FOUND in web user data.");
+          Logger.fine("Web user data FOUND on session.");
           user = webUserData.getUser();
         } else {
-          Logger.fine("User NOT FOUND in client data.");
+          Logger.fine("Web user data NOT FOUND on session.");
         }
         if (Environment.getInstance().isDevelopment()) {
           QueryString queryString = new QueryString(request);
@@ -67,7 +69,8 @@ public class HTMLAuthorizationFilter implements Filter {
               webUserData = WebUserDataManager.getInstance().get(request);
             }
             webUserData.setUser(user);
-            request.getSession().setAttribute("webUserData", webUserData);
+            sessionManager.setSessionWebUserData();
+            WebUserDataManager.getInstance().update(webUserData);
           }
         }
       } catch (ClusterException e) {
@@ -76,15 +79,13 @@ public class HTMLAuthorizationFilter implements Filter {
         return;
       }
 
-      request.getSession().setAttribute("user", user);
-
       String requestURI = request.getRequestURI();
       Logger.fine("Server name: " + request.getServerName());
       Logger.fine("Request uri: " + requestURI);
       Path path = Paths.get(requestURI);
       if (path.toString().endsWith("html")) {
         try {
-          Logger.fine("Check for permissions.");
+          Logger.fine("Check for read permissions for user " + user + ".");
           PermissionType permissionType = PermissionTypeManager.getInstance().get("read", site);
           if (!AuthorizationManager.getInstance().hasAuthorization(path.toString(), user, permissionType, site)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);

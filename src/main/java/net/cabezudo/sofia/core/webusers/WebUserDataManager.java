@@ -7,18 +7,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import net.cabezudo.json.JSONPair;
-import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.languages.LanguageManager;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -44,102 +41,14 @@ public class WebUserDataManager {
     return new WebUserData(1, "fackeSessionId", 0, spanish, spanish);
   }
 
-  public class WebUserData {
+  public synchronized WebUserData add(HttpServletRequest request) throws ClusterException {
+    HttpSession session = request.getSession();
+    String sessionId = session.getId();
 
-    private final int id;
-    private final String sessionId;
-    private final long failLoginResponseTime;
-    private Language countryLanguage;
-    private Language actualLanguage;
-    private int userId;
-    private User user;
-    private JSONObject jsonObject;
-
-    private WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage) {
-      this(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, 0);
-    }
-
-    private WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage, int userId) {
-      this.id = id;
-      this.sessionId = sessionId;
-      this.failLoginResponseTime = failLoginResponseTime;
-      this.countryLanguage = countryLanguage;
-      this.actualLanguage = actualLanguage;
-      this.userId = userId;
-    }
-
-    public int getId() {
-      return id;
-    }
-
-    public String getSessionId() {
-      return sessionId;
-    }
-
-    public Language getCountryLanguage() {
-      return countryLanguage;
-    }
-
-    public Language getActualLanguage() {
-      return actualLanguage;
-    }
-
-    public long getFailLoginResponseTime() {
-      return this.failLoginResponseTime;
-    }
-
-    public boolean isLogged() {
-      return user != null;
-    }
-
-    @Override
-    public String toString() {
-      if (jsonObject == null) {
-        jsonObject = new JSONObject();
-
-        jsonObject.add(new JSONPair("id", id));
-        jsonObject.add(new JSONPair("sessionId", sessionId));
-        jsonObject.add(new JSONPair("failLoginResponseTime", failLoginResponseTime));
-        jsonObject.add(new JSONPair("countryLanguage", countryLanguage.toJSONTree()));
-        jsonObject.add(new JSONPair("actualLanguage", actualLanguage.toJSONTree()));
-        jsonObject.add(new JSONPair("logged", isLogged()));
-        try {
-          user = getUser();
-        } catch (ClusterException e) {
-          Logger.warning(e);
-          user = null;
-        }
-        jsonObject.add(new JSONPair("user", user == null ? user : user.toString()));
-      }
-      return jsonObject.toString();
-    }
-
-    private WebUserData setLoginResponseTime(long failLoginResponseTime) {
-      jsonObject = null;
-      return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
-    }
-
-    public User getUser() throws ClusterException {
-      if (userId != 0 && user == null) {
-        user = UserManager.getInstance().get(userId);
-      }
-      return user;
-    }
-
-    public void setUser(User user) throws ClusterException {
-      jsonObject = null;
-      if (user == null) {
-        update("user", 0, this.sessionId);
-      } else {
-        update("user", user.getId(), this.sessionId);
-      }
-      this.user = user;
-    }
-
-    public void setLanguage(String twoLetterCodeLanguage) throws InvalidTwoLettersCodeException, ClusterException {
-      Language language = LanguageManager.getInstance().get(twoLetterCodeLanguage);
-      this.actualLanguage = language;
-      update("actualLanguage", language.getId(), this.sessionId);
+    try (Connection connection = Database.getConnection()) {
+      return insert(connection, sessionId);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
     }
   }
 
@@ -148,14 +57,7 @@ public class WebUserDataManager {
     String sessionId = session.getId();
 
     try (Connection connection = Database.getConnection()) {
-      connection.setAutoCommit(false);
-      WebUserData webUserData = get(connection, sessionId);
-
-      if (webUserData == null) {
-        webUserData = insert(connection, sessionId);
-      }
-      connection.commit();
-      return webUserData;
+      return get(connection, sessionId);
     } catch (SQLException e) {
       throw new ClusterException(e);
     }
@@ -163,13 +65,11 @@ public class WebUserDataManager {
 
   public WebUserData resetFailLoginResponseTime(WebUserData webUserData) throws ClusterException {
     webUserData = webUserData.setLoginResponseTime(INITIAL_FAIL_LOGIN_RESPONSE_TIME);
-    update("failLoginResponseTime", webUserData.failLoginResponseTime, webUserData.getSessionId());
     return webUserData;
   }
 
   public WebUserData incrementFailLoginResponseTime(WebUserData webUserData) throws ClusterException {
     webUserData = webUserData.setLoginResponseTime(webUserData.getFailLoginResponseTime() * 2);
-    update("failLoginResponseTime", webUserData.failLoginResponseTime, webUserData.getSessionId());
     return webUserData;
   }
 
@@ -299,11 +199,13 @@ public class WebUserDataManager {
     }
   }
 
-  private void update(String column, Object o, String sessionId) throws ClusterException {
-    String query = "UPDATE " + WebUserDataTable.NAME + " SET " + column + " = ? WHERE sessionId = ?";
+  public void update(WebUserData webUserData) throws ClusterException {
+    String query = "UPDATE " + WebUserDataTable.NAME + " SET `failLoginResponseTime` = ?, `countryLanguage` = ?, `actualLanguage` = ? WHERE sessionId = ?";
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
-      ps.setObject(1, o);
-      ps.setString(2, sessionId);
+      ps.setLong(1, webUserData.getFailLoginResponseTime());
+      ps.setInt(2, webUserData.getCountryLanguage().getId());
+      ps.setInt(3, webUserData.getActualLanguage().getId());
+      ps.setString(4, webUserData.getSessionId());
 
       ClusterManager.getInstance().executeUpdate(ps);
     } catch (SQLException e) {

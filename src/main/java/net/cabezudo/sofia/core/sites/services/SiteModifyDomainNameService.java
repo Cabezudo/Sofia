@@ -35,12 +35,10 @@ public class SiteModifyDomainNameService extends Service {
 
   @Override
   public void get() throws ServletException {
-    User owner = super.getUser();
-
-    URLToken siteIdToken = tokens.getValue("siteId");
-    URLToken hostIdToken = tokens.getValue("hostId");
-
     try {
+      User owner = super.getUser();
+      URLToken siteIdToken = tokens.getValue("siteId");
+      URLToken hostIdToken = tokens.getValue("hostId");
       int siteId;
       int hostId;
 

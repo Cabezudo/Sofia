@@ -45,11 +45,10 @@ public class AddUserService extends Service {
 
   @Override
   public void post() throws ServletException {
-
-    User owner = super.getUser();
-    Site site = super.getSite();
-
     try (Connection connection = Database.getConnection()) {
+      User owner = super.getUser();
+      Site site = super.getSite();
+
       String payload = getPayload();
       JSONObject jsonPayload = JSON.parse(payload).toJSONObject();
 

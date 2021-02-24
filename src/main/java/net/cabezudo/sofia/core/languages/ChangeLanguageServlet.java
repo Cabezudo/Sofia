@@ -6,6 +6,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.http.SessionManager;
+import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 
 /**
@@ -18,14 +20,16 @@ public class ChangeLanguageServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     String referrer = request.getHeader("referer");
     String twoLetterCodeLanguage = request.getQueryString();
-    WebUserDataManager.WebUserData webUserData = (WebUserDataManager.WebUserData) request.getSession().getAttribute("webUserData");
-    if (webUserData == null) {
-      response.sendRedirect(referrer);
-      return;
-    }
+    SessionManager sessionManager = new SessionManager(request);
     try {
-      webUserData.setLanguage(twoLetterCodeLanguage);
-      request.getSession().setAttribute("webUserData", webUserData);
+      WebUserData webUserData = sessionManager.getWebUserData();
+      if (webUserData == null) {
+        response.sendRedirect(referrer);
+        return;
+      }
+      webUserData.setActualLanguage(twoLetterCodeLanguage);
+      sessionManager.setSessionWebUserData();
+      WebUserDataManager.getInstance().update(webUserData);
       response.getWriter().print("{ \"language\": " + webUserData.getActualLanguage().toJSONTree() + " }");
     } catch (ClusterException e) {
       response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Can't set the language");

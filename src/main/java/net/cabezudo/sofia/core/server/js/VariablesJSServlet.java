@@ -4,13 +4,13 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.http.SessionManager;
+import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager;
-import net.cabezudo.sofia.core.webusers.WebUserDataManager.WebUserData;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 
 /**
@@ -20,7 +20,8 @@ import net.cabezudo.sofia.emails.EMailNotExistException;
 public class VariablesJSServlet {
 
   public String getScript(HttpServletRequest request) throws ServletException, IOException, EMailNotExistException, ClusterException {
-    WebUserData webUserData = WebUserDataManager.getInstance().get(request);
+    SessionManager sessionManager = new SessionManager(request);
+    WebUserData webUserData = sessionManager.getWebUserData();
 
     User user = webUserData.getUser();
     Language actualLanguage = webUserData.getActualLanguage();

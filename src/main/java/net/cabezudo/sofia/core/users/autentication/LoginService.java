@@ -66,18 +66,20 @@ public class LoginService extends Service {
         return;
       }
       if (user == null) {
-        long loginResponseTime = getWebUserData().getFailLoginResponseTime();
+        long loginResponseTime = webUserData.getFailLoginResponseTime();
         try {
           Thread.sleep(loginResponseTime);
         } catch (InterruptedException e) {
           sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
           return;
         }
-        WebUserDataManager.getInstance().incrementFailLoginResponseTime(getWebUserData());
+        WebUserDataManager.getInstance().incrementFailLoginResponseTime(webUserData);
         sendResponse(new Response(Response.Status.FAIL, Response.Type.ACTION, "login.fail"));
       } else {
-        setWebUserData(WebUserDataManager.getInstance().resetFailLoginResponseTime(getWebUserData()));
-        getWebUserData().setUser(user);
+        webUserData.resetFailLoginResponseTime();
+        webUserData.setUser(user);
+        sessionManager.setSessionWebUserData();
+        WebUserDataManager.getInstance().update(webUserData);
         request.getSession().removeAttribute("goBackPage");
         sendResponse(new Response(Response.Status.LOGGED, Response.Type.ACTION, "user.logged"));
       }

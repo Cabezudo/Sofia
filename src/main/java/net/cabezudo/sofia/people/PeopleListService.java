@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.people;
 
-import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -29,7 +29,7 @@ public class PeopleListService extends Service {
       }
       PeopleList list = PeopleManager.getInstance().list(owner);
       out.print(list.toJSON());
-    } catch (SQLException e) {
+    } catch (ClusterException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
     } catch (UserNotExistException e) {
       sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
