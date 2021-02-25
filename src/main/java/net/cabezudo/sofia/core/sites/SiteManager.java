@@ -21,6 +21,7 @@ import net.cabezudo.sofia.core.api.options.list.Sort;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.Manager;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
@@ -37,7 +38,7 @@ import net.cabezudo.sofia.logger.Logger;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.23
  */
-public class SiteManager {
+public class SiteManager extends Manager {
 
   public static final int DEFAULT_VERSION = 10000;
   private static SiteManager instance;
@@ -174,7 +175,7 @@ public class SiteManager {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection()) {
-      String where = getSiteWhere(filters);
+      String where = super.getWhere(filters);
 
       long sqlOffsetValue = 0;
       if (offset != null) {
@@ -196,7 +197,7 @@ public class SiteManager {
       ResultSet rs = null;
       SiteList list;
       try (PreparedStatement ps = connection.prepareStatement(query);) {
-        setSiteFilters(filters, ps);
+        setFiltersValues(filters, ps);
         rs = ClusterManager.getInstance().executeQuery(ps);
         list = new SiteList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
         while (rs.next()) {
@@ -419,7 +420,7 @@ public class SiteManager {
     Logger.fine("Site list total");
 
     try (Connection connection = Database.getConnection()) {
-      String where = getSiteWhere(filters);
+      String where = super.getWhere(filters);
 
       long sqlOffsetValue = 0;
       if (offset != null) {
@@ -435,7 +436,7 @@ public class SiteManager {
       String query = "SELECT count(*) AS total FROM " + SitesTable.NAME + where + sqlSort + sqlLimit;
       ResultSet rs = null;
       try (PreparedStatement ps = connection.prepareStatement(query);) {
-        setSiteFilters(filters, ps);
+        super.setFiltersValues(filters, ps);
         rs = ClusterManager.getInstance().executeQuery(ps);
         if (rs.next()) {
           return rs.getInt("total");
@@ -447,31 +448,6 @@ public class SiteManager {
       }
     } catch (SQLException e) {
       throw new ClusterException(e);
-    }
-  }
-
-  private String getSiteWhere(Filters filter) {
-    StringBuilder sb = new StringBuilder(" WHERE 1 = 1");
-    if (filter != null) {
-      List<OptionValue> values = filter.getValues();
-      values.forEach(value -> {
-        if (value.isPositive()) {
-          sb.append(" AND (name LIKE ?)");
-        } else {
-          sb.append(" AND name NOT LIKE ?");
-        }
-      });
-    }
-    return sb.toString();
-  }
-
-  private void setSiteFilters(Filters filter, PreparedStatement ps) throws SQLException {
-    if (filter != null) {
-      int i = 1;
-      for (OptionValue ov : filter.getValues()) {
-        ps.setString(i, "%" + ov.getValue() + "%");
-        i++;
-      }
     }
   }
 

@@ -1,12 +1,17 @@
 package net.cabezudo.sofia.core;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.16
  */
 public class Utils {
+
+  public static final String DATE_FORMAT_PATTERN = "yyyy-MM-dd HH:mm a z";
 
   public static void consoleOut(String message) {
     System.out.print(message);
@@ -22,6 +27,11 @@ public class Utils {
     int houresRemaind = minutesRemaind / 60;
     int houres = houresRemaind % 60;
     return (houres > 9 ? houres : "0" + houres) + ":" + (minutes > 9 ? minutes : "0" + minutes);
+  }
+
+  public static String getDateToString(Date date) {
+    DateFormat df = new SimpleDateFormat(DATE_FORMAT_PATTERN);
+    return df.format(date);
   }
 
   private Utils() {
