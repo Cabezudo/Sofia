@@ -42,6 +42,9 @@ import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
+import net.cabezudo.sofia.core.users.UserList;
+import net.cabezudo.sofia.core.users.UserManager;
+import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
@@ -66,6 +69,11 @@ public class WebServer {
 
   private WebServer() {
     server = new Server(Configuration.getInstance().getServerPort());
+  }
+
+  public static void _main(String... args) throws UserNotExistException, ClusterException {
+    UserList list = UserManager.getInstance().list(null);
+    System.out.println(list.toJSONTree());
   }
 
   public static void main(String... args)

@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
-import net.cabezudo.sofia.people.PeopleList;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -26,7 +25,7 @@ public class UserListService extends Service {
     }
     try {
       User owner = super.getUser();
-      PeopleList list = UserManager.getInstance().list(owner);
+      UserList list = UserManager.getInstance().list(owner);
       out.print(list.toJSON());
     } catch (ClusterException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());

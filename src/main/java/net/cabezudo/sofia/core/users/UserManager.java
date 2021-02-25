@@ -8,17 +8,24 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.Date;
+import net.cabezudo.sofia.core.QueryHelper;
+import net.cabezudo.sofia.core.api.options.list.Filters;
+import net.cabezudo.sofia.core.api.options.list.Limit;
+import net.cabezudo.sofia.core.api.options.list.Offset;
+import net.cabezudo.sofia.core.api.options.list.Sort;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.Manager;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.mail.Message;
 import net.cabezudo.sofia.core.passwords.Hash;
 import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.templates.EMailTemplate;
 import net.cabezudo.sofia.core.templates.TemplatesManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
@@ -31,7 +38,6 @@ import net.cabezudo.sofia.emails.EMailManager;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.logger.Logger;
-import net.cabezudo.sofia.people.PeopleList;
 import net.cabezudo.sofia.people.PeopleManager;
 import net.cabezudo.sofia.people.PeopleTable;
 import net.cabezudo.sofia.people.Person;
@@ -40,18 +46,15 @@ import net.cabezudo.sofia.people.Person;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.16
  */
-public class UserManager {
+public class UserManager extends Manager {
 
-  private static UserManager INSTANCE;
+  private static final UserManager INSTANCE = new UserManager();
 
   private UserManager() {
     // Just to protect the instance
   }
 
   public static UserManager getInstance() {
-    if (INSTANCE == null) {
-      INSTANCE = new UserManager();
-    }
     return INSTANCE;
   }
 
@@ -88,9 +91,7 @@ public class UserManager {
       ps.setString(1, name);
       ps.setString(2, lastName);
       ps.setInt(3, ownerId);
-
       ClusterManager.getInstance().executeUpdate(ps);
-
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
         int id = rs.getInt(1);
@@ -396,17 +397,7 @@ public class UserManager {
       ps.setInt(1, id);
       rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
-        int siteId = rs.getInt("site");
-        int eMailId = rs.getInt("eMailId");
-        int personId = rs.getInt("personId");
-        String address = rs.getString("address");
-        EMail eMail = new EMail(eMailId, personId, address);
-        Date creationDate = rs.getDate("creationDate");
-        boolean activated = rs.getBoolean("activated");
-        String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
-        Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
-
-        return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
+        return createUser(rs);
       }
       return null;
     } catch (SQLException e) {
@@ -414,7 +405,20 @@ public class UserManager {
     } finally {
       ClusterManager.getInstance().close(rs);
     }
+  }
 
+  private User createUser(ResultSet rs) throws SQLException {
+    int id = rs.getInt("id");
+    int siteId = rs.getInt("site");
+    int eMailId = rs.getInt("eMailId");
+    int personId = rs.getInt("personId");
+    String address = rs.getString("address");
+    EMail eMail = new EMail(eMailId, personId, address);
+    Date creationDate = rs.getDate("creationDate");
+    boolean activated = rs.getBoolean("activated");
+    String passwordRecoveryUUID = rs.getString("passwordRecoveryUUID");
+    Date passwordRecoveryDate = rs.getDate("passwordRecoveryDate");
+    return new User(id, siteId, eMail, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate);
   }
 
   public User getByHash(Connection connection, Hash hash) throws ClusterException {
@@ -497,8 +501,74 @@ public class UserManager {
     }
   }
 
-  public PeopleList list(User user) throws UserNotExistException, ClusterException {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  public UserList list(User owner) throws UserNotExistException, ClusterException {
+    return list(null, null, null, null, owner);
+  }
+
+  public UserList list(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws UserNotExistException, ClusterException {
+    try (Connection connection = Database.getConnection()) {
+      return list(connection, filters, sort, offset, limit, owner);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    }
+  }
+
+  public UserList list(Connection connection, Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws UserNotExistException, ClusterException {
+    Logger.fine("Site list");
+
+    String where = super.getWhere(filters);
+
+    long sqlOffsetValue = 0;
+    if (offset != null) {
+      sqlOffsetValue = offset.getValue();
+    }
+    long sqlLimitValue = SiteList.MAX_PAGE_SIZE;
+    if (limit != null) {
+      sqlLimitValue = limit.getValue();
+    }
+
+    String sqlSort = QueryHelper.getOrderString(sort, "eMailId", new String[]{"id", "name"});
+
+    String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
+
+    String query
+            = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
+            + "FROM " + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + where + sqlSort + sqlLimit;
+    ResultSet rs = null;
+    UserList list;
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
+      setFiltersValues(filters, ps);
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      list = new UserList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
+      while (rs.next()) {
+        User user = createUser(rs);
+        list.add(user);
+      }
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
+    }
+
+    query = "SELECT FOUND_ROWS() AS total";
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      if (!rs.next()) {
+        throw new SofiaRuntimeException("The select to count the number of sites fail.");
+      }
+      int total = rs.getInt("total");
+
+      list.setTotal(total);
+
+      return list;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
+    }
   }
 
   public Message getRegistrationRetryAlertEMailData(String address) throws IOException, ClusterException {

@@ -99,8 +99,13 @@ public class WebUserData {
   }
 
   public void setUser(User user) {
-    this.user = user;
-    this.userId = user.getId();
+    if (user == null) {
+      this.user = null;
+      this.userId = 0;
+    } else {
+      this.user = user;
+      this.userId = user.getId();
+    }
   }
 
   public User getUser() throws ClusterException {
