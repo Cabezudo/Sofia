@@ -28,7 +28,7 @@ public abstract class WordManager<T extends Word> {
     String query
             = "SELECT w.id AS wordId, l.id AS languageId, twoLettersCode, value "
             + "FROM " + databaseName + "." + tableName + " AS w "
-            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
+            + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
             + "WHERE l.id = ? AND w.value = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {

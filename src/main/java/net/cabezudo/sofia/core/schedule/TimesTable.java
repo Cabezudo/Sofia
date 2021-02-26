@@ -9,7 +9,7 @@ public class TimesTable {
   private TimesTable() {
     // Nothing to do here
   }
-  public static final String DATABASE = "sofia";
+  public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "times";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -22,8 +22,8 @@ public class TimesTable {
           + "`end` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
           + "UNIQUE INDEX `iName` (`id`), "
-          + "FOREIGN KEY (`entry`) REFERENCES " + TimeEntriesTable.DATABASE + "." + TimeEntriesTable.NAME + "(`id`), "
-          + "FOREIGN KEY (`type`) REFERENCES " + TimeTypesTable.DATABASE + "." + TimeTypesTable.NAME + "(`id`)"
+          + "FOREIGN KEY (`entry`) REFERENCES " + TimeEntriesTable.DATABASE_NAME + "." + TimeEntriesTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`type`) REFERENCES " + TimeTypesTable.DATABASE_NAME + "." + TimeTypesTable.NAME + "(`id`)"
           + ") "
           + "CHARACTER SET = UTF8";
 }

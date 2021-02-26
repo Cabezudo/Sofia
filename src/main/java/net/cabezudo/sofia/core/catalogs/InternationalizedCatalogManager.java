@@ -87,7 +87,7 @@ public abstract class InternationalizedCatalogManager<T extends Internationalize
             = "SELECT w.value AS value, l.id AS languageId, l.twoLettersCode AS twoLettersCode "
             + "FROM " + catalogDatabaseName + "." + catalogTableName + " AS c "
             + "LEFT JOIN " + wordsDatabaseName + "." + wordsTableName + " AS w ON c.id = w.id "
-            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
+            + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
             + "WHERE id = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -122,7 +122,7 @@ public abstract class InternationalizedCatalogManager<T extends Internationalize
             = "SELECT c.id AS id "
             + "FROM " + catalogDatabaseName + "." + catalogTableName + " AS c "
             + "LEFT JOIN " + wordsDatabaseName + "." + wordsTableName + " AS w ON c.id = w.id "
-            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
+            + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS l ON w.language = l.id "
             + " WHERE language = ? AND value = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
