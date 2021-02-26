@@ -117,7 +117,7 @@ public class SiteManager extends Manager {
     // TODO revisar que haya dominios que agregar
 
     ResultSet rs = null;
-    String query = "INSERT INTO " + SitesTable.DATABASE + "." + SitesTable.NAME + " (name, basePath) VALUES (?, ?)";
+    String query = "INSERT INTO " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " (name, basePath) VALUES (?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
       ps.setString(2, basePath.toString());

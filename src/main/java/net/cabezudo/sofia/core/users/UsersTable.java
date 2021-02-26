@@ -9,6 +9,7 @@ import net.cabezudo.sofia.emails.EMailsTable;
  */
 public class UsersTable {
 
+  public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "users";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "

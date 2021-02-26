@@ -9,7 +9,7 @@ public class TimeTypesTable {
   private TimeTypesTable() {
     // Nothing to do here
   }
-  public static final String DATABASE = "sofia";
+  public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "timeTypes";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
