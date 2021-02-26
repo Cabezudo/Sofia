@@ -86,7 +86,8 @@ public class QueryHelper {
   }
 
   public static int getTotal(
-          String tableName, int sqlLimitValue, String defaultOrderColumnName, ValidSortColumns validSortColumns, Filters filters, Sort sort, Offset offset, Limit limit, User owner)
+          String databaseName, String tableName, int sqlLimitValue, String defaultOrderColumnName,
+          ValidSortColumns validSortColumns, Filters filters, Sort sort, Offset offset, Limit limit, User owner)
           throws ClusterException {
     Logger.fine("Get total of records using filters and limits");
 
@@ -103,7 +104,7 @@ public class QueryHelper {
       String sqlSort = QueryHelper.getOrderString(sort, defaultOrderColumnName, validSortColumns);
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-      String query = "SELECT count(*) AS total FROM " + tableName + where + sqlLimit;
+      String query = "SELECT count(*) AS total FROM " + databaseName + "." + tableName + where + sqlLimit;
       ResultSet rs = null;
       try (PreparedStatement ps = connection.prepareStatement(query);) {
         QueryHelper.setFiltersValues(filters, ps);

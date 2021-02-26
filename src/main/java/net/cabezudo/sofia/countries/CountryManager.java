@@ -90,7 +90,7 @@ public class CountryManager {
 
   private void addCountryName(Connection connection, int countryId, CountryName countryName) throws ClusterException {
     // The IGNORE is to allow add existent words without check if exists
-    String query = "INSERT IGNORE INTO " + CountryNamesTable.DATABASE + "." + CountryNamesTable.NAME + " (id, language, value) VALUES (?, ?, ?)";
+    String query = "INSERT IGNORE INTO " + CountryNamesTable.DATABASE_NAME + "." + CountryNamesTable.NAME + " (id, language, value) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, countryId);
       ps.setInt(2, countryName.getLanguage().getId());

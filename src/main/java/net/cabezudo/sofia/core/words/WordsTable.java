@@ -20,7 +20,7 @@ public class WordsTable {
             + "`value` VARCHAR(1000), "
             + "PRIMARY KEY (`id`, `language`), "
             + "FOREIGN KEY (`id`) REFERENCES " + targetDatabaseName + "." + targetTableName + "(`id`), "
-            + "FOREIGN KEY (`language`) REFERENCES " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + "(`id`)"
+            + "FOREIGN KEY (`language`) REFERENCES " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + "(`id`)"
             + ") "
             + "CHARACTER SET = UTF8";
   }

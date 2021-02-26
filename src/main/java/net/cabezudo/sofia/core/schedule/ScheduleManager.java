@@ -26,7 +26,7 @@ public class ScheduleManager {
   }
 
   public int add(Connection connection) throws ClusterException {
-    String query = "INSERT INTO " + TimeEntriesTable.DATABASE + "." + TimeEntriesTable.NAME + " () VALUES ()";
+    String query = "INSERT INTO " + TimeEntriesTable.DATABASE_NAME + "." + TimeEntriesTable.NAME + " () VALUES ()";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ClusterManager.getInstance().executeUpdate(ps);
@@ -45,7 +45,7 @@ public class ScheduleManager {
   public int addTime(Connection connection, int scheduleId, Day day, Hour start, Hour end) throws ClusterException {
     ResultSet rs = null;
     TimeType timeType = TimeTypeManager.getInstance().get(connection, "day");
-    String query = "INSERT INTO " + TimesTable.DATABASE + "." + TimesTable.NAME + " (`entry`, `type`, `index`, `start`, `end`) VALUES (?, ?, ?, ?, ?)";
+    String query = "INSERT INTO " + TimesTable.DATABASE_NAME + "." + TimesTable.NAME + " (`entry`, `type`, `index`, `start`, `end`) VALUES (?, ?, ?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, scheduleId);
       ps.setInt(2, timeType.getId());

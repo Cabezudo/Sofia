@@ -37,7 +37,7 @@ public class LanguageManager {
   public Language get(Connection connection, String twoLettersCode) throws InvalidTwoLettersCodeException, ClusterException {
     String query
             = "SELECT id, twoLettersCode "
-            + "FROM " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " "
+            + "FROM " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " "
             + "WHERE twoLettersCode = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -55,7 +55,7 @@ public class LanguageManager {
   }
 
   public Language add(Connection connection, String twoLettersCode) throws ClusterException {
-    String query = "INSERT INTO " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " (twoLettersCode) VALUES (?)";
+    String query = "INSERT INTO " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " (twoLettersCode) VALUES (?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, twoLettersCode);

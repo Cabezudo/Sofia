@@ -15,7 +15,7 @@ public class ContryNamesManager extends WordManager<CountryName> {
   private static final ContryNamesManager INSTANCE = new ContryNamesManager();
 
   private ContryNamesManager() {
-    super(CountryNamesTable.DATABASE, CountryNamesTable.NAME);
+    super(CountryNamesTable.DATABASE_NAME, CountryNamesTable.NAME);
   }
 
   public static ContryNamesManager getInstance() {
