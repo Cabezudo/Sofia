@@ -9,7 +9,6 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.SiteValidationException;
 import net.cabezudo.sofia.core.sites.validators.SiteNameValidator;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -41,8 +40,7 @@ public class SiteNameValidationService extends Service {
     } catch (SiteValidationException e) {
       sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, e.getMessage()));
     } catch (ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
   }
 }

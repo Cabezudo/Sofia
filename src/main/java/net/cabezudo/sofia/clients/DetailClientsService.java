@@ -28,9 +28,9 @@ public class DetailClientsService extends Service {
       Client client = ClientManager.getInstance().get(id);
       out.print(client.toJSON());
     } catch (ClusterException e) {
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+      sendError(HttpServletResponse.SC_BAD_REQUEST, e);
     }
   }
 }

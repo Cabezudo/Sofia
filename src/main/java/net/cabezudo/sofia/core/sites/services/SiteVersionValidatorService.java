@@ -10,7 +10,6 @@ import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.InvalidSiteVersionException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -36,7 +35,7 @@ public class SiteVersionValidatorService extends Service {
       siteId = token.toInteger();
       versionParameter = tokens.getValue("version").toString();
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter: " + token.toString());
+      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid parameter: " + token.toString(), e);
       return;
     }
 
@@ -50,8 +49,7 @@ public class SiteVersionValidatorService extends Service {
       SiteManager.getInstance().validateVersion(versionParameter);
       sendResponse(new ValidationResponse(Response.Status.OK, "site.name.ok"));
     } catch (ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     } catch (InvalidSiteVersionException e) {
       sendResponse(new ValidationResponse(Response.Status.ERROR, e));
     }

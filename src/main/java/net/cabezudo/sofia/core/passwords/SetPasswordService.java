@@ -11,7 +11,6 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
-import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.HashTooOldException;
 import net.cabezudo.sofia.core.users.NullHashException;
 import net.cabezudo.sofia.core.users.UserManager;
@@ -42,7 +41,7 @@ public class SetPasswordService extends Service {
     try {
       jsonPayload = JSON.parse(payload).toJSONObject();
     } catch (JSONParseException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid payload format. " + e.getMessage());
+      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid payload format. " + e.getMessage(), e);
       return;
     }
 
@@ -50,12 +49,11 @@ public class SetPasswordService extends Service {
     try {
       base64Password = jsonPayload.getString("password");
     } catch (PropertyNotExistException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property");
+      sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property", e);
       return;
     }
 
     Password password;
-    Site site = super.getSite();
     try {
       password = Password.createFromBase64(base64Password);
       PasswordValidator.validate(password);
@@ -66,7 +64,7 @@ public class SetPasswordService extends Service {
     } catch (UserNotFoundByHashException | HashTooOldException | EMailNotExistException | MailServerException | IOException e) {
       super.sendResponse(new Response(Response.Status.ERROR, Response.Type.SET, e.getMessage()));
     } catch (ClusterException | NullHashException e) {
-      sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
+      sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e);
     } catch (PasswordValidationException e) {
       super.sendResponse(new Response(Response.Status.ERROR, Response.Type.SET, e.getMessage(), e.getParameters()));
     }

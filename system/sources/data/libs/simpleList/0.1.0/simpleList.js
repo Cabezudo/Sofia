@@ -138,6 +138,7 @@ const simpleList = async ({ id = null, source = null, filterInputElement = null,
     tableBody.appendChild(tableRow);
   };
   const addTableData = (tableRow, row) => {
+    console.log(tableRow, row);
     if (Core.isFunction(cellMaker)) {
       const innerHTML = cellMaker(row);
       tableRow.innerHTML = innerHTML;
@@ -187,7 +188,7 @@ const simpleList = async ({ id = null, source = null, filterInputElement = null,
     loadTable();
   };
   const loadTable = () => {
-    let url = source;
+    let url = `${source}/metadata`;
     if (filterInput !== null && filterInput.value !== lastFilterInputValue) {
       lastFilterInputValue = filterInput.value;
       url += `?filters=${encodeURIComponent(filterInput.value)}`;

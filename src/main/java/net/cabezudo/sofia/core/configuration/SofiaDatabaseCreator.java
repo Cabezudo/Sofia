@@ -25,7 +25,6 @@ import net.cabezudo.sofia.core.schedule.TimeEntriesTable;
 import net.cabezudo.sofia.core.schedule.TimeTypeManager;
 import net.cabezudo.sofia.core.schedule.TimeTypesTable;
 import net.cabezudo.sofia.core.schedule.TimesTable;
-import net.cabezudo.sofia.core.server.html.URLTable;
 import net.cabezudo.sofia.core.sites.SitesTable;
 import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
 import net.cabezudo.sofia.core.users.User;
@@ -110,7 +109,6 @@ public class SofiaDatabaseCreator extends DataCreator {
     try (Connection connection = Database.getConnection()) {
       Database.createTable(connection, LanguagesTable.CREATION_QUERY);
       Database.createTable(connection, SitesTable.CREATION_QUERY);
-      Database.createTable(connection, URLTable.CREATION_QUERY);
       Database.createTable(connection, DomainNamesTable.CREATION_QUERY);
       Database.createTable(connection, PeopleTable.CREATION_QUERY);
       Database.createTable(connection, EMailsTable.CREATION_QUERY);

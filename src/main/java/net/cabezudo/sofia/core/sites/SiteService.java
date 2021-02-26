@@ -7,7 +7,6 @@ import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
 /**
@@ -28,7 +27,7 @@ public class SiteService extends Service {
     try {
       siteId = token.toInteger();
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + token + " not found");
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + token + " not found", e);
       return;
     }
 
@@ -40,8 +39,7 @@ public class SiteService extends Service {
       }
       out.print(site.toJSON());
     } catch (ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
   }
 }

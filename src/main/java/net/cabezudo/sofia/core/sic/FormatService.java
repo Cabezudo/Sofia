@@ -10,6 +10,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.ws.responses.ValidationResponse;
@@ -34,7 +35,7 @@ public class FormatService extends Service<ValidationResponse> {
   @Override
   public void post() throws ServletException {
     JSONObject jsonPayload;
-    Site site = (Site) request.getAttribute("site");
+    Site site = new SessionManager(request).getSite();
 
     try {
       jsonPayload = JSON.parse(getPayload()).toJSONObject();

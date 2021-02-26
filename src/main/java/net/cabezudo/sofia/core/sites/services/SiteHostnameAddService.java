@@ -23,7 +23,6 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -47,7 +46,7 @@ public class SiteHostnameAddService extends Service {
     try {
       siteId = siteIdToken.toInteger();
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found", e);
       return;
     }
 
@@ -70,10 +69,9 @@ public class SiteHostnameAddService extends Service {
       data.add(new JSONPair("name", domainName.getName()));
       sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, data, messageKey, domainName.getName()));
     } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), e);
     } catch (SQLException | ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     } catch (HostnameValidationException e) {
       sendResponse(new Response(Response.Status.ERROR, Response.Type.UPDATE, e.getMessage(), e.getParameters()));
     }

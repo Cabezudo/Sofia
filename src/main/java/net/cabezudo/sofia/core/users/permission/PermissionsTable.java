@@ -15,6 +15,7 @@ public class PermissionsTable {
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`uri` VARCHAR(200) NOT NULL, "
           + "`site` INT NOT NULL, "
+          + "`resourceId` VARCHAR(50) NOT NULL DEFAULT '', "
           + "PRIMARY KEY (`id`), "
           + "FOREIGN KEY (`site`) REFERENCES " + SitesTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iURI` (`uri`, `site`)"

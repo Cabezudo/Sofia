@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sites;
 
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Iterator;
 import net.cabezudo.json.JSONPair;
@@ -42,6 +43,7 @@ public class SiteList extends EntityList<Site> {
       jsonSite.add(new JSONPair("row", row));
       jsonSite.add(new JSONPair("id", site.getId()));
       jsonSite.add(new JSONPair("name", site.getName()));
+      jsonSite.add(new JSONPair("basePath", site.getBasePath().toString()));
       jsonSite.add(new JSONPair("version", site.getVersion()));
       jsonList.add(jsonSite);
       row++;
@@ -50,8 +52,8 @@ public class SiteList extends EntityList<Site> {
     return listObject;
   }
 
-  void add(int id, String name, int baseDomainNameId, int version, int domainNameId, String domainNameName) {
-    sites.add(id, name, baseDomainNameId, version, domainNameId, domainNameName);
+  void add(int id, String name, Path basePath, int baseDomainNameId, int version, int domainNameId, String domainNameName) {
+    sites.add(id, name, basePath, baseDomainNameId, version, domainNameId, domainNameName);
   }
 
   void create() throws SQLException {

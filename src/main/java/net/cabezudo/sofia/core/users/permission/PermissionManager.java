@@ -187,14 +187,13 @@ public class PermissionManager {
             + "LEFT JOIN " + PermissionsTable.NAME + " AS ps ON pp.permission = ps.id "
             + "LEFT JOIN " + PermissionsPermissionTypesTable.NAME + " AS ppt ON ps.id = ppt.permission "
             + "LEFT JOIN " + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
-            + "WHERE (p.id = ? OR p.name = 'all') AND ps.uri = ? AND pt.id = ? AND p.site = ?";
+            + "WHERE p.name = 'all' OR (ps.uri = ? AND pt.id = ? AND p.site = ?)";
 
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
-      ps.setInt(1, profile.getId());
-      ps.setString(2, requestURI);
-      ps.setInt(3, permissionType.getId());
-      ps.setInt(4, site.getId());
+      ps.setString(1, requestURI);
+      ps.setInt(2, permissionType.getId());
+      ps.setInt(3, site.getId());
       rs = ClusterManager.getInstance().executeQuery(ps);
       return rs.next();
     } catch (SQLException e) {

@@ -16,6 +16,7 @@ public class SitesTable {
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`name` VARCHAR(" + Site.NAME_MAX_LENGTH + ") NOT NULL, "
+          + "`basePath` VARCHAR(100) NOT NULL, "
           + "`domainName` INT NOT NULL DEFAULT 0, "
           + "`version` INT NOT NULL DEFAULT " + SiteManager.DEFAULT_VERSION + ", "
           + "PRIMARY KEY (`id`), "

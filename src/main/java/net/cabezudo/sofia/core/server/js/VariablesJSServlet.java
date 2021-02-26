@@ -7,6 +7,7 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.languages.Language;
+import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
@@ -23,16 +24,13 @@ public class VariablesJSServlet {
     SessionManager sessionManager = new SessionManager(request);
     WebUserData webUserData = sessionManager.getWebUserData();
 
+    Site site = sessionManager.getSite();
     User user = webUserData.getUser();
     Language actualLanguage = webUserData.getActualLanguage();
 
     String requestURI = request.getRequestURI();
 
     int i = requestURI.lastIndexOf("/");
-    String company = null;
-    if (i > 0) {
-      company = requestURI.substring(1, i);
-    }
 
     String lastPage = (String) request.getSession().getAttribute("lastPage");
     String goBackPage = (String) request.getSession().getAttribute("goBackPage");
@@ -40,13 +38,6 @@ public class VariablesJSServlet {
     StringBuilder sb = new StringBuilder();
 
     sb.append("const variables = {\n");
-    if (company != null && company.isBlank()) {
-      sb.append("  company: null,\n");
-    } else {
-      sb.append("  company: {\n");
-      sb.append("    host: '").append(company).append("',\n");
-      sb.append("  },\n");
-    }
     if (lastPage == null) {
       sb.append("  lastPage: null,\n");
     } else {
@@ -90,6 +81,7 @@ public class VariablesJSServlet {
       sb.append("  },\n");
     }
     sb.append("  site: {\n");
+    sb.append("    id: \"").append(site.getId()).append("\",\n");
     sb.append("    language: \"").append(actualLanguage.getTwoLettersCode()).append("\"\n");
     sb.append("  }\n");
     sb.append("};\n");

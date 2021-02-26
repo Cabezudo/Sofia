@@ -5,13 +5,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
-import net.cabezudo.sofia.core.ws.servlet.services.Service;
+import net.cabezudo.sofia.core.ws.servlet.services.ListService;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.10.18
  */
-public class UserListService extends Service {
+public class UserListService extends ListService {
 
   public UserListService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     super(request, response, tokens);
@@ -19,18 +20,13 @@ public class UserListService extends Service {
 
   @Override
   public void get() throws ServletException {
-    String queryString = request.getQueryString();
-    if (queryString != null) {
-      // TODO agregar los filtros, el orden y demas
-    }
+    Logger.debug("Run get method in web service %s.", this.getClass().getName());
     try {
       User owner = super.getUser();
-      UserList list = UserManager.getInstance().list(owner);
+      UserList list = UserManager.getInstance().list(super.getFilters(), super.getSort(), super.getOffset(), super.getLimit(), owner);
       out.print(list.toJSON());
     } catch (ClusterException e) {
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
-    } catch (UserNotExistException e) {
-      sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
   }
 }

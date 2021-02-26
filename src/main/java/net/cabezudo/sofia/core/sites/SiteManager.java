@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import static java.nio.file.StandardCopyOption.ATOMIC_MOVE;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -12,7 +13,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 import net.cabezudo.sofia.core.InvalidParameterException;
-import net.cabezudo.sofia.core.QueryHelper;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.api.options.list.Filters;
 import net.cabezudo.sofia.core.api.options.list.Limit;
@@ -22,6 +22,8 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.database.Manager;
+import net.cabezudo.sofia.core.database.QueryHelper;
+import net.cabezudo.sofia.core.database.ValidSortColumns;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
@@ -41,6 +43,7 @@ import net.cabezudo.sofia.logger.Logger;
 public class SiteManager extends Manager {
 
   public static final int DEFAULT_VERSION = 10000;
+  private final ValidSortColumns validSortColumns = new ValidSortColumns("id", "name");
   private static SiteManager instance;
 
   public static SiteManager getInstance() {
@@ -61,7 +64,7 @@ public class SiteManager extends Manager {
   public Site getById(Connection connection, int siteId) throws ClusterException {
     ResultSet rs = null;
     String query
-            = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
+            = "SELECT s.id AS siteId, s.name AS siteName, s.basePath AS sitebasePath, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
             + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.id = ? ORDER BY domainName";
@@ -95,15 +98,16 @@ public class SiteManager extends Manager {
     return getById(connection, domainName.getSiteId());
   }
 
-  public Site create(String name, String... domainNames) throws IOException, ClusterException {
+  public Site create(String name, Path basePath, String... domainNames) throws IOException, ClusterException {
     try (Connection connection = Database.getConnection()) {
-      return add(connection, name, domainNames);
+      return add(connection, name, basePath, domainNames);
     } catch (SQLException e) {
       throw new ClusterException(e);
     }
   }
 
-  public Site add(Connection connection, String name, String... domainNameNames) throws IOException, ClusterException {
+  public Site add(Connection connection, String name, Path basePath, String... domainNameNames) throws IOException, ClusterException {
+    Logger.info("Create site using name '%s' and base path: %s", name, basePath);
     if (name == null || name.isEmpty()) {
       throw new InvalidParameterException("Invalid parameter name: " + name);
     }
@@ -113,13 +117,14 @@ public class SiteManager extends Manager {
     // TODO revisar que haya dominios que agregar
 
     ResultSet rs = null;
-    String query = "INSERT INTO " + SitesTable.DATABASE + "." + SitesTable.NAME + " (name) VALUES (?)";
+    String query = "INSERT INTO " + SitesTable.DATABASE + "." + SitesTable.NAME + " (name, basePath) VALUES (?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
+      ps.setString(2, basePath.toString());
       ClusterManager.getInstance().executeUpdate(ps);
       rs = ps.getGeneratedKeys();
       if (rs.next()) {
-        return createSite(connection, rs, name, domainNameNames);
+        return createSite(connection, rs, name, basePath, domainNameNames);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
     } catch (SQLException e) {
@@ -129,7 +134,7 @@ public class SiteManager extends Manager {
     }
   }
 
-  private Site createSite(Connection connection, ResultSet rs, String name, String... domainNameNames) throws IOException, ClusterException, SQLException {
+  private Site createSite(Connection connection, ResultSet rs, String name, Path basePath, String... domainNameNames) throws IOException, ClusterException, SQLException {
     int siteId = rs.getInt(1);
     DomainName baseDomainName = null;
     DomainNameList domainNames = new DomainNameList();
@@ -143,7 +148,7 @@ public class SiteManager extends Manager {
       }
       domainNames.add(domainName);
     }
-    Site site = new Site(siteId, name, baseDomainName, domainNames, DEFAULT_VERSION);
+    Site site = new Site(siteId, name, basePath, baseDomainName, domainNames, DEFAULT_VERSION);
     SiteManager.getInstance().update(connection, site);
 
     Path siteSourcesBasePath = site.getVersionedSourcesPath();
@@ -175,7 +180,7 @@ public class SiteManager extends Manager {
     Logger.fine("Site list");
 
     try (Connection connection = Database.getConnection()) {
-      String where = super.getWhere(filters);
+      String where = QueryHelper.getWhere(filters);
 
       long sqlOffsetValue = 0;
       if (offset != null) {
@@ -186,28 +191,29 @@ public class SiteManager extends Manager {
         sqlLimitValue = limit.getValue();
       }
 
-      String sqlSort = QueryHelper.getOrderString(sort, "domainName", new String[]{"id", "name"});
+      String sqlSort = QueryHelper.getOrderString(sort, "domainName", validSortColumns);
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
       String query
-              = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
+              = "SELECT s.id AS siteId, s.name AS siteName, s.basePath AS siteBasePath, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
               + "FROM " + SitesTable.NAME + " AS s "
               + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
               + where + sqlSort + sqlLimit;
       ResultSet rs = null;
       SiteList list;
       try (PreparedStatement ps = connection.prepareStatement(query);) {
-        setFiltersValues(filters, ps);
+        QueryHelper.setFiltersValues(filters, ps);
         rs = ClusterManager.getInstance().executeQuery(ps);
         list = new SiteList(offset == null ? 0 : offset.getValue(), limit == null ? 0 : limit.getValue());
         while (rs.next()) {
           int id = rs.getInt("siteId");
           String name = rs.getString("siteName");
+          Path basePath = Paths.get(rs.getString("siteBasePath"));
           int baseDomainNameId = rs.getInt("baseDomainNameId");
           int siteVersion = rs.getInt("siteVersion");
           int domainNameId = rs.getInt("domainNameId");
           String domainNameName = rs.getString("domainNameName");
-          list.add(id, name, baseDomainNameId, siteVersion, domainNameId, domainNameName);
+          list.add(id, name, basePath, baseDomainNameId, siteVersion, domainNameId, domainNameName);
         }
         list.create();
       } catch (SQLException e) {
@@ -316,13 +322,13 @@ public class SiteManager extends Manager {
     }
   }
 
-  private synchronized void changeBasePath(Site site, DomainName domainName) throws IOException {
+  private synchronized void changeBasePath(Site site, Path basePath) throws IOException {
     Path oldSourceBasePath = site.getVersionedSourcesPath().getParent();
-    Path newSourceBasePath = site.getVersionedSourcesPath(domainName).getParent();
+    Path newSourceBasePath = site.getVersionedSourcesPath(basePath).getParent();
     Logger.debug("Moving source path from %s to %s.", oldSourceBasePath, newSourceBasePath);
     Files.move(oldSourceBasePath, newSourceBasePath, ATOMIC_MOVE);
     Path oldBasePath = site.getBasePath();
-    Path newBasePath = site.getBasePath(domainName);
+    Path newBasePath = site.getBasePath(basePath);
     Logger.debug("Moving site path from %s to %s.", oldBasePath, newBasePath);
     try {
       if (Files.exists(oldBasePath, LinkOption.NOFOLLOW_LINKS)) {
@@ -335,10 +341,17 @@ public class SiteManager extends Manager {
 
   public synchronized void update(Site site, DomainName domainName, User owner) throws ClusterException {
     DomainName baseDomainName = site.getBaseDomainName();
+    Path basePath = site.getBasePath();
+    System.out.println("*********");
+    System.out.println(basePath.toString());
+    System.out.println(baseDomainName.getName());
+    if (basePath.toString().equals(baseDomainName.getName())) {
+      basePath = Paths.get(domainName.getName());
+    }
     DomainNameManager.getInstance().update(domainName, owner);
     if (baseDomainName.getId() == domainName.getId()) {
       try {
-        SiteManager.getInstance().changeBasePath(site, domainName);
+        SiteManager.getInstance().changeBasePath(site, basePath);
       } catch (IOException e) {
         Logger.severe(e);
         DomainNameManager.getInstance().update(baseDomainName, owner);
@@ -401,11 +414,12 @@ public class SiteManager extends Manager {
       while (rs.next()) {
         int id = rs.getInt("siteId");
         String name = rs.getString("name");
+        Path basePath = Paths.get(rs.getString("basePath"));
         int baseDomainNameId = rs.getInt("baseDomainNameId");
         int siteVersion = rs.getInt("siteVersion");
         int domainNameId = rs.getInt("domainNameId");
         String domainNameName = rs.getString("domainNameName");
-        sites.add(id, name, baseDomainNameId, siteVersion, domainNameId, domainNameName);
+        sites.add(id, name, basePath, baseDomainNameId, siteVersion, domainNameId, domainNameName);
       }
       sites.create();
       return sites;
@@ -420,7 +434,7 @@ public class SiteManager extends Manager {
     Logger.fine("Site list total");
 
     try (Connection connection = Database.getConnection()) {
-      String where = super.getWhere(filters);
+      String where = QueryHelper.getWhere(filters);
 
       long sqlOffsetValue = 0;
       if (offset != null) {
@@ -430,13 +444,13 @@ public class SiteManager extends Manager {
       if (limit != null) {
         sqlLimitValue = limit.getValue();
       }
-      String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
+      String sqlSort = QueryHelper.getOrderString(sort, "name", validSortColumns);
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       String query = "SELECT count(*) AS total FROM " + SitesTable.NAME + where + sqlSort + sqlLimit;
       ResultSet rs = null;
       try (PreparedStatement ps = connection.prepareStatement(query);) {
-        super.setFiltersValues(filters, ps);
+        QueryHelper.setFiltersValues(filters, ps);
         rs = ClusterManager.getInstance().executeQuery(ps);
         if (rs.next()) {
           return rs.getInt("total");
@@ -465,7 +479,7 @@ public class SiteManager extends Manager {
       sqlLimitValue = limit.getValue();
     }
 
-    String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
+    String sqlSort = QueryHelper.getOrderString(sort, "name", validSortColumns);
 
     String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
@@ -528,7 +542,7 @@ public class SiteManager extends Manager {
         sqlLimitValue = limit.getValue();
       }
 
-      String sqlSort = QueryHelper.getOrderString(sort, "name", new String[]{"id", "name"});
+      String sqlSort = QueryHelper.getOrderString(sort, "name", validSortColumns);
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
       ResultSet rs = null;

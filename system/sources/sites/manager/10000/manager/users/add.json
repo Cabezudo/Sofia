@@ -1,0 +1,43 @@
+{
+  "messages": {
+    "message": {
+      "default": "Fill the data"
+    }
+  },
+  "header": {
+    "menu": {
+      "name": "#{site.shortName}",
+      "description": "web for people",
+      "font": {
+        "family": "Kanit"
+      },
+      "items": [
+        {
+          "name": {
+            "en": "Home"
+          },
+          "url": "/"
+        },
+        {
+          "name": {
+            "en": "Manager"
+          },
+          "url": "../index.html"
+        },
+        {
+          "name": {
+            "en": "List"
+          },
+          "url": "users.html"
+        },
+        {
+          "name": {
+            "en": "Logout"
+          },
+          "logged": true,
+          "url": "/logout"
+        }
+      ]
+    }
+  }
+}

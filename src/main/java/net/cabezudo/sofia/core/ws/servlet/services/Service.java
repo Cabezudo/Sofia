@@ -34,12 +34,14 @@ public abstract class Service<T extends Response> {
   private String payload;
   protected final SessionManager sessionManager;
   protected final WebUserData webUserData;
+  protected final Site site;
 
   protected Service(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException {
     this.request = request;
     this.response = response;
     this.tokens = tokens;
     this.session = request.getSession();
+    this.site = new SessionManager(request).getSite();
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
     try {
       out = response.getWriter();
@@ -83,7 +85,7 @@ public abstract class Service<T extends Response> {
   }
 
   protected void sendResponse(T response) throws ServletException {
-    out.print(response.toJSON(getSite(), webUserData.getActualLanguage()));
+    out.print(response.toJSON(site, webUserData.getActualLanguage()));
   }
 
   private String readPayload() throws ServletException {
@@ -103,14 +105,18 @@ public abstract class Service<T extends Response> {
     return payload;
   }
 
-  protected void sendError(int error, Throwable cause) throws ServletException {
-    if (Environment.getInstance().isDevelopment()) {
-      cause.printStackTrace();
-    }
-    sendError(error, cause.getMessage());
+  protected void sendError(int error, String message) throws ServletException {
+    sendError(error, message, null);
   }
 
-  protected final void sendError(int error, String message) throws ServletException {
+  protected void sendError(int error, Throwable cause) throws ServletException {
+    sendError(error, cause.getMessage(), cause);
+  }
+
+  protected final void sendError(int error, String message, Throwable cause) throws ServletException {
+    if (cause != null && Environment.getInstance().isDevelopment()) {
+      cause.printStackTrace();
+    }
     try {
       response.sendError(error, message);
     } catch (IOException e) {
@@ -120,10 +126,6 @@ public abstract class Service<T extends Response> {
 
   public final HttpSession getSession() {
     return session;
-  }
-
-  protected Site getSite() {
-    return (Site) request.getAttribute("site");
   }
 
   protected User getUser() throws ClusterException {

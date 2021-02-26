@@ -4,9 +4,9 @@ import static java.lang.Integer.compare;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import net.cabezudo.json.annotations.JSONProperty;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
@@ -23,20 +23,17 @@ public class Site implements Comparable<Integer> {
   public static final String COMMONS_FILE_NAME = "commons.json";
   public static final int NAME_MAX_LENGTH = 80;
 
-  @JSONProperty
   private final Integer id;
-  @JSONProperty
   private final String name;
-  @JSONProperty
+  private final Path basePath;
   private final DomainName baseDomainName;
-  @JSONProperty
   private final DomainNameList domainNames;
-  @JSONProperty
   private final int version;
 
-  Site(int id, String name, DomainName baseDomainName, DomainNameList domainNameList, int version) {
+  public Site(int id, String name, Path basePath, DomainName baseDomainName, DomainNameList domainNameList, int version) {
     this.id = id;
     this.name = name;
+    this.basePath = basePath;
     this.domainNames = domainNameList;
     this.baseDomainName = baseDomainName;
     this.version = version;
@@ -44,12 +41,13 @@ public class Site implements Comparable<Integer> {
   }
 
   Site(RawSite rawSite) {
-    this(rawSite.getId(), rawSite.getName(), rawSite.getBaseDomainName(), rawSite.getDomainNameList(), rawSite.getVersion());
+    this(rawSite.getId(), rawSite.getName(), rawSite.getBasePath(), rawSite.getBaseDomainName(), rawSite.getDomainNameList(), rawSite.getVersion());
   }
 
   Site(ResultSet rs) throws SQLException {
     int siteId;
     String siteName;
+    Path siteBasePath;
     int baseDomainNameId;
     int domainNameId;
     String domainNameName;
@@ -59,12 +57,13 @@ public class Site implements Comparable<Integer> {
     do {
       siteId = rs.getInt("siteId");
       siteName = rs.getString("siteName");
+      siteBasePath = Paths.get(rs.getString("siteBasePath"));
       baseDomainNameId = rs.getInt("baseDomainNameId");
       domainNameId = rs.getInt("domainNameId");
       domainNameName = rs.getString("domainNameName");
       siteVersion = rs.getInt("siteVersion");
       if (rawSite == null) {
-        rawSite = new RawSite(siteId, siteName, siteVersion);
+        rawSite = new RawSite(siteId, siteName, siteBasePath, siteVersion);
       }
       DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
       rawSite.add(baseDomainNameId, domainName);
@@ -72,6 +71,7 @@ public class Site implements Comparable<Integer> {
 
     this.id = siteId;
     this.name = siteName;
+    this.basePath = siteBasePath;
     this.domainNames = rawSite.getDomainNameList();
     this.baseDomainName = rawSite.getBaseDomainName();
     this.version = siteVersion;
@@ -122,15 +122,15 @@ public class Site implements Comparable<Integer> {
 
   @Override
   public String toString() {
-    return "[id: " + id + ", name: " + name + ", domainName: " + baseDomainName + ", version: " + version + " ]";
+    return "[id: " + id + ", name: " + name + ", basePath: " + basePath + ", domainName: " + baseDomainName + ", version: " + version + " ]";
   }
 
-  Path getBasePath(DomainName domainName) {
-    return Configuration.getInstance().getSitesPath().resolve(domainName.getName());
+  Path getBasePath(Path basePath) {
+    return Configuration.getInstance().getSitesPath().resolve(basePath);
   }
 
   public Path getBasePath() {
-    return getBasePath(baseDomainName);
+    return getBasePath(basePath);
   }
 
   public Path getVersionPath() {
@@ -149,20 +149,20 @@ public class Site implements Comparable<Integer> {
     return basePath.resolve(fileName);
   }
 
-  public Path getSourcesPath(DomainName domainName) {
-    return Configuration.getInstance().getSitesSourcesPath().resolve(domainName.getName());
+  public Path getSourcesPath(Path basePath) {
+    return Configuration.getInstance().getSitesSourcesPath().resolve(basePath);
   }
 
   public Path getVersionedSourcesPath() {
-    return Site.this.getVersionedSourcesPath(baseDomainName, version);
+    return Site.this.getVersionedSourcesPath(basePath, version);
   }
 
-  public Path getVersionedSourcesPath(DomainName domainName) {
-    return Site.this.getVersionedSourcesPath(domainName, version);
+  public Path getVersionedSourcesPath(Path basePath) {
+    return Site.this.getVersionedSourcesPath(basePath, version);
   }
 
-  public Path getVersionedSourcesPath(DomainName domainName, int version) {
-    return getSourcesPath(domainName).resolve(Integer.toString(version));
+  public Path getVersionedSourcesPath(Path basePath, int version) {
+    return getSourcesPath(basePath).resolve(Integer.toString(version));
   }
 
   public Path getVersionedSourcesCommonsFilePath() {
@@ -220,6 +220,9 @@ public class Site implements Comparable<Integer> {
     sb.append(", ");
     sb.append("\"name\": \"");
     sb.append(name);
+    sb.append("\", ");
+    sb.append("\"basePath\": \"");
+    sb.append(basePath);
     sb.append("\", ");
     sb.append("\"domains\": {");
     DomainNameList list = new DomainNameList();

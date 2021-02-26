@@ -43,7 +43,7 @@ public class LoginService extends Service {
       try {
         email = jsonPayload.getString("email");
       } catch (PropertyNotExistException e) {
-        sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property");
+        sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property", e);
         return;
       }
 
@@ -51,7 +51,7 @@ public class LoginService extends Service {
       try {
         base64Password = jsonPayload.getString("password");
       } catch (PropertyNotExistException e) {
-        sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property");
+        sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property", e);
         return;
       }
       Password password = Password.createFromBase64(base64Password);
@@ -60,7 +60,7 @@ public class LoginService extends Service {
 
       User user;
       try {
-        user = authenticator.authorize(super.getSite(), email, password);
+        user = authenticator.authorize(site, email, password);
       } catch (EMailAddressValidationException | PasswordValidationException e) {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.ACTION, e.getMessage(), e.getParameters()));
         return;
@@ -84,13 +84,11 @@ public class LoginService extends Service {
         sendResponse(new Response(Response.Status.LOGGED, Response.Type.ACTION, "user.logged"));
       }
     } catch (EMailMaxSizeException | PasswordMaxSizeException | DomainNameMaxSizeException e) {
-      Logger.warning(e);
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request.");
+      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid request.", e);
     } catch (ClusterException sqle) {
-      Logger.severe(sqle);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "I have problems with the database. Please try in a few minutes.");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "I have problems with the database. Please try in a few minutes.", sqle);
     } catch (JSONParseException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid payload format. " + e.getMessage());
+      sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid payload format. ", e);
     }
   }
 }

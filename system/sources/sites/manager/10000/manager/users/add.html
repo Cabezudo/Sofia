@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html profiles="administrator">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add user</title>
+    <link rel="stylesheet" type="text/css" href="/manager/users/add.css">
+    <style file="../../commons.css"></style>
+    <script src="/manager/users/add.js"></script>
+    <script src="/variables.js"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="inputEMailValidator/0.1.0"></script>
+    <script lib="linkTo/0.1.0"></script>
+    <script lib="button/0.1.0"></script>
+    <script>
+      {
+        let addButton, detailDiv, nameInput, hostnameInput, nameValidated, hostnameValidated, nameErrorMessage, hostnameErrorMessage;
+        const createGUI = () => {
+          detailDiv = Core.validateById('detail');
+          nameInput = Core.validateById('name');
+          hostnameInput = Core.validateById('hostname');
+          addButton = Core.validateById('addButton');
+          inputGenericValidator({
+            element: nameInput,
+            getValidationURL: () => {
+              return `/api/v1/users/names/${nameInput.value}/validate`;
+            },
+            onValid: () => {
+              nameValidated = true;
+              nameErrorMessage = undefined;
+              setFormStatus();
+              setMessage();
+            },
+            onNotValid: data => {
+              nameValidated = true;
+              nameErrorMessage = data;
+              setFormStatus();
+              setMessage();
+            },
+            onFocus: () => {
+              setFormStatus();
+              setMessage();
+            }
+          });
+          inputGenericValidator({
+            element: hostnameInput,
+            getValidationURL: () => {
+              return `/api/v1/hosts/names/${hostnameInput.value}/validate`;
+            },
+            onValid: () => {
+              hostnameValidated = true;
+              hostnameErrorMessage = undefined;
+              setFormStatus();
+              setMessage();
+            },
+            onNotValid: data => {
+              hostnameValidated = true;
+              hostnameErrorMessage = data;
+              setFormStatus();
+              setMessage();
+            },
+            onFocus: () => {
+              setFormStatus();
+              setMessage();
+            }
+          });
+          const sendAddSiteInformation = () => {
+            nameInput.disabled = true;
+            hostnameInput.disabled = true;
+            const response = Core.sendPost(
+                    `/api/v1/usesr`,
+                    addButton,
+                    {
+                      name: nameInput.value,
+                      version: version.value,
+                      hostname: hostnameInput.value
+                    });
+            console.log(response);
+          };
+          blueButton({
+            element: addButton,
+            enabled: false,
+            onClick: () => {
+              sendAddSiteInformation();
+            },
+            onResponse: event => {
+              const {detail} = event;
+              const {data} = detail;
+
+              if (data.status === 'OK') {
+                if (variables.goBackPage === null) {
+                  location.assign('/manager/users/users.html');
+                } else {
+                  location.assign(variables.goBackPage);
+                }
+              } else {
+                Core.showMessage({status: 'ERROR', message: data.message});
+              }
+            }
+          });
+        };
+        const setMessage = () => {
+          console.log(`add.html : setMessage`);
+          do {
+            if (nameErrorMessage && Core.inFocus(nameInput)) {
+              Core.showMessage(nameErrorMessage);
+              break;
+            }
+            if (hostnameErrorMessage && Core.inFocus(hostname)) {
+              Core.showMessage(hostnameErrorMessage);
+              break;
+            }
+            if (nameErrorMessage) {
+              Core.showMessage(nameErrorMessage);
+              break;
+            }
+            if (hostnameErrorMessage) {
+              Core.showMessage(hostnameErrorMessage);
+              break;
+            }
+            if (nameInput.value === '' && hostnameInput.value === '') {
+              Core.showMessage({status: "MESSAGE", message: 'Complete the fields to add a new user'});
+              break;
+            }
+            if (nameInput.value === '') {
+              Core.showMessage({status: "MESSAGE", message: 'Complete the user name field to complete the data'});
+              break;
+            }
+            if (hostnameInput.value === '') {
+              Core.showMessage({status: "MESSAGE", message: 'Complete the user host field to complete the data'});
+              break;
+            }
+            if (!nameErrorMessage && !hostnameErrorMessage) {
+              Core.showMessage({status: "OK", message: 'The data to add the user are correct.'});
+              break;
+            }
+          } while (false);
+        };
+        const setFormStatus = () => {
+          if (nameErrorMessage === undefined && hostnameErrorMessage === undefined && nameValidated & hostnameValidated) {
+            console.log(`add.html : setFormStatus : trigger enabled`);
+            Core.trigger(addButton, 'enabled');
+          } else {
+            console.log(`add.html : setFormStatus : trigger disabled`);
+            Core.trigger(addButton, 'disabled');
+          }
+        };
+        Core.addOnloadFunction(createGUI);
+        Core.addSetFunction(() => {
+          setMessage();
+          Core.trigger(addButton, 'disabled');
+          nameInput.focus();
+        });
+      }
+    </script>
+    <script class="test">
+      Core.tests.add(() => {
+//        const nameInput = Core.validateById('name');
+//        const hostnameInput = Core.validateById('hostname');
+//        Core.trigger(nameInput, 'type', `Sitio oficial para Cabezudo`);
+//        Core.trigger(hostnameInput, 'type', `cabezudo.net`);
+      });
+    </script>
+  </head>
+  <body>
+    <section id="application" class="application">
+      <section id="header" template="headers/menu/simple/menu"></section>
+      <section class="container">
+        <section id="detail" class="content">
+          <h2 class="title">Site add</h2>
+          <div class="form">
+            <div class="field"><input id="name" placeholder="Nombre" spellcheck="false"/></div>
+            <div class="field"><input id="version" value="1" disabled /></div>
+            <div class="field"><input id="hostname" placeholder="Host" spellcheck="false"/></div>
+            <div class="firstButtonContainer">
+              <div class="secondButtonContainer">
+                <div id="addButton">add user</div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
+      <section id="messages" template="messages/section/simple/message"></section>
+      <section id="footer" file="/footer.html"></section>
+    </section>
+  </body>
+</html>

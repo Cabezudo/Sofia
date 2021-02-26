@@ -41,7 +41,7 @@
             filterInputElement: null,
             cellMaker: row => {
               if (row) {
-                return `<td><div><p>${row.name}</p></div></td>`;
+                return `<td><div><p>${row.siteName}</p></div></td><td><div><p>${row.eMail}</p></div></td>`;
               } else {
                 return `<td><div><p>&nbsp;</p></div></td>`;
               }

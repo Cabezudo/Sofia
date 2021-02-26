@@ -9,6 +9,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -39,6 +40,9 @@ class JSONConfiguration {
           sb.append('\n');
         } catch (UndefinedLiteralException e) {
           Position position = new Position(lineNumber, e.getRow());
+          if (Environment.getInstance().isDevelopment()) {
+            Logger.finest("%s", htmlSourceFile.getTemplateVariables());
+          }
           throw new LocatedSiteCreationException(e.getMessage(), jsonPartialPath, position);
         }
         lineNumber++;

@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.http;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 
 /**
@@ -40,5 +41,13 @@ public class SessionManager {
 
   public final void setSessionWebUserData() {
     request.getSession().setAttribute("webUserData", webUserData);
+  }
+
+  public void setSite(Site site) {
+    request.getSession().setAttribute("site", site);
+  }
+
+  public Site getSite() {
+    return (Site) request.getSession().getAttribute("site");
   }
 }

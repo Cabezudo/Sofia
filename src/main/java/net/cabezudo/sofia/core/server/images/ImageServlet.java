@@ -26,6 +26,7 @@ import net.cabezudo.sofia.SofiaImage;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.sic.SofiaImageCode;
@@ -54,7 +55,7 @@ public class ImageServlet extends HttpServlet {
       imagePartialPathName = imagePartialPathName.substring(1);
     }
 
-    Site site = (Site) request.getAttribute("site");
+    Site site = new SessionManager(request).getSite();
     String queryString = request.getQueryString();
     if (queryString != null) {
       queryString = URLDecoder.decode(queryString, Configuration.getInstance().getEncoding());

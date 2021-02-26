@@ -8,7 +8,6 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
-import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -34,7 +33,6 @@ public class RecoverPasswordService extends Service {
     try {
       String address = tokens.getValue("email").toString();
       EMailValidator.validate(address);
-      Site site = super.getSite();
       CustomerService.sendPasswordRecoveryEMail(site, address);
       sendResponse(new Response(Response.Status.OK, Response.Type.ACTION, "password.recovery.mail.sent"));
     } catch (EMailMaxSizeException | DomainNameMaxSizeException e) {

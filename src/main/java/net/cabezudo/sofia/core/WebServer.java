@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -24,7 +25,6 @@ import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.configuration.SofiaDatabaseCreator;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
-import net.cabezudo.sofia.core.creator.SiteCreator;
 import net.cabezudo.sofia.core.database.DatabaseCreators;
 import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
@@ -33,7 +33,7 @@ import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
 import net.cabezudo.sofia.core.languages.ChangeLanguageServlet;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
-import net.cabezudo.sofia.core.server.html.CompanyPathTransformationFilter;
+import net.cabezudo.sofia.core.server.html.DataFilter;
 import net.cabezudo.sofia.core.server.html.HTMLFilter;
 import net.cabezudo.sofia.core.server.html.URLTransformationFilter;
 import net.cabezudo.sofia.core.server.images.ImageServlet;
@@ -164,8 +164,8 @@ public class WebServer {
     if (mainDefaultDataCreator.isDatabaseCreated()) {
       String baseDomainName = soh.getDefaultDomainName();
       Logger.info("Create the default sites.");
-      SiteManager.getInstance().create("Manager", "manager", "localhost", baseDomainName);
-      SiteManager.getInstance().create("Playground", "playground");
+      SiteManager.getInstance().create("Manager", Paths.get("manager"), "manager", "localhost", baseDomainName);
+      SiteManager.getInstance().create("Playground", Paths.get("playground"), "playground");
       soh.createAdministrator();
       mainDefaultDataCreator.createDefaultData();
     }
@@ -205,12 +205,7 @@ public class WebServer {
       System.exit(1);
     }
 
-    if (false) {
-      Site site = SiteManager.getInstance().getByHostame("cdmx.menu");
-      SiteCreator.getInstance().createPages(site, "/company/index.html");
-    } else {
-      WebServer.getInstance().start();
-    }
+    WebServer.getInstance().start();
   }
 
   public static WebServer getInstance() throws ServerException, PortAlreadyInUseException, ConfigurationException {
@@ -254,7 +249,7 @@ public class WebServer {
     context.setVirtualHosts(virtualHosts);
 
     context.addFilter(URLTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-    context.addFilter(CompanyPathTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+    context.addFilter(DataFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     context.addFilter(HTMLAuthorizationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     ServletHolder logoutHolder = new ServletHolder("logout", LogoutHolder.class);

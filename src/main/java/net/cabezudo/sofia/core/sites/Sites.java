@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sites;
 
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +38,8 @@ public class Sites implements Iterable<Site> {
     list.add(site);
   }
 
-  void add(int siteId, String siteName, int baseDomainNameId, int version, int domainNameId, String domainNameName) {
-    RawSite rawSite = rawMap.computeIfAbsent(siteId, key -> new RawSite(key, siteName, version));
+  void add(int siteId, String siteName, Path basePath, int baseDomainNameId, int version, int domainNameId, String domainNameName) {
+    RawSite rawSite = rawMap.computeIfAbsent(siteId, key -> new RawSite(key, siteName, basePath, version));
     DomainName domainName = new DomainName(domainNameId, siteId, domainNameName);
     rawSite.add(baseDomainNameId, domainName);
   }
