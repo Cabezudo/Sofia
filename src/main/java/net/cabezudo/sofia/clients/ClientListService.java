@@ -86,9 +86,9 @@ public class ClientListService extends ListService {
       }
     } catch (ClusterException e) {
       Logger.severe(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
     } catch (UserNotExistException e) {
-      sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+      sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e);
     }
   }
 }

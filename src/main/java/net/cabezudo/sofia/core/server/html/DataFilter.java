@@ -10,15 +10,15 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
-import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.10.23
  */
-public class CompanyPathTransformationFilter implements Filter {
+public class DataFilter implements Filter {
 
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
@@ -32,15 +32,13 @@ public class CompanyPathTransformationFilter implements Filter {
 
       try {
         String serverName = request.getServerName();
-        Logger.debug("Company path transformation filter for %s.", serverName);
         Site site;
         site = SiteManager.getInstance().getByHostame(serverName);
         if (site == null) {
           throw new ServletException("Can't find the site using " + serverName);
         }
-        request.setAttribute("site", site);
+        new SessionManager(request).setSite(site);
 
-        changeURL(site, request);
       } catch (ClusterException e) {
         if (Environment.getInstance().isDevelopment()) {
           e.printStackTrace();
@@ -56,11 +54,5 @@ public class CompanyPathTransformationFilter implements Filter {
   @Override
   public void destroy() {
     // Nothing to do here
-  }
-
-  private void changeURL(Site site, SofiaHTMLServletRequest request) throws ClusterException {
-    URLManager.getInstance().changeCompanyHost(site, request);
-    URLManager.getInstance().changeCompanyPath(site, request);
-    URLManager.getInstance().changeDomainName(request);
   }
 }

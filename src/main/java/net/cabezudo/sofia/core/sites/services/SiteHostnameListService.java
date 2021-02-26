@@ -14,7 +14,6 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.ws.servlet.services.ListService;
 
@@ -41,7 +40,7 @@ public class SiteHostnameListService extends ListService {
       try {
         siteId = token.toInteger();
       } catch (InvalidPathParameterException e) {
-        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found");
+        sendError(HttpServletResponse.SC_NOT_FOUND, "Resource not found", e);
         return;
       }
 
@@ -76,8 +75,7 @@ public class SiteHostnameListService extends ListService {
         out.print(list.toJSON());
       }
     } catch (ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
   }
 }

@@ -19,7 +19,6 @@ import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.server.html.SofiaHTMLServletRequest;
 import net.cabezudo.sofia.core.sites.Site;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
@@ -42,11 +41,12 @@ public class HTMLAuthorizationFilter implements Filter {
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
 
-    Site site = (Site) req.getAttribute("site");
-    Logger.all("Site: %s", site);
     if (req instanceof SofiaHTMLServletRequest) {
       SofiaHTMLServletRequest request = (SofiaHTMLServletRequest) req;
       HttpServletResponse response = (HttpServletResponse) res;
+
+      Site site = new SessionManager(request).getSite();
+      Logger.all("Site: %s", site);
 
       User user = null;
       try {
@@ -74,8 +74,7 @@ public class HTMLAuthorizationFilter implements Filter {
           }
         }
       } catch (ClusterException e) {
-        SystemMonitor.log(e);
-        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, e.getMessage());
         return;
       }
 
@@ -103,7 +102,6 @@ public class HTMLAuthorizationFilter implements Filter {
           response.sendRedirect(Configuration.getInstance().getLoginURL());
           return;
         } catch (ClusterException e) {
-          SystemMonitor.log(e);
           response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
           return;
         }

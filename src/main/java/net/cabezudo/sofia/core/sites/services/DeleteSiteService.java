@@ -11,7 +11,6 @@ import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -34,7 +33,7 @@ public class DeleteSiteService extends Service {
     try {
       siteId = siteIdToken.toInteger();
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found", e);
       return;
     }
 
@@ -55,8 +54,7 @@ public class DeleteSiteService extends Service {
       data.add(new JSONPair("id", siteId));
       sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.deleted"));
     } catch (ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
   }
 }

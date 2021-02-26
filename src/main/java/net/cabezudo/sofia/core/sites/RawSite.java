@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.sites;
 
+import java.nio.file.Path;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 
@@ -11,13 +12,15 @@ class RawSite {
 
   private final int id;
   private final String name;
+  private final Path basePath;
   private DomainName baseDomainName;
   private final DomainNameList domainNameList = new DomainNameList();
   private final int version;
 
-  RawSite(int id, String name, int version) {
+  RawSite(int id, String name, Path basePath, int version) {
     this.id = id;
     this.name = name;
+    this.basePath = basePath;
     this.version = version;
   }
 
@@ -27,6 +30,10 @@ class RawSite {
 
   String getName() {
     return name;
+  }
+
+  Path getBasePath() {
+    return basePath;
   }
 
   DomainName getBaseDomainName() {

@@ -18,7 +18,6 @@ import net.cabezudo.sofia.core.passwords.Password;
 import net.cabezudo.sofia.core.passwords.PasswordMaxSizeException;
 import net.cabezudo.sofia.core.passwords.PasswordValidationException;
 import net.cabezudo.sofia.core.passwords.PasswordValidator;
-import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
@@ -47,7 +46,6 @@ public class AddUserService extends Service {
   public void post() throws ServletException {
     try (Connection connection = Database.getConnection()) {
       User owner = super.getUser();
-      Site site = super.getSite();
 
       String payload = getPayload();
       JSONObject jsonPayload = JSON.parse(payload).toJSONObject();
@@ -57,7 +55,7 @@ public class AddUserService extends Service {
         name = jsonPayload.getString("name");
         NameManager.getInstance().validate(name);
       } catch (PropertyNotExistException e) {
-        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing name property");
+        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing name property", e);
         return;
       }
       String lastName;
@@ -65,7 +63,7 @@ public class AddUserService extends Service {
         lastName = jsonPayload.getString("lastName");
         LastNameManager.getInstance().validate(lastName);
       } catch (PropertyNotExistException e) {
-        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lastName property");
+        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing lastName property", e);
         return;
       }
       String address;
@@ -77,7 +75,7 @@ public class AddUserService extends Service {
         sendError(HttpServletResponse.SC_REQUEST_URI_TOO_LONG, e);
         return;
       } catch (PropertyNotExistException e) {
-        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property");
+        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing email property", e);
         return;
       } catch (EMailAddressValidationException e) {
         sendResponse(new Response(Response.Status.ERROR, Response.Type.CREATE, e.getMessage(), e.getParameters()));
@@ -87,7 +85,7 @@ public class AddUserService extends Service {
       try {
         base64Password = jsonPayload.getString("password");
       } catch (PropertyNotExistException e) {
-        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property");
+        super.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing password property", e);
         return;
       }
       Password password;
@@ -109,8 +107,8 @@ public class AddUserService extends Service {
       } else {
         try {
           CustomerService.sendRegistrationRetryAlert(address);
-        } catch (MailServerException | IOException su) {
-          sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, su.getMessage());
+        } catch (MailServerException | IOException e) {
+          sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
           return;
         }
         sendResponse(new Response(Response.Status.ERROR, Response.Type.CREATE, "user.already.added"));
@@ -121,7 +119,7 @@ public class AddUserService extends Service {
     } catch (EMailAddressNotExistException e) {
       super.sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e);
     } catch (SQLException | ClusterException e) {
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
     } catch (JSONParseException e) {
       super.sendError(HttpServletResponse.SC_BAD_REQUEST, e);
     }

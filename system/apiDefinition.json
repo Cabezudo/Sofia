@@ -1,6 +1,10 @@
 {
   "get": [
     {
+      "path": "/api/v1/sites/metadata",
+      "class": "net.cabezudo.sofia.core.sites.services.SiteListMetadataService"
+    },
+    {
       "path": "/api/v1/sites",
       "class": "net.cabezudo.sofia.core.sites.services.SiteListService"
     },
@@ -43,6 +47,10 @@
     {
       "path": "/api/v1/users/{email}/password/recover",
       "class": "net.cabezudo.sofia.core.passwords.RecoverPasswordService"
+    },
+    {
+      "path": "/api/v1/users/metadata",
+      "class": "net.cabezudo.sofia.core.users.UserListMetadataService"
     },
     {
       "path": "/api/v1/users",

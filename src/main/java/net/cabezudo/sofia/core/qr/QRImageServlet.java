@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.passwords.Hash;
 import net.cabezudo.sofia.core.sites.Site;
 
@@ -20,7 +21,7 @@ public class QRImageServlet extends HttpServlet {
   @Override
   protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     Hash hash = new Hash();
-    Site site = (Site) request.getAttribute("site");
+    Site site = new SessionManager(request).getSite();
 
     String scheme = request.getScheme();
     String serverName = request.getServerName();

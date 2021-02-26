@@ -30,9 +30,9 @@ public class PeopleListService extends Service {
       PeopleList list = PeopleManager.getInstance().list(owner);
       out.print(list.toJSON());
     } catch (ClusterException e) {
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e.getMessage());
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, e);
     } catch (UserNotExistException e) {
-      sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e.getMessage());
+      sendError(HttpServletResponse.SC_PRECONDITION_FAILED, e);
     }
   }
 }

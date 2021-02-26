@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import net.cabezudo.sofia.core.QueryHelper;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.api.options.list.Filters;
 import net.cabezudo.sofia.core.api.options.list.Limit;
@@ -14,6 +13,8 @@ import net.cabezudo.sofia.core.api.options.list.Sort;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.QueryHelper;
+import net.cabezudo.sofia.core.database.ValidSortColumns;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserNotExistException;
@@ -33,17 +34,15 @@ import net.cabezudo.sofia.people.Person;
  */
 public class ClientManager {
 
-  private static ClientManager instance;
+  private final static ClientManager INSTANCE = new ClientManager();
+  private final ValidSortColumns validSortColumns = new ValidSortColumns("personId", "name", "lastName", "address");
 
   private ClientManager() {
     // Nothing to do here
   }
 
   public static ClientManager getInstance() {
-    if (instance == null) {
-      instance = new ClientManager();
-    }
-    return instance;
+    return INSTANCE;
   }
 
   public Client create(String name, String lastName, User owner) throws ClusterException {
@@ -186,7 +185,7 @@ public class ClientManager {
     if (limit != null) {
       sqlLimitValue = limit.getValue();
     }
-    String sqlSort = QueryHelper.getOrderString(sort, "lastName, name", new String[]{"personId", "name", "lastName", "address"});
+    String sqlSort = QueryHelper.getOrderString(sort, "lastName, name", validSortColumns);
     String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
     try {

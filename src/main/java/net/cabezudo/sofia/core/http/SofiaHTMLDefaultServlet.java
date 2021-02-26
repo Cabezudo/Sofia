@@ -29,7 +29,7 @@ public class SofiaHTMLDefaultServlet extends DefaultServlet {
     String requestURI = request.getRequestURI();
 
     try {
-      Site site = (Site) request.getAttribute("site");
+      Site site = new SessionManager(request).getSite();
       if (site == null) {
         throw new ServletException("Site for " + domainName + " NOT FOUND.");
       }

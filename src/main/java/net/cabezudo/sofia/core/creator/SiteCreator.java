@@ -36,7 +36,8 @@ public class SiteCreator {
     Path cssPartialPath = Paths.get(voidPartialPathName + ".css");
     Path jsPartialPath = Paths.get(voidPartialPathName + ".js");
 
-    Path fileContentPath = site.getVersionPath().resolve(htmlPartialPath);
+    Path versionPath = site.getVersionPath();
+    Path fileContentPath = versionPath.resolve(htmlPartialPath);
     if (Environment.getInstance().isProduction() && Files.exists(fileContentPath)) {
       return;
     }

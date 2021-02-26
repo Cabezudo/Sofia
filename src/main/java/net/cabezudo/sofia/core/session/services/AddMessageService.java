@@ -29,7 +29,7 @@ public class AddMessageService extends Service {
 
       sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, "messages.sent"));
     } catch (JSONParseException e) {
-      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage());
+      sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), e);
     }
   }
 }

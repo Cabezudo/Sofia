@@ -14,7 +14,6 @@ import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
-import net.cabezudo.sofia.core.system.SystemMonitor;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
 
@@ -36,7 +35,7 @@ public class DeleteSiteHostnameService extends Service {
     try {
       siteId = siteIdToken.toInteger();
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found");
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteIdToken + " not found", e);
       return;
     }
 
@@ -45,7 +44,7 @@ public class DeleteSiteHostnameService extends Service {
     try {
       hostId = hostIdToken.toInteger();
     } catch (InvalidPathParameterException e) {
-      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + hostIdToken + " not found");
+      sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + hostIdToken + " not found", e);
       return;
     }
 
@@ -62,8 +61,7 @@ public class DeleteSiteHostnameService extends Service {
         return;
       }
     } catch (ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
 
     try {
@@ -75,8 +73,7 @@ public class DeleteSiteHostnameService extends Service {
       data.add(new JSONPair("id", hostId));
       sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.host.deleted"));
     } catch (ClusterException e) {
-      SystemMonitor.log(e);
-      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable");
+      sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
   }
 }
