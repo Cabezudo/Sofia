@@ -646,6 +646,6 @@ public class UserManager extends Manager {
   }
 
   public int getTotal(Filters filters, Sort sort, Offset offset, Limit limit, User owner) throws ClusterException {
-    return QueryHelper.getTotal(UsersTable.NAME, UserList.MAX_PAGE_SIZE, "eMailId", validSortColumns, filters, sort, offset, limit, owner);
+    return QueryHelper.getTotal(UsersTable.DATABASE_NAME, UsersTable.NAME, UserList.MAX_PAGE_SIZE, "eMailId", validSortColumns, filters, sort, offset, limit, owner);
   }
 }

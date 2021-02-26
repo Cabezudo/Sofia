@@ -6,7 +6,7 @@ package net.cabezudo.sofia.countries;
  */
 public class CountriesTable {
 
-  public static final String DATABASE = "sofia";
+  public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "countries";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + CountriesTable.NAME + " "

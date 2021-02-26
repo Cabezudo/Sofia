@@ -17,7 +17,7 @@ public class TimeTypeManager extends SimpleCatalogManager<TimeType> {
   private static final TimeTypeManager INSTANCE = new TimeTypeManager();
 
   private TimeTypeManager() {
-    super(TimeTypesTable.DATABASE, TimeTypesTable.NAME);
+    super(TimeTypesTable.DATABASE_NAME, TimeTypesTable.NAME);
   }
 
   public static TimeTypeManager getInstance() {

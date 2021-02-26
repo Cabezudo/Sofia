@@ -8,7 +8,7 @@ import net.cabezudo.sofia.core.languages.LanguagesTable;
  */
 public class WebUserDataTable {
 
-  public static final String DATABASE = "sofia";
+  public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "webUsersData";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -21,8 +21,8 @@ public class WebUserDataTable {
           + "`user` INT NOT NULL DEFAULT 0, "
           + "PRIMARY KEY (`id`), "
           + "UNIQUE INDEX `iSessionId` (`sessionId`(32)), "
-          + "FOREIGN KEY (`countryLanguage`) REFERENCES " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + "(`id`), "
-          + "FOREIGN KEY (`actualLanguage`) REFERENCES " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + "(`id`)"
+          + "FOREIGN KEY (`countryLanguage`) REFERENCES " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`actualLanguage`) REFERENCES " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + "(`id`)"
           + ") "
           + "CHARACTER SET=UTF8";
 

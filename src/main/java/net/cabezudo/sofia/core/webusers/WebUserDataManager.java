@@ -89,9 +89,9 @@ public class WebUserDataManager {
             + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
             + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
             + "`user` "
-            + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
-            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
-            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+            + "FROM " + WebUserDataTable.DATABASE_NAME + "." + WebUserDataTable.NAME + " AS w "
+            + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
+            + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
             + "WHERE sessionId = ?";
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, sessionId);
@@ -130,9 +130,9 @@ public class WebUserDataManager {
             + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
             + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
             + "`user` "
-            + "FROM " + WebUserDataTable.DATABASE + "." + WebUserDataTable.NAME + " AS w "
-            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
-            + "LEFT JOIN " + LanguagesTable.DATABASE + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+            + "FROM " + WebUserDataTable.DATABASE_NAME + "." + WebUserDataTable.NAME + " AS w "
+            + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
+            + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
             + "WHERE w.id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, id);

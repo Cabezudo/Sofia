@@ -8,9 +8,9 @@ import net.cabezudo.sofia.core.words.WordsTable;
  */
 public class CountryNamesTable {
 
-  public static final String DATABASE = "sofia";
+  public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "countryNames";
-  public static final String CREATION_QUERY = WordsTable.getCreationQuery(CountriesTable.DATABASE, CountriesTable.NAME, DATABASE, NAME);
+  public static final String CREATION_QUERY = WordsTable.getCreationQuery(CountriesTable.DATABASE_NAME, CountriesTable.NAME, DATABASE_NAME, NAME);
 
   private CountryNamesTable() {
     // Nothing to do here. Utility classes should not have public constructors.
