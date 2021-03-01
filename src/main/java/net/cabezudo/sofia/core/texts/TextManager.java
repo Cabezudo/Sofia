@@ -45,6 +45,8 @@ public class TextManager {
         return "El nombre de host '" + parameters[0] + "' no existe";
       case "hostname.ok":
         return "El nombre de host '" + parameters[0] + "' es correcto";
+      case "image.upload.ok":
+        return "La imagen fué subida correctamente con el nombre '" + parameters[0] + "'";
       case "lastName.ok":
         return "El apellido es correcto";
       case "login.fail":
