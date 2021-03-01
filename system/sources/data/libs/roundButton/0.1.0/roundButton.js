@@ -6,11 +6,13 @@
 /* global Core */
 
 class RoundButton {
-  constructor(p = {id = null, element = null, type = null, enabled = true, onClick = null, onResponse = null} = {}) {
-    this.enabled = p.enabled;
+  constructor( {id = null, element = null, type = null, enabled = true, onClick = null, onResponse = null} = {}) {
+    this.enabled = enabled;
+    this.element = element;
+    this.onClick = onClick;
 
     const validateOptions = () => {
-      this.element = Core.validateIdOrElement(p.id, p.element);
+      this.element = Core.validateIdOrElement(id, element);
       if (p.type === null) {
         throw Error('You must specify a button type.');
       }
@@ -42,9 +44,9 @@ class RoundButton {
         if (this.element.getAttribute('disabled')) {
           return;
         }
-        if (event.button === 0 && Core.isFunction(p.onClick)) {
+        if (event.button === 0 && Core.isFunction(this.onClick)) {
           this.disable();
-          p.onClick();
+          this.onClick();
         }
       });
     };

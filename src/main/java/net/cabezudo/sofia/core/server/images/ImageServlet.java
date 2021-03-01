@@ -63,6 +63,7 @@ public class ImageServlet extends HttpServlet {
 
     Path basePath = site.getVersionedSourcesPath();
     Path imagePath = basePath.resolve(imagePartialPathName);
+    // TODO store in a cache the time asociated to this image. After a certain time store the values in database in order to get an last use time for the image to create a list of unused images.
     if (!Files.exists(imagePath)) {
       basePath = Configuration.getInstance().getSystemDataPath();
       Logger.debug("File %s DO NOT EXISTS.", imagePath);

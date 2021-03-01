@@ -71,6 +71,10 @@
   ],
   "post": [
     {
+      "path": "/api/v1/images",
+      "class": "net.cabezudo.sofia.core.files.UploadImageFileService"
+    },
+    {
       "path": "/api/v1/sic/tokens/compile",
       "class": "net.cabezudo.sofia.core.sic.CompilerService"
     },
