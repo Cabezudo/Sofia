@@ -141,28 +141,8 @@
       "class": "net.cabezudo.sofia.core.sites.services.SiteModifyDomainNameService"
     },
     {
-      "path": "/api/v1/person/{personId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/enterprise/{enterpriseId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/dish/{dishId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/course/{courseId}",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/year/{year}/month/{month}/day/{day}/courses/publish",
-      "class": ""
-    },
-    {
-      "path": "/api/v1/year/{year}/month/{month}/day/{day}/courses/unpublish",
-      "class": ""
+      "path": "/api/v1/restaurants/{id}",
+      "class": "net.cabezudo.hayquecomer.restaurants.RestaurantUpdateService"
     }
   ],
   "delete": [
