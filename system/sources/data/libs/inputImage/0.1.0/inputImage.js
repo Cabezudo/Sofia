@@ -5,18 +5,17 @@
 
 /* global Core */
 
-class EditableImage {
+class InputImage {
   constructor( { element = null, id = null, imageURL = null, uploadURL = '/api/v1/images', onUpload = null } = {}) {
-    const DRAG_HERE = "Drag the files here";
+    const DRAG_HERE = "Drag the image file here";
     const self = this;
     this.element = element;
     this.id = id;
     this.imageURL = imageURL;
-    console.log(uploadURL);
 
     const validateOptions = () => {
       if (uploadURL === null) {
-        throw Error('Undefined uploadURL property for editableImage');
+        throw Error('Undefined uploadURL property for inputImage');
       }
       this.element = Core.validateIdOrElement(self.id, self.element);
     };
@@ -25,7 +24,7 @@ class EditableImage {
     };
     const createGUI = () => {
       self.uploadElement = document.createElement('DIV');
-      self.uploadElement.classList.add('editableImage');
+      self.uploadElement.classList.add('inputImage');
       this.element.appendChild(self.uploadElement);
       this.inputMessageElement = document.createElement('DIV');
       this.inputMessageElement.classList.add('message');
@@ -83,7 +82,6 @@ class EditableImage {
       };
 
       const fileUpload = (file, filename) => {
-        console.log(filename);
         showThrobber();
         const reader = new FileReader();
         this.xhr = new XMLHttpRequest();
@@ -104,7 +102,6 @@ class EditableImage {
           if (Core.isFunction(onUpload)) {
             onUpload(response);
           }
-          console.log('**** ' + response);
           self.uploadElement.style.backgroundImage = `url('/images/${response.data.filePath}')`;
         }, false);
         this.xhr.addEventListener('error', function (event) {

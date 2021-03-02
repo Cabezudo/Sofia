@@ -3,14 +3,14 @@
  * Author:     Esteban Cabezudo
  */
 
-.editableImage {
+.inputImage {
   display: flex;
   align-items: center;
   flex-grow: 1;
   justify-content: space-around;
 }
 
-.editableImage > .message {
+.inputImage > .message {
   font-weight: 900;
   font-size: 14px;
   color: white;
@@ -19,6 +19,6 @@
   pointer-events:none;
 }
 
-.editableImage > .throbber {
+.inputImage > .throbber {
   display: none;
 }

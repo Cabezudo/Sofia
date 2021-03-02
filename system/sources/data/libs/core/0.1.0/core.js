@@ -468,7 +468,7 @@ const Core = {
             ;
     return {requestId};
   },
-  sendPut: (url, targetElement, formObject) => {
+  sendPut: (url, targetElement, data) => {
     const requestId = Core.getNextRequestId();
     fetch(url, {
       method: "PUT",
@@ -479,7 +479,7 @@ const Core = {
         "RequestId": requestId
       },
       redirect: "follow",
-      body: JSON.stringify(formObject)
+      body: JSON.stringify(data)
     })
             .then(function (response) {
               const headers = response.headers;
