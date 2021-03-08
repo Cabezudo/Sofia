@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.api.options.list;
+package net.cabezudo.sofia.core.list;
 
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.api.options.Option;

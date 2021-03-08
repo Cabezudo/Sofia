@@ -7,7 +7,7 @@ package net.cabezudo.sofia.core.sites;
 public class SitesTable {
 
   private SitesTable() {
-    // Nothing to do here
+    // Utility classes should not have public constructors
   }
   public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "sites";

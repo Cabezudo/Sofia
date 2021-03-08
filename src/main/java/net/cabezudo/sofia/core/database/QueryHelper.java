@@ -10,10 +10,10 @@ import java.util.Set;
 import java.util.TreeSet;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.api.options.OptionValue;
-import net.cabezudo.sofia.core.api.options.list.Filters;
-import net.cabezudo.sofia.core.api.options.list.Limit;
-import net.cabezudo.sofia.core.api.options.list.Offset;
-import net.cabezudo.sofia.core.api.options.list.Sort;
+import net.cabezudo.sofia.core.list.Filters;
+import net.cabezudo.sofia.core.list.Limit;
+import net.cabezudo.sofia.core.list.Offset;
+import net.cabezudo.sofia.core.list.Sort;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
@@ -27,7 +27,7 @@ import net.cabezudo.sofia.logger.Logger;
 public class QueryHelper {
 
   private QueryHelper() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors
   }
 
   public static String getOrderString(Sort sort, String defaultValue, ValidSortColumns validSortColumns) {

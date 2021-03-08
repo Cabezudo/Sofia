@@ -5,6 +5,7 @@
 
 .editableField {
   display: flex;
+  flex-direction: column;
   width: 100%;
 }
 
@@ -23,11 +24,34 @@
 
 .editableField {
   cursor: auto;
+  position: relative;
+  display: inline-block;
 }
 .editableField:hover {
   cursor: pointer;
 }
-.editableField > div {
+
+.editableField > .optionList {
+  position: absolute;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #eee;
+  box-shadow: none;
+  color: #4a4a4a;
+  font-size: 22px;
+  font-family: 'Lato', sans-serif;
+  justify-content: flex-start;
+  padding: calc(.5em - 1px) calc(.75em - 1px);
+  display: none;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.editableField > .optionList > div {
+  padding: 5px 0 ;
+}
+
+/*.editableField > div {
   font-size: 10px;
   font-weight: bold;
   position: absolute;
@@ -41,9 +65,9 @@
   border-radius: 3px;
   padding: 2px 4px;
   align-items: center;
-}
+}*/
 
-.editableField > div.saving {
+/*.editableField > div.saving {
   background-color: #E49100;
 }
 
@@ -53,5 +77,5 @@
 
 .editableField > div.error {
   background-color: #B60002;
-}
+}*/
 

@@ -5,8 +5,8 @@
 
 /* global Core */
 
-const editableField = ({ element = null, id = null, disabled = false, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null, onKeyDown = null } = {}) => {
-  let inputElement, lastValue, lastValueSaved, validationTimer, saveTimer, requestId = 0;
+const editableField = ({ element = null, id = null, disabled = false, optionListURL = null, validationURI = null, updateURI = null, field = null, defaultValue = null, onValid = null, onNotValid = null, onUpdate = null, onKeyDown = null, placeholder = '' } = {}) => {
+  let inputElement, listContainerElement, lastValue, lastValueSaved, validationTimer, saveTimer, requestId = 0;
 
   const validateOptions = () => {
     if (element === null && id === null) {
@@ -33,21 +33,29 @@ const editableField = ({ element = null, id = null, disabled = false, validation
     }
     inputElement.setAttribute('type', 'text');
     inputElement.setAttribute('spellcheck', 'false');
+    inputElement.setAttribute('placeholder', placeholder);
+
     inputElement.value = defaultValue;
     lastValue = defaultValue;
     lastValueSaved = defaultValue;
     element.appendChild(inputElement);
     element.inputElement = inputElement;
     inputElement.data = {validationURI, field};
+
+    if (optionListURL !== null) {
+      listContainerElement = document.createElement('DIV');
+      listContainerElement.className = 'optionList';
+      listContainerElement.innerHTML = '<div>Loading data...</div>';
+      Core.sendGet(optionListURL, listContainerElement);
+      var style = window.getComputedStyle(inputElement, null);
+      listContainerElement.style.width = style.getPropertyValue("width");
+      element.appendChild(listContainerElement);
+    }
   };
   const sendValidationRequest = event => {
     const inputElement = event.srcElement;
-    const data = {
-      field: inputElement.data.field,
-      value: inputElement.value
-    };
     const uri = validationURI.replace('{value}', inputElement.value);
-    const response = Core.sendGet(uri, inputElement, data);
+    const response = Core.sendGet(uri, inputElement);
     requestId = response.requestId;
   };
   const sendUpdateRequest = () => {
@@ -55,6 +63,7 @@ const editableField = ({ element = null, id = null, disabled = false, validation
       return;
     }
     lastValueSaved = inputElement.value;
+    // TODO put a function to return the text  for the actual language
     Core.showMessage({status: "OK", message: `Saving ${field}...`});
     const data = {
       field: inputElement.data.field,
@@ -77,7 +86,12 @@ const editableField = ({ element = null, id = null, disabled = false, validation
     element.addEventListener('toggle', () => {
       element.setAttribute('disabled', !getAttribute('disabled'));
     });
+    inputElement.addEventListener('focusin', event => {
+      listContainerElement.style.display = 'block';
+      sendUpdateRequest(event);
+    });
     inputElement.addEventListener('focusout', event => {
+      listContainerElement.style.display = 'none';
       sendUpdateRequest(event);
     });
     inputElement.addEventListener('response', event => {
@@ -86,7 +100,7 @@ const editableField = ({ element = null, id = null, disabled = false, validation
 
       if (data.status === 'OK') {
         if (data.type === 'UPDATE') {
-          Core.showMessage({status: "OK", message: `Saved ${field}.`});
+          Core.showMessage({status: "OK", message: data.message});
           fieldUpdated = true;
           if (Core.isFunction(onUpdate)) {
             onUpdate();
@@ -139,6 +153,19 @@ const editableField = ({ element = null, id = null, disabled = false, validation
     element.addEventListener("keyup", event => {
       update(event);
     });
+    console.log(listContainerElement);
+    if (listContainerElement) {
+      listContainerElement.addEventListener('response', event => {
+        const {detail} = event;
+        const {data} = detail;
+        Core.removeChilds(listContainerElement);
+        data.list.forEach(elementData => {
+          const item = document.createElement('DIV');
+          item.innerHTML = elementData.name;
+          listContainerElement.appendChild(item);
+        });
+      });
+    }
   };
   validateOptions();
   createGUI();

@@ -7,7 +7,7 @@ package net.cabezudo.sofia.core.html;
 public class HTMLTagFactory {
 
   private HTMLTagFactory() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors
   }
 
   public static Tag get(String line) {

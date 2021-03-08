@@ -7,14 +7,14 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
-import net.cabezudo.sofia.core.EntityList;
+import net.cabezudo.sofia.core.list.EntryList;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.28
  */
 // TODO Extends from Sites, this is a paginated list of sites.
-public class SiteList extends EntityList<Site> {
+public class SiteList extends EntryList<Site> {
 
   Sites sites = new Sites();
 

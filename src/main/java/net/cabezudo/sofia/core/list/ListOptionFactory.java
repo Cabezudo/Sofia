@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.api.options.list;
+package net.cabezudo.sofia.core.list;
 
 import net.cabezudo.sofia.core.api.options.Option;
 import net.cabezudo.sofia.core.ws.servlet.services.InvalidQueryParameterName;

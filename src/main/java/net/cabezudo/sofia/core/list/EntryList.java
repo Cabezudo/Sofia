@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core;
+package net.cabezudo.sofia.core.list;
 
 import net.cabezudo.json.JSONable;
 
@@ -7,7 +7,7 @@ import net.cabezudo.json.JSONable;
  * @version 0.01.00, 2018.10.16
  * @param <T>
  */
-public abstract class EntityList<T> implements JSONable, Iterable<T> {
+public abstract class EntryList<T> implements JSONable, Iterable<T> {
 
   public static final int MAX_PAGE_SIZE = 200;
 
@@ -15,12 +15,12 @@ public abstract class EntityList<T> implements JSONable, Iterable<T> {
   private final int offset;
   private final int pageSize;
 
-  public EntityList(int offset, int pageSize) {
+  public EntryList(int offset, int pageSize) {
     this.offset = offset;
     this.pageSize = pageSize;
   }
 
-  public EntityList(int offset) {
+  public EntryList(int offset) {
     this.offset = offset;
     this.pageSize = MAX_PAGE_SIZE;
   }

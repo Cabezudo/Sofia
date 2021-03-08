@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
-import net.cabezudo.sofia.core.api.options.list.ListOptionFactory;
+import net.cabezudo.sofia.core.list.ListOptionFactory;
 import net.cabezudo.sofia.core.configuration.Configuration;
 
 /**
