@@ -7,7 +7,7 @@ package net.cabezudo.sofia.core.http.url.parser.tokens;
 public class TokenFactory {
 
   private TokenFactory() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors
   }
 
   public static URLToken get(char c) {

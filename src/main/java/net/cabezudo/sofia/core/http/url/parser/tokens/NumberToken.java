@@ -1,5 +1,8 @@
 package net.cabezudo.sofia.core.http.url.parser.tokens;
 
+import java.math.BigDecimal;
+import net.cabezudo.sofia.core.InvalidPathParameterException;
+
 public class NumberToken extends URLToken {
 
   private final String stringValue;
@@ -28,5 +31,10 @@ public class NumberToken extends URLToken {
   @Override
   public Long toLong() {
     return Long.valueOf(intValue);
+  }
+
+  @Override
+  public BigDecimal toBigDecimal() throws InvalidPathParameterException {
+    return new BigDecimal(intValue);
   }
 }

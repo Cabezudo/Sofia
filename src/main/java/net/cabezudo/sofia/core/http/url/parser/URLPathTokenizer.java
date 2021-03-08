@@ -11,7 +11,7 @@ import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 public class URLPathTokenizer {
 
   private URLPathTokenizer() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors
   }
 
   public static URLTokens tokenize(String path) {
