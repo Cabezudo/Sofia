@@ -27,7 +27,7 @@ import net.cabezudo.sofia.logger.Logger;
 public class QueryHelper {
 
   private QueryHelper() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors
   }
 
   public static String getOrderString(Sort sort, String defaultValue, ValidSortColumns validSortColumns) {

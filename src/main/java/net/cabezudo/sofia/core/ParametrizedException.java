@@ -14,6 +14,11 @@ public class ParametrizedException extends Exception {
     this.parameters = parameters;
   }
 
+  public ParametrizedException(String messageKey, ParametrizedException cause) {
+    super(messageKey, cause);
+    this.parameters = cause.getParameters();
+  }
+
   public String[] getParameters() {
     return parameters;
   }

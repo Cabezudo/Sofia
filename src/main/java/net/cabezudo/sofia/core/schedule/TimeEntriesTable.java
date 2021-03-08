@@ -7,7 +7,7 @@ package net.cabezudo.sofia.core.schedule;
 public class TimeEntriesTable {
 
   private TimeEntriesTable() {
-    // Nothing to do here
+    // Utility classes should not have public constructors
   }
   public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "timeEntries";

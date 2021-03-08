@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.http.url.parser.tokens;
 
+import java.math.BigDecimal;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 
 /**
@@ -36,5 +37,10 @@ public class VariableToken extends URLToken {
   @Override
   public Long toLong() {
     throw new ClassCastException("Can't convert a variable to long");
+  }
+
+  @Override
+  public BigDecimal toBigDecimal() throws InvalidPathParameterException {
+    throw new ClassCastException("Can't convert a variable to BigDecimal");
   }
 }

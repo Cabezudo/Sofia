@@ -55,6 +55,7 @@ const editableField = ({ element = null, id = null, disabled = false, validation
       return;
     }
     lastValueSaved = inputElement.value;
+    // TODO put a function to return the text  for the actual language
     Core.showMessage({status: "OK", message: `Saving ${field}...`});
     const data = {
       field: inputElement.data.field,
@@ -86,7 +87,7 @@ const editableField = ({ element = null, id = null, disabled = false, validation
 
       if (data.status === 'OK') {
         if (data.type === 'UPDATE') {
-          Core.showMessage({status: "OK", message: `Saved ${field}.`});
+          Core.showMessage({status: "OK", message: data.message});
           fieldUpdated = true;
           if (Core.isFunction(onUpdate)) {
             onUpdate();

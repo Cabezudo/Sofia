@@ -40,7 +40,7 @@ public class URLTokens extends AbstractList<URLToken> {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     for (URLToken t : list) {
-      sb.append(t.getClass().getSimpleName()).append(" ").append(t.toString()).append('\n');
+      sb.append(t.toString());
     }
     return sb.toString();
   }

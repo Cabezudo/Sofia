@@ -10,7 +10,7 @@ import net.cabezudo.sofia.core.sites.Site;
 public class TextManager {
 
   private TextManager() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors
   }
 
   public static String get(Site site, Language language, String messageKey, Object... parameters) {
@@ -49,8 +49,16 @@ public class TextManager {
         return "La imagen fué subida correctamente con el nombre '" + parameters[0] + "'";
       case "lastName.ok":
         return "El apellido es correcto";
+      case "latitude.invalid":
+        return "Valor inválido para una latitud";
+      case "latitude.ok":
+        return "La latitud tiene un valor válido";
       case "login.fail":
         return "El usuario o la contraseña son incorrectos";
+      case "longitude.invalid":
+        return "Valor inválido para una longitud";
+      case "longitude.ok":
+        return "La longitud tiene un valor válido";
       case "messages.sent":
         return "El mensaje fué enviado";
       case "name.ok":
@@ -71,6 +79,16 @@ public class TextManager {
         return "La contraseña ha sido cambiada";
       case "person.email.in.use":
         return "El correo '" + parameters[0] + "' ya está siendo utilizado por un usuario";
+      case "restaurant.location.invalid":
+        return "El nombre para la ubicación del restaurante no es válido";
+      case "restaurant.name.ok":
+        return "El nombre del restaurante tiene un formato válido";
+      case "restaurant.name.updated":
+        return "El nombre del restaurante fue actualizado.";
+      case "restaurant.name..empty":
+        return "En nombre del restaurante no puede estar vacío";
+      case "restaurant.name.invalidCharacter":
+        return "El nombre del restaurante no puede tener un caracter '" + parameters[0] + "'";
       case "site.host.deleted":
         return "El host fue eliminado";
       case "site.hostname.exist.for.other.site":

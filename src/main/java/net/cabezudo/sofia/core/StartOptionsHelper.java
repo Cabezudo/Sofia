@@ -2,13 +2,10 @@ package net.cabezudo.sofia.core;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -39,8 +36,6 @@ import net.cabezudo.sofia.core.sites.Sites;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameNotExistsException;
-import net.cabezudo.sofia.core.sites.domainname.EmptyDomainNameException;
-import net.cabezudo.sofia.core.sites.domainname.InvalidCharacterException;
 import net.cabezudo.sofia.core.sites.domainname.MissingDotException;
 import net.cabezudo.sofia.core.users.HashTooOldException;
 import net.cabezudo.sofia.core.users.NullHashException;
@@ -49,6 +44,8 @@ import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotFoundByHashException;
 import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.ProfileManager;
+import net.cabezudo.sofia.core.validation.EmptyValueException;
+import net.cabezudo.sofia.core.validation.InvalidCharacterException;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailAddressNotExistException;
 import net.cabezudo.sofia.emails.EMailAddressValidationException;
@@ -222,23 +219,23 @@ class StartOptionsHelper {
           }
         }
         if (fileName.endsWith(".class")) {
-          Path classFilePath = systemClassesPath.resolve(fileName);
-          Path directoryName = classFilePath.getParent();
-          if (!Files.exists(directoryName)) {
-            Files.createDirectories(directoryName);
-          }
-          InputStream is = jarFile.getInputStream(zipEntry);
-          try (OutputStream os = new FileOutputStream(classFilePath.toFile());) {
-            long fileSize = zipEntry.getSize();
-            byte[] allBytes = new byte[(int) fileSize];
-
-            int size = is.read(allBytes);
-            if (size != fileSize) {
-              throw new IOException("Read " + size + "bytes from " + fileSize + " bytes.");
-            }
-            Logger.finest("Copy %s to %s.", zipEntry, classFilePath);
-            os.write(allBytes);
-          }
+//          Path classFilePath = systemClassesPath.resolve(fileName);
+//          Path directoryName = classFilePath.getParent();
+//          if (!Files.exists(directoryName)) {
+//            Files.createDirectories(directoryName);
+//          }
+//          InputStream is = jarFile.getInputStream(zipEntry);
+//          try (OutputStream os = new FileOutputStream(classFilePath.toFile());) {
+//            long fileSize = zipEntry.getSize();
+//            byte[] allBytes = new byte[(int) fileSize];
+//
+//            int size = is.read(allBytes);
+//            if (size != fileSize) {
+//              throw new IOException("Read " + size + "bytes from " + fileSize + " bytes.");
+//            }
+//            Logger.finest("Copy %s to %s.", zipEntry, classFilePath);
+//            os.write(allBytes);
+//          }
           String className = fileName.replace('/', '.').substring(0, fileName.length() - 6);
           Class<?> clazz;
           ClassLoader cl = ClassLoader.getSystemClassLoader();
@@ -299,7 +296,7 @@ class StartOptionsHelper {
       try {
         DomainNameManager.getInstance().validate(baseDomainName);
         validDomain = true;
-      } catch (EmptyDomainNameException e) {
+      } catch (EmptyValueException e) {
         Utils.consoleOutLn("The domain name is empty.");
       } catch (InvalidCharacterException e) {
         Utils.consoleOutLn("Invalid character '" + e.getChar() + "' in domain name");

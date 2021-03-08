@@ -17,6 +17,8 @@ import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.validation.EmptyValueException;
+import net.cabezudo.sofia.core.validation.InvalidCharacterException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -111,9 +113,9 @@ public class DomainNameManager {
     }
   }
 
-  public void validate(String domainName) throws DomainNameMaxSizeException, EmptyDomainNameException, InvalidCharacterException, MissingDotException, DomainNameNotExistsException {
+  public void validate(String domainName) throws DomainNameMaxSizeException, EmptyValueException, InvalidCharacterException, MissingDotException, DomainNameNotExistsException {
     if (domainName.isEmpty()) {
-      throw new EmptyDomainNameException();
+      throw new EmptyValueException();
     }
     if (domainName.length() > DomainName.NAME_MAX_LENGTH) {
       throw new DomainNameMaxSizeException(domainName.length());

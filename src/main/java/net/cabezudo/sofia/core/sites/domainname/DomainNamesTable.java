@@ -9,7 +9,7 @@ import net.cabezudo.sofia.core.sites.SitesTable;
 public class DomainNamesTable {
 
   private DomainNamesTable() {
-    // Nothing to do here
+    // Utility classes should not have public constructors
   }
 
   public static final String NAME = "domains";
