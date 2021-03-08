@@ -7,7 +7,7 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
-import net.cabezudo.sofia.core.EntityList;
+import net.cabezudo.sofia.core.list.EntryList;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.emails.EMail;
@@ -16,7 +16,7 @@ import net.cabezudo.sofia.emails.EMail;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2021.02.24
  */
-public class UserList extends EntityList<UserForList> {
+public class UserList extends EntryList<UserForList> {
 
   private final List<UserForList> list = new ArrayList<>();
 

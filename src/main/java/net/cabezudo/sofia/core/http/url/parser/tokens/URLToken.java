@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.http.url.parser.tokens;
 
+import java.math.BigDecimal;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 
 /**
@@ -12,6 +13,8 @@ public abstract class URLToken {
   public abstract String toString();
 
   public abstract Integer toInteger() throws InvalidPathParameterException;
+
+  public abstract BigDecimal toBigDecimal() throws InvalidPathParameterException;
 
   public abstract Long toLong() throws InvalidPathParameterException;
 
@@ -34,4 +37,5 @@ public abstract class URLToken {
   public boolean match(URLToken t) {
     return this.isVariable() || t.isVariable() || this.toString().equals(t.toString());
   }
+
 }

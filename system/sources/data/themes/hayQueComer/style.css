@@ -140,7 +140,7 @@ body, html {
 }
 
 .field:not(:last-child) {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-weight: 300;
 }
 
@@ -225,7 +225,7 @@ footer {
   }
 
   .field:not(:last-child) {
-    margin-bottom: 28px;
+    margin-bottom: 10px;
   }
 
   .secondButtonContainer {
@@ -251,6 +251,10 @@ footer {
   .firstButtonContainer {
     flex-direction: row;
     justify-content: center;
+  }
+  .formContainer {
+    width: 680px;
+    margin: auto;
   }
 }
 

@@ -10,7 +10,7 @@ import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 public class TimeFactory {
 
   private TimeFactory() {
-    // Nothing to do here
+    // Utility classes should not have public constructors
   }
 
   public static AbstractTime get(int id, TimeType type, int index, int start, int end) throws ClusterException {

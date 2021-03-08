@@ -19,7 +19,7 @@ import net.cabezudo.sofia.logger.Logger;
 public class FileHelper {
 
   private FileHelper() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors
   }
 
   public static void copyDirectory(Path src, Path dest) throws IOException {

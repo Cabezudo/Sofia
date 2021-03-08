@@ -1,8 +1,8 @@
 package net.cabezudo.sofia.core.ws;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.sofia.core.APIEntries;
 import net.cabezudo.sofia.core.APIEntry;
@@ -15,7 +15,7 @@ import org.eclipse.jetty.http.HttpMethod;
  */
 abstract class WebServices implements Iterable<WebService> {
 
-  private final List<WebService> methods = new ArrayList<>();
+  private final Set<WebService> methods = new TreeSet<>();
 
   void add(APIEntries apiEntries) throws PropertyNotExistException, ClassNotFoundException {
     if (apiEntries == null) {

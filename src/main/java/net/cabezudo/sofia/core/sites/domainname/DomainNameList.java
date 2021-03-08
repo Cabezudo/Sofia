@@ -5,14 +5,14 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
-import net.cabezudo.sofia.core.EntityList;
+import net.cabezudo.sofia.core.list.EntryList;
 import net.cabezudo.sofia.core.Utils;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.01.28
  */
-public class DomainNameList extends EntityList<DomainName> {
+public class DomainNameList extends EntryList<DomainName> {
 
   private final DomainNames domainNames = new DomainNames();
 

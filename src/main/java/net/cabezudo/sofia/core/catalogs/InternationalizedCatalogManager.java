@@ -11,6 +11,8 @@ import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
+import net.cabezudo.sofia.core.list.Filters;
+import net.cabezudo.sofia.core.list.InternationalizedCatalogListable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -117,7 +119,6 @@ public abstract class InternationalizedCatalogManager<T extends Internationalize
   }
 
   public T get(Connection connection, Language language, String value) throws ClusterException {
-
     String query
             = "SELECT c.id AS id "
             + "FROM " + catalogDatabaseName + "." + catalogTableName + " AS c "
@@ -140,4 +141,38 @@ public abstract class InternationalizedCatalogManager<T extends Internationalize
     }
     return null;
   }
+
+  public InternationalizedCatalogListable list(Language language, Filters filters, InternationalizedCatalogListable list) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
+      return list(connection, language, filters, list);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    }
+  }
+
+  public InternationalizedCatalogListable list(Connection connection, Language language, Filters filters, InternationalizedCatalogListable list) throws ClusterException {
+    String query
+            = "SELECT rt.id AS id, IFNULL("
+            + "("
+            + "SELECT value FROM " + wordsDatabaseName + "." + wordsTableName + " AS rtn WHERE rt.id = rtn.id AND language = ?), "
+            + "CONCAT('[', (SELECT value FROM " + wordsDatabaseName + "." + wordsTableName + " AS rtn WHERE rt.id = rtn.id limit 1), ']')) AS value "
+            + "FROM " + catalogDatabaseName + "." + catalogTableName + " AS rt;";
+    ResultSet rs = null;
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
+      ps.setInt(1, language.getId());
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      while (rs.next()) {
+        int id = rs.getInt("id");
+        String value = rs.getString("value");
+        list.add((T) createObject(id, language, value));
+      }
+      return list;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
+    }
+  }
+
+  protected abstract T createObject(int id, Language language, String value);
 }
