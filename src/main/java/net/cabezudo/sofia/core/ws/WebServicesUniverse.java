@@ -66,6 +66,7 @@ public class WebServicesUniverse {
     }
 
     for (WebService webService : webServices) {
+      System.out.println(tokens + "\n" + webService.getPath() + "\n\n");
       if (tokens.match(webService.getPath())) {
         Class<?> classToLoad = Class.forName(webService.getClassName());
         Logger.debug("Load web service class: %s.", webService.getClassName());
