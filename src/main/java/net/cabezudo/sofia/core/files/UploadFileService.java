@@ -65,7 +65,7 @@ public abstract class UploadFileService extends Service {
           outStream.write(buffer);
         }
 
-        out.print(getOKResponse().toJSON(site, webUserData.getActualLanguage()));
+        out.print(getOKResponse().toJSON(webUserData.getActualLanguage()));
       } else {
         response.sendError(HttpServletResponse.SC_BAD_REQUEST, "The request MUST be multipart.");
       }

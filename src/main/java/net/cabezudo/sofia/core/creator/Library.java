@@ -10,8 +10,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.logger.Logger;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -23,6 +23,7 @@ public class Library {
   private final String version;
   private final List<JSSourceFile> jsSourceFiles = new ArrayList<>();
   private final List<CSSSourceFile> cssSourceFiles = new ArrayList<>();
+  private final List<TextsFile> textsFiles = new ArrayList<>();
   private final Caller caller;
 
   Library(Site site, String reference, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException {
@@ -58,6 +59,10 @@ public class Library {
     return cssSourceFiles;
   }
 
+  List<TextsFile> getTextsFiles() {
+    return textsFiles;
+  }
+
   private void loadFiles(Site site, Path basePath, Path partialPath, TemplateVariables templateVariables, Caller caller) throws IOException, LocatedSiteCreationException {
     Path libraryPath = basePath.resolve(partialPath);
     if (Files.isDirectory(libraryPath)) {
@@ -83,6 +88,12 @@ public class Library {
           CSSSourceFile file = new CSSSourceFile(site, basePath, partialFilePath, templateVariables, caller);
           file.load(basePath, partialFilePath.toString(), caller);
           cssSourceFiles.add(file);
+        }
+        if (filePath.toString().endsWith("texts.json")) {
+          Logger.debug("Texts file %s FOUND.", filePath);
+          TextsFile file = new TextsFile();
+          file.load(filePath);
+          textsFiles.add(file);
         }
       }
     }

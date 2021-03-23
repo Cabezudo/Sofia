@@ -55,7 +55,7 @@ public class WebServicesServlet extends HttpServlet {
     try {
       WebServicesUniverse.getInstance().runPOST(request, response, tokens);
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new RuntimeException(e);
+      throw new SofiaRuntimeException(e);
     } catch (WebServiceNotFoundException e) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }
@@ -69,7 +69,7 @@ public class WebServicesServlet extends HttpServlet {
     try {
       WebServicesUniverse.getInstance().runPUT(request, response, tokens);
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new RuntimeException(e);
+      throw new SofiaRuntimeException(e);
     } catch (WebServiceNotFoundException e) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }
@@ -85,7 +85,7 @@ public class WebServicesServlet extends HttpServlet {
     try {
       WebServicesUniverse.getInstance().runDELETE(request, response, tokens);
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-      throw new RuntimeException(e);
+      throw new SofiaRuntimeException(e);
     } catch (WebServiceNotFoundException e) {
       response.sendError(HttpServletResponse.SC_NOT_FOUND, e.getMessage());
     }

@@ -37,6 +37,7 @@ import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameMaxSizeException;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameNotExistsException;
 import net.cabezudo.sofia.core.sites.domainname.MissingDotException;
+import net.cabezudo.sofia.core.sites.texts.TextManager;
 import net.cabezudo.sofia.core.users.HashTooOldException;
 import net.cabezudo.sofia.core.users.NullHashException;
 import net.cabezudo.sofia.core.users.User;
@@ -215,6 +216,19 @@ class StartOptionsHelper {
               jsonAPIDefinition = JSON.parse(apiDefinition).toJSONObject();
             } catch (JSONParseException e) {
               throw new ConfigurationException("Can't parse the JAR entry META-INF/apiDefinition.json. " + e.getMessage(), e);
+            }
+          }
+        }
+        if ("META-INF/texts.json".equals(fileName)) {
+          Logger.debug("Read texts.json from %s.", jarFileName);
+          InputStream is = jarFile.getInputStream(zipEntry);
+          try (InputStreamReader isr = new InputStreamReader(is)) {
+            String texts = new BufferedReader(isr).lines().collect(Collectors.joining("\n"));
+            try {
+              JSONObject jsonTexts = JSON.parse(texts).toJSONObject();
+              TextManager.add(jsonTexts);
+            } catch (JSONParseException e) {
+              throw new ConfigurationException("Can't parse the JAR entry META-INF/texts.json. " + e.getMessage(), e);
             }
           }
         }

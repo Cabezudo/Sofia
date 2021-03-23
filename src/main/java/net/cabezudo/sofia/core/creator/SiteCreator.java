@@ -2,10 +2,14 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
@@ -35,6 +39,7 @@ public class SiteCreator {
     Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");
     Path cssPartialPath = Paths.get(voidPartialPathName + ".css");
     Path jsPartialPath = Paths.get(voidPartialPathName + ".js");
+    Path textsPartialPath = Paths.get(voidPartialPathName);
 
     Path versionPath = site.getVersionPath();
     Path fileContentPath = versionPath.resolve(htmlPartialPath);
@@ -51,6 +56,7 @@ public class SiteCreator {
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e.getMessage());
     }
+
     String themeName = templateVariables.get("themeName");
     if (themeName == null) {
       throw new SiteCreationException("Can't find the theme for the site in the " + Site.COMMONS_FILE_NAME + " file.");
@@ -83,6 +89,21 @@ public class SiteCreator {
     // Read all the CSS files from the CSS path
     Path cssFilePath = site.getFilesPath(cssPartialPath);
     cssFile.save(cssFilePath);
+
+    TextsFile textsFile = new TextsFile();
+
+    Path commonsFileTextsPath = site.getVersionedSourcesPath().resolve(Site.TEXTS_FILE_NAME);
+    try {
+      JSONObject jsonTexts = JSON.parse(commonsFileTextsPath, Configuration.getDefaultCharset().toString()).toJSONObject();
+      Logger.debug("Trying to load common text file %s.", commonsFileTextsPath);
+      textsFile.add(jsonTexts);
+    } catch (NoSuchFileException nsfe) {
+      Logger.debug("Common texts file %s NOT FOUND.", commonsFileTextsPath);
+    }
+
+    textsFile.add(baseFile.getLibraries());
+    Path textsFilePath = site.getFilesPath(textsPartialPath);
+    textsFile.save(textsFilePath);
 
     Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
     baseFile.save(htmlFilePath);

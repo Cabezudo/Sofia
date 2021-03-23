@@ -3,8 +3,7 @@ package net.cabezudo.sofia.core.ws.responses;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.languages.Language;
-import net.cabezudo.sofia.core.sites.Site;
-import net.cabezudo.sofia.core.texts.TextManager;
+import net.cabezudo.sofia.core.sites.texts.TextManager;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,7 +12,7 @@ import net.cabezudo.sofia.core.texts.TextManager;
 public class Response {
 
   public enum Type {
-    ACTION, CREATE, DATA, READ, SET, UPDATE, DELETE, VALIDATION
+    ACTION, CREATE, DATA, READ, SET, UPDATE, DELETE, VALIDATION, NOT_FOUND, INVALID
   }
 
   public enum Status {
@@ -39,12 +38,12 @@ public class Response {
     this.os = os;
   }
 
-  public JSONObject toJSON(Site site, Language language) {
+  public JSONObject toJSON(Language language) {
     if (jsonObject == null) {
       jsonObject = new JSONObject();
       jsonObject.add(new JSONPair("status", status.toString()));
       jsonObject.add(new JSONPair("type", messageType.toString()));
-      jsonObject.add(new JSONPair("message", TextManager.get(site, language, message, os)));
+      jsonObject.add(new JSONPair("message", TextManager.get(language, message, os)));
       if (data != null) {
         jsonObject.add(new JSONPair("data", data));
       }

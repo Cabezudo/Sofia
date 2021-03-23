@@ -6,4 +6,12 @@ package net.cabezudo.sofia.core.validation;
  */
 public class SofiaValidationException extends Exception {
 
+  public SofiaValidationException() {
+    super();
+  }
+
+  public SofiaValidationException(String message) {
+    super(message);
+  }
+
 }

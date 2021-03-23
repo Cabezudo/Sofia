@@ -17,6 +17,10 @@
   padding: calc(.5em - 1px) calc(.75em - 1px);
 }
 
+.editableField > input.valueNotFound {
+  color: darkred;
+}
+
 .editableField > input[focused] {
   outline: none;
   border: 0;
@@ -27,10 +31,6 @@
   position: relative;
   display: inline-block;
 }
-.editableField:hover {
-  cursor: pointer;
-}
-
 .editableField > .optionList {
   position: absolute;
   align-items: center;
@@ -49,6 +49,10 @@
 
 .editableField > .optionList > div {
   padding: 5px 0 ;
+}
+
+.editableField > .optionList > div {
+  cursor: pointer;
 }
 
 /*.editableField > div {

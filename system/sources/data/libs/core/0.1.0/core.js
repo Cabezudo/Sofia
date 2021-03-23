@@ -27,7 +27,6 @@ const Core = {
   loaderDiv: null,
   pageParameters: new URLSearchParams(location.search),
   lastSection: null,
-  texts: {},
   showMessage: (messageObject) => {
     if (Core.messagesContainer !== null) {
       Core.trigger(Core.messagesContainer, 'showMessage', messageObject);
@@ -62,7 +61,7 @@ const Core = {
     Core.setPageFunctions.push(func);
   },
   addTexts: texts => {
-    Core.texts = Object.assign(Core.texts, texts);
+    variables.texts = Object.assign(variables.texts, texts);
   },
   changeLanguageTo: language => {
     variables.site.language = language;
@@ -93,22 +92,17 @@ const Core = {
     Core.trigger(element, 'disabled');
   },
   displayTexts: () => {
-    const language = variables.site.language;
-    console.log('run displayTexts()');
-    console.log(`variables.site.language: ${language}`);
-    const languageData = Core.texts[language];
-    console.log(`languageData: ${languageData}`);
-    if (languageData) {
-      for (const [key, value] of Object.entries(languageData)) {
-        console.log(`${key} ${value}`);
-        const element = document.getElementById(key);
-        console.log(element);
-        if (element) {
-          element.innerHTML = value;
-        }
-      }
+    let pathname = window.location.pathname.toLowerCase();
+    if (pathname === '/') {
+      pathname = '/index.html';
     }
-    ;
+    const pageName = pathname.replace('.html', '').replaceAll('/', '.');
+    const url = `/api/v1/sites/${variables.site.id}/pages/${pageName}/texts/${variables.site.language}`;
+    Core.sendGet(url, response => {
+      const texts = response.data;
+      console.log(texts);
+      Core.addTexts(texts);
+    });
   },
   enable: element => {
     Core.trigger(element, 'enabled');
@@ -152,17 +146,19 @@ const Core = {
   getRequestId: () => {
     return Core.requestId;
   },
-  getText: key => {
-    console.log(`Get the text for de key ${key}`);
-    const text = Core.texts[variables.site.language][key];
-    if (text) {
-      return text;
+  getText: (key, values) => {
+    let text = variables.texts[key];
+    if (!text) {
+      throw new Error(`Invalid key for text: ${key}`);
     }
-    const englishText = Core.texts['en'][key];
-    if (englishText) {
-      return englishText;
+    if (Core.isArray(values)) {
+      let i = 0;
+      values.forEach(value => {
+        text = text.replaceAll(`{${i}}`, value);
+        i++;
+      });
     }
-    return `[${key}]`;
+    return text;
   },
   getTimezoneOffset: () => {
     return  (new Date()).getTimezoneOffset();
@@ -194,6 +190,9 @@ const Core = {
   },
   inFocus: element => {
     return element === document.activeElement;
+  },
+  isArray: v => {
+    return Object.prototype.toString.call(v) === '[object Array]';
   },
   isEnter: event => {
     return event.key === 'Enter';

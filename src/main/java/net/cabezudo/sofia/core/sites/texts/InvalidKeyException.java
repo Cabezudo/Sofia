@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.texts;
+package net.cabezudo.sofia.core.sites.texts;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

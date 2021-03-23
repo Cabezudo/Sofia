@@ -194,6 +194,7 @@ public class WebServer {
     }
 
     Configuration.getInstance().loadAPIConfiguration(defaultDataCreators);
+    Configuration.getInstance().loadTexts();
 
     Logger.info("Starting server...");
     int port = Configuration.getInstance().getServerPort();
