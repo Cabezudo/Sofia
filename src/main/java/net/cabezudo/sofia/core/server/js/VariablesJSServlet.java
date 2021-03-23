@@ -1,13 +1,18 @@
 package net.cabezudo.sofia.core.server.js;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
+import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.sites.texts.TextManager;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
@@ -20,7 +25,7 @@ import net.cabezudo.sofia.emails.EMailNotExistException;
  */
 public class VariablesJSServlet {
 
-  public String getScript(HttpServletRequest request) throws ServletException, IOException, EMailNotExistException, ClusterException {
+  public String getScript(HttpServletRequest request) throws ServletException, IOException, EMailNotExistException, ClusterException, JSONParseException, URISyntaxException {
     SessionManager sessionManager = new SessionManager(request);
     WebUserData webUserData = sessionManager.getWebUserData();
 
@@ -30,10 +35,23 @@ public class VariablesJSServlet {
 
     String requestURI = request.getRequestURI();
 
-    int i = requestURI.lastIndexOf("/");
-
     String lastPage = (String) request.getSession().getAttribute("lastPage");
     String goBackPage = (String) request.getSession().getAttribute("goBackPage");
+
+    String texts = null;
+    String referrer = request.getHeader("referer");
+    if (referrer != null) {
+      URI uri = new URI(referrer);
+      String path = uri.getPath();
+      String page;
+      if (path.equals("/")) {
+        page = "/index";
+      } else {
+        page = path.substring(0, path.length() - 5);
+      }
+      JSONObject jsonTexts = TextManager.get(site, page, actualLanguage);
+      texts = jsonTexts.toJSON();
+    }
 
     StringBuilder sb = new StringBuilder();
 
@@ -83,7 +101,8 @@ public class VariablesJSServlet {
     sb.append("  site: {\n");
     sb.append("    id: \"").append(site.getId()).append("\",\n");
     sb.append("    language: \"").append(actualLanguage.getTwoLettersCode()).append("\"\n");
-    sb.append("  }\n");
+    sb.append("  },\n");
+    sb.append("  texts: ").append(texts).append("\n");
     sb.append("};\n");
     sb.append("\n");
     return sb.toString();

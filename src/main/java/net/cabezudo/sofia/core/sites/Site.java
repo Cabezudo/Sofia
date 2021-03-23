@@ -21,6 +21,7 @@ import net.cabezudo.sofia.emails.EMail;
 public class Site implements Comparable<Integer> {
 
   public static final String COMMONS_FILE_NAME = "commons.json";
+  public static final String TEXTS_FILE_NAME = "texts.json";
   public static final int NAME_MAX_LENGTH = 80;
 
   private final Integer id;

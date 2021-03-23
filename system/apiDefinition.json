@@ -1,6 +1,10 @@
 {
   "get": [
     {
+      "path": "/api/v1/sites/{siteId}/pages/{page}/texts/{language}",
+      "class": "net.cabezudo.sofia.core.sites.texts.SiteTextsService"
+    },
+    {
       "path": "/api/v1/sites/metadata",
       "class": "net.cabezudo.sofia.core.sites.services.SiteListMetadataService"
     },
@@ -139,10 +143,6 @@
     {
       "path": "/api/v1/sites/{siteId}/hosts/{hostId}",
       "class": "net.cabezudo.sofia.core.sites.services.SiteModifyDomainNameService"
-    },
-    {
-      "path": "/api/v1/restaurants/{id}",
-      "class": "net.cabezudo.hayquecomer.restaurants.RestaurantUpdateService"
     }
   ],
   "delete": [

@@ -1014,3 +1014,12 @@ text: {
 }
 
 
+
+Para agregar textos a páginas.
+1. Agergarlo en el archivo texts.json del raiz del sitio
+2. Usar un archivo [nombrePagina].texts.json (falta)
+3. Usando Core.addTexts en el código JS. Solo funciona para el idioma actual.
+
+Para agregar textos en back
+1. Agregarlo en src/main/resources/texts.json y usar TextManager.get
+

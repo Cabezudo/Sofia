@@ -85,7 +85,7 @@ public abstract class Service<T extends Response> {
   }
 
   protected void sendResponse(T response) throws ServletException {
-    out.print(response.toJSON(site, webUserData.getActualLanguage()));
+    out.print(response.toJSON(webUserData.getActualLanguage()));
   }
 
   private String readPayload() throws ServletException {

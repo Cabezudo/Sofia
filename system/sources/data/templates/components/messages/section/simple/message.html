@@ -3,12 +3,9 @@
   (() => {
     const createGUI = () => {
       console.log('Create GUI for simpleStaticMessage:0.1.0');
-      simpleStaticMessage({id: 'simpleStaticMessage'});
+      simpleStaticMessage({id: 'simpleStaticMessage', defaultMessage: {status: "MESSAGE", message: '#{message.default}'}});
     };
     Core.addOnloadFunction(createGUI);
-    Core.addSetFunction(() => {
-      Core.showMessage({status: "MESSAGE", message: '#{message.default}'});
-    });
   }
   )();
 </script>

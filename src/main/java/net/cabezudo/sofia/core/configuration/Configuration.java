@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -13,10 +15,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Properties;
+import net.cabezudo.json.JSON;
+import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.Database;
 import net.cabezudo.sofia.core.database.DatabaseCreators;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.sites.texts.TextManager;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -424,5 +431,22 @@ public final class Configuration {
 
   public Path getClusterFileLogPath() {
     return clusterFileLogPath;
+  }
+
+  public void loadTexts() throws JSONParseException, IOException {
+
+    URL resource = getClass().getClassLoader().getResource("texts.json");
+    if (resource == null) {
+      throw new IllegalArgumentException("file not found!");
+    }
+
+    Path textsFilePath;
+    try {
+      textsFilePath = Paths.get(resource.toURI());
+    } catch (URISyntaxException e) {
+      throw new SofiaRuntimeException(e);
+    }
+    JSONObject jsonTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset().toString()).toJSONObject();
+    TextManager.add(jsonTexts);
   }
 }

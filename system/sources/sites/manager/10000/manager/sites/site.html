@@ -41,7 +41,7 @@
             const {detail} = event;
             siteData = detail.data;
 
-            editableField({
+            new EditableField({
               id: 'nameInput',
               validationURI: `/api/v1/sites/${siteData.id}/names/{value}/validate`,
               updateURI: `/api/v1/sites/${siteData.id}`,
@@ -150,7 +150,7 @@
             editableFieldContainerDiv.className = 'editableFieldContainerDiv';
             const editableFieldDiv = document.createElement('div');
             editableFieldDiv.id = `host:${hostId}`;
-            editableField({
+            new EditableField({
               element: editableFieldDiv,
               disabled: baseDomain,
               validationURI: `/api/v1/sites/${siteId}/hosts/${hostId}/names/{value}/validate`,
