@@ -1,42 +1,40 @@
 package net.cabezudo.sofia.core.schedule;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import net.cabezudo.json.values.JSONArray;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.09.22
  */
-public class Times {
+public class Times implements Iterable<AbstractTime> {
 
-  private final Map<Integer, List<AbstractTime>> map = new TreeMap<>();
+  private final List<AbstractTime> list = new ArrayList<>();
 
-  public void add(int id, AbstractTime time) {
-    List<AbstractTime> list = map.get(id);
-    if (list == null) {
-      list = new ArrayList<>();
-      map.put(id, list);
-    }
+  public void add(AbstractTime time) {
     list.add(time);
   }
 
-  public Iterable<AbstractTime> getAll() {
-    List<AbstractTime> list = new ArrayList<>();
-    map.entrySet().forEach(entry -> entry.getValue().forEach(time -> list.add(time)));
-    return list;
-  }
-
-  public Iterable<AbstractTime> getByIdl(int id) {
-    return map.get(id);
-  }
-
   public int size() {
-    return map.size();
+    return list.size();
   }
 
   public boolean isNotEmpty() {
-    return !map.isEmpty();
+    return !list.isEmpty();
+  }
+
+  public JSONArray toJSONTree() {
+    JSONArray jsonTimes = new JSONArray();
+    for (AbstractTime time : list) {
+      jsonTimes.add(time.toJSONTree());
+    }
+    return jsonTimes;
+  }
+
+  @Override
+  public Iterator<AbstractTime> iterator() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

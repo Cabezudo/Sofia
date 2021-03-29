@@ -8,6 +8,7 @@
   align-items: center;
   flex-grow: 1;
   justify-content: space-around;
+  background-size: cover;
 }
 
 .inputImage > .message {

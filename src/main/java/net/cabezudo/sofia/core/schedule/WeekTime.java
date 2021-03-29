@@ -8,8 +8,8 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
  */
 public class WeekTime extends AbstractTime {
 
-  public WeekTime(int id, int index, int start, int end) throws ClusterException {
-    super(id, TimeTypeManager.getInstance().get("week"), index, start, end);
+  public WeekTime(int index, Hour from, Hour to) throws ClusterException {
+    super(TimeType.WEEK, index, from, to);
   }
 
   @Override

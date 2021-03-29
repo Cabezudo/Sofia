@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.addresses;
 
+import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.settlements.Settlement;
 import net.cabezudo.sofia.streets.Street;
@@ -24,6 +25,10 @@ public class Address {
     this.settlement = settlement;
     this.postalCode = postalCode;
     this.reference = reference;
+  }
+
+  Address(JSONObject jsonAddress) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
   public Street getStreet() {
@@ -51,6 +56,13 @@ public class Address {
   }
 
   public JSONObject toJSONTree() {
-    return new JSONObject();
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.add(new JSONPair("street", street.toJSONTree()));
+    jsonObject.add(new JSONPair("exteriorNumber", exteriorNumber));
+    jsonObject.add(new JSONPair("interiorNumber", interiorNumber));
+    jsonObject.add(new JSONPair("settlement", settlement.toJSONTree()));
+    jsonObject.add(new JSONPair("postalCode", postalCode));
+    jsonObject.add(new JSONPair("reference", reference));
+    return jsonObject;
   }
 }

@@ -2,8 +2,6 @@ package net.cabezudo.sofia.core.schedule;
 
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.Utils;
-import net.cabezudo.sofia.core.schedule.Event;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -12,18 +10,18 @@ import net.cabezudo.sofia.core.schedule.Event;
 public class OpenTime {
 
   private final int day;
-  private final Event start;
-  private final Event end;
+  private final Event from;
+  private final Event to;
 
-  public OpenTime(int day, Event start, Event end) {
+  public OpenTime(int day, Event from, Event to) {
     this.day = day;
-    this.start = start;
-    this.end = end;
+    this.from = from;
+    this.to = to;
   }
 
   @Override
   public String toString() {
-    return "[ " + day + ", " + Utils.toHour(start.getTime()) + ", " + Utils.toHour(end.getTime()) + " ]";
+    return "[ " + day + ", " + from.getHour().toHHmm() + ", " + to.getHour().toHHmm() + " ]";
   }
 
   public int getDay() {
@@ -31,17 +29,17 @@ public class OpenTime {
   }
 
   public Event getStart() {
-    return start;
+    return from;
   }
 
   public boolean isOpen(int time) {
-    return start.getTime() <= time && time < end.getTime();
+    return from.getHour().getTime() <= time && time < to.getHour().getTime();
   }
 
   public JSONObject toJSONTree() {
     JSONObject jsonObject = new JSONObject();
-    jsonObject.add(new JSONPair("start", Utils.toHour(start.getTime())));
-    jsonObject.add(new JSONPair("end", Utils.toHour(end.getTime())));
+    jsonObject.add(new JSONPair("from", from.getHour().toHHmm()));
+    jsonObject.add(new JSONPair("to", to.getHour().toHHmm()));
     return jsonObject;
   }
 }

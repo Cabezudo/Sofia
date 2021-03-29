@@ -1,11 +1,15 @@
 package net.cabezudo.sofia.core.schedule;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.cluster.ClusterException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -13,25 +17,13 @@ import net.cabezudo.json.values.JSONObject;
  */
 public class Schedule {
 
-  private final int id;
   private final Set<AbstractTime> set = new TreeSet<>();
 
-  public Schedule(ScheduleHelper schedule) {
-    this.id = schedule.getId();
-
-    if (!schedule.isEmpty()) {
-      for (AbstractTime time : schedule) {
-        set.add(time);
-      }
+  public Schedule(JSONArray jsonSchedule) throws ClusterException, JSONParseException {
+    for (JSONValue jsonValue : jsonSchedule) {
+      AbstractTime abstractTime = TimeFactory.get(jsonValue.toJSONObject());
+      set.add(abstractTime);
     }
-  }
-
-  public Schedule(int id) {
-    this.id = id;
-  }
-
-  public int getId() {
-    return id;
   }
 
   public String toJSON() {
@@ -41,12 +33,10 @@ public class Schedule {
   public JSONObject toJSONTree() {
     JSONObject jsonObject = new JSONObject();
 
-    jsonObject.add(new JSONPair("id", id));
-
     JSONArray jsonTimes = new JSONArray();
-    for (AbstractTime time : set) {
+    set.forEach(time -> {
       jsonTimes.add(time.toJSONTree());
-    }
+    });
     jsonObject.add(new JSONPair("times", jsonTimes));
     return jsonObject;
   }
@@ -55,7 +45,7 @@ public class Schedule {
     set.add(time);
   }
 
-  public ArrayList<AbstractTime> getTimeList() {
+  public List<AbstractTime> getTimeList() {
     return new ArrayList<>(set);
   }
 }

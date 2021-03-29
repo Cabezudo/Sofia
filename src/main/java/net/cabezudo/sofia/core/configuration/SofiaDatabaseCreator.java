@@ -22,7 +22,6 @@ import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.languages.LanguageManager;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
 import net.cabezudo.sofia.core.schedule.TimeEntriesTable;
-import net.cabezudo.sofia.core.schedule.TimeTypeManager;
 import net.cabezudo.sofia.core.schedule.TimeTypesTable;
 import net.cabezudo.sofia.core.schedule.TimesTable;
 import net.cabezudo.sofia.core.sites.SitesTable;
@@ -149,7 +148,6 @@ public class SofiaDatabaseCreator extends DataCreator {
       Language language;
       language = LanguageManager.getInstance().get("es");
       createPostalCodes(language, country, null);
-      createTimeTypes();
     } catch (ClusterException e) {
       throw new DataCreationException(e);
     } catch (InvalidTwoLettersCodeException e) {
@@ -183,7 +181,7 @@ public class SofiaDatabaseCreator extends DataCreator {
 
   private void createPostalCodes(Language language, Country country, User owner) throws ClusterException {
     Logger.info("Create postal codes.");
-    Path postalCodesPath = Configuration.getInstance().getSystemDataPath().resolve("postalCodes.csv");
+    Path postalCodesPath = Configuration.getInstance().getSystemResourcesPath().resolve("postalCodes.csv");
     if (Files.exists(postalCodesPath)) {
       createPostalCodesFromFile(language, country, owner, postalCodesPath);
     }
@@ -237,13 +235,5 @@ public class SofiaDatabaseCreator extends DataCreator {
     } catch (IOException e) {
       throw new RuntimeConfigurationException(e);
     }
-  }
-
-  private void createTimeTypes() throws ClusterException {
-    TimeTypeManager.getInstance().add("time");
-    TimeTypeManager.getInstance().add("day");
-    TimeTypeManager.getInstance().add("week");
-    TimeTypeManager.getInstance().add("month");
-    TimeTypeManager.getInstance().add("year");
   }
 }

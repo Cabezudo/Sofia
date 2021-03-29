@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import net.cabezudo.json.values.JSONArray;
-import net.cabezudo.sofia.core.schedule.Event;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -14,8 +13,8 @@ public class OpenTimes implements Iterable<OpenTime> {
 
   private final List<OpenTime> list = new ArrayList<>();
 
-  public void add(int day, Event start, Event end) {
-    OpenTime openTime = new OpenTime(day, start, end);
+  public void add(int day, Event open, Event close) {
+    OpenTime openTime = new OpenTime(day, open, close);
     list.add(openTime);
   }
 

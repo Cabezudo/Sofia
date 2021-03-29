@@ -44,4 +44,8 @@ public class Street {
   public String toString() {
     return "[ id = " + id + ", name = " + name + " ]";
   }
+
+  public Object toJSONTree() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

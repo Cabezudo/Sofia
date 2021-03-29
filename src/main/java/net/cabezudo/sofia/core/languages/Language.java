@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.languages;
 
+import java.util.Objects;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 
@@ -7,7 +8,7 @@ import net.cabezudo.json.values.JSONObject;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.08.11
  */
-public class Language {
+public class Language implements Comparable<Language> {
 
   private final int id;
   private final String twoLetterCode;
@@ -21,7 +22,7 @@ public class Language {
     return id;
   }
 
-  public String getTwoLettersCode() {
+  public String getTwoLetterCode() {
     return twoLetterCode;
   }
 
@@ -35,5 +36,30 @@ public class Language {
     jsonRestaurantType.add(new JSONPair("id", id));
     jsonRestaurantType.add(new JSONPair("twoLetterCode", twoLetterCode));
     return jsonRestaurantType;
+  }
+
+  @Override
+  public int compareTo(Language l) {
+    return this.getTwoLetterCode().compareTo(l.getTwoLetterCode());
+  }
+
+  @Override
+  public int hashCode() {
+    return getTwoLetterCode().hashCode();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
+    if (getClass() != o.getClass()) {
+      return false;
+    }
+    final Language l = (Language) o;
+    return Objects.equals(this.getTwoLetterCode(), l.getTwoLetterCode());
   }
 }

@@ -26,7 +26,7 @@ public class TextManager {
 
   public static JSONObject get(Site site, String absolutPage, Language language) throws JSONParseException, IOException {
     String page = absolutPage.substring(1);
-    Path path = site.getVersionPath().resolve(page + ".texts").resolve(language.getTwoLettersCode() + ".json");
+    Path path = site.getVersionPath().resolve(page + ".texts").resolve(language.getTwoLetterCode() + ".json");
     Logger.debug("Read the language file %s.", path);
     try {
       return JSON.parse(path, Configuration.getDefaultCharset().toString()).toJSONObject();
@@ -38,22 +38,22 @@ public class TextManager {
 
   public static void add(JSONObject jsonTexts) {
     INSTANCE.jsonTexts.merge(jsonTexts);
-    System.out.println(jsonTexts);
   }
   private final JSONObject jsonTexts;
 
   public static String get(Language language, String messageKey, Object... parameters) {
-    String key = messageKey + "." + language.getTwoLettersCode();
-    String message = INSTANCE.jsonTexts.digNullString(key);
-    if (message == null) {
-      throw new InvalidKeyException("I can't found the text key " + key);
+    JSONObject jsonTexts = INSTANCE.jsonTexts.getNullObject(messageKey);
+    if (jsonTexts == null) {
+      throw new InvalidKeyException("I can't found the text key " + messageKey);
     }
+    String text = jsonTexts.getNullString(language.getTwoLetterCode());
+
     // TODO Make this more efficient.
     int i = 0;
     for (Object object : parameters) {
-      message = message.replaceAll(Pattern.quote("{" + i + "}"), object.toString());
+      text = text.replaceAll(Pattern.quote("{" + i + "}"), object.toString());
       i++;
     }
-    return message;
+    return text;
   }
 }

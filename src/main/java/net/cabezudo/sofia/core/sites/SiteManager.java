@@ -14,10 +14,6 @@ import java.sql.Statement;
 import java.util.List;
 import net.cabezudo.sofia.core.InvalidParameterException;
 import net.cabezudo.sofia.core.api.options.OptionValue;
-import net.cabezudo.sofia.core.list.Filters;
-import net.cabezudo.sofia.core.list.Limit;
-import net.cabezudo.sofia.core.list.Offset;
-import net.cabezudo.sofia.core.list.Sort;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.Database;
@@ -25,6 +21,10 @@ import net.cabezudo.sofia.core.database.Manager;
 import net.cabezudo.sofia.core.database.QueryHelper;
 import net.cabezudo.sofia.core.database.ValidSortColumns;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.list.Filters;
+import net.cabezudo.sofia.core.list.Limit;
+import net.cabezudo.sofia.core.list.Offset;
+import net.cabezudo.sofia.core.list.Sort;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameManager;
@@ -342,9 +342,6 @@ public class SiteManager extends Manager {
   public synchronized void update(Site site, DomainName domainName, User owner) throws ClusterException {
     DomainName baseDomainName = site.getBaseDomainName();
     Path basePath = site.getBasePath();
-    System.out.println("*********");
-    System.out.println(basePath.toString());
-    System.out.println(baseDomainName.getName());
     if (basePath.toString().equals(baseDomainName.getName())) {
       basePath = Paths.get(domainName.getName());
     }

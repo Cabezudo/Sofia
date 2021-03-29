@@ -8,8 +8,8 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
  */
 public class DayTime extends AbstractTime {
 
-  public DayTime(int id, int index, int start, int end) throws ClusterException {
-    super(id, TimeTypeManager.getInstance().get("day"), index, start, end);
+  public DayTime(int index, Hour from, Hour to) throws ClusterException {
+    super(TimeType.DAY, index, from, to);
   }
 
   @Override
