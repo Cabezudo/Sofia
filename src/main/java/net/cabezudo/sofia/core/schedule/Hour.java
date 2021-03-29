@@ -13,6 +13,29 @@ public class Hour implements Comparable<Hour> {
   private final int minutes;
   private final int seconds;
 
+  public Hour(String time) {
+    // TODO check time and values
+    String[] parts = time.split(":");
+    this.hour = Integer.parseInt(parts[0]);
+    this.minutes = Integer.parseInt(parts[1]);
+    if (parts.length > 2) {
+      this.seconds = Integer.parseInt(parts[2]);
+    } else {
+      this.seconds = 0;
+    }
+    this.time = ((hour * 60) + minutes) * 60 + seconds;
+  }
+
+  public Hour(int time) {
+    this.time = time;
+    int secondsRemaind = time / 60;
+    seconds = time % 60;
+    int minutesRemaind = secondsRemaind / 60;
+    minutes = minutesRemaind % 60;
+    int houresRemaind = minutesRemaind / 60;
+    hour = houresRemaind % 60;
+  }
+
   public Hour(int hour, int minutes, int seconds) {
     this.hour = hour;
     this.minutes = minutes;
@@ -22,6 +45,14 @@ public class Hour implements Comparable<Hour> {
 
   public int getTime() {
     return time;
+  }
+
+  public String toHHmm() {
+    return (hour > 9 ? hour : "0" + hour) + ":" + (minutes > 9 ? minutes : "0" + minutes);
+  }
+
+  public String toHHmmss() {
+    return (hour > 9 ? hour : "0" + hour) + ":" + (minutes > 9 ? minutes : "0" + minutes) + ":" + (seconds > 9 ? seconds : "0" + seconds);
   }
 
   @Override

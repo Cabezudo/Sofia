@@ -41,27 +41,4 @@ public class ScheduleManager {
       ClusterManager.getInstance().close(rs);
     }
   }
-
-  public int addTime(Connection connection, int scheduleId, Day day, Hour start, Hour end) throws ClusterException {
-    ResultSet rs = null;
-    TimeType timeType = TimeTypeManager.getInstance().get(connection, "day");
-    String query = "INSERT INTO " + TimesTable.DATABASE_NAME + "." + TimesTable.NAME + " (`entry`, `type`, `index`, `start`, `end`) VALUES (?, ?, ?, ?, ?)";
-    try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
-      ps.setInt(1, scheduleId);
-      ps.setInt(2, timeType.getId());
-      ps.setInt(3, day.getId());
-      ps.setInt(4, start.getTime());
-      ps.setInt(5, end.getTime());
-      ClusterManager.getInstance().executeUpdate(ps);
-      rs = ps.getGeneratedKeys();
-      if (rs.next()) {
-        return rs.getInt(1);
-      }
-      throw new SofiaRuntimeException("Can't get the generated key");
-    } catch (SQLException e) {
-      throw new ClusterException(e);
-    } finally {
-      ClusterManager.getInstance().close(rs);
-    }
-  }
 }

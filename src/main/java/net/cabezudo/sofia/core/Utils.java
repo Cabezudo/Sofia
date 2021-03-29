@@ -21,14 +21,6 @@ public class Utils {
     System.out.println(message);
   }
 
-  public static String toHour(int time) {
-    int minutesRemaind = time / 60;
-    int minutes = minutesRemaind % 60;
-    int houresRemaind = minutesRemaind / 60;
-    int houres = houresRemaind % 60;
-    return (houres > 9 ? houres : "0" + houres) + ":" + (minutes > 9 ? minutes : "0" + minutes);
-  }
-
   public static String getDateToString(Date date) {
     DateFormat df = new SimpleDateFormat(DATE_FORMAT_PATTERN);
     return df.format(date);

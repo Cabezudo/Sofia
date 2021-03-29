@@ -6,7 +6,7 @@ package net.cabezudo.sofia.core.schedule;
  */
 public class EndEvent extends Event {
 
-  public EndEvent(int day, int time) {
+  public EndEvent(int day, Hour time) {
     super(END, day, time);
   }
 

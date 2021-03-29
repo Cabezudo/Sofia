@@ -19,43 +19,65 @@ public class Day implements Comparable<Day> {
   public static final Day SATURDAY = new Day(DayOfWeek.SATURDAY.getValue());
   public static final Day SUNDAY = new Day(DayOfWeek.SUNDAY.getValue());
 
-  private final int id;
+  private final int index;
 
-  private Day(int id) {
-    this.id = id;
+  public Day(int index) {
+    this.index = index;
   }
 
   public int getId() {
-    return id;
+    return index;
   }
 
-  public static String getShortName(int day) {
-    // TODO Ver el tema de internacionalización
-    switch (day) {
-      case 1:
-        return "Lun";
-      case 2:
-        return "Mar";
-      case 3:
-        return "Mié";
-      case 4:
-        return "Jue";
-      case 5:
-        return "Vie";
-      case 6:
-        return "Sáb";
-      case 7:
-        return "Dom";
+  public String getShortName(Language language) {
+    // TODO Read the language names on demand from a file and store in a cache
+    switch (language.getTwoLetterCode()) {
+      case "es":
+        switch (index) {
+          case 1:
+            return "Lun";
+          case 2:
+            return "Mar";
+          case 3:
+            return "Mié";
+          case 4:
+            return "Jue";
+          case 5:
+            return "Vie";
+          case 6:
+            return "Sáb";
+          case 7:
+            return "Dom";
+          default:
+            throw new SofiaRuntimeException("Invalid day index: " + index);
+        }
       default:
-        throw new SofiaRuntimeException("Invalid day index: " + day);
+        switch (index) {
+          case 1:
+            return "Mon";
+          case 2:
+            return "Tue";
+          case 3:
+            return "Wen";
+          case 4:
+            return "Thu";
+          case 5:
+            return "Fri";
+          case 6:
+            return "Sat";
+          case 7:
+            return "Sun";
+          default:
+            throw new SofiaRuntimeException("Invalid day index: " + index);
+        }
     }
   }
 
-  public static String getName(Language language, int day) {
-    // TODO Ver el tema de internacionalización
-    switch (language.getTwoLettersCode()) {
+  public String getName(Language language) {
+    // TODO Read the language names on demand from a file and store in a cache
+    switch (language.getTwoLetterCode()) {
       case "es":
-        switch (day) {
+        switch (index) {
           case 1:
             return "Lunes";
           case 2:
@@ -71,10 +93,10 @@ public class Day implements Comparable<Day> {
           case 7:
             return "Domingo";
           default:
-            throw new SofiaRuntimeException("Invalid day index: " + day);
+            throw new SofiaRuntimeException("Invalid day index: " + index);
         }
       default:
-        switch (day) {
+        switch (index) {
           case 1:
             return "Monday";
           case 2:
@@ -90,17 +112,17 @@ public class Day implements Comparable<Day> {
           case 7:
             return "Sunday";
           default:
-            throw new SofiaRuntimeException("Invalid day index: " + day);
+            throw new SofiaRuntimeException("Invalid day index: " + index);
         }
     }
   }
 
   @Override
   public int compareTo(Day d) {
-    if (id < d.id) {
+    if (index < d.index) {
       return -1;
     } else {
-      return (id == d.id) ? 0 : 1;
+      return (index == d.index) ? 0 : 1;
     }
   }
 
@@ -108,7 +130,7 @@ public class Day implements Comparable<Day> {
   public boolean equals(Object o) {
     if (o instanceof Day) {
       Day d = (Day) o;
-      return id == d.id;
+      return index == d.index;
     }
     return false;
   }
@@ -116,7 +138,7 @@ public class Day implements Comparable<Day> {
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 53 * hash + Objects.hashCode(this.id);
+    hash = 53 * hash + Objects.hashCode(this.index);
     return hash;
   }
 }

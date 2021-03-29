@@ -1,76 +1,70 @@
 {
-  "changePassword": {
-    "userNotFoundByHash": {
-      "es": "El enlace utilizado ya no es válido"
-    }
+  "changePassword.userNotFoundByHash": {
+    "es": "El enlace utilizado ya no es válido"
   },
-  "domain": {
-    "ok": {
-      "es": "El nombre de dominio es correcto"
-    },
-    "empty": {
-      "es": "El nombre de dominio no puede estar vacío"
-    },
-    "invalidCharacter": {
-      "es": "El caracter '{0},' en el nombre de dominio '{1},' no es válido"
-    },
-    "missingDot": {
-      "es": "El nombre de dominio '{0},' debe tener un punto"
-    },
-    "notExists": {
-      "es": "El nombre de dominio '{0},' no existe"
-    }
+  "domain.ok": {
+    "es": "El nombre de dominio es correcto"
   },
-  "email": {
-    "ok": {
-      "es": "La dirección de correo es correcta"
-    },
-    "isEmpty": {
-      "es": "Debe especificar una dirección de correo"
-    },
-    "invalidLocalPart": {
-      "es": "La direccion de correo '{0},' tiene un caracter '{1},' no válido"
-    },
-    "arrobaMissing": {
-      "es": "Las direcciones de correo deben tener un arroba"
-    },
-    "domainOk": {
-      "es": "El dominio de la dirección de correo es correcto"
-    }
+  "domain.empty": {
+    "es": "El nombre de dominio no puede estar vacío"
   },
-  "hostname": {
-    "empty": {
-      "es": "El nombre de host no puede estar vacío"
-    },
-    "invalidCharacter": {
-      "es": "El caracter '{0},' en el nombre de host '{1},' no es válido"
-    },
-    "notExists": {
-      "es": "El nombre de host '{0},' no existe"
-    },
-    "nameOk": {
-      "es": "El nombre de host '{0},' es correcto"
-    }
+  "domain.invalidCharacter": {
+    "es": "El caracter '{0},' en el nombre de dominio '{1},' no es válido"
   },
-  "image": {
-    "upload.ok": {
-      "es": "La imagen fué subida correctamente con el nombre '{0},'"
-    }
+  "domain.missingDot": {
+    "es": "El nombre de dominio '{0},' debe tener un punto"
   },
-  "latitude.invalid": {
-    "es": "Valor inválido para una latitud"
+  "domain.notExists": {
+    "es": "El nombre de dominio '{0},' no existe"
+  },
+  "email.ok": {
+    "es": "La dirección de correo es correcta"
+  },
+  "email.isEmpty": {
+    "es": "Debe especificar una dirección de correo"
+  },
+  "email.invalidLocalPart": {
+    "es": "La direccion de correo '{0},' tiene un caracter '{1},' no válido"
+  },
+  "email.arrobaMissing": {
+    "es": "Las direcciones de correo deben tener un arroba"
+  },
+  "email.domainOk": {
+    "es": "El dominio de la dirección de correo es correcto"
+  },
+  "hostname.empty": {
+    "es": "El nombre de host no puede estar vacío"
+  },
+  "hostname.invalidCharacter": {
+    "es": "El caracter '{0},' en el nombre de host '{1},' no es válido"
+  },
+  "hostname.notExists": {
+    "es": "El nombre de host '{0},' no existe"
+  },
+  "hostname.nameOk": {
+    "es": "El nombre de host '{0},' es correcto"
+  },
+  "image.upload.ok": {
+    "es": "La imagen fué subida correctamente con el nombre '{0},'"
+  },
+  "latitude.notValid": {
+    "en": "The latitude value is not valid",
+    "es": "Al valor para la latitud no es válido"
   },
   "latitude.ok": {
-    "es": "La latitud tiene un valor válido"
+    "en": "The latitude value es correct",
+    "es": "El valor para la latitud es correcto"
   },
   "login.fail": {
     "es": "El usuario o la contraseña son incorrectos"
   },
-  "longitude.invalid": {
-    "es": "Valor inválido para una longitud"
+  "longitude.notValid": {
+    "en": "The longitude value is not valid",
+    "es": "Al valor para la longitud no es válido"
   },
   "longitude.ok": {
-    "es": "La longitud tiene un valor válido"
+    "en": "The longitude value es correct",
+    "es": "El valor para la longitud es correcto"
   },
   "messages.sent": {
     "es": "El mensaje fué enviado"
@@ -129,71 +123,61 @@
   "restaurant.value.updated": {
     "es": "El campo '{0},' se ha actualizado por el valor '{1},'."
   },
-  "site": {
-    "created": {
-      "es": "El sitio fué creado"
-    },
-    "hostname": {
-      "deleted": {
-        "es": "El host fue eliminado"
-      },
-      "existForOtherSite": {
-        "es": "Ya existe el nombre de host '{0},' en el sitio '{1},'"
-      },
-      "baseCanNotBeDeleted": {
-        "es": "No se puede eliminar el host base"
-      }
-    },
-    "deleted": {
-      "es": "El sitio fue eliminado"
-    },
-    "name": {
-      "exist": {
-        "es": "Ya existe un sitio con ese nombre"
-      },
-      "ok": {
-        "es": "El nombre de sitio está correcto"
-      },
-      "empty": {
-        "es": "El nombre del sitio no debe estar vacío"
-      }
-    },
-    "version": {
-      "empty": {
-        "es": "Debe especificarse una version para el sitio"
-      },
-      "invalid": {
-        "es": "La version '{0},' indicada para el sitio no es válida"
-      },
-      "zero": {
-        "es": "La version indicada para el sitio no puede ser cero"
-      },
-      "negative": {
-        "es": "La version indicada para el sitio no puede ser negativa"
-      },
-      "integer": {
-        "es": "La version indicada para el sitio debe ser un número entero"
-      }
-    },
-    "updated": {
-      "es": "Datos del sitio actualizados"
-    }
+  "site.created": {
+    "es": "El sitio fué creado"
   },
-  "user": {
-    "added": {
-      "es": "El usuario ha sido agregado"
-    },
-    "alreadyAdded": {
-      "es": "El usuario ya ha sido agregado en el sistema"
-    },
-    "lastNameOk": {
-      "es": "El apellido es correcto"
-    },
-    "logged": {
-      "es": "El usuario está registrado en el sistema"
-    },
-    "notLogged": {
-      "es": "El usuario no ha accedido al sistema"
-    }
+  "site.hostname.deleted": {
+    "es": "El host fue eliminado"
+  },
+  "site.hostname.existForOtherSite": {
+    "es": "Ya existe el nombre de host '{0},' en el sitio '{1},'"
+  },
+  "site.hostname.baseCanNotBeDeleted": {
+    "es": "No se puede eliminar el host base"
+  },
+  "site.deleted": {
+    "es": "El sitio fue eliminado"
+  },
+  "site.name.exist": {
+    "es": "Ya existe un sitio con ese nombre"
+  },
+  "site.name.ok": {
+    "es": "El nombre de sitio está correcto"
+  },
+  "site.name.empty": {
+    "es": "El nombre del sitio no debe estar vacío"
+  },
+  "site.version.empty": {
+    "es": "Debe especificarse una version para el sitio"
+  },
+  "site.version.invalid": {
+    "es": "La version '{0},' indicada para el sitio no es válida"
+  },
+  "site.version.zero": {
+    "es": "La version indicada para el sitio no puede ser cero"
+  },
+  "site.version.negative": {
+    "es": "La version indicada para el sitio no puede ser negativa"
+  },
+  "site.version.integer": {
+    "es": "La version indicada para el sitio debe ser un número entero"
+  },
+  "site.updated": {
+    "es": "Datos del sitio actualizados"
+  },
+  "user.added": {
+    "es": "El usuario ha sido agregado"
+  },
+  "user.alreadyAdded": {
+    "es": "El usuario ya ha sido agregado en el sistema"
+  },
+  "user.lastNameOk": {
+    "es": "El apellido es correcto"
+  },
+  "user.logged": {
+    "es": "El usuario está registrado en el sistema"
+  },
+  "user.notLogged": {
+    "es": "El usuario no ha accedido al sistema"
   }
 }

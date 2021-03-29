@@ -79,6 +79,7 @@ public final class Configuration {
   private final String databasePassword;
   private final int serverPort;
   private final Path systemPath;
+  private final Path systemResourcesPath;
   private final Path systemDataPath;
   private final Path systemImagesPath;
   private final Path systemLibsPath;
@@ -130,11 +131,13 @@ public final class Configuration {
       String sofiaBasePath = getProperty(properties, SYSTEM_HOME_PROPERTY_NAME);
       systemPath = Paths.get(sofiaBasePath).resolve("system");
       checkPath(systemPath);
-      systemDataPath = systemPath.resolve("data");
+      systemResourcesPath = systemPath.resolve("resources");
+      Files.createDirectories(systemResourcesPath);
+      systemDataPath = systemResourcesPath.resolve("data");
       Files.createDirectories(systemDataPath);
-      systemImagesPath = systemDataPath.resolve("images");
+      systemImagesPath = systemResourcesPath.resolve("images");
       Files.createDirectories(systemImagesPath);
-      systemLibsPath = systemDataPath.resolve("libs");
+      systemLibsPath = systemResourcesPath.resolve("libs");
       Files.createDirectories(systemLibsPath);
       commonSourcesPath = systemPath.resolve("sources");
       Files.createDirectories(commonSourcesPath);
@@ -156,7 +159,7 @@ public final class Configuration {
       Files.createDirectories(sitesSourcesPath);
       sitesPath = systemPath.resolve("sites");
       Files.createDirectories(sitesPath);
-      clusterFilesPath = systemDataPath.resolve("cluster");
+      clusterFilesPath = systemResourcesPath.resolve("cluster");
       Files.createDirectories(clusterFilesPath);
       clusterFileSelectLogPath = clusterFilesPath.resolve("select.log");
       clusterFileLogPath = clusterFilesPath.resolve("data.log");
@@ -224,6 +227,10 @@ public final class Configuration {
 
   public Path getSystemPath() {
     return systemPath;
+  }
+
+  public Path getSystemResourcesPath() {
+    return systemResourcesPath;
   }
 
   public Path getSystemDataPath() {

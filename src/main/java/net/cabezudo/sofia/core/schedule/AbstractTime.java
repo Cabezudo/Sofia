@@ -3,7 +3,6 @@ package net.cabezudo.sofia.core.schedule;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
-import net.cabezudo.sofia.core.Utils;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -11,22 +10,16 @@ import net.cabezudo.sofia.core.Utils;
  */
 public abstract class AbstractTime implements Comparable<AbstractTime> {
 
-  private final int id;
   private final TimeType type;
   private final int index;
-  private final int start;
-  private final int end;
+  private final Hour from;
+  private final Hour to;
 
-  public AbstractTime(int id, TimeType type, int index, int start, int end) {
-    this.id = id;
+  public AbstractTime(TimeType type, int index, Hour from, Hour to) {
     this.type = type;
     this.index = index;
-    this.start = start;
-    this.end = end;
-  }
-
-  public int getId() {
-    return id;
+    this.from = from;
+    this.to = to;
   }
 
   public TimeType getType() {
@@ -37,17 +30,17 @@ public abstract class AbstractTime implements Comparable<AbstractTime> {
     return index;
   }
 
-  public int getStart() {
-    return start;
+  public Hour getStart() {
+    return from;
   }
 
-  public int getEnd() {
-    return end;
+  public Hour getEnd() {
+    return to;
   }
 
   @Override
   public String toString() {
-    return "[ " + getId() + ", " + getType() + ", " + getIndex() + ", " + getStart() + ", " + getEnd() + " ]";
+    return "[ " + getType() + ", " + getIndex() + ", " + getStart() + ", " + getEnd() + " ]";
   }
 
   @Override
@@ -56,11 +49,11 @@ public abstract class AbstractTime implements Comparable<AbstractTime> {
     if (c != 0) {
       return c;
     }
-    int s = Integer.compare(getStart(), time.getStart());
+    int s = Integer.compare(getStart().getTime(), time.getStart().getTime());
     if (s != 0) {
       return s;
     }
-    return Integer.compare(getEnd(), time.getEnd());
+    return Integer.compare(getEnd().getTime(), time.getEnd().getTime());
   }
 
   @Override
@@ -82,18 +75,16 @@ public abstract class AbstractTime implements Comparable<AbstractTime> {
   public int hashCode() {
     int hash = 7;
     hash = 17 * hash + this.getIndex();
-    hash = 17 * hash + this.getStart();
-    hash = 17 * hash + this.getEnd();
+    hash = 17 * hash + this.getStart().getTime();
+    hash = 17 * hash + this.getEnd().getTime();
     return hash;
   }
 
   public JSONValue toJSONTree() {
     JSONObject jsonObject = new JSONObject();
-    jsonObject.add(new JSONPair("id", getId()));
-    jsonObject.add(new JSONPair("type", getType().toJSONTree()));
-    jsonObject.add(new JSONPair("index", getIndex()));
-    jsonObject.add(new JSONPair("start", Utils.toHour(getStart())));
-    jsonObject.add(new JSONPair("end", Utils.toHour(getEnd())));
+    jsonObject.add(new JSONPair(getType().toString().toLowerCase(), getType().getName(getIndex())));
+    jsonObject.add(new JSONPair("from", getStart().toHHmm()));
+    jsonObject.add(new JSONPair("to", getEnd().toHHmm()));
     return jsonObject;
   }
 

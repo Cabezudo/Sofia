@@ -1,7 +1,5 @@
 package net.cabezudo.sofia.core.schedule;
 
-import net.cabezudo.sofia.core.Utils;
-
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.09.19
@@ -13,25 +11,25 @@ public class Event implements Comparable<Event> {
 
   private final int type;
   private final int day;
-  private final int time;
+  private final Hour hour;
 
-  Event(int type, int day, int time) {
+  Event(int type, int day, Hour hour) {
     this.type = type;
     this.day = day;
-    this.time = time;
+    this.hour = hour;
   }
 
   public int getDay() {
     return day;
   }
 
-  public int getTime() {
-    return time;
+  public Hour getHour() {
+    return hour;
   }
 
   @Override
   public String toString() {
-    return "[ " + day + ", " + (isStart() ? "S" : "E") + ", " + Utils.toHour(time) + " ]";
+    return "[ " + day + ", " + (isStart() ? "S" : "E") + ", " + hour.toHHmm() + " ]";
   }
 
   @Override
@@ -40,14 +38,14 @@ public class Event implements Comparable<Event> {
     if (d != 0) {
       return d;
     }
-    return Integer.compare(time, e.time);
+    return Integer.compare(hour.getTime(), e.hour.getTime());
   }
 
   @Override
   public boolean equals(Object o) {
     if (o instanceof Event) {
       Event e = (Event) o;
-      return day == e.day && time == e.time;
+      return day == e.day && hour == e.hour;
     }
     return false;
   }
@@ -56,7 +54,7 @@ public class Event implements Comparable<Event> {
   public int hashCode() {
     int hash = 3;
     hash = 53 * hash + this.day;
-    hash = 53 * hash + this.time;
+    hash = 53 * hash + this.hour.getTime();
     return hash;
   }
 
@@ -66,5 +64,9 @@ public class Event implements Comparable<Event> {
 
   public boolean isEnd() {
     return type == END;
+  }
+
+  public Object toJSONTree() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 }

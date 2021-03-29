@@ -8,8 +8,8 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
  */
 public class YearTime extends AbstractTime {
 
-  public YearTime(int id, int index, int start, int end) throws ClusterException {
-    super(id, TimeTypeManager.getInstance().get("year"), index, start, end);
+  public YearTime(int index, Hour from, Hour to) throws ClusterException {
+    super(TimeType.YEAR, index, from, to);
   }
 
   @Override

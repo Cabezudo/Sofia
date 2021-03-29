@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.url.parser.URLPathTokenizer;
 
 /**
@@ -72,7 +73,7 @@ public class URLTokens extends AbstractList<URLToken> {
     }
     URLToken value = map.get(parameterName);
     if (value == null) {
-      throw new RuntimeException("Parameter '" + parameterName + "' not found.");
+      throw new SofiaRuntimeException("Parameter '" + parameterName + "' not found.");
     }
     return value;
   }

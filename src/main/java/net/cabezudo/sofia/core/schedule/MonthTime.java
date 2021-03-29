@@ -8,8 +8,8 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
  */
 public class MonthTime extends AbstractTime {
 
-  public MonthTime(int id, int index, int start, int end) throws ClusterException {
-    super(id, TimeTypeManager.getInstance().get("month"), index, start, end);
+  public MonthTime(int index, Hour from, Hour to) throws ClusterException {
+    super(TimeType.MONTH, index, from, to);
   }
 
   @Override
