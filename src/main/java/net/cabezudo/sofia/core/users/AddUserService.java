@@ -11,7 +11,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
-import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.passwords.Password;

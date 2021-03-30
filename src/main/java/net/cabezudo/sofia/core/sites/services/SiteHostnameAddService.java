@@ -13,7 +13,7 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.cluster.ClusterException;
-import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
 import net.cabezudo.sofia.core.hostname.HostnameValidator;

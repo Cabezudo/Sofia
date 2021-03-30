@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.database;
+package net.cabezudo.sofia.core.database.sql;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

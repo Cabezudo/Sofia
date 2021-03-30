@@ -24,9 +24,9 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DataCreationException;
 import net.cabezudo.sofia.core.configuration.DataCreator;
-import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.database.DatabaseCreators;
-import net.cabezudo.sofia.core.database.DatabaseDataCreator;
+import net.cabezudo.sofia.core.database.sql.Database;
+import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
+import net.cabezudo.sofia.core.database.sql.DatabaseDataCreator;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.passwords.Password;
@@ -254,6 +254,7 @@ class StartOptionsHelper {
           Class<?> clazz;
           ClassLoader cl = ClassLoader.getSystemClassLoader();
           try {
+            Logger.debug("Load class %s.", className);
             clazz = cl.loadClass(className);
           } catch (ClassNotFoundException e) {
             throw new SofiaRuntimeException(e);

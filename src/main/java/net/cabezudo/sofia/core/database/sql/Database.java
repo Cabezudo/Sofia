@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.database;
+package net.cabezudo.sofia.core.database.sql;
 
 import java.io.File;
 import java.io.FileNotFoundException;

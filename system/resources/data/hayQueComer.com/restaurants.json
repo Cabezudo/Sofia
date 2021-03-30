@@ -658,7 +658,7 @@
   {
     "id": 2,
     "company": null,
-    "image": "/images/1.jpg",
+    "image": "bariloche/bariloche.jpg",
     "name": "Bariloche",
     "location": {
       "es": ""
@@ -1041,27 +1041,27 @@
         "schedule": [
           {
             "day": "MONDAY",
-            "from": "18:30",
+            "from": "10:30",
             "to": "22:00"
           },
           {
             "day": "TUESDAY",
-            "from": "18:30",
+            "from": "10:30",
             "to": "22:00"
           },
           {
             "day": "WEDNESDAY",
-            "from": "18:30",
+            "from": "10:30",
             "to": "22:00"
           },
           {
             "day": "THURSDAY",
-            "from": "18:30",
+            "from": "10:30",
             "to": "22:00"
           },
           {
             "day": "SUNDAY",
-            "from": "18:30",
+            "from": "10:30",
             "to": "22:00"
           }
         ]
