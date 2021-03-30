@@ -17,7 +17,7 @@ import net.cabezudo.sofia.core.languages.LanguageManager;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2021.03.25
  */
-public class MultiLanguageWord {
+public class MultiLanguageWord implements Comparable<MultiLanguageWord> {
 
   private final Map<Language, String> map = new TreeMap<>();
 
@@ -44,6 +44,11 @@ public class MultiLanguageWord {
     JSONObject jsonObject = new JSONObject();
     map.entrySet().forEach(entry -> jsonObject.add(new JSONPair(entry.getKey().getTwoLetterCode(), entry.getValue())));
     return jsonObject;
+  }
+
+  @Override
+  public int compareTo(MultiLanguageWord o) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
 }

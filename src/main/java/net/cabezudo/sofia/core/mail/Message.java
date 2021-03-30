@@ -72,6 +72,7 @@ public class Message implements JSONable {
 
     return jsonMessage;
   }
+
   /*      {
                  "Messages":[
                     {
@@ -110,5 +111,15 @@ public class Message implements JSONable {
 ]
 
    */
+
+  @Override
+  public String toFormatedString() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void toFormatedString(StringBuilder sb, int indent, boolean includeFirst) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 
 }

@@ -26,7 +26,7 @@ public class Money {
 
   public Money(Currency currency, BigDecimal cost) {
     this.currency = currency;
-    this.cost = cost;
+    this.cost = cost.setScale(2);
   }
 
   public Currency getCurrency() {
