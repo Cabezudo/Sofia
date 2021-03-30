@@ -59,4 +59,9 @@ public class SiteList extends EntryList<Site> {
   void create() throws SQLException {
     sites.create();
   }
+
+  @Override
+  public void toFormatedString(StringBuilder sb, int indent, boolean includeFirst) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

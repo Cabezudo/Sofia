@@ -107,4 +107,14 @@ public class Person implements JSONable {
     jsonObject.add(new JSONPair("eMails", eMails.toJSONTree()));
     return jsonObject;
   }
+
+  @Override
+  public String toFormatedString() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  public void toFormatedString(StringBuilder sb, int indent, boolean includeFirst) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

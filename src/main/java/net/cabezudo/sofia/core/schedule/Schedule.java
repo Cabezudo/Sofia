@@ -4,10 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONArray;
-import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 
@@ -30,15 +28,12 @@ public class Schedule {
     return toJSONTree().toString();
   }
 
-  public JSONObject toJSONTree() {
-    JSONObject jsonObject = new JSONObject();
-
+  public JSONArray toJSONTree() {
     JSONArray jsonTimes = new JSONArray();
     set.forEach(time -> {
       jsonTimes.add(time.toJSONTree());
     });
-    jsonObject.add(new JSONPair("times", jsonTimes));
-    return jsonObject;
+    return jsonTimes;
   }
 
   public void add(AbstractTime time) {

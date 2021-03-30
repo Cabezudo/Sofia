@@ -46,4 +46,10 @@ public abstract class EntryList<T> implements JSONable, Iterable<T> {
     return toJSONTree().toString();
   }
 
+  @Override
+  public String toFormatedString() {
+    StringBuilder sb = new StringBuilder();
+    toFormatedString(sb, 0, false);
+    return sb.toString();
+  }
 }

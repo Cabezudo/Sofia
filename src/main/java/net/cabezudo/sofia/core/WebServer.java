@@ -70,16 +70,17 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
   }
 
-  public static void _main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException {
+  public static void main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException {
     try {
       RestaurantManager.getInstance().loadData();
+      RestaurantManager.getInstance().saveData();
     } catch (JSONParseException e) {
       System.out.println(e.getPosition());
       e.printStackTrace();
     }
   }
 
-  public static void main(String... args)
+  public static void _main(String... args)
           throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
           SiteCreationException, LibraryVersionConflictException, DataCreationException, FileNotFoundException, NamingException, ClusterException {
 
