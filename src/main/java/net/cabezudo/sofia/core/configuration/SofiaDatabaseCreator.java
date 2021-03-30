@@ -15,7 +15,7 @@ import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.clients.ClientTable;
 import net.cabezudo.sofia.core.cluster.ClusterException;
-import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
 import net.cabezudo.sofia.core.languages.Language;

@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
-import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;

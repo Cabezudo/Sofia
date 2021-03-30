@@ -63,15 +63,36 @@ const Core = {
   addTexts: texts => {
     variables.texts = Object.assign(variables.texts, texts);
   },
+  getURLForLanguage: language => {
+    let pathname = window.location.pathname.toLowerCase();
+    if (pathname === '/') {
+      pathname = '/index.html';
+    }
+    const pageName = pathname.replace('.html', '').replaceAll('/', '.');
+    return `/api/v1/sites/${variables.site.id}/pages/${pageName}/texts/${language}`;
+  },
   changeLanguageTo: language => {
-    variables.site.language = language;
-    Core.onChangeLanguageFunctions.forEach(func => {
-      console.log(func);
-      func(language);
+    Core.sendGet(Core.getURLForLanguage(language), response => {
+      const texts = response.data;
+      variables.site.language = language;
+      Core.addTexts(texts);
+      Core.onChangeLanguageFunctions.forEach(func => {
+        console.log(func);
+        func(language);
+      });
     });
-    Core.displayTexts();
-  }
-  ,
+  },
+  loadLanguage: language => {
+    Core.sendGet(Core.getURLForLanguage(variables.site.language), response => {
+      const texts = response.data;
+      variables.site.language = language;
+      Core.addTexts(texts);
+      Core.onChangeLanguageFunctions.forEach(func => {
+        console.log(func);
+        func(language);
+      });
+    });
+  },
   changeSection: section => {
     if (Core.lastSection !== null) {
       Core.hide(Core.lastSection);
@@ -90,19 +111,6 @@ const Core = {
   },
   disable: element => {
     Core.trigger(element, 'disabled');
-  },
-  displayTexts: () => {
-    let pathname = window.location.pathname.toLowerCase();
-    if (pathname === '/') {
-      pathname = '/index.html';
-    }
-    const pageName = pathname.replace('.html', '').replaceAll('/', '.');
-    const url = `/api/v1/sites/${variables.site.id}/pages/${pageName}/texts/${variables.site.language}`;
-    Core.sendGet(url, response => {
-      const texts = response.data;
-      console.log(texts);
-      Core.addTexts(texts);
-    });
   },
   enable: element => {
     Core.trigger(element, 'enabled');
@@ -605,5 +613,5 @@ window.onload = () => {
   if (variables.message !== null) {
     Core.showMessage(variables.message);
   }
-  Core.displayTexts();
+  Core.loadLanguage();
 };

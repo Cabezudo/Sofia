@@ -20,8 +20,8 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.Utils;
-import net.cabezudo.sofia.core.database.Database;
-import net.cabezudo.sofia.core.database.DatabaseCreators;
+import net.cabezudo.sofia.core.database.sql.Database;
+import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.texts.TextManager;
 import net.cabezudo.sofia.logger.Logger;
@@ -456,4 +456,5 @@ public final class Configuration {
     JSONObject jsonTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset().toString()).toJSONObject();
     TextManager.add(jsonTexts);
   }
+
 }

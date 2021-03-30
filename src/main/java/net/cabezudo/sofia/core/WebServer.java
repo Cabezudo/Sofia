@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -26,7 +25,8 @@ import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.configuration.SofiaDatabaseCreator;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
-import net.cabezudo.sofia.core.database.DatabaseCreators;
+import net.cabezudo.sofia.core.database.object.SofiaDatabase;
+import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
 import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
@@ -72,7 +72,7 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
   }
 
-  public static void main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException {
+  public static void _main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException {
     try {
       RestaurantManager.getInstance().loadData();
       RestaurantManager.getInstance().saveData();
@@ -83,9 +83,9 @@ public class WebServer {
     }
   }
 
-  public static void _main(String... args)
+  public static void main(String... args)
           throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
-          SiteCreationException, LibraryVersionConflictException, DataCreationException, FileNotFoundException, NamingException, ClusterException {
+          SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException {
 
     Logger.info("Check configuration.");
     try {
@@ -200,10 +200,12 @@ public class WebServer {
       System.exit(0);
     }
 
+    Logger.info("Starting server...");
+
     Configuration.getInstance().loadAPIConfiguration(defaultDataCreators);
     Configuration.getInstance().loadTexts();
+    SofiaDatabase.getInstance().loadData();
 
-    Logger.info("Starting server...");
     int port = Configuration.getInstance().getServerPort();
     try {
       ServerSocket ss = new ServerSocket(port);

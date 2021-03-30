@@ -3,7 +3,7 @@ package net.cabezudo.sofia.core.configuration;
 import java.sql.SQLException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
-import net.cabezudo.sofia.core.database.Database;
+import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
