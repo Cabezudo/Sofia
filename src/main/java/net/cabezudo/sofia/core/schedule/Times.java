@@ -35,6 +35,6 @@ public class Times implements Iterable<AbstractTime> {
 
   @Override
   public Iterator<AbstractTime> iterator() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return list.iterator();
   }
 }

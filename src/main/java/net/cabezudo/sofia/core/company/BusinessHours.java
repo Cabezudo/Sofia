@@ -41,7 +41,6 @@ public class BusinessHours {
   private Day tomorrowName;
   private final Times times = new Times();
   private Instant instant;
-  private boolean calculated = false;
 
   public BusinessHours(List<AbstractTime> timeList) {
     for (AbstractTime time : timeList) {
@@ -49,7 +48,7 @@ public class BusinessHours {
     }
   }
 
-  public void calculateFor(int timezoneOffset) {
+  private void calculateFor(int timezoneOffset) {
     if (instant != null) {
       throw new SofiaRuntimeException("Already calculated for offset " + timezoneOffset);
     }
@@ -198,5 +197,38 @@ public class BusinessHours {
       }
     }
     return cleanTimes;
+  }
+
+  public JSONObject toWebListTree(Language language, int timezoneOffset) {
+    calculateFor(timezoneOffset);
+
+    JSONObject jsonObject = new JSONObject();
+
+    Date closedUntil = null;
+    if ((openNow != null && !openNow) && todayOpenAt == null && tomorrowOpenAt == null) {
+      closedUntil = calculateNextOpen();
+      if (closedUntil != null) {
+        jsonObject.add(new JSONPair("closedUntil", closedUntil));
+      }
+    }
+
+    JSONObject jsonToday = new JSONObject();
+    jsonToday.add(new JSONPair("shortName", todayName.getShortName(language)));
+    jsonToday.add(new JSONPair("name", todayName.getName(language)));
+    jsonToday.add(new JSONPair("isOpen", openNow));
+    if (todayOpenAt != null) {
+      jsonToday.add(new JSONPair("openAt", todayOpenAt.getHour().toHHmm()));
+    }
+    jsonObject.add(new JSONPair("today", jsonToday));
+
+    JSONObject jsonTomorrow = new JSONObject();
+    jsonTomorrow.add(new JSONPair("shortName", tomorrowName.getShortName(language)));
+    jsonTomorrow.add(new JSONPair("name", tomorrowName.getName(language)));
+    if (tomorrowOpenAt != null) {
+      jsonTomorrow.add(new JSONPair("openAt", tomorrowOpenAt.getHour().toHHmm()));
+    }
+    jsonObject.add(new JSONPair("tomorrow", jsonTomorrow));
+
+    return jsonObject;
   }
 }

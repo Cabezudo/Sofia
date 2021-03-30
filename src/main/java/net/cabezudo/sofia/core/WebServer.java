@@ -32,6 +32,8 @@ import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
 import net.cabezudo.sofia.core.languages.ChangeLanguageServlet;
+import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
+import net.cabezudo.sofia.core.languages.LanguageManager;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.DataFilter;
@@ -70,10 +72,11 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
   }
 
-  public static void main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException {
+  public static void main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException {
     try {
       RestaurantManager.getInstance().loadData();
       RestaurantManager.getInstance().saveData();
+      System.out.println(RestaurantManager.getInstance().getWebListTree(LanguageManager.getInstance().get("en"), 300));
     } catch (JSONParseException e) {
       System.out.println(e.getPosition());
       e.printStackTrace();

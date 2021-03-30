@@ -2,8 +2,8 @@ package net.cabezudo.sofia.addresses;
 
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.settlements.Settlement;
-import net.cabezudo.sofia.streets.Street;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -11,14 +11,14 @@ import net.cabezudo.sofia.streets.Street;
  */
 public class Address {
 
-  private final Street street;
+  private final String street;
   private final String exteriorNumber;
   private final String interiorNumber;
   private final Settlement settlement;
   private final Integer postalCode;
   private final String reference;
 
-  public Address(Street street, String exteriorNumber, String interiorNumber, Settlement settlement, Integer postalCode, String reference) {
+  public Address(String street, String exteriorNumber, String interiorNumber, Settlement settlement, Integer postalCode, String reference) {
     this.street = street;
     this.exteriorNumber = exteriorNumber;
     this.interiorNumber = interiorNumber;
@@ -31,7 +31,7 @@ public class Address {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
-  public Street getStreet() {
+  public String getStreet() {
     return street;
   }
 
@@ -57,10 +57,21 @@ public class Address {
 
   public JSONObject toJSONTree() {
     JSONObject jsonObject = new JSONObject();
-    jsonObject.add(new JSONPair("street", street.toJSONTree()));
+    jsonObject.add(new JSONPair("street", street));
     jsonObject.add(new JSONPair("exteriorNumber", exteriorNumber));
     jsonObject.add(new JSONPair("interiorNumber", interiorNumber));
     jsonObject.add(new JSONPair("settlement", settlement.toJSONTree()));
+    jsonObject.add(new JSONPair("postalCode", postalCode));
+    jsonObject.add(new JSONPair("reference", reference));
+    return jsonObject;
+  }
+
+  public JSONObject toWebListTree(Language language) {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.add(new JSONPair("street", street));
+    jsonObject.add(new JSONPair("exteriorNumber", exteriorNumber));
+    jsonObject.add(new JSONPair("interiorNumber", interiorNumber));
+    jsonObject.add(new JSONPair("settlement", settlement.toWebListTree(language)));
     jsonObject.add(new JSONPair("postalCode", postalCode));
     jsonObject.add(new JSONPair("reference", reference));
     return jsonObject;

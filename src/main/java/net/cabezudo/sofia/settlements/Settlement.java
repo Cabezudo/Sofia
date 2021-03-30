@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.settlements;
 
 import net.cabezudo.sofia.cities.City;
+import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.municipalities.Municipality;
 import net.cabezudo.sofia.zones.Zone;
 
@@ -51,6 +52,10 @@ public class Settlement {
   }
 
   public Object toJSONTree() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  public Object toWebListTree(Language language) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
