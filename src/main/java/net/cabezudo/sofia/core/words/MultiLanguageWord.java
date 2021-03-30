@@ -51,4 +51,8 @@ public class MultiLanguageWord implements Comparable<MultiLanguageWord> {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 
+  public String toWebListTree(Language language) {
+    return map.get(language);
+  }
+
 }
