@@ -13,12 +13,12 @@ class RoundButton {
 
     const validateOptions = () => {
       this.element = Core.validateIdOrElement(id, element);
-      if (p.type === null) {
+      if (type === null) {
         throw Error('You must specify a button type.');
       }
     };
     const createGUI = () => {
-      switch (p.type) {
+      switch (type) {
         case 'cross':
           this.element.className = "roundButton crossButton";
           this.element.innerHTML = `<div class="drawContainer"><div class="patty"></div><div class="patty"></div></div`;

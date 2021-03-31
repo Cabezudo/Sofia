@@ -39,16 +39,15 @@ public class BusinessHours {
   private Day todayName;
   private Day tomorrowName;
   private final Times times = new Times();
-  private Instant instant;
 
   public BusinessHours(List<AbstractTime> timeList) {
-    for (AbstractTime time : timeList) {
+    timeList.forEach(time -> {
       times.add(time);
-    }
+    });
   }
 
   public void calculateFor(int timeZoneOffset) {
-    instant = Instant.now();
+    Instant instant = Instant.now();
     OffsetDateTime now = instant.atOffset(ZoneOffset.ofHoursMinutes(-timeZoneOffset / 60, -timeZoneOffset % 60));
     dayOfWeek = now.getDayOfWeek().getValue();
     todayName = new Day(dayOfWeek);
@@ -199,5 +198,9 @@ public class BusinessHours {
     jsonObject.add(new JSONPair("tomorrow", jsonTomorrow));
 
     return jsonObject;
+  }
+
+  public JSONObject toMenuTree(Language language) {
+    return toWebListTree(language);
   }
 }

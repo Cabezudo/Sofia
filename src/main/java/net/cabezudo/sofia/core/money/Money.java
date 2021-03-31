@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.core.money;
 
 import java.math.BigDecimal;
-import java.util.Currency;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.currency.Currency;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -38,6 +38,13 @@ public class Money {
   }
 
   public JSONObject toJSONTree() {
+    JSONObject jsonRestaurantType = new JSONObject();
+    jsonRestaurantType.add(new JSONPair("currency", currency.getCurrencyCode()));
+    jsonRestaurantType.add(new JSONPair("cost", cost));
+    return jsonRestaurantType;
+  }
+
+  public JSONObject toMenuTree() {
     JSONObject jsonRestaurantType = new JSONObject();
     jsonRestaurantType.add(new JSONPair("currency", currency.getCurrencyCode()));
     jsonRestaurantType.add(new JSONPair("cost", cost));

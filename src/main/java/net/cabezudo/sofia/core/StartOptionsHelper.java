@@ -165,6 +165,7 @@ class StartOptionsHelper {
   private List<File> getClassLocationsForCurrentClasspath() {
     List<File> urls = new ArrayList<>();
     String javaClassPath = System.getProperty("java.class.path");
+    Logger.debug("Java class path: %s", javaClassPath);
     if (javaClassPath != null) {
       for (String path : javaClassPath.split(File.pathSeparator)) {
         urls.add(new File(path));
@@ -179,6 +180,7 @@ class StartOptionsHelper {
     List<File> files = getClassLocationsForCurrentClasspath();
     Path systemClassesPath = null;
     for (File file : files) {
+      Logger.debug("Trying with %s like system class path.", file);
       if (file.isDirectory()) {
         systemClassesPath = file.toPath();
         Logger.debug("Using %s as class target.", systemClassesPath);

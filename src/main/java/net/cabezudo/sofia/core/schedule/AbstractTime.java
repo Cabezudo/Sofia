@@ -40,7 +40,7 @@ public abstract class AbstractTime implements Comparable<AbstractTime> {
 
   @Override
   public String toString() {
-    return "[ " + getType() + ", " + getIndex() + ", " + getStart() + ", " + getEnd() + " ]";
+    return "[ " + getType() + ", " + getIndex() + ", " + getStart().toHHmm() + ", " + getEnd().toHHmm() + " ]";
   }
 
   @Override

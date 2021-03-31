@@ -9,6 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
+import net.cabezudo.sofia.core.currency.CurrenciesTable;
+import net.cabezudo.sofia.core.currency.Currency;
+import net.cabezudo.sofia.core.currency.CurrencyManager;
+import net.cabezudo.sofia.core.currency.InvalidCurrencyCodeException;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.WebUserData;
@@ -26,7 +30,7 @@ public class WebUserDataManager {
 
   private static final int INITIAL_FAIL_LOGIN_RESPONSE_TIME = 1000;
 
-  private static WebUserDataManager INSTANCE = new WebUserDataManager();
+  private static final WebUserDataManager INSTANCE = new WebUserDataManager();
 
   private WebUserDataManager() {
     // Only for protect the instanciation
@@ -36,9 +40,10 @@ public class WebUserDataManager {
     return INSTANCE;
   }
 
-  public WebUserData createFakeWebUserData() throws InvalidTwoLettersCodeException, ClusterException {
+  public WebUserData createFakeWebUserData() throws InvalidTwoLettersCodeException, ClusterException, InvalidCurrencyCodeException {
     Language spanish = LanguageManager.getInstance().get("es");
-    return new WebUserData(1, "fackeSessionId", 0, spanish, spanish);
+    Currency mexicanPeso = CurrencyManager.getInstance().get("MXN");
+    return new WebUserData(1, "fackeSessionId", 0, spanish, spanish, mexicanPeso);
   }
 
   public synchronized WebUserData add(HttpServletRequest request) throws ClusterException {
@@ -88,10 +93,12 @@ public class WebUserDataManager {
             + "w.id AS WebUserDataId, `failLoginResponseTime`, "
             + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
             + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
+            + "c.id AS actualCurrencyId, c.currencyCode AS actualCurrencyCode, "
             + "`user` "
             + "FROM " + WebUserDataTable.DATABASE_NAME + "." + WebUserDataTable.NAME + " AS w "
             + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
             + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+            + "LEFT JOIN " + CurrenciesTable.DATABASE_NAME + "." + CurrenciesTable.NAME + " AS c ON w.actualCurrency = c.id "
             + "WHERE sessionId = ?";
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, sessionId);
@@ -102,8 +109,9 @@ public class WebUserDataManager {
         long failLoginResponseTime = rs.getLong("failLoginResponseTime");
         Language actualLanguage = new Language(rs.getInt("actualLanguageId"), rs.getString("actualLanguageTwoLettersCode"));
         Language countryLanguage = new Language(rs.getInt("countryLanguageId"), rs.getString("countryLanguageTwoLettersCode"));
+        Currency actualCurrency = new Currency(rs.getInt("actualCurrencyId"), rs.getString("actualCurrencyCode"));
         int userId = rs.getInt("user");
-        return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
+        return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, actualCurrency, userId);
       }
       Logger.fine("Client data NOT FOUND using " + sessionId + ".");
       return null;
@@ -129,10 +137,12 @@ public class WebUserDataManager {
             + "sessionId, `failLoginResponseTime`, "
             + "cl.id AS countryLanguageId, cl.twoLettersCode AS countryLanguageTwoLettersCode, "
             + "al.id AS actualLanguageId, al.twoLettersCode AS actualLanguageTwoLettersCode, "
+            + "c.id AS actualCurrencyId, c.currencyCode AS actualCurrencyCode, "
             + "`user` "
             + "FROM " + WebUserDataTable.DATABASE_NAME + "." + WebUserDataTable.NAME + " AS w "
             + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS cl ON w.countryLanguage = cl.id "
             + "LEFT JOIN " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + " AS al ON w.actualLanguage = al.id "
+            + "LEFT JOIN " + CurrenciesTable.DATABASE_NAME + "." + CurrenciesTable.NAME + " AS c ON w.actualCurrency = c.id "
             + "WHERE w.id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, id);
@@ -147,8 +157,11 @@ public class WebUserDataManager {
         int actualLanguageId = rs.getInt("actualLanguageId");
         String actualLanguageTwoLettersCode = rs.getString("actualLanguageTwoLettersCode");
         Language actualLanguage = new Language(actualLanguageId, actualLanguageTwoLettersCode);
+        int actualCurrencyId = rs.getInt("actualLanguageId");
+        String actualCurrencyCode = rs.getString("actualLanguageTwoLettersCode");
+        Currency actualCurrency = new Currency(actualCurrencyId, actualCurrencyCode);
         int userId = rs.getInt("user");
-        return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
+        return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, actualCurrency, userId);
       }
       Logger.fine("Client data NOT FOUND using " + id + ".");
       return null;
@@ -163,24 +176,28 @@ public class WebUserDataManager {
     ResultSet rs = null;
     String query
             = "INSERT INTO " + WebUserDataTable.NAME + " "
-            + "(`sessionId`, `failLoginResponseTime`, `countryLanguage`, `actualLanguage`) "
-            + "VALUES (?, ?, ?, ?)";
+            + "(`sessionId`, `failLoginResponseTime`, `countryLanguage`, `actualLanguage`, `actualCurrency`) "
+            + "VALUES (?, ?, ?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, sessionId);
       // TODO take the default values from configuration database for the site
       ps.setLong(2, INITIAL_FAIL_LOGIN_RESPONSE_TIME);
       try {
+        // TODO Detect the country using the localization. IP and Web localization
+        // TODO use the default country language
         Language spanish = LanguageManager.getInstance().get("es");
         ps.setInt(3, spanish.getId());
         ps.setInt(4, spanish.getId());
+        // TODO Get the country currency
+        Currency mexicanPeso = CurrencyManager.getInstance().get("MXN");
+        ps.setInt(5, mexicanPeso.getId());
         ClusterManager.getInstance().executeUpdate(ps);
         rs = ps.getGeneratedKeys();
         if (rs.next()) {
           int id = rs.getInt(1);
-          // TODO Detect the langauage using the localization. IP and Web localization
-          return new WebUserData(id, sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, spanish, spanish);
+          return new WebUserData(id, sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, spanish, spanish, mexicanPeso);
         }
-      } catch (InvalidTwoLettersCodeException e) {
+      } catch (InvalidTwoLettersCodeException | InvalidCurrencyCodeException e) {
         throw new SofiaRuntimeException(e);
       }
       throw new SofiaRuntimeException("Can't get the generated key");
@@ -200,12 +217,13 @@ public class WebUserDataManager {
   }
 
   public void update(WebUserData webUserData) throws ClusterException {
-    String query = "UPDATE " + WebUserDataTable.NAME + " SET `failLoginResponseTime` = ?, `countryLanguage` = ?, `actualLanguage` = ? WHERE sessionId = ?";
+    String query = "UPDATE " + WebUserDataTable.NAME + " SET `failLoginResponseTime` = ?, `countryLanguage` = ?, `actualLanguage` = ? , `actualCurrency` = ? WHERE sessionId = ?";
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setLong(1, webUserData.getFailLoginResponseTime());
       ps.setInt(2, webUserData.getCountryLanguage().getId());
       ps.setInt(3, webUserData.getActualLanguage().getId());
-      ps.setString(4, webUserData.getSessionId());
+      ps.setInt(4, webUserData.getActualCurrency().getId());
+      ps.setString(5, webUserData.getSessionId());
 
       ClusterManager.getInstance().executeUpdate(ps);
     } catch (SQLException e) {
