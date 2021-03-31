@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.webusers;
 
+import net.cabezudo.sofia.core.currency.CurrenciesTable;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
 
 /**
@@ -18,11 +19,13 @@ public class WebUserDataTable {
           + "`failLoginResponseTime` INT NOT NULL, "
           + "`countryLanguage` INT NOT NULL, "
           + "`actualLanguage` INT NOT NULL, "
+          + "`actualCurrency` INT NOT NULL, "
           + "`user` INT NOT NULL DEFAULT 0, "
           + "PRIMARY KEY (`id`), "
           + "UNIQUE INDEX `iSessionId` (`sessionId`(32)), "
           + "FOREIGN KEY (`countryLanguage`) REFERENCES " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + "(`id`), "
-          + "FOREIGN KEY (`actualLanguage`) REFERENCES " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + "(`id`)"
+          + "FOREIGN KEY (`actualLanguage`) REFERENCES " + LanguagesTable.DATABASE_NAME + "." + LanguagesTable.NAME + "(`id`),"
+          + "FOREIGN KEY (`actualCurrency`) REFERENCES " + CurrenciesTable.DATABASE_NAME + "." + CurrenciesTable.NAME + "(`id`)"
           + ") "
           + "CHARACTER SET=UTF8";
 

@@ -15,6 +15,8 @@ import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.clients.ClientTable;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.currency.CurrenciesTable;
+import net.cabezudo.sofia.core.currency.CurrencyManager;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
@@ -107,6 +109,7 @@ public class SofiaDatabaseCreator extends DataCreator {
   public void createDatabaseStructure() throws DataCreationException {
     try (Connection connection = Database.getConnection()) {
       Database.createTable(connection, LanguagesTable.CREATION_QUERY);
+      Database.createTable(connection, CurrenciesTable.CREATION_QUERY);
       Database.createTable(connection, SitesTable.CREATION_QUERY);
       Database.createTable(connection, DomainNamesTable.CREATION_QUERY);
       Database.createTable(connection, PeopleTable.CREATION_QUERY);
@@ -143,6 +146,7 @@ public class SofiaDatabaseCreator extends DataCreator {
   @Override
   public void createDefaultData() throws DataCreationException {
     try {
+      createCurrencies();
       createLanguages();
       Country country = createCountries();
       Language language;
@@ -158,6 +162,15 @@ public class SofiaDatabaseCreator extends DataCreator {
   @Override
   public void createTestData() throws DataCreationException {
     // Nothing to create for now
+  }
+
+  private void createCurrencies() throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
+      CurrencyManager.getInstance().add(connection, "MXN");
+      CurrencyManager.getInstance().add(connection, "USD");
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    }
   }
 
   private void createLanguages() throws ClusterException {

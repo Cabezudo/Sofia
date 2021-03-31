@@ -25,7 +25,7 @@ const Core = {
   testFunctions: [],
   screenBlockerDiv: null,
   loaderDiv: null,
-  pageParameters: new URLSearchParams(location.search),
+  queryParameters: new URLSearchParams(location.search),
   lastSection: null,
   showMessage: (messageObject) => {
     if (Core.messagesContainer !== null) {
@@ -87,10 +87,6 @@ const Core = {
       const texts = response.data;
       variables.site.language = language;
       Core.addTexts(texts);
-      Core.onChangeLanguageFunctions.forEach(func => {
-        console.log(func);
-        func(language);
-      });
     });
   },
   changeSection: section => {
@@ -593,6 +589,7 @@ window.onresize = () => {
   }, 500);
 };
 window.onload = () => {
+  Core.loadLanguage();
   Core.onCreateFunctions.forEach(func => {
     func();
   });
@@ -602,8 +599,8 @@ window.onload = () => {
   Core.setPageFunctions.forEach(func => {
     func();
   });
-  if (Core.pageParameters.has('section')) {
-    Core.changeSection(Core.pageParameters.get('section'));
+  if (Core.queryParameters.has('section')) {
+    Core.changeSection(Core.queryParameters.get('section'));
   }
   console.log(templateVariables);
   Core.testFunctions.forEach(func => {
@@ -613,5 +610,4 @@ window.onload = () => {
   if (variables.message !== null) {
     Core.showMessage(variables.message);
   }
-  Core.loadLanguage();
 };

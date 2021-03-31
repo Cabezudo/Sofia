@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.http;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.currency.Currency;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.languages.LanguageManager;
@@ -21,20 +22,22 @@ public class WebUserData {
   private long failLoginResponseTime;
   private Language countryLanguage;
   private Language actualLanguage;
+  private Currency actualCurrency;
   private int userId;
   private User user;
   private JSONObject jsonObject;
 
-  public WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage) {
-    this(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, 0);
+  public WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage, Currency actualCurrency) {
+    this(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, actualCurrency, 0);
   }
 
-  public WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage, int userId) {
+  public WebUserData(int id, String sessionId, long failLoginResponseTime, Language countryLanguage, Language actualLanguage, Currency actualCurrency, int userId) {
     this.id = id;
     this.sessionId = sessionId;
     this.failLoginResponseTime = failLoginResponseTime;
     this.countryLanguage = countryLanguage;
     this.actualLanguage = actualLanguage;
+    this.actualCurrency = actualCurrency;
     this.userId = userId;
   }
 
@@ -59,6 +62,10 @@ public class WebUserData {
     return actualLanguage;
   }
 
+  public Currency getActualCurrency() {
+    return actualCurrency;
+  }
+
   public void resetFailLoginResponseTime() {
     this.failLoginResponseTime = 0;
   }
@@ -81,6 +88,7 @@ public class WebUserData {
       jsonObject.add(new JSONPair("failLoginResponseTime", failLoginResponseTime));
       jsonObject.add(new JSONPair("countryLanguage", countryLanguage.toJSONTree()));
       jsonObject.add(new JSONPair("actualLanguage", actualLanguage.toJSONTree()));
+      jsonObject.add(new JSONPair("actualCurrency", actualCurrency.getCurrencyCode()));
       jsonObject.add(new JSONPair("logged", isLogged()));
       try {
         user = getUser();
@@ -95,7 +103,7 @@ public class WebUserData {
 
   public WebUserData setLoginResponseTime(long failLoginResponseTime) {
     jsonObject = null;
-    return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, userId);
+    return new WebUserData(id, sessionId, failLoginResponseTime, countryLanguage, actualLanguage, actualCurrency, userId);
   }
 
   public void setUser(User user) {

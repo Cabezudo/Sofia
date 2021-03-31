@@ -296,7 +296,7 @@
         Core.addOnloadFunction(createGUI);
         Core.addSetFunction(() => {
           Core.screenBlocker.block();
-          Core.sendGet(`/api/v1/sites/${Core.pageParameters.get('id')}`, detailDiv);
+          Core.sendGet(`/api/v1/sites/${Core.queryParameters.get('id')}`, detailDiv);
           setMessage();
           nameInput.focus();
         });

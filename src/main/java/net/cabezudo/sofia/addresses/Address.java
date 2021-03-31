@@ -76,4 +76,8 @@ public class Address {
     jsonObject.add(new JSONPair("reference", reference));
     return jsonObject;
   }
+
+  public JSONObject toMenuTree(Language language) {
+    return toWebListTree(language);
+  }
 }

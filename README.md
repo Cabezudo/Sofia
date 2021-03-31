@@ -418,7 +418,7 @@ Se puede colocar un mensaje que será mostrado en la siguiente página que se ca
 
 Las imágenes se colocan en un directorio `images` en el directorio de base de la versión del sitio.
 
-Las variables del query string de la urls se puedeon obtener utilizando Core.pageParameters
+Las variables del query string de la urls se puedeon obtener utilizando Core.queryParameters
 
 Todos los nombres de dominio agregados tienen por defecto un subdominio localque esta pensado para configurar el archivo de hosts para que apunte a la máquina y poder hacer pruebas locales con el servidor.
 
@@ -1023,3 +1023,4 @@ Para agregar textos a páginas.
 Para agregar textos en back
 1. Agregarlo en src/main/resources/texts.json y usar TextManager.get
 
+java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/resources/libs/ net.cabezudo.sofia.core.WebServer -dd -ctd -d -i
