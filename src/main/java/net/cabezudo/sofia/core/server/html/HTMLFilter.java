@@ -10,6 +10,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.company.CompanySubdomainManager;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.creator.InvalidFragmentTag;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
@@ -38,6 +39,20 @@ public class HTMLFilter implements Filter {
       Site site = new SessionManager(request).getSite();
 
       String requestURI = request.getRequestURI();
+
+      // TODO use an alias manager
+      request.getSession().removeAttribute("companyId");
+
+      int i = requestURI.indexOf("/", 1);
+      if (i > 0) {
+        String subdomain = requestURI.substring(1, i);
+        Integer companyId = CompanySubdomainManager.getInstance().get(subdomain);
+        if (companyId != null) {
+          requestURI = requestURI.replace(subdomain, "restaurant");
+          request.setRequestURI(requestURI);
+          request.getSession().setAttribute("companyId", companyId);
+        }
+      }
 
       if (requestURI.endsWith("/")) {
         requestURI = requestURI + "index.html";

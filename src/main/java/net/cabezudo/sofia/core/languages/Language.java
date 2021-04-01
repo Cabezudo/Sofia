@@ -10,6 +10,8 @@ import net.cabezudo.json.values.JSONObject;
  */
 public class Language implements Comparable<Language> {
 
+  public static String ENGLISH = "en";
+
   private final int id;
   private final String twoLetterCode;
 

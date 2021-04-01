@@ -101,6 +101,15 @@ public class SiteCreator {
       Logger.debug("Common texts file %s NOT FOUND.", commonsFileTextsPath);
     }
 
+    Path textsPageFilePath = site.getVersionedSourcesPath().resolve(textsPartialPath + ".texts.json");
+    try {
+      Logger.debug("Trying to load the page text file %s.", textsPageFilePath);
+      JSONObject jsonTexts = JSON.parse(textsPageFilePath, Configuration.getDefaultCharset().toString()).toJSONObject();
+      textsFile.add(jsonTexts);
+    } catch (NoSuchFileException nsfe) {
+      Logger.debug("Common texts file %s NOT FOUND.", textsPageFilePath);
+    }
+
     textsFile.add(baseFile.getLibraries());
     Path textsFilePath = site.getFilesPath(textsPartialPath);
     textsFile.save(textsFilePath);

@@ -37,7 +37,7 @@ class TextsFile {
   }
 
   public void add(JSONObject jsonTexts) {
-    this.jsonTexts.merge(jsonTexts);
+    this.jsonTexts.replace(jsonTexts);
   }
 
   void add(Libraries libraries) {

@@ -102,6 +102,9 @@ public class VariablesJSServlet {
     sb.append("    id: \"").append(site.getId()).append("\",\n");
     sb.append("    language: \"").append(actualLanguage.getTwoLetterCode()).append("\"\n");
     sb.append("  },\n");
+    sb.append("  company: ").append(" {").append("\n");
+    sb.append("    id: ").append(request.getSession().getAttribute("companyId")).append("\n");
+    sb.append("  },\n");
     sb.append("  texts: ").append(texts).append("\n");
     sb.append("};\n");
     sb.append("\n");
