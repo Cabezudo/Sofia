@@ -2,6 +2,7 @@
   {
     "id": 1,
     "company": null,
+    "subdomain": "elgrilloh",
     "image": "elgrilloh/elgrilloh.jpg",
     "name": "El Grill Oh!",
     "location": null,
@@ -658,6 +659,7 @@
   {
     "id": 2,
     "company": null,
+    "subdomain": "bariloche",
     "image": "bariloche/bariloche.jpg",
     "name": "Bariloche",
     "location": {
@@ -821,6 +823,7 @@
   {
     "id": 3,
     "company": null,
+    "subdomain": "casquet",
     "image": "casquet/casquet.jpg",
     "name": "Casquet",
     "location": {
@@ -905,6 +908,7 @@
   {
     "id": 4,
     "company": null,
+    "subdomain": "heladosdolphy",
     "image": "heladosdolphy/heladosdolphy.jpg",
     "name": "Helados Dolphy",
     "location": {
@@ -989,6 +993,7 @@
   {
     "id": 5,
     "company": null,
+    "subdomain": "pinchegringobbq",
     "image": "pinchegringobbq/pinchegringobbq.jpg",
     "name": "Pinche Gringo BBQ",
     "location": null,
@@ -1071,6 +1076,7 @@
   {
     "id": 6,
     "company": null,
+    "subdomain": "tacosfondaargentina",
     "image": "tacosfondaargentina/tacosfondaargentina.jpg",
     "name": "Tacos Fonda Argentina",
     "location": {
@@ -1137,6 +1143,7 @@
   {
     "id": 7,
     "company": null,
+    "subdomain": "donbeto",
     "image": "donbeto/donbeto.jpg",
     "name": "Parrillada Don Beto",
     "location": {
@@ -2720,6 +2727,7 @@
           },
           {
             "name": {
+              "es": "Omelettes",
               "en": "Omelettes"
             },
             "dishes": [

@@ -19,10 +19,13 @@ import net.cabezudo.sofia.core.languages.LanguageManager;
  */
 public class MultiLanguageWord implements Comparable<MultiLanguageWord> {
 
-  private final Map<Language, String> map = new TreeMap<>();
+  private final Map<String, String> map = new TreeMap<>();
+  private final String defaultLanguage;
 
   public MultiLanguageWord(JSONObject jsonObject) throws JSONParseException, ClusterException {
     List<String> keys = jsonObject.getKeyList();
+    defaultLanguage = keys.get(0);
+
     for (String twoLettersCode : keys) {
       Language language;
       try {
@@ -36,13 +39,13 @@ public class MultiLanguageWord implements Comparable<MultiLanguageWord> {
       } catch (PropertyNotExistException e) {
         throw new SofiaRuntimeException(e);
       }
-      map.put(language, text);
+      map.put(language.getTwoLetterCode(), text);
     }
   }
 
   public JSONObject toJSONTree() {
     JSONObject jsonObject = new JSONObject();
-    map.entrySet().forEach(entry -> jsonObject.add(new JSONPair(entry.getKey().getTwoLetterCode(), entry.getValue())));
+    map.entrySet().forEach(entry -> jsonObject.add(new JSONPair(entry.getKey(), entry.getValue())));
     return jsonObject;
   }
 
@@ -52,7 +55,14 @@ public class MultiLanguageWord implements Comparable<MultiLanguageWord> {
   }
 
   public String get(Language language) {
-    return map.get(language);
+    String word = map.get(language.getTwoLetterCode());
+    if (word == null) {
+      word = map.get(Language.ENGLISH);
+      if (word == null) {
+        return "[" + map.get(defaultLanguage) + "]";
+      }
+      return "[" + word + "]";
+    }
+    return word;
   }
-
 }

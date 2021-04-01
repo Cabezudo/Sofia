@@ -65,8 +65,8 @@ const Core = {
   },
   getURLForLanguage: language => {
     let pathname = window.location.pathname.toLowerCase();
-    if (pathname === '/') {
-      pathname = '/index.html';
+    if (pathname.endsWith('/')) {
+      pathname += 'index.html';
     }
     const pageName = pathname.replace('.html', '').replaceAll('/', '.');
     return `/api/v1/sites/${variables.site.id}/pages/${pageName}/texts/${language}`;

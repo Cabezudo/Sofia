@@ -12,6 +12,7 @@ public class SofiaHTMLServletRequest extends HttpServletRequestWrapper {
   private String serverName;
   private String requestURI;
   private String pathInfo;
+  private int id;
 
   public SofiaHTMLServletRequest(HttpServletRequest request) {
     super(request);
