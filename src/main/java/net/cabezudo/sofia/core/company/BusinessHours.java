@@ -3,7 +3,6 @@ package net.cabezudo.sofia.core.company;
 import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -36,8 +35,8 @@ public class BusinessHours {
   private final OpenTimes tomorrowEvents = new OpenTimes();
   private Event todayOpenAt = null;
   private Event tomorrowOpenAt = null;
-  private Day todayName;
-  private Day tomorrowName;
+  private Day today;
+  private Day tomorrow;
   private final Times times = new Times();
 
   public BusinessHours(List<AbstractTime> timeList) {
@@ -50,9 +49,9 @@ public class BusinessHours {
     Instant instant = Instant.now();
     OffsetDateTime now = instant.atOffset(ZoneOffset.ofHoursMinutes(-timeZoneOffset / 60, -timeZoneOffset % 60));
     dayOfWeek = now.getDayOfWeek().getValue();
-    todayName = new Day(dayOfWeek);
+    today = new Day(dayOfWeek);
     tomorrowDayOfWeek = now.getDayOfWeek().plus(1).getValue();
-    tomorrowName = new Day(tomorrowDayOfWeek);
+    tomorrow = new Day(tomorrowDayOfWeek);
 
     TimeEvents temporalEvents = createEvents();
     cleanOverlapedEvents(temporalEvents);
@@ -61,10 +60,9 @@ public class BusinessHours {
     int minutes = now.getMinute();
     int time = ((hour * 60) + minutes) * 60;
 
-    Boolean isOpen = null;
+    Boolean isOpen = false;
 
     for (OpenTime event : todayEvents) {
-      isOpen = false;
       if (event.isOpen(time)) {
         isOpen = true;
         break;
@@ -74,6 +72,7 @@ public class BusinessHours {
       }
     }
     openNow = isOpen;
+
     for (OpenTime event : tomorrowEvents) {
       if (tomorrowOpenAt == null) {
         tomorrowOpenAt = event.getStart();
@@ -142,8 +141,18 @@ public class BusinessHours {
     }
   }
 
-  private Date calculateNextOpen() {
-    // TODO calculate the next day open
+  private StartEvent calculateNextOpen(int timeZoneOffset) {
+    Instant instant = Instant.now();
+    OffsetDateTime now = instant.atOffset(ZoneOffset.ofHoursMinutes(-timeZoneOffset / 60, -timeZoneOffset % 60));
+    tomorrowDayOfWeek = now.getDayOfWeek().plus(1).getValue();
+    for (int i = 2; i < 7; i++) {
+      int dayAfterTomorrow = now.getDayOfWeek().plus(i).getValue();
+      for (AbstractTime time : times) {
+        if (time.dayIs(dayAfterTomorrow)) {
+          return new StartEvent(i, time.getStart());
+        }
+      }
+    }
     return null;
   }
 
@@ -169,20 +178,25 @@ public class BusinessHours {
     return cleanTimes;
   }
 
-  public JSONObject toWebListTree(Language language) {
+  public JSONObject toWebListTree(Language language, int timeZoneOffset) {
     JSONObject jsonObject = new JSONObject();
 
-    Date closedUntil = null;
+    Event closedUntil;
     if ((openNow != null && !openNow) && todayOpenAt == null && tomorrowOpenAt == null) {
-      closedUntil = calculateNextOpen();
+      closedUntil = calculateNextOpen(timeZoneOffset);
       if (closedUntil != null) {
-        jsonObject.add(new JSONPair("closedUntil", closedUntil));
+        JSONObject jsonClosedUntil = new JSONObject();
+        Day day = new Day(closedUntil.getDay());
+        jsonClosedUntil.add(new JSONPair("name", day.getName(language)));
+        jsonClosedUntil.add(new JSONPair("shortName", day.getShortName(language)));
+        jsonClosedUntil.add(new JSONPair("openAt", closedUntil.getHour().toHHmm()));
+        jsonObject.add(new JSONPair("closedUntil", jsonClosedUntil));
       }
     }
 
     JSONObject jsonToday = new JSONObject();
-    jsonToday.add(new JSONPair("shortName", todayName.getShortName(language)));
-    jsonToday.add(new JSONPair("name", todayName.getName(language)));
+    jsonToday.add(new JSONPair("shortName", today.getShortName(language)));
+    jsonToday.add(new JSONPair("name", today.getName(language)));
     jsonToday.add(new JSONPair("isOpen", openNow));
     if (todayOpenAt != null) {
       jsonToday.add(new JSONPair("openAt", todayOpenAt.getHour().toHHmm()));
@@ -190,8 +204,8 @@ public class BusinessHours {
     jsonObject.add(new JSONPair("today", jsonToday));
 
     JSONObject jsonTomorrow = new JSONObject();
-    jsonTomorrow.add(new JSONPair("shortName", tomorrowName.getShortName(language)));
-    jsonTomorrow.add(new JSONPair("name", tomorrowName.getName(language)));
+    jsonTomorrow.add(new JSONPair("shortName", tomorrow.getShortName(language)));
+    jsonTomorrow.add(new JSONPair("name", tomorrow.getName(language)));
     if (tomorrowOpenAt != null) {
       jsonTomorrow.add(new JSONPair("openAt", tomorrowOpenAt.getHour().toHHmm()));
     }
@@ -200,7 +214,7 @@ public class BusinessHours {
     return jsonObject;
   }
 
-  public JSONObject toMenuTree(Language language) {
-    return toWebListTree(language);
+  public JSONObject toMenuTree(Language language, int timeZoneOffset) {
+    return toWebListTree(language, timeZoneOffset);
   }
 }

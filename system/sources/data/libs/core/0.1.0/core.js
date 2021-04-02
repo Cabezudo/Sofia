@@ -155,12 +155,16 @@ const Core = {
     if (!text) {
       throw new Error(`Invalid key for text: ${key}`);
     }
-    if (Core.isArray(values)) {
-      let i = 0;
-      values.forEach(value => {
-        text = text.replaceAll(`{${i}}`, value);
-        i++;
-      });
+    if (values) {
+      if (Core.isArray(values)) {
+        let i = 0;
+        values.forEach(value => {
+          text = text.replaceAll(`{${i}}`, value);
+          i++;
+        });
+      } else {
+        throw new Error('The second parameter MUST be an array');
+      }
     }
     return text;
   },
