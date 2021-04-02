@@ -79,19 +79,19 @@ public class Day implements Comparable<Day> {
       case "es":
         switch (index) {
           case 1:
-            return "Lunes";
+            return "lunes";
           case 2:
-            return "Martes";
+            return "martes";
           case 3:
-            return "Miércoles";
+            return "miércoles";
           case 4:
-            return "Jueves";
+            return "jueves";
           case 5:
-            return "Viernes";
+            return "viernes";
           case 6:
-            return "Sábado";
+            return "sábado";
           case 7:
-            return "Domingo";
+            return "domingo";
           default:
             throw new SofiaRuntimeException("Invalid day index: " + index);
         }
