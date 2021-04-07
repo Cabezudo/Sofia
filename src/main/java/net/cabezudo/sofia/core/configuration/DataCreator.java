@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.database.sql.Database;
+import net.cabezudo.sofia.core.exceptions.DataConversionException;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -64,7 +65,7 @@ public abstract class DataCreator {
     return databaseCreated;
   }
 
-  public abstract void createDefaultData() throws DataCreationException;
+  public abstract void createDefaultData() throws DataCreationException, ConfigurationException, DataConversionException;
 
   public abstract void createTestData() throws DataCreationException;
 

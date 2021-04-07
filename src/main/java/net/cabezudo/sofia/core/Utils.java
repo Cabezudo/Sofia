@@ -26,6 +26,17 @@ public class Utils {
     return df.format(date);
   }
 
+  public static String getMillisecondsToTime(long l) {
+    int mi = (int) l % 1000;
+    int rs = (int) l / 1000;
+    int s = rs % 60;
+    int rm = rs / 60;
+    int m = rm % 60;
+    int rh = rm / 60;
+    int h = rh / 60;
+    return String.format("%02d:%02d:%02d.%03d", h, m, s, mi);
+  }
+
   private Utils() {
     // Nothing to do here. Utility classes should not have public constructors.
   }

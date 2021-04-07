@@ -22,7 +22,7 @@ public class APIConfiguration {
 
   public void add(Path apiConfigurationFilePath) throws ConfigurationException {
     try {
-      JSONObject jsonObject = JSON.parse(apiConfigurationFilePath, Configuration.getDefaultCharset().toString()).toJSONObject();
+      JSONObject jsonObject = JSON.parse(apiConfigurationFilePath, Configuration.getDefaultCharset()).toJSONObject();
       add(jsonObject);
     } catch (JSONParseException | IOException e) {
       throw new ConfigurationException(e);

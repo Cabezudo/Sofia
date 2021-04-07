@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.geolocation;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -8,8 +9,18 @@ import java.math.BigDecimal;
  */
 public class Longitude {
 
-  private Longitude() {
-    // Utility classes should not have public constructors
+  private final BigDecimal value;
+
+  public Longitude(String value) {
+    this.value = new BigDecimal(value).setScale(6, RoundingMode.HALF_UP);
+  }
+
+  public Longitude(BigDecimal value) {
+    this.value = value.setScale(5);
+  }
+
+  public BigDecimal getValue() {
+    return value;
   }
 
   public static void validate(BigDecimal longitude) throws InvalidLongitudeException {
@@ -19,5 +30,10 @@ public class Longitude {
     if (longitude.doubleValue() > 180 || longitude.doubleValue() < -180) {
       throw new InvalidLongitudeException();
     }
+  }
+
+  @Override
+  public String toString() {
+    return "[ longitude = " + value + "]";
   }
 }

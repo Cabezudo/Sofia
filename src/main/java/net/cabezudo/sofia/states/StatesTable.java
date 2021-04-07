@@ -8,6 +8,7 @@ import net.cabezudo.sofia.countries.CountriesTable;
  */
 public class StatesTable {
 
+  public static final String DATABASE_NAME = "sofia";
   public static final String NAME = "states";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "

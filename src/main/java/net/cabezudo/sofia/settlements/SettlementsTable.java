@@ -19,6 +19,7 @@ public class SettlementsTable {
           + "`city` INT, "
           + "`municipality` INT NOT NULL, "
           + "`zone` INT NOT NULL, "
+          + "`municipalityId` VARCHAR(4) NOT NULL, "
           + "`name` VARCHAR(100) NOT NULL, "
           + "`owner` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
@@ -26,7 +27,7 @@ public class SettlementsTable {
           + "FOREIGN KEY (`type`) REFERENCES " + SettlementTypesTable.NAME + "(`id`), "
           + "FOREIGN KEY (`municipality`) REFERENCES " + MunicipalitiesTable.NAME + "(`id`), "
           + "FOREIGN KEY (`zone`) REFERENCES " + ZonesTable.NAME + "(`id`), "
-          + "UNIQUE INDEX `iTypeMunicipalityZoneName` (`type`, `municipality`, `zone`, `name`)"
+          + "UNIQUE INDEX `iTypeMunicipalityZoneIdName` (`type`, `municipality`, `zone`, `municipalityId`, `name`)"
           + ") "
           + "CHARACTER SET = UTF8";
 

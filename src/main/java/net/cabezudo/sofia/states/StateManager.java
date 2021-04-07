@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.states;
 
+import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
+import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.database.sql.Database;
+import net.cabezudo.sofia.core.exceptions.DataConversionException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.countries.Country;
 
@@ -58,7 +62,15 @@ public class StateManager {
     throw new SofiaRuntimeException("Can't get the generated key");
   }
 
-  private State get(Connection connection, Country country, String name) throws ClusterException {
+  public State get(Country country, String name) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
+      return get(connection, country, name);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    }
+  }
+
+  public State get(Connection connection, Country country, String name) throws ClusterException {
     String query = "SELECT id, country, name FROM " + StatesTable.NAME + " WHERE country = ? AND name = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -76,4 +88,12 @@ public class StateManager {
     return null;
   }
 
+  public void create(MexicoStatesCreator mexicoStateCreator) throws ClusterException, ConfigurationException, DataConversionException {
+    mexicoStateCreator.create();
+  }
+
+  public Path getDataFile(String twoLetterCountryCode) {
+    String statesDataFile = Configuration.get("states." + twoLetterCountryCode);
+    return Configuration.getStatesDataPath().resolve(statesDataFile);
+  }
 }

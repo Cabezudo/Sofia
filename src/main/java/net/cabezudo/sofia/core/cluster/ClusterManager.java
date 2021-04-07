@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.configuration.Environment;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -68,9 +69,11 @@ public class ClusterManager {
   }
 
   private void writeSelectLog(String log) throws IOException {
-    File filenameForSelects = Configuration.getInstance().getClusterFileSelectLogPath().toFile();
-    try (FileWriter fw = new FileWriter(filenameForSelects, true); BufferedWriter writer = new BufferedWriter(fw);) {
-      writer.write(log);
+    if (Environment.getInstance().isDevelopment()) {
+      File filenameForSelects = Configuration.getInstance().getClusterFileSelectLogPath().toFile();
+      try (FileWriter fw = new FileWriter(filenameForSelects, true); BufferedWriter writer = new BufferedWriter(fw);) {
+        writer.write(log);
+      }
     }
   }
 

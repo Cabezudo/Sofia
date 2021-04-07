@@ -9,24 +9,28 @@ import net.cabezudo.sofia.core.words.Word;
 public class Country {
 
   private final Integer id;
+  private final String twoLettersCountryCode;
   private final Word name;
   private final int phoneCode;
-  private final String twoLettersCountryCode;
 
-  public Country(int id, Word name, int phoneCode, String twoLettersCountryCode) {
+  public Country(int id, String twoLettersCountryCode, Word name, int phoneCode) {
     this.id = id;
+    this.twoLettersCountryCode = twoLettersCountryCode;
     this.name = name;
     this.phoneCode = phoneCode;
-    this.twoLettersCountryCode = twoLettersCountryCode;
   }
 
   @Override
   public String toString() {
-    return "[id = " + getId() + ", name = " + getName().getValue() + ", phoneCode = " + getPhoneCode() + ", twoLetterCountryCode = " + getTwoLetterCountryCode() + "]";
+    return "[id = " + getId() + ", name = " + getName() + ", twoLetterCountryCode = " + getTwoLetterCountryCode() + ", phoneCode = " + getPhoneCode() + "]";
   }
 
   public Integer getId() {
     return id;
+  }
+
+  public String getTwoLetterCountryCode() {
+    return twoLettersCountryCode;
   }
 
   public Word getName() {
@@ -35,9 +39,5 @@ public class Country {
 
   public int getPhoneCode() {
     return phoneCode;
-  }
-
-  public String getTwoLetterCountryCode() {
-    return twoLettersCountryCode;
   }
 }

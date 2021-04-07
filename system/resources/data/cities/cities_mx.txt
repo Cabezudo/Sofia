@@ -1,0 +1,831 @@
+Guanajuato|Abasolo|20.44997|-101.53073
+Puebla|Acajete|19.11154|-97.95231
+Chiapas|Acala|16.55546|-92.80605
+Guanajuato|Acámbaro|20.03085|-100.72194
+Nayarit|Acaponeta|22.49396|-105.36369
+Guerrero|Acapulco de Juárez|16.84942|-99.90891
+Jalisco|Acatlán de Juárez|20.42239|-103.59148
+Puebla|Acatlán de Osorio|18.2025|-98.04864
+Puebla|Acatzingo de Hidalgo|18.98196|-97.78363
+Veracruz de Ignacio de la Llave|Acayucan|17.94979|-94.91386
+Hidalgo|Actopan|20.26961|-98.94377
+Veracruz de Ignacio de la Llave|Agua Dulce|18.13909|-94.14527
+Sonora|Agua Prieta|31.33071|-109.54876
+Aguascalientes|Aguascalientes|21.88234|-102.28259
+Sinaloa|Ahome|25.91949|-109.17443
+Nayarit|Ahuacatlán|21.05072|-104.48468
+Jalisco|Ahualulco de Mercado|20.70137|-103.97461
+Puebla|Ajalpan|18.37908|-97.25867
+Jalisco|Ajijic|20.29963|-103.26216
+Veracruz de Ignacio de la Llave|Álamo|20.91154|-97.67554
+Chihuahua|Aldama|28.83669|-105.91423
+Coahuila de Zaragoza|Allende|28.34124|-100.85111
+Veracruz de Ignacio de la Llave|Allende|18.15514|-94.39289
+México|Almoloya de Juárez|19.36938|-99.75867
+Tamaulipas|Altamira|22.39215|-97.93867
+Puebla|Altepexi|18.37035|-97.29966
+Veracruz de Ignacio de la Llave|Alto Lucero|20.95361|-97.44194
+Veracruz de Ignacio de la Llave|Altotonga|19.76613|-97.24514
+Veracruz de Ignacio de la Llave|Alvarado|18.77143|-95.76181
+México|Amatepec|18.68519|-100.18798
+Jalisco|Ameca|20.54629|-104.04508
+Nuevo León|Anáhuac|27.24457|-100.13337
+Hidalgo|Apan|19.70996|-98.45275
+Guanajuato|Apaseo el Alto|20.45798|-100.62053
+Guanajuato|Apaseo el Grande|20.54495|-100.68836
+Michoacán de Ocampo|Apatzingán de la Constitución|19.08739|-102.35459
+Tlaxcala|Apizaco|19.41529|-98.14037
+Jalisco|Arandas|20.70579|-102.34945
+Guerrero|Arcelia|18.31847|-100.28376
+Michoacán de Ocampo|Ario de Rosales|19.209|-101.70867
+Chiapas|Arriaga|16.23589|-93.89849
+Coahuila de Zaragoza|Arteaga|25.45044|-100.85917
+Aguascalientes|Asientos|22.23836|-102.08954
+Oaxaca|Asunción Nochixtlán|17.459|-97.22522
+México|Atlacomulco de Fabela|19.79896|-99.8742
+Puebla|Atlixco|18.90815|-98.43613
+Jalisco|Atotonilco el Alto|20.55079|-102.50942
+Veracruz de Ignacio de la Llave|Atoyac|18.91215|-96.7782
+Guerrero|Atoyac de Álvarez|17.20667|-100.43306
+Jalisco|Autlán de Navarro|19.76822|-104.36664
+Morelos|Axochiapan|18.50246|-98.75358
+Guerrero|Ayutla de los Libres|16.96376|-99.09616
+Guerrero|Azoyú|16.73313|-98.60195
+Quintana Roo|Bacalar|18.67707|-88.38976
+Chihuahua|Bachíniva|28.76462|-107.2541
+Oaxaca|Bahias de Huatulco|15.76506|-96.13868
+Veracruz de Ignacio de la Llave|Banderilla|19.58893|-96.93727
+Chiapas|Berriozábal|16.79853|-93.27163
+Veracruz de Ignacio de la Llave|Boca del Río|19.10106|-96.10597
+Nayarit|Bucerías|20.75654|-105.34056
+Guerrero|Buenavista de Cuéllar|18.46001|-99.40867
+Baja California Sur|Cabo San Lucas|22.89088|-109.91238
+Chiapas|Cacahoatán|14.99201|-92.16376
+Nuevo León|Cadereyta Jiménez|25.58896|-100.00156
+Campeche|Calkini|20.36907|-90.04815
+Tlaxcala|Calpulalpan|19.58867|-98.56972
+Aguascalientes|Calvillo|21.84583|-102.71849
+Chihuahua|Camargo|27.67842|-105.17136
+Campeche|Campeche|19.84386|-90.52554
+Sonora|Cananea|30.98699|-110.29062
+Durango|Canatlán|24.52774|-104.77828
+Quintana Roo|Cancún|21.17429|-86.84656
+Campeche|Candelaria|18.18478|-91.04609
+México|Capulhuac|19.19324|-99.46449
+San Luis Potosí|Cárdenas|18.00135|-93.37559
+Tabasco|Cárdenas|22.00144|-99.64247
+Veracruz de Ignacio de la Llave|Carlos A. Carrillo|18.37477|-95.75444
+Puebla|Casa Blanca|19.04222|-98.11889
+Coahuila de Zaragoza|Castaños|26.78932|-101.43211
+Veracruz de Ignacio de la Llave|Catemaco|18.42131|-95.11398
+Veracruz de Ignacio de la Llave|Cazones de Herrera|20.70674|-97.30938
+San Luis Potosí|Cedral|23.81905|-100.72506
+Guanajuato|Celaya|20.52353|-100.8157
+San Luis Potosí|Cerritos|22.43287|-100.28372
+Veracruz de Ignacio de la Llave|Cerro Azul|21.192|-97.74088
+Oaxaca|Chahuites|16.28758|-94.19539
+México|Chalco de Díaz Covarrubias|19.26174|-98.89775
+Campeche|Champotón|19.34745|-90.72039
+Jalisco|Chapala|20.29616|-103.19123
+San Luis Potosí|Charcas|23.13083|-101.11418
+Quintana Roo|Chetumal|18.51413|-88.30381
+Chiapas|Chiapa de Corzo|16.7077|-93.01184
+Tlaxcala|Chiautempan|19.31905|-98.19982
+México|Chicoloapan|19.41687|-98.90202
+México|Chiconcuac|19.55939|-98.89884
+México|Chiconcuac|19.55699|-98.89902
+Tlaxcala|Chignahuapan|19.83866|-98.03171
+Chihuahua|Chihuahua|28.63528|-106.08889
+Guerrero|Chilapa de Álvarez|17.59917|-99.17389
+Guerrero|Chilapa de Álvarez|17.59994|-99.17353
+Guerrero|Chilpancingo|17.5506|-99.50578
+México|Chimalhuacán|19.41678|-98.9464
+Sinaloa|Choix|26.70888|-108.3237
+Puebla|Cholula|19.06406|-98.30352
+Nuevo León|Ciénega de Flores|25.95467|-100.16695
+Nuevo León|Ciénega de Flores|25.95208|-100.16806
+Jalisco|Cihuatlán|19.2366|-104.56512
+Jalisco|Cihuatlán|19.23636|-104.56548
+Chiapas|Cintalapa de Figueroa|16.69829|-93.72066
+Chiapas|Cintalapa de Figueroa|16.68686|-93.72847
+Coahuila de Zaragoza|Ciudad Acuña|29.32322|-100.95217
+México|Ciudad Adolfo López Mateos|19.55706|-99.26777
+Guerrero|Ciudad Altamirano|18.3582|-100.66965
+Guerrero|Ciudad Apaxtla de Castrejón|18.1324|-99.93279
+Nuevo León|Ciudad Apodaca|25.78195|-100.18839
+Nuevo León|Ciudad Benito Juárez|25.64724|-100.09582
+Tamaulipas|Ciudad Camargo|26.31528|-98.834
+Baja California Sur|Ciudad Constitución|25.0321|-111.66256
+Chihuahua|Ciudad Cuauhtémoc|28.40691|-106.86647
+Nuevo León|Ciudad de Allende|25.27673|-100.01442
+Colima|Ciudad de Armería|18.9378|-103.96417
+Oaxaca|Ciudad de Huajuapan de León|17.80787|-97.77956
+Guerrero|Ciudad de Huitzuco|18.30334|-99.33376
+Ciudad de México|Ciudad de México|19.4322|-99.13068
+Colima|Ciudad de Villa de Álvarez|19.26722|-103.73778
+Campeche|Ciudad del Carmen|18.64592|-91.82991
+Campeche|Ciudad del Carmen|18.65134|-91.80827
+San Luis Potosí|Ciudad del Maíz|22.40225|-99.6035
+Chihuahua|Ciudad Delicias|28.19013|-105.47012
+San Luis Potosí|Ciudad Fernández|21.94045|-100.01153
+Nuevo León|Ciudad General Escobedo|25.79698|-100.31791
+Durango|Ciudad Guadalupe Victoria|24.44401|-104.12156
+Tamaulipas|Ciudad Gustavo Díaz Ordaz|26.23398|-98.5979
+Jalisco|Ciudad Guzmán|19.70466|-103.4617
+Michoacán de Ocampo|Ciudad Hidalgo|19.6927|-100.55445
+Oaxaca|Ciudad Ixtepec|16.55627|-95.0956
+Chihuahua|Ciudad Juárez|31.72024|-106.46084
+Michoacán de Ocampo|Ciudad Lázaro Cárdenas|17.97066|-102.22124
+Durango|Ciudad Lerdo|25.53718|-103.52456
+México|Ciudad López Mateos|19.55793|-99.25675
+Tamaulipas|Ciudad Madero|22.27228|-97.83623
+Tamaulipas|Ciudad Mante|22.74304|-98.9739
+Guanajuato|Ciudad Manuel Doblado|20.72845|-101.95094
+Coahuila de Zaragoza|Ciudad Melchor Múzquiz|27.87933|-101.51615
+Veracruz de Ignacio de la Llave|Ciudad Mendoza|18.80645|-97.1787
+Tamaulipas|Ciudad Miguel Alemán|26.39952|-99.02836
+México|Ciudad Nezahualcóyotl|19.40061|-99.01483
+México|Ciudad Nicolás Romero|19.61735|-99.30313
+México|Ciudad Nicolás Romero|19.64177|-99.3068
+Sonora|Ciudad Obregón|27.48642|-109.94083
+Veracruz de Ignacio de la Llave|Ciudad Olmeca|18.15056|-94.5525
+Tamaulipas|Ciudad Río Bravo|25.98729|-98.09414
+Nuevo León|Ciudad Sabinas Hidalgo|26.50358|-100.18187
+Hidalgo|Ciudad Sahagun|19.77557|-98.57471
+Nuevo León|Ciudad Santa Catarina|25.67395|-100.4615
+Puebla|Ciudad Serdán|18.98856|-97.44643
+Tamaulipas|Ciudad Tula|22.99669|-99.71231
+San Luis Potosí|Ciudad Valles|21.99631|-99.01093
+Tamaulipas|Ciudad Victoria|23.74174|-99.14599
+México|Coacalco|19.62923|-99.10689
+Veracruz de Ignacio de la Llave|Coatepec|19.45229|-96.96148
+Veracruz de Ignacio de la Llave|Coatzacoalcos|18.14905|-94.4447
+Veracruz de Ignacio de la Llave|Coatzintla|20.48699|-97.46823
+Jalisco|Colima|19.24997|-103.72714
+Chihuahua|Colonia Anáhuac|28.4805|-106.74501
+Colima|Colonia del Sol|22.91273|-109.92655
+Jalisco|Colotlán|22.11467|-103.26723
+Tabasco|Comalcalco|18.26316|-93.22397
+Chiapas|Comitán|16.2471|-92.13515
+Guanajuato|Comonfort|20.72278|-100.75946
+Nayarit|Compostela|21.23777|-104.9001
+Tlaxcala|Contla|19.32932|-98.1664
+Guerrero|Copala|16.60795|-98.97785
+Veracruz de Ignacio de la Llave|Córdoba|18.8842|-96.92559
+Guanajuato|Cortazar|20.48362|-100.96237
+Sinaloa|Cosalá|24.41381|-106.6916
+Veracruz de Ignacio de la Llave|Cosamaloapan|18.36759|-95.79857
+Veracruz de Ignacio de la Llave|Coscomatepec de Bravo|19.07275|-97.04685
+Aguascalientes|Cosío|22.36632|-102.29961
+Oaxaca|Cosolapa|18.60209|-96.68271
+Veracruz de Ignacio de la Llave|Cosoleacaque|17.99913|-94.6359
+Michoacán de Ocampo|Cotija de la Paz|19.81043|-102.70578
+México|Coyotepec|19.77722|-99.21295
+Guerrero|Coyuca de Benítez|17.00874|-100.08503
+Guerrero|Coyuca de Catalán|18.32413|-100.69613
+Jalisco|Coyula|20.65881|-103.22654
+Quintana Roo|Cozumel|20.50038|-86.94272
+Guerrero|Cruz Grande|16.72377|-99.12286
+Guerrero|Cuajinicuilapa|16.47213|-98.41436
+Coahuila de Zaragoza|Cuatro Ciénegas de Carranza|26.98711|-102.06545
+Chihuahua|Cuauhtémoc|28.40884|-106.86319
+Hidalgo|Cuautepec de Hinojosa|20.03557|-98.31015
+México|Cuautitlán|19.67052|-99.17989
+México|Cuautitlán Izcalli|19.64388|-99.21598
+Morelos|Cuautla|18.8106|-98.93525
+Puebla|Cuautlancingo|19.08995|-98.27319
+Guanajuato|Cuerámaro|20.62617|-101.6712
+Morelos|Cuernavaca|18.9261|-99.23075
+Veracruz de Ignacio de la Llave|Cuichapa|18.77349|-96.86876
+Oaxaca|Cuilápam de Guerrero|16.99615|-96.77895
+Veracruz de Ignacio de la Llave|Cuitláhuac|18.81419|-96.72226
+Michoacán de Ocampo|Cuitzeo del Porvenir|19.97022|-101.14156
+Sinaloa|Culiacán Rosales|24.79032|-107.38782
+Tabasco|Cunduacán|18.06557|-93.17302
+Guerrero|Cutzamala de Pinzón|18.46597|-100.57901
+Chihuahua|Delicias|28.18672|-105.45955
+Nuevo León|Doctor Arroyo|23.67506|-100.18193
+Guanajuato|Doctor Mora|21.1413|-100.32381
+Guanajuato|Dolores Hidalgo Cuna de la Independencia Nacional|21.15611|-100.9325
+Hidalgo|Don Antonio|19.87444|-98.93472
+San Luis Potosí|Ébano|22.21808|-98.37706
+México|Ecatepec de Morelos|19.60492|-99.06064
+Oaxaca|El Camaron Yautepec|16.55678|-96.02867
+Nuevo León|El cercado|25.40455|-100.13287
+Jalisco|El Grullo|19.80603|-104.21805
+Veracruz de Ignacio de la Llave|El Higo|21.76962|-98.45426
+San Luis Potosí|El Naranjo|22.52734|-99.3299
+Querétaro|El Pueblito|20.53996|-100.43817
+Jalisco|El Quince|20.54387|-103.28467
+Oaxaca|El Rosario|22.99207|-105.85697
+Sinaloa|El Rosario|22.99099|-105.85377
+Durango|El Salto|23.77949|-105.36069
+Jalisco|El Salto|20.51803|-103.1792
+Tabasco|Emiliano Zapata|17.73704|-91.76953
+Sonora|Empalme|27.95922|-110.81885
+Guanajuato|Empalme Escobedo|20.67176|-100.74892
+Jalisco|Encarnación de Díaz|21.52705|-102.24013
+Baja California|Ensenada|31.87149|-116.60071
+Campeche|Escárcega|18.60891|-90.74544
+Sinaloa|Escuinapa de Hidalgo|22.83279|-105.77772
+Sonora|Esperanza|27.57916|-109.9298
+Tamaulipas|Estación Manuel|22.72738|-98.31889
+Sinaloa|Estación Naranjo|25.8022|-108.47938
+Jalisco|Etzatlán|20.76419|-104.08186
+Quintana Roo|Felipe Carrillo Puerto|19.5775|-88.04529
+Veracruz de Ignacio de la Llave|Fortín de las Flores|18.90806|-97
+Nuevo León|Fraccionamiento Real Palmas|25.90417|-100.15972
+Coahuila de Zaragoza|Francisco I. Madero|25.773|-103.27127
+Durango|Francisco I. Madero|24.40147|-104.31975
+Nayarit|Francisco I. Madero|21.58193|-104.82571
+Hidalgo|Fray Bernardino de Sahagún|19.77579|-98.5767
+Zacatecas|Fresnillo|23.18126|-102.87136
+Coahuila de Zaragoza|Frontera|18.54326|-92.6453
+Tabasco|Frontera|26.92814|-101.45212
+Morelos|Galeana|18.63758|-99.21436
+Nuevo León|García|25.81201|-100.59874
+Veracruz de Ignacio de la Llave|General Miguel Alemán|18.89456|-96.79169
+Durango|Gómez Palacio|25.56985|-103.49588
+Tamaulipas|González|22.82713|-98.42892
+Michoacán de Ocampo|Guacamayas|18.01932|-102.21225
+Jalisco|Guadalajara|20.66682|-103.39182
+Nuevo León|Guadalupe|22.74753|-102.51874
+Zacatecas|Guadalupe|25.67678|-100.25646
+Baja California|Guadalupe Victoria|32.28924|-115.10534
+Sinaloa|Guamúchil|25.4587|-108.07732
+Guanajuato|Guanajuato|21.01858|-101.2591
+Sinaloa|Guasave|25.56745|-108.46756
+Baja California Sur|Gustavo Adolfo Madero|19.49392|-99.11075
+Veracruz de Ignacio de la Llave|Gutiérrez Zamora|20.44964|-97.08614
+Jalisco|Hacienda Santa Fe|20.51806|-103.38056
+Campeche|Hecelchakán|20.17745|-90.13323
+Sonora|Hermosillo|29.1026|-110.97732
+Sonora|Heroica Caborca|30.71825|-112.15822
+Sonora|Heroica Ciudad de Cananea|30.98567|-110.29414
+Oaxaca|Heroica Ciudad de Ejutla de Crespo|16.56652|-96.72904
+Oaxaca|Heroica Ciudad de Huajuapan de León|17.81737|-97.77687
+Oaxaca|Heroica Ciudad de Tlaxiaco|17.26916|-97.68053
+Sonora|Heroica Guaymas|27.91928|-110.89755
+Tamaulipas|Heroica Matamoros|25.87972|-97.50417
+Baja California Sur|Heroica Mulegé|26.89088|-111.98279
+Sonora|Heroica Nogales|31.30107|-110.93832
+Puebla|Heroica Puebla de Zaragoza|19.04377|-98.19815
+Michoacán de Ocampo|Heróica Zitácuaro|19.43612|-100.35733
+Chihuahua|Hidalgo del Parral|26.93318|-105.66373
+Sinaloa|Higuera de Zaragoza|25.97155|-109.30365
+Campeche|Hopelchén|19.74716|-89.84426
+Nuevo León|Hualahuises|24.88765|-99.67499
+Tlaxcala|Huamantla|19.31451|-97.9252
+Guerrero|Huamuxtitlán|17.80128|-98.5645
+Guanajuato|Huanímaro|20.36777|-101.49724
+Sonora|Huatabampo|26.8261|-109.6422
+Veracruz de Ignacio de la Llave|Huatusco|19.14876|-96.9676
+Veracruz de Ignacio de la Llave|Huatusco de Chicuellar|19.15045|-96.9669
+Puebla|Huauchinango|20.17376|-98.05491
+Veracruz de Ignacio de la Llave|Huayacocotla|20.53723|-98.47902
+Puebla|Huejotzingo|19.15892|-98.40824
+Jalisco|Huejuquilla el Alto|22.62718|-103.8968
+Hidalgo|Huejutla de Reyes|21.14|-98.41944
+Michoacán de Ocampo|Huetamo de Núñez|18.62926|-100.897
+México|Huilango|19.68056|-99.25639
+Veracruz de Ignacio de la Llave|Huiloapan de Cuauhtémoc|18.81663|-97.15231
+Tabasco|Huimanguillo|17.83366|-93.38926
+Guerrero|Huitzuco|18.30405|-99.33554
+México|Huixquilucan de Degollado|19.35985|-99.35016
+Chiapas|Huixtla|15.13915|-92.4641
+Yucatán|Hunucmá|21.01723|-89.87551
+Guerrero|Iguala de la Independencia|18.34536|-99.5413
+Guanajuato|Irapuato|20.67675|-101.35628
+Veracruz de Ignacio de la Llave|Isla|18.0278|-95.52946
+Quintana Roo|Isla Mujeres|21.2329|-86.73418
+Hidalgo|Ixmiquilpan|20.47841|-99.21697
+Veracruz de Ignacio de la Llave|Ixtaczoquitlán|18.85364|-97.06229
+Jalisco|Ixtapa|20.71641|-105.20487
+Guerrero|Ixtapa-Zihuatanejo|17.64344|-101.55212
+México|Ixtapaluca|19.31556|-98.88284
+México|Ixtapan de la Sal|18.84369|-99.67671
+Oaxaca|Ixtepec|16.56052|-95.10375
+Nayarit|Ixtlán del Río|21.03907|-104.37116
+Yucatán|Izamal|20.93537|-89.01802
+Puebla|Izúcar de Matamoros|18.60157|-98.46152
+Michoacán de Ocampo|Jacona de Plancarte|19.95232|-102.30781
+Nayarit|Jala|21.10457|-104.43607
+Jalisco|Jalostotitlán|21.16741|-102.46386
+Zacatecas|Jalpa|21.63253|-102.97468
+Tabasco|Jalpa de Méndez|18.17633|-93.063
+Veracruz de Ignacio de la Llave|Jáltipan de Morelos|17.96542|-94.71396
+Jalisco|Jamay|20.29349|-102.70754
+Guanajuato|Jaral del Progreso|20.37237|-101.06249
+Tamaulipas|Jaumave|23.40641|-99.37597
+Guanajuato|Jerécuaro|20.15071|-100.5105
+Zacatecas|Jerez de García Salinas|22.64971|-102.99032
+México|Jesús del Monte|19.375|-99.29444
+Aguascalientes|Jesús María|21.96111|-102.34333
+Michoacán de Ocampo|Jiquilpan de Juárez|19.99482|-102.71969
+Chiapas|Jiquipilas|20.1492|-100.51062
+Morelos|Jiutepec|18.88139|-99.17778
+Jalisco|Jocotepec|20.28527|-103.42897
+Morelos|Jojutla|18.61472|-99.18028
+Veracruz de Ignacio de la Llave|José Cardel|19.3681|-96.36951
+Chihuahua|José Mariano Jiménez|27.13076|-104.92391
+Chihuahua|Juan Aldama|24.29188|-103.39272
+Zacatecas|Juan Aldama|24.29087|-103.39357
+Veracruz de Ignacio de la Llave|Juan Díaz Covarrubias|18.15645|-95.18667
+Sinaloa|Juan José Ríos|25.75781|-108.8242
+Veracruz de Ignacio de la Llave|Juan Rodríguez Clara|17.9901|-95.40259
+Chihuahua|Juárez|31.73993|-106.48532
+Oaxaca|Juchitán de Zaragoza|16.43603|-95.01975
+México|Juchitepec de Mariano Rivapalacio|19.10059|-98.8788
+Guanajuato|Juventino Rosas|20.64337|-100.99286
+Yucatán|Kanasín|20.93482|-89.55871
+Quintana Roo|Kantunilkín|21.10221|-87.48589
+Jalisco|La Barca|20.28784|-102.54514
+Oaxaca|La Crucecita|15.76889|-96.135
+Sinaloa|La Cruz|23.92126|-106.8925
+Baja California Sur|La Paz|24.14437|-110.3005
+Nayarit|La Peñita de Jaltemba|21.04075|-105.2504
+Michoacán de Ocampo|La Piedad de Cabadas|20.34239|-102.0305
+Jalisco|La Resolana|20.56444|-103.30222
+Guerrero|La Unión|17.98296|-101.80541
+Jalisco|Lagos de Moreno|21.35666|-101.93768
+Oaxaca|Lagunas|16.80019|-95.07264
+Veracruz de Ignacio de la Llave|Las Choapas|17.90875|-94.09043
+Michoacán de Ocampo|Las Guacamayas|18.02059|-102.21027
+Chiapas|Las Margaritas|16.31265|-91.98107
+Jalisco|Las Pintitas|20.57376|-103.32345
+Chiapas|Las Rosas|16.36574|-92.3704
+Nayarit|Las Varas|21.17567|-105.13563
+Baja California|Lázaro Cárdenas|30.52815|-115.92617
+Guanajuato|León de los Aldama|21.12908|-101.67374
+Veracruz de Ignacio de la Llave|Lerdo de Tejada|18.62936|-95.51968
+México|Lerma de Villada|19.28881|-99.51163
+Sinaloa|Leyva Solano|25.66163|-108.637
+Puebla|Libres|19.46574|-97.68737
+Sinaloa|Licenciado Benito Juárez|24.65667|-107.545
+Nuevo León|Linares|24.85798|-99.56768
+Oaxaca|Loma Bonita|18.10721|-95.87904
+Jalisco|Lomas del Sur|20.4925|-103.4175
+Baja California Sur|Loreto|26.01079|-111.34198
+Zacatecas|Loreto|22.2722|-101.98651
+Sinaloa|Los Mochis|22.27248|-101.98898
+México|Los Reyes Acaquilpan|25.79302|-108.99808
+Michoacán de Ocampo|Los Reyes de Salgado|18.94918|-97.80379
+Zacatecas|Luis Moya|19.59042|-102.47242
+Tabasco|Macuspana|17.76052|-92.59539
+Chihuahua|Madera|29.19366|-108.14684
+Jalisco|Magdalena|20.90741|-103.978
+Sonora|Magdalena de Kino|30.62789|-110.96203
+Chihuahua|Manuel Ojinaga|29.56444|-104.41639
+Colima|Manzanillo|19.11695|-104.34214
+Chiapas|Mapastepec|15.43358|-92.90039
+Michoacán de Ocampo|Maravatío de Ocampo|19.89113|-100.44443
+Guanajuato|Marfil|20.99165|-101.28434
+Oaxaca|Mariscala de Juárez|17.86147|-98.14223
+Guerrero|Marquelia|16.58358|-98.81715
+Veracruz de Ignacio de la Llave|Martínez de la Torre|20.07082|-97.06078
+Coahuila de Zaragoza|Matamoros|25.52699|-103.2285
+San Luis Potosí|Matehuala|23.64824|-100.64334
+Oaxaca|Matías Romero Avendaño|16.87902|-95.03939
+Sinaloa|Mazatlán|23.24934|-106.41344
+México|Melchor Ocampo|19.70186|-99.14485
+Yucatán|Mérida|20.97537|-89.61696
+México|Metepec|19.25934|-99.60175
+Baja California|Mexicali|32.62781|-115.45446
+Nayarit|Mezcales|20.73072|-105.28257
+Oaxaca|Miahuatlán de Porfirio Díaz|16.33276|-96.59562
+Sonora|Miguel Alemán|28.84028|-111.4775
+Veracruz de Ignacio de la Llave|Minatitlán|18.00011|-94.5569
+Tamaulipas|Miramar|22.36094|-97.89997
+Veracruz de Ignacio de la Llave|Misantla|19.92992|-96.85194
+Nuevo León|Mitras Poniente|25.77583|-100.42583
+Hidalgo|Mixquiahuala de Juarez|20.23031|-99.21396
+Sinaloa|Mocorito|25.48431|-107.9215
+Coahuila de Zaragoza|Monclova|26.90687|-101.42056
+Nuevo León|Montemorelos|25.18863|-99.8294
+Nuevo León|Monterrey|25.67507|-100.31847
+Michoacán de Ocampo|Morelia|19.70078|-101.18443
+Coahuila de Zaragoza|Morelos|28.40973|-100.88727
+Guanajuato|Moroleón|20.12571|-101.19208
+Chiapas|Motozintla|15.36694|-92.24605
+Chiapas|Motozintla de Mendoza|15.36345|-92.248
+Yucatán|Motul|21.09571|-89.28332
+Yucatán|Motul de Carrillo Puerto|21.09568|-89.28352
+Zacatecas|Moyahua de Estrada|21.26506|-103.16567
+Coahuila de Zaragoza|Nadadores|27.02999|-101.59054
+Veracruz de Ignacio de la Llave|Nanchital de Lázaro Cárdenas del Río|18.07117|-94.40756
+Veracruz de Ignacio de la Llave|Naranjos|21.35087|-97.68656
+Oaxaca|Natividad|17.29821|-96.43185
+México|Naucalpan de Juárez|19.47851|-99.23963
+Coahuila de Zaragoza|Nava|28.42071|-100.76565
+Sonora|Navojoa|27.07028|-109.44372
+Sinaloa|Navolato|24.7661|-107.70225
+Jalisco|Nicolás R Casillas|20.54638|-103.46622
+Zacatecas|Nochistlán de Mejía|21.36435|-102.8459
+Veracruz de Ignacio de la Llave|Nogales|18.82435|-97.1643
+Durango|Nombre de Dios|23.84848|-104.24397
+Tamaulipas|Nueva Ciudad Guerrero|26.56555|-99.22624
+Michoacán de Ocampo|Nueva Italia de Ruiz|19.02492|-102.09318
+Coahuila de Zaragoza|Nueva Rosita|27.94028|-101.21812
+Chihuahua|Nuevo Casas Grandes|30.41552|-107.91166
+Tamaulipas|Nuevo Laredo|27.47629|-99.51639
+Oaxaca|Oaxaca de Juárez|17.06542|-96.72365
+Chiapas|Ocosingo|16.90639|-92.09374
+Guerrero|Ocotito|17.24694|-99.51303
+Jalisco|Ocotlán|20.3553|-102.77358
+Oaxaca|Ocotlán de Morelos|16.79151|-96.67455
+México|Ocoyoacac|19.27127|-99.45787
+Chiapas|Ocozocoautla de Espinosa|16.76231|-93.37476
+Chihuahua|Ojinaga|29.5457|-104.40881
+México|Ojo de Agua|19.67717|-99.03213
+Zacatecas|Ojocaliente|22.57062|-102.25531
+Guerrero|Olinalá|17.77739|-98.73893
+Guerrero|Ometepec|16.69008|-98.40797
+Veracruz de Ignacio de la Llave|Orizaba|18.85195|-97.09957
+Yucatán|Oxkutzkab|20.30734|-89.41809
+México|Ozumba de Alzate|19.03689|-98.79516
+Aguascalientes|Pabellón de Arteaga|22.14642|-102.2769
+Hidalgo|Pachuca de Soto|20.11697|-98.73329
+Coahuila de Zaragoza|Palau|27.89232|-101.42319
+Chiapas|Palenque|17.50953|-91.98248
+Puebla|Palmarito Tochapan|18.90135|-97.63833
+Veracruz de Ignacio de la Llave|Pánuco|22.05373|-98.18498
+Tlaxcala|Papalotla|19.16861|-98.20389
+Veracruz de Ignacio de la Llave|Papantla de Olarte|20.44655|-97.32494
+Michoacán de Ocampo|Paracho de Verduzco|19.64745|-102.04897
+Tabasco|Paraíso|18.40116|-93.21406
+Veracruz de Ignacio de la Llave|Paraje Nuevo|18.87701|-96.86167
+Nuevo León|Parque Industrial Ciudad Mitras|25.78861|-100.44778
+Chihuahua|Parral|26.93022|-105.6664
+Coahuila de Zaragoza|Parras de la Fuente|25.44185|-102.17808
+Veracruz de Ignacio de la Llave|Paso de Ovejas|19.28523|-96.43754
+Veracruz de Ignacio de la Llave|Paso del Macho|18.97026|-96.72288
+Michoacán de Ocampo|Pátzcuaro|19.51594|-101.60887
+Chihuahua|Pedro Meoqui|28.27226|-105.48046
+Guanajuato|Pénjamo|20.43108|-101.72261
+Durango|Peñón Blanco|24.79128|-104.03314
+Michoacán de Ocampo|Peribán de Ramos|19.5201|-102.41397
+Veracruz de Ignacio de la Llave|Perote|19.56233|-97.24235
+Guerrero|Petatlán|17.53768|-101.26798
+Yucatán|Peto|20.12776|-88.92282
+Chiapas|Pichucalco|17.50958|-93.11767
+Coahuila de Zaragoza|Piedras Negras|28.70007|-100.52353
+Chiapas|Pijijiapan|15.68618|-93.20938
+Oaxaca|Pinotepa Nacional|16.34014|-98.05297
+Veracruz de Ignacio de la Llave|Platón Sánchez|21.27528|-98.37511
+Quintana Roo|Playa del Carmen|20.6274|-87.07987
+Veracruz de Ignacio de la Llave|Playa Vicente|17.82894|-95.81421
+Baja California|Playas de Rosarito|32.36607|-117.06149
+Tabasco|Playas del Rosario|17.85308|-92.93219
+Campeche|Pomuch|20.13821|-90.17489
+Jalisco|Poncitlán|20.37933|-102.9266
+Baja California|Pórticos de San Antonio|32.4425|-117.03417
+Veracruz de Ignacio de la Llave|Poza Rica de Hidalgo|20.53315|-97.45946
+Yucatán|Progreso|21.28306|-89.66123
+Hidalgo|Progreso de Alvaro Obregon|20.24929|-99.18988
+Baja California|Puebla|32.56654|-115.3534
+Puebla|Puebla|19.044|-98.1984
+Durango|Pueblo Nuevo|23.37927|-105.38313
+Morelos|Puente de Ixtla|18.61472|-99.31806
+Baja California Sur|Puerto Adolfo López Mateos|25.19262|-112.11216
+Oaxaca|Puerto Escondido|15.87037|-97.07726
+Chiapas|Puerto Madero|14.72047|-92.42438
+Sonora|Puerto Peñasco|31.31716|-113.53799
+Jalisco|Puerto Vallarta|20.617|-105.23018
+Guanajuato|Purísima de Bustos|21.0315|-101.87833
+Michoacán de Ocampo|Puruándiro|20.08886|-101.51579
+Oaxaca|Putla Villa de Guerrero|17.02655|-97.92823
+Sinaloa|Quilá|24.42115|-107.2199
+Coahuila de Zaragoza|Ramos Arizpe|25.53928|-100.94742
+Chiapas|Reforma|17.86519|-93.14897
+México|Reyes Acozac|19.7755|-98.98079
+Tamaulipas|Reynosa|26.08061|-98.28835
+Aguascalientes|Rincón de Romos|22.22819|-102.32216
+Guanajuato|Rincón de Tamayo|20.42367|-100.75546
+Veracruz de Ignacio de la Llave|Río Blanco|18.83036|-97.156
+Tabasco|Río de Teapa|17.78342|-92.90033
+Zacatecas|Río Grande|23.82647|-103.03034
+Oaxaca|Río Grande o Piedra Parada|16.01013|-97.43424
+San Luis Potosí|Rioverde|21.93115|-99.99488
+Baja California|Rodolfo Sánchez Taboada|31.72099|-116.57184
+Guanajuato|Romita|20.87127|-101.51683
+Baja California|Rosarito|32.36044|-117.04645
+Nayarit|Ruíz|21.95088|-105.14345
+Campeche|Sabancuy|18.97476|-91.18001
+Coahuila de Zaragoza|Sabinas|27.85591|-101.11738
+Michoacán de Ocampo|Sahuayo de Morelos|20.05859|-102.71575
+Guanajuato|Salamanca|20.57196|-101.19154
+Oaxaca|Salina Cruz|16.17535|-95.19424
+San Luis Potosí|Salinas de Hidalgo|22.62795|-101.71417
+Coahuila de Zaragoza|Saltillo|25.42321|-101.0053
+Guanajuato|Salvatierra|20.21322|-100.88023
+Puebla|San Andrés Cholula|19.05144|-98.29526
+México|San Andrés Cuexcontitlán|19.35892|-99.62151
+Veracruz de Ignacio de la Llave|San Andrés Tuxtla|18.4487|-95.21327
+México|San Antonio Acahualco|19.274|-99.77169
+Oaxaca|San Antonio de la Cal|17.02921|-96.70094
+México|San Antonio Tecómitl|19.21741|-98.99347
+Puebla|San Bernardino Tlaxcalancingo|19.02867|-98.27698
+Nayarit|San Blas|21.5417|-105.28636
+Sinaloa|San Blas|26.08169|-108.76171
+Oaxaca|San Blas Atempa|16.32622|-95.22702
+Coahuila de Zaragoza|San Buenaventura|27.06193|-101.54891
+Coahuila de Zaragoza|San Buenaventura|19.3025|-98.86306
+Chiapas|San Cristóbal de las Casas|16.73176|-92.64126
+Jalisco|San Diego de Alejandría|20.9926|-101.99521
+Guanajuato|San Diego de la Unión|21.46606|-100.874
+Baja California|San Felipe|31.02468|-114.83919
+Oaxaca|San Felipe Jalapa de Díaz|18.07158|-96.53448
+Tamaulipas|San Fernando|24.84749|-98.14828
+México|San Francisco Acuautla|19.34564|-98.86034
+Campeche|San Francisco de Campeche|19.84593|-90.53696
+Aguascalientes|San Francisco de los Romo|22.07748|-102.2714
+Guanajuato|San Francisco del Rincón|21.01843|-101.85515
+Oaxaca|San Francisco Ixhuatán|16.35248|-94.4841
+Oaxaca|San Francisco Telixtlahuaca|19.29474|-99.76771
+Baja California Sur|San Ignacio|27.28196|-112.89571
+Sinaloa|San Ignacio|23.94221|-106.42748
+Jalisco|San Ignacio Cerro Gordo|20.74188|-102.53615
+México|San Jerónimo Cuatro Vientos|19.29306|-98.84167
+Guerrero|San Jerónimo de Juárez|17.13579|-100.46857
+Querétaro|San Jose de los Olvera|20.55307|-100.41518
+Baja California Sur|San José del Cabo|23.05888|-109.69771
+Jalisco|San José del Castillo|20.51405|-103.23796
+Nayarit|San José del Valle|20.76376|-105.22813
+Jalisco|San José el Verde|20.5555|-103.27912
+Guanajuato|San José Iturbide|21.00153|-100.38416
+Oaxaca|San Juan Bautista Cuicatlán|17.8012|-96.96058
+Oaxaca|San Juan Bautista Lo de Soto|16.51158|-98.34682
+Oaxaca|San Juan Bautista Tuxtepec|16.51153|-98.34675
+Oaxaca|San Juan Bautista Valle Nacional|17.77353|-96.30738
+Oaxaca|San Juan Cacahuatepec|16.61406|-98.15604
+Jalisco|San Juan de los Lagos|21.24893|-102.33036
+Querétaro|San Juan del Rio|20.38886|-99.99577
+Durango|San Juan del Río del Centauro del Norte|24.77964|-104.46002
+México|San Juan Ixtayopan|19.23187|-98.99867
+México|San Juan Teotihuacán de Arista|19.68862|-98.8611
+México|San Juan Zitlaltepec|19.81207|-99.14526
+Jalisco|San Julián|21.011|-102.18054
+México|San Lorenzo Acopilco|19.33002|-99.32721
+Guerrero|San Luis Acatlán|16.8091|-98.73333
+Guerrero|San Luis de la Loma|17.26997|-100.8925
+Guanajuato|San Luis de la Paz|21.29771|-100.51736
+San Luis Potosí|San Luis Potosí|22.14982|-100.97916
+Sonora|San Luis Río Colorado|32.45612|-114.77186
+Guerrero|San Luis San Pedro|17.2651|-100.88215
+Guerrero|San Marcos|16.79532|-99.39057
+México|San Martín Azcatepec|19.68667|-98.97278
+México|San Martín Cuautlalpan|19.27618|-98.83167
+Puebla|San Martin Texmelucan de Labastida|19.28431|-98.43885
+México|San Mateo Atenco|19.26757|-99.53214
+México|San Mateo Huitzilzingo|19.22906|-98.92504
+México|San Mateo Otzacatipan|19.33273|-99.60345
+México|San Miguel Ajusco|19.22201|-99.20242
+México|San Miguel Coatlinchán|19.44999|-98.87274
+Guanajuato|San Miguel de Allende|20.91528|-100.74389
+Jalisco|San Miguel el Alto|21.03011|-102.40414
+Oaxaca|San Miguel el Grande|17.0467|-97.62176
+Hidalgo|San Miguel Vindho|19.99338|-99.31473
+México|San Miguel Zinacantepec|19.28428|-99.73394
+Nuevo León|San Nicolás de los Garza|25.74167|-100.30222
+México|San Pablo Autopan|19.35638|-99.65724
+México|San Pablo de las Salinas|19.66658|-99.09477
+Oaxaca|San Pablo Huitzo|17.27795|-96.88332
+Oaxaca|San Pablo Villa de Mitla|16.92174|-96.36273
+Coahuila de Zaragoza|San Pedro|25.75823|-102.98386
+Nuevo León|San Pedro Garza García|25.6604|-100.40651
+Nayarit|San Pedro Lagunillas|21.21894|-104.75157
+Oaxaca|San Pedro Mixtepec|15.98008|-97.07987
+Oaxaca|San Pedro Pochutla|15.74641|-96.46546
+Oaxaca|San Pedro Tapanatepec|16.36763|-94.19491
+Oaxaca|San Pedro Totolápam|16.66637|-96.30275
+México|San Pedro Totoltepec|19.31108|-99.57197
+Veracruz de Ignacio de la Llave|San Rafael|19.20959|-98.75636
+Puebla|San Rafael Tlanalapan|19.29167|-98.46806
+México|San Salvador Atenco|19.5517|-98.91867
+Puebla|San Salvador El Seco|19.13325|-97.64167
+Jalisco|San Sebastián el Grande|20.53274|-103.42804
+Oaxaca|San Sebastián Tecomaxtlahuaca|17.34682|-98.03173
+Puebla|San Sebastián Zinacatepec|18.33516|-97.24621
+Tlaxcala|Santa Ana Chiautempan|19.30661|-98.18773
+Puebla|Santa Ana Xalmimilulco|19.21287|-98.38207
+Jalisco|Santa Anita|20.5509|-103.44396
+Nuevo León|Santa Catarina|25.67325|-100.45813
+Oaxaca|Santa Cruz Itundujia|16.87487|-97.66039
+Guanajuato|Santa Cruz Juventino Rosas|20.64356|-100.9952
+Oaxaca|Santa Cruz Xoxocotlán|17.02958|-96.73518
+Baja California|Santa Isabel|32.6333|-115.57605
+Oaxaca|Santa Lucía del Camino|17.06207|-96.69761
+México|Santa María Ajoloapan|19.7636|-98.95908
+Oaxaca|Santa María Atzompa|17.10165|-96.77686
+México|Santa María Chimalhuacán|19.42155|-98.95038
+Durango|Santa María del Oro|25.94934|-105.36425
+San Luis Potosí|Santa María del Río|21.80055|-100.73665
+Oaxaca|Santa María Huatulco|15.83621|-96.32164
+Puebla|Santa María Moyotzingo|19.24811|-98.40486
+México|Santa Maria Tultepec|19.68509|-99.12871
+Querétaro|Santa Rosa Jauregui|20.74122|-100.44843
+Morelos|Santa Rosa Treinta|18.70025|-99.18357
+Baja California Sur|Santa Rosalía|27.33784|-112.26617
+Chihuahua|Santa Rosalía de Camargo|27.69523|-105.17317
+México|Santa Teresa|19.845|-99.23333
+Nuevo León|Santiago|25.42533|-100.15205
+Querétaro|Santiago de Querétaro|20.58806|-100.38806
+Nayarit|Santiago Ixcuintla|21.81295|-105.20844
+Oaxaca|Santiago Jamiltepec|16.28197|-97.8213
+Oaxaca|Santiago Juxtlahuaca|17.33403|-98.01058
+Guanajuato|Santiago Maravatío|20.17257|-100.99526
+Puebla|Santiago Momoxpan|19.07361|-98.26694
+Durango|Santiago Papasquiaro|25.04389|-105.41917
+Oaxaca|Santiago Pinotepa Nacional|16.33899|-98.05002
+Oaxaca|Santiago Suchilquitongo|17.24737|-96.87377
+México|Santiago Teyahualco|19.65985|-99.12493
+México|Santiago Tlacotepec|19.22708|-99.67083
+Hidalgo|Santiago Tulantepec|20.03618|-98.35563
+Veracruz de Ignacio de la Llave|Santiago Tuxtla|18.46576|-95.3006
+Oaxaca|Santo Domingo Tehuantepec|16.32463|-95.24104
+Chihuahua|Saucillo|28.03268|-105.28795
+Jalisco|Sayula|19.88225|-103.60027
+Veracruz de Ignacio de la Llave|Sihuapan|18.43602|-95.17813
+Guanajuato|Silao|20.94356|-101.42703
+Sinaloa|Sinaloa de Leyva|25.82243|-108.22303
+Veracruz de Ignacio de la Llave|Soledad de Doblado|19.04529|-96.42328
+San Luis Potosí|Soledad de Graciano Sánchez|22.18912|-100.93792
+Zacatecas|Sombrerete|23.63466|-103.64244
+Sonora|Sonoyta|31.86704|-112.85705
+Tamaulipas|Soto la Marina|23.76743|-98.20592
+Chiapas|Suchiapa|16.62555|-93.10074
+Michoacán de Ocampo|Tacámbaro de Codallos|19.23617|-101.45788
+Jalisco|Tala|20.64938|-103.70211
+Jalisco|Talpa de Allende|19.23502|-101.45824
+San Luis Potosí|Tamasopo|20.6536|-103.70092
+Jalisco|Tamazula de Gordiano|19.68006|-103.2514
+San Luis Potosí|Tamazunchale|21.25993|-98.78935
+Tamaulipas|Tampico|22.28519|-97.87777
+Veracruz de Ignacio de la Llave|Tampico Alto|22.11303|-97.80128
+San Luis Potosí|Tamuín|22.00554|-98.77972
+Michoacán de Ocampo|Tangancícuaro de Arista|19.88733|-102.20636
+Veracruz de Ignacio de la Llave|Tantoyuca|21.35064|-98.2257
+Chiapas|Tapachula|14.90385|-92.25749
+Guanajuato|Tarandacuao|20.00358|-100.51638
+Guerrero|Taxco de Alarcón|18.55462|-99.60592
+Tabasco|Teapa|17.5497|-92.95211
+Jalisco|Tecalitlán|19.47103|-103.30682
+México|Tecámac de Felipe Villanueva|19.71306|-98.96833
+Puebla|Tecamachalco|18.88352|-97.73344
+Baja California|Tecate|32.56717|-116.62509
+Yucatán|Tecax|20.2052|-89.28522
+Colima|Tecomán|18.91678|-103.87786
+Guerrero|Técpan de Galeana|17.21976|-100.63032
+Nayarit|Tecuala|22.39785|-105.45754
+Puebla|Tehuacán|18.46422|-97.39735
+México|Tejupilco de Hidalgo|18.90475|-100.15275
+Guerrero|Teloloapan|18.36663|-99.87185
+Morelos|Temixco|18.85254|-99.22537
+Veracruz de Ignacio de la Llave|Tempoal de Sánchez|21.52094|-98.39471
+México|Tenango de Arista|19.10446|-99.5898
+Tabasco|Tenosique|17.4729|-91.4236
+Tabasco|Tenosique de Pino Suárez|17.47728|-91.42568
+Jalisco|Teocaltiche|21.43421|-102.57449
+Tlaxcala|Teolocholco|19.24333|-98.19083
+México|Teoloyucan|19.74423|-99.18113
+Chiapas|Teopisca|16.54182|-92.47405
+Oaxaca|Teotitlán de Flores Magón|18.13241|-97.07126
+Michoacán de Ocampo|Tepalcatepec|19.18666|-102.8493
+Jalisco|Tepatitlán de Morelos|20.81692|-102.76347
+Puebla|Tepatlaxco de Hidalgo|19.08067|-97.97338
+Puebla|Tepeaca|18.96688|-97.8998
+Hidalgo|Tepeapulco|19.7884|-98.55266
+Hidalgo|Tepeji del Río de Ocampo|19.90481|-99.34379
+México|Tepexpan|19.61387|-98.9364
+Aguascalientes|Tepezalá|22.22363|-102.17217
+Nayarit|Tepic|21.50951|-104.89569
+México|Tepotzotlán|19.72116|-99.22391
+Jalisco|Tequila|20.88205|-103.83599
+Querétaro|Tequisquiapan|20.5225|-99.89167
+México|Tequixquiac|19.90944|-99.14472
+Baja California|Terrazas del Valle|32.4875|-116.82667
+Jalisco|Tesistán|20.80051|-103.46993
+Tlaxcala|Tetla|19.44204|-98.10325
+México|Texcoco de Mora|19.51194|-98.88293
+Puebla|Teziutlán|19.8173|-97.35992
+Veracruz de Ignacio de la Llave|Tezonapa|19.59283|-98.91084
+Yucatán|Ticul|20.39833|-89.53541
+Veracruz de Ignacio de la Llave|Tierra Blanca|18.44771|-96.35912
+Guerrero|Tierra Colorada|17.16839|-99.52618
+San Luis Potosí|Tierra Nueva|21.66737|-100.57337
+Veracruz de Ignacio de la Llave|Tihuatlán|20.71679|-97.53514
+Baja California|Tijuana|32.5027|-117.00371
+Guerrero|Tixtla de Guerrero|17.56732|-99.39799
+Hidalgo|Tizayuca|19.83721|-98.97607
+Yucatán|Tizimín|21.14268|-88.15101
+Veracruz de Ignacio de la Llave|Tlacojalpan|18.23203|-95.94903
+Oaxaca|Tlacolula de Matamoros|16.95528|-96.47907
+Jalisco|Tlajomulco de Zúñiga|20.47421|-103.44654
+México|Tlalnepantla de Baz|19.54005|-99.19538
+México|Tlalpan|19.29513|-99.16206
+Zacatecas|Tlaltenango de Sánchez Román|21.78221|-103.30298
+Guerrero|Tlapa de Comonfort|17.54528|-98.57599
+Veracruz de Ignacio de la Llave|Tlapacoyan|19.96268|-97.21141
+Guerrero|Tlapehuala|18.23961|-100.54134
+Jalisco|Tlaquepaque|20.64091|-103.29327
+Morelos|Tlaquiltenango|18.63429|-99.1632
+Tlaxcala|Tlaxcala de Xicohténcatl|19.31694|-98.23823
+Hidalgo|Tlaxcoapan|20.09213|-99.22206
+Baja California Sur|Todos Santos|23.44693|-110.22576
+México|Toluca de Lerdo|19.28786|-99.65324
+Chiapas|Tonalá|16.08977|-93.75489
+Jalisco|Tonalá|20.62445|-103.23423
+Sinaloa|Topolobampo|25.60076|-109.05141
+Coahuila de Zaragoza|Torreón|25.54389|-103.41898
+Jalisco|Tototlán|20.54072|-102.7932
+Veracruz de Ignacio de la Llave|Tres Valles|18.23915|-96.13569
+Hidalgo|Tula de Allende|20.05161|-99.34397
+Hidalgo|Tulancingo|20.08355|-98.36288
+México|Tulantongo|19.53159|-98.87464
+México|Tultepec|19.685|-99.12806
+México|Tultitlán de Mariano Escobedo|19.64655|-99.16787
+México|Tulúm|20.21173|-87.46325
+Veracruz de Ignacio de la Llave|Túxpam de Rodríguez Cano|20.95777|-97.40805
+Jalisco|Tuxpan|19.55555|-103.37587
+Michoacán de Ocampo|Tuxpan|21.94221|-105.2987
+Nayarit|Tuxpan|21.94516|-105.29783
+Oaxaca|Tuxtepec|18.0883|-96.12535
+Chiapas|Tuxtla Gutiérrez|16.75973|-93.11308
+Michoacán de Ocampo|Tuzantla|19.20289|-100.56679
+Yucatán|Uman|20.88213|-89.74649
+Jalisco|Unión de San Antonio|21.12868|-102.00615
+Oaxaca|Unión Hidalgo|16.47301|-94.82904
+Guanajuato|Uriangato|20.14085|-101.18251
+Michoacán de Ocampo|Uruapan|19.41116|-102.05644
+Veracruz de Ignacio de la Llave|Valente Diaz|19.16347|-96.21648
+Yucatán|Valladolid|20.68812|-88.19936
+México|Valle de Bravo|19.19501|-100.13132
+México|Valle de Chalco Solidaridad|19.2934|-98.94093
+Jalisco|Valle de Guadalupe|21.0117|-102.61808
+Guanajuato|Valle de Santiago|20.3914|-101.19222
+Tamaulipas|Valle Hermoso|25.67207|-97.81313
+Zacatecas|Valparaíso|22.77081|-103.56982
+Querétaro|Venceremos|20.55083|-100.39806
+Chiapas|Venustiano Carranza|16.33815|-92.563
+Veracruz de Ignacio de la Llave|Veracruz|19.18095|-96.1429
+Oaxaca|Vicente Camalote|18.51305|-96.53189
+Durango|Vicente Guerrero|23.73429|-103.98487
+Zacatecas|Víctor Rosales|22.94889|-102.70222
+Durango|Victoria de Durango|24.02032|-104.65756
+Coahuila de Zaragoza|Viesca|25.34181|-102.80492
+Baja California Sur|Villa Alberto Andrés Alvarado Arámburo|27.6444|-113.38757
+Jalisco|Villa Corona|20.41781|-103.66386
+Zacatecas|Villa de Cos|23.29353|-102.34673
+Sinaloa|Villa de Costa Rica|24.59167|-107.38836
+San Luis Potosí|Villa de Reyes|21.80595|-100.93298
+Oaxaca|Villa de Tamazulápam del Progreso|17.67251|-97.5733
+Oaxaca|Villa de Zaachila|16.95119|-96.75049
+Jalisco|Villa Hidalgo|21.67616|-102.58803
+Nayarit|Villa Hidalgo|21.74035|-105.23529
+Zacatecas|Villa Hidalgo|21.67702|-102.58879
+Sinaloa|Villa Juárez|24.65869|-107.54059
+México|Villa Milpa Alta|19.19251|-99.02317
+Jalisco|Villa Purificación|19.72104|-104.60068
+Oaxaca|Villa Sola de Vega|16.51279|-96.97748
+Sinaloa|Villa Unión|23.18994|-106.21749
+Tlaxcala|Villa Vicente Guerrero|19.12123|-98.16572
+Chiapas|Villaflores|16.2341|-93.27037
+Guanajuato|Villagrán|20.51452|-100.99745
+Tabasco|Villahermosa|17.98689|-92.93028
+Zacatecas|Villanueva|22.35433|-102.88356
+Veracruz de Ignacio de la Llave|Xalapa-Enríquez|19.53124|-96.91589
+México|Xalatlaco|19.18314|-99.41844
+Nayarit|Xalisco|21.451|-104.8983
+Veracruz de Ignacio de la Llave|Xico|19.42178|-97.00819
+Tamaulipas|Xicoténcatl|22.99683|-98.94509
+Puebla|Xicotepec de Juárez|20.27605|-97.96111
+México|Xochimilco|19.25465|-99.10356
+Morelos|Xochitepec|18.7808|-99.23049
+México|Xonacatlán|19.40513|-99.52807
+Jalisco|Yahualica de González Gallo|21.17835|-102.88592
+Chiapas|Yajalón|17.17276|-92.33315
+Morelos|Yautepec de Zaragoza|18.88188|-99.06715
+Morelos|Yecapixtla|18.88333|-98.865
+Veracruz de Ignacio de la Llave|Yecuatla|19.86606|-96.77569
+Michoacán de Ocampo|Yurécuaro|20.33606|-102.28382
+Guanajuato|Yuriria|20.21081|-101.13212
+Michoacán de Ocampo|Zacapu|19.82189|-101.78928
+Michoacán de Ocampo|Zacapú|19.81396|-101.79157
+Zacatecas|Zacatecas|22.76843|-102.58141
+Tlaxcala|Zacatelco|19.21583|-98.23972
+Morelos|Zacatepec de Hidalgo|18.65409|-99.18981
+Puebla|Zacatlán|19.9355|-97.96125
+Jalisco|Zacoalco de Torres|20.22816|-103.5687
+Hidalgo|Zacualtipán|20.65002|-98.65628
+Michoacán de Ocampo|Zamora de Hidalgo|19.9855|-102.28387
+Jalisco|Zapopan|20.72356|-103.38479
+Jalisco|Zapotiltic|19.62749|-103.41752
+Jalisco|Zapotlanejo|20.62248|-103.06766
+Coahuila de Zaragoza|Zaragoza|28.48818|-100.91812
+Guerrero|Zihuatanejo|17.64212|-101.55708
+Hidalgo|Zimapán|20.73776|-99.38272
+Oaxaca|Zimatlán de Álvarez|16.86665|-96.78518
+Michoacán de Ocampo|Zinapécuaro de Figueroa|19.86006|-100.82857
+México|Zumpango|19.7967|-99.09946
+Guerrero|Zumpango del Río|17.65437|-99.52725
+

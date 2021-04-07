@@ -41,7 +41,34 @@ public class CountryManager {
         int wordId = rs.getInt("wordId");
         String wordValue = rs.getString("wordValue");
         Word word = new Word(wordId, language, wordValue);
-        return new Country(rs.getInt("id"), word, rs.getInt("phoneCode"), rs.getString("twoLettersCountryCode"));
+        return new Country(rs.getInt("id"), rs.getString("twoLettersCountryCode"), word, rs.getInt("phoneCode"));
+      }
+      return null;
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
+    }
+  }
+
+  public Country get(String twoLettersCountryCode) throws ClusterException {
+    try (Connection connection = Database.getConnection()) {
+      return get(connection, twoLettersCountryCode);
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    }
+  }
+
+  public Country get(Connection connection, String twoLettersCountryCode) throws ClusterException {
+    String query = "SELECT id, phoneCode FROM " + CountriesTable.NAME + " WHERE twoLettersCountryCode =  ?";
+    ResultSet rs = null;
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
+      ps.setString(1, twoLettersCountryCode);
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      if (rs.next()) {
+        int id = rs.getInt("id");
+        int phoneCode = rs.getInt("phoneCode");
+        return new Country(id, twoLettersCountryCode, null, phoneCode);
       }
       return null;
     } catch (SQLException e) {
@@ -76,7 +103,7 @@ public class CountryManager {
             countryName = ContryNamesManager.getInstance().add(connection, id, language, name);
           }
           addCountryName(connection, id, countryName);
-          return new Country(id, countryName, phoneCode, twoLettersCountryCode);
+          return new Country(id, twoLettersCountryCode, countryName, phoneCode);
         }
       } finally {
         ClusterManager.getInstance().close(rs);
