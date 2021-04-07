@@ -13,9 +13,9 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
-import net.cabezudo.hayquecomer.restaurants.RestaurantManager;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
+import net.cabezudo.sofia.cities.CityManager;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
@@ -25,15 +25,17 @@ import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.configuration.SofiaDatabaseCreator;
 import net.cabezudo.sofia.core.creator.LibraryVersionConflictException;
 import net.cabezudo.sofia.core.creator.SiteCreationException;
-import net.cabezudo.sofia.core.database.object.SofiaDatabase;
+import net.cabezudo.sofia.core.database.oo.SofiaDatabase;
 import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
+import net.cabezudo.sofia.core.exceptions.DataConversionException;
 import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.geolocation.Latitude;
+import net.cabezudo.sofia.core.geolocation.Longitude;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
 import net.cabezudo.sofia.core.languages.ChangeLanguageServlet;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
-import net.cabezudo.sofia.core.languages.LanguageManager;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.DataFilter;
@@ -45,11 +47,15 @@ import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
+import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
+import net.cabezudo.sofia.countries.Country;
+import net.cabezudo.sofia.countries.CountryManager;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -72,24 +78,26 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
   }
 
-  public static void _main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException {
-    try {
-      RestaurantManager.getInstance().loadData();
-      RestaurantManager.getInstance().saveData();
-      System.out.println(RestaurantManager.getInstance().getWebListTree(LanguageManager.getInstance().get("en"), 300));
-    } catch (JSONParseException e) {
-      System.out.println(e.getPosition());
-      e.printStackTrace();
-    }
+  public static void _main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException, ConfigurationException, JSONParseException {
+    Configuration.getInstance().loadConfiguration();
+    Country country = CountryManager.getInstance().get("MX");
+    String coord = "25.462699031102062, -100.98917328340049";
+    String[] l = coord.split(",");
+    String lat = l[0].trim();
+    String lon = l[1].trim();
+    Latitude latitude = new Latitude(lat);
+    Longitude longitude = new Longitude(lon);
+    User owner = UserManager.getInstance().getAdministrator();
+    CityManager.getInstance().get(country, latitude, longitude, owner);
   }
 
   public static void main(String... args)
           throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
-          SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException {
+          SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException, DataConversionException {
 
     Logger.info("Check configuration.");
     try {
-      Configuration.getInstance().checkAndCreateFile();
+      Configuration.load();
     } catch (ConfigurationException e) {
       Logger.severe(e);
       System.exit(1);
@@ -202,7 +210,9 @@ public class WebServer {
 
     Logger.info("Starting server...");
 
+    // TODO DatabaseManager MUST loads the default data creators
     Configuration.getInstance().loadAPIConfiguration(defaultDataCreators);
+    // TODO Text manager MUST load the texts
     Configuration.getInstance().loadTexts();
     SofiaDatabase.getInstance().loadData();
 

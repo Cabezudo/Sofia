@@ -12,8 +12,8 @@ public class CountriesTable {
           = "CREATE TABLE " + CountriesTable.NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
-          + "`phoneCode` INT NOT NULL, "
           + "`twoLettersCountryCode` CHAR(2) NOT NULL, "
+          + "`phoneCode` INT NOT NULL, "
           + "PRIMARY KEY (`id`)"
           + ") "
           + "CHARACTER SET = UTF8";

@@ -29,7 +29,7 @@ class TextsFile {
 
   void load(Path filePath) throws IOException {
     try {
-      JSONObject jsonTextsFromFile = JSON.parse(filePath, Configuration.getDefaultCharset().toString()).toJSONObject();
+      JSONObject jsonTextsFromFile = JSON.parse(filePath, Configuration.getDefaultCharset()).toJSONObject();
       jsonTexts.merge(jsonTextsFromFile);
     } catch (JSONParseException e) {
       throw new SofiaRuntimeException(e);

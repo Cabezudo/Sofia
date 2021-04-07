@@ -1,9 +1,7 @@
 package net.cabezudo.sofia.core.configuration;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
@@ -32,28 +30,6 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public final class Configuration {
 
-  private static Configuration INSTANCE;
-
-  public static Configuration getInstance() {
-    if (INSTANCE == null) {
-      try {
-        INSTANCE = new Configuration();
-      } catch (IOException e) {
-        throw new RuntimeConfigurationException(e);
-      }
-    }
-    return INSTANCE;
-  }
-
-  public static void searchFile() throws ConfigurationFileNotFoundException {
-    String configurationFilePath = getConfigurationFilePath();
-    if (configurationFilePath == null) {
-      throw new ConfigurationFileNotFoundException("Configuration file not found.");
-    }
-  }
-
-  private static final String CONFIGURATION_FILENAME = "sofia.configuration.properties";
-
   private static final String ENVIRONMENT_PROPERTY_NAME = "environment";
   private static final String PRODUCTION_ENVIRONMENT = "production";
   private static final String DEVELOPMENT_ENVIRONMENT = "development";
@@ -66,105 +42,102 @@ public final class Configuration {
   private static final String SERVER_PORT_PROPERTY_NAME = "server.port";
   private static final String SYSTEM_HOME_PROPERTY_NAME = "system.home";
 
+  private static final Configuration INSTANCE = new Configuration();
+
+  public static Path getStatesDataPath() {
+    return INSTANCE.statesDataPath;
+  }
+
+  public static Path getCitiesDataPath() {
+    return INSTANCE.citiesDataPath;
+  }
+
+  public static Path getPostalCodesDataPath() {
+    return INSTANCE.postalCodesDataPath;
+  }
+
+  private String sofiaBasePath;
+  private String environment;
+  private String databaseDriver;
+  private String databaseHostname;
+  private String databasePort;
+  private String databaseName;
+  private String databaseUsername;
+  private String databasePassword;
+  private int serverPort;
+  private Path systemPath;
+  private Path systemResourcesPath;
+  private Path systemDataPath;
+  private Path statesDataPath;
+  private Path citiesDataPath;
+  private Path postalCodesDataPath;
+  private Path systemImagesPath;
+  private Path systemLibsPath;
+  private Path sitesDataPath;
+  private Path commonsFontsPath;
+  private Path commonsLibsPath;
+  private Path commonsTemplatesPath;
+  private Path commonsComponentsTemplatesPath;
+  private Path commonsThemesPath;
+  private Path commonsMailTemplatesPath;
+  private Path sitesSourcesPath;
+  private Path commonSourcesPath;
+  private Path sitesPath;
+  private Path clusterFilesPath;
+  private Path clusterFileSelectLogPath;
+  private Path clusterFileLogPath;
+
+  private final APIConfiguration apiConfiguration = new APIConfiguration();
+
+  private Configuration() {
+    // Just protecting the singleton
+  }
+
+  public static String get(String key) {
+    return GlobalConfigurationFile.getInstance().get(key);
+  }
+
+  public static Configuration getInstance() {
+    return INSTANCE;
+  }
+
   public static Charset getDefaultCharset() {
     return StandardCharsets.UTF_8;
   }
 
-  private final String environment;
-  private final String databaseDriver;
-  private final String databaseHostname;
-  private final String databasePort;
-  private final String databaseName;
-  private final String databaseUsername;
-  private final String databasePassword;
-  private final int serverPort;
-  private final Path systemPath;
-  private final Path systemResourcesPath;
-  private final Path systemDataPath;
-  private final Path systemImagesPath;
-  private final Path systemLibsPath;
-  private final Path sitesDataPath;
-  private final Path commonsFontsPath;
-  private final Path commonsLibsPath;
-  private final Path commonsTemplatesPath;
-  private final Path commonsComponentsTemplatesPath;
-  private final Path commonsThemesPath;
-  private final Path commonsMailTemplatesPath;
-  private final Path sitesSourcesPath;
-  private final Path commonSourcesPath;
-  private final Path sitesPath;
-  private final Path clusterFilesPath;
-  private final Path clusterFileSelectLogPath;
-  private final Path clusterFileLogPath;
-  private final APIConfiguration apiConfiguration = new APIConfiguration();
-
-  public static void validateConfiguration() throws ConfigurationException {
-    Utils.consoleOutLn("Validate environment configuration.");
-    if (!DEVELOPMENT_ENVIRONMENT.equals(Configuration.getInstance().environment) && !PRODUCTION_ENVIRONMENT.equals(Configuration.getInstance().environment)) {
-      throw new ConfigurationException(
-              "Invalid value " + Configuration.getInstance().environment + " for environment. MUST BE " + DEVELOPMENT_ENVIRONMENT + " or " + PRODUCTION_ENVIRONMENT);
-    }
-    Utils.consoleOut("Test connection.");
-    Configuration.getInstance().testConnection();
-    Utils.consoleOutLn(" OK");
+  public static void load() throws ConfigurationException, JSONParseException {
+    INSTANCE.loadConfiguration();
   }
 
-  private Configuration() throws IOException {
+  public void loadConfiguration() throws ConfigurationException, JSONParseException {
     System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tH:%1$tM:%1$tS.%1$tL [%4$s] %2$s : %5$s%n");
-    String path = getConfigurationFilePath();
 
-    File file = new File(path);
-    Logger.info("Configuration file FOUND in " + file + ".");
-    if (file.exists()) {
-      InputStream is = new FileInputStream(file);
-      Properties properties = new Properties();
-      properties.load(is);
+    ConfigurationFile configurationFile = new ConfigurationFile();
 
-      environment = getProperty(properties, ENVIRONMENT_PROPERTY_NAME);
-      databaseDriver = getProperty(properties, DATABASE_DRIVER_PROPERTY_NAME);
-      databaseHostname = getProperty(properties, DATABASE_HOSTNAME_PROPERTY_NAME);
-      databasePort = getProperty(properties, DATABASE_PORT_PROPERTY_NAME);
-      databaseName = getProperty(properties, DATABASE_NAME_PROPERTY_NAME);
-      databaseUsername = getProperty(properties, DATABASE_USERNAME_PROPERTY_NAME);
-      databasePassword = getProperty(properties, DATABASE_PASSWORD_PROPERTY_NAME);
-      serverPort = Integer.parseInt(getProperty(properties, SERVER_PORT_PROPERTY_NAME));
-      String sofiaBasePath = getProperty(properties, SYSTEM_HOME_PROPERTY_NAME);
-      systemPath = Paths.get(sofiaBasePath).resolve("system");
-      checkPath(systemPath);
-      systemResourcesPath = systemPath.resolve("resources");
-      Files.createDirectories(systemResourcesPath);
-      systemDataPath = systemResourcesPath.resolve("data");
-      Files.createDirectories(systemDataPath);
-      systemImagesPath = systemResourcesPath.resolve("images");
-      Files.createDirectories(systemImagesPath);
-      systemLibsPath = systemResourcesPath.resolve("libs");
-      Files.createDirectories(systemLibsPath);
-      commonSourcesPath = systemPath.resolve("sources");
-      Files.createDirectories(commonSourcesPath);
-      sitesDataPath = commonSourcesPath.resolve("data");
-      Files.createDirectories(sitesDataPath);
-      commonsFontsPath = sitesDataPath.resolve("fonts");
-      Files.createDirectories(commonsFontsPath);
-      commonsLibsPath = sitesDataPath.resolve("libs");
-      Files.createDirectories(commonsLibsPath);
-      commonsTemplatesPath = sitesDataPath.resolve("templates");
-      Files.createDirectories(commonsTemplatesPath);
-      commonsComponentsTemplatesPath = commonsTemplatesPath.resolve("components");
-      Files.createDirectories(commonsComponentsTemplatesPath);
-      commonsMailTemplatesPath = commonsTemplatesPath.resolve("mail");
-      Files.createDirectories(commonsMailTemplatesPath);
-      commonsThemesPath = sitesDataPath.resolve("themes");
-      Files.createDirectories(commonsThemesPath);
-      sitesSourcesPath = commonSourcesPath.resolve("sites");
-      Files.createDirectories(sitesSourcesPath);
-      sitesPath = systemPath.resolve("sites");
-      Files.createDirectories(sitesPath);
-      clusterFilesPath = systemResourcesPath.resolve("cluster");
-      Files.createDirectories(clusterFilesPath);
-      clusterFileSelectLogPath = clusterFilesPath.resolve("select.log");
-      clusterFileLogPath = clusterFilesPath.resolve("data.log");
-    } else {
-      throw new FileNotFoundException(file.getAbsolutePath());
+    Logger.info("Configuration file FOUND in " + configurationFile.getPath() + ".");
+    if (Files.exists(configurationFile.getPath())) {
+      try (InputStream is = new FileInputStream(configurationFile.getPath().toFile())) {
+        Properties properties = new Properties();
+        properties.load(is);
+
+        environment = getProperty(properties, ENVIRONMENT_PROPERTY_NAME);
+        databaseDriver = getProperty(properties, DATABASE_DRIVER_PROPERTY_NAME);
+        databaseHostname = getProperty(properties, DATABASE_HOSTNAME_PROPERTY_NAME);
+        databasePort = getProperty(properties, DATABASE_PORT_PROPERTY_NAME);
+        databaseName = getProperty(properties, DATABASE_NAME_PROPERTY_NAME);
+        databaseUsername = getProperty(properties, DATABASE_USERNAME_PROPERTY_NAME);
+        databasePassword = getProperty(properties, DATABASE_PASSWORD_PROPERTY_NAME);
+        serverPort = Integer.parseInt(getProperty(properties, SERVER_PORT_PROPERTY_NAME));
+        sofiaBasePath = getProperty(properties, SYSTEM_HOME_PROPERTY_NAME);
+      } catch (FileNotFoundException e) {
+        throw new ConfigurationException("Can't find the configuration file");
+      } catch (IOException e) {
+        throw new ConfigurationException("Can't read the configuration file");
+      }
+      validateConfiguration();
+      createSystemPaths();
+
+      GlobalConfigurationFile.getInstance().load();
     }
   }
 
@@ -179,14 +152,90 @@ public final class Configuration {
     return propertyValue;
   }
 
-  public String get(String name) {
-    String value = getDatabaseValue(name);
-    Logger.debug("%s: %s", name, value);
-    return value;
+  private void createSystemPaths() throws ConfigurationException {
+    systemPath = Paths.get(sofiaBasePath).resolve("system");
+    if (!Files.isDirectory(systemPath)) {
+      throw new RuntimeConfigurationException("The file " + systemPath + " IS NOT a directory.");
+    }
+
+    systemResourcesPath = createSystemPath(systemPath, "resources");
+    systemDataPath = createSystemPath(systemResourcesPath, "data");
+    statesDataPath = createSystemPath(systemDataPath, "states");
+    citiesDataPath = createSystemPath(systemDataPath, "cities");
+    postalCodesDataPath = createSystemPath(systemDataPath, "postalCodes");
+    systemImagesPath = createSystemPath(systemResourcesPath, "images");
+    systemLibsPath = createSystemPath(systemResourcesPath, "libs");
+    commonSourcesPath = createSystemPath(systemPath, "sources");
+    sitesDataPath = createSystemPath(commonSourcesPath, "data");
+    commonsFontsPath = createSystemPath(sitesDataPath, "fonts");
+    commonsLibsPath = createSystemPath(sitesDataPath, "libs");
+    commonsTemplatesPath = createSystemPath(sitesDataPath, "templates");
+    commonsComponentsTemplatesPath = createSystemPath(commonsTemplatesPath, "components");
+    commonsMailTemplatesPath = createSystemPath(commonsTemplatesPath, "mail");
+    commonsThemesPath = createSystemPath(sitesDataPath, "themes");
+    sitesSourcesPath = createSystemPath(commonSourcesPath, "sites");
+    sitesPath = createSystemPath(systemPath, "sites");
+    clusterFilesPath = createSystemPath(systemResourcesPath, "cluster");
+
+    clusterFileSelectLogPath = clusterFilesPath.resolve("select.log");
+    clusterFileLogPath = clusterFilesPath.resolve("data.log");
+
   }
 
-  public int getInteger(String name) {
-    return Integer.parseInt(get(name));
+  private Path createSystemPath(Path base, String name) throws ConfigurationException {
+    Path path = base.resolve(name);
+    try {
+      Files.createDirectories(path);
+    } catch (IOException e) {
+      throw new ConfigurationException("Can't create the system path: " + path);
+    }
+    return path;
+  }
+
+  public void validateConfiguration() throws ConfigurationException {
+    Utils.consoleOutLn("Validate environment configuration.");
+    if (!DEVELOPMENT_ENVIRONMENT.equals(environment) && !PRODUCTION_ENVIRONMENT.equals(environment)) {
+      throw new ConfigurationException(
+              "Invalid value " + environment + " for environment. MUST BE " + DEVELOPMENT_ENVIRONMENT + " or " + PRODUCTION_ENVIRONMENT);
+    }
+    Utils.consoleOut("Test connection.");
+    testConnection();
+    Utils.consoleOutLn(" OK");
+  }
+
+  private void testConnection() throws ConfigurationException {
+    try {
+      Database.getConnection(null, 1);
+    } catch (SQLException e) {
+      throw new ConfigurationException("Invalid configuration for database. " + e.getMessage(), e);
+    }
+  }
+
+  public void loadAPIConfiguration(DatabaseCreators dataCreators) throws ConfigurationException {
+    Path apiConfigurationFilePath = Configuration.getInstance().getSofiaAPIConfigurationPath();
+    Logger.debug("Load Sofia API configuration file: %s", apiConfigurationFilePath);
+    apiConfiguration.add(apiConfigurationFilePath);
+
+    for (DataCreator dataCreator : dataCreators) {
+      apiConfiguration.add(dataCreator);
+    }
+  }
+
+  public void loadTexts() throws JSONParseException, IOException {
+
+    URL resource = getClass().getClassLoader().getResource("texts.json");
+    if (resource == null) {
+      throw new IllegalArgumentException("file not found!");
+    }
+
+    Path textsFilePath;
+    try {
+      textsFilePath = Paths.get(resource.toURI());
+    } catch (URISyntaxException e) {
+      throw new SofiaRuntimeException(e);
+    }
+    JSONObject jsonTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset()).toJSONObject();
+    TextManager.add(jsonTexts);
   }
 
   public Charset getEncoding() {
@@ -301,80 +350,12 @@ public final class Configuration {
     return "eMailRegistrationRetryAlert";
   }
 
-  // TODO use the database for configuration
-  private String getDatabaseValue(String name) {
-    switch (name) {
-      case "database.backup.file.name":
-        return "/home/esteban/NetBeansProjects/core.cabezudo.net/system/data/cabezudo.sql";
-      case "mail.smtp.host":
-        return "in.mailjet.com";
-      case "mail.server.mailJet.api.key":
-        return "c1a2afcc6be16031275520db9ec5e79b";
-      case "mail.server.mailJet.secret.key":
-        return "f30eb6ff628984df69a6ce3000a8d912";
-      default:
-        throw new RuntimeConfigurationException("Configuration value not found: " + name);
-    }
+  public Path getClusterFileLogPath() {
+    return clusterFileLogPath;
   }
 
-  private void checkPath(Path path) {
-    if (!Files.isDirectory(path)) {
-      throw new RuntimeConfigurationException("The file " + path + " IS NOT a directory.");
-    }
-  }
-
-  public static String getConfigurationFilePath() {
-    String path;
-    path = searchOn(System.getProperty("user.dir") + System.getProperty("file.separator") + CONFIGURATION_FILENAME);
-    if (path != null) {
-      return path;
-    }
-    path = searchOn(System.getProperty("user.home") + System.getProperty("file.separator") + CONFIGURATION_FILENAME);
-    if (path != null) {
-      return path;
-    }
-    return null;
-  }
-
-  private static String searchOn(String path) {
-    Logger.info("Check for configuration file in " + path + ".");
-    if (Files.exists(Paths.get(path))) {
-      return path;
-    }
-    return null;
-  }
-
-  public static Path createFile() throws ConfigurationException {
-    String directoryName = System.getProperty("user.home");
-    Path basePath = Paths.get(directoryName);
-    Path filePath = basePath.resolve(CONFIGURATION_FILENAME);
-    if (Files.exists(filePath)) {
-      throw new RuntimeConfigurationException("The file " + filePath + " already exists.");
-    }
-    if (Files.isWritable(basePath)) {
-      try {
-        Files.createFile(filePath);
-      } catch (IOException e) {
-        throw new ConfigurationException("Can't create the file. " + e.getMessage());
-      }
-      try {
-        try (FileWriter out = new FileWriter(filePath.toFile())) {
-          out.write("environment=production\n");
-          out.write("database.driver=com.mysql.cj.jdbc.Driver\n");
-          out.write("database.hostname=localhost\n");
-          out.write("database.port=3306\n");
-          out.write("database.name=sofia\n");
-          out.write("database.username=santiago\n");
-          out.write("database.password=nasar1930\n");
-          out.write("server.port=80\n");
-          out.write("system.home=/home/sofia\n");
-        }
-      } catch (IOException e) {
-        throw new ConfigurationException("Can't write on the file. " + e.getMessage());
-      }
-      return filePath;
-    }
-    throw new ConfigurationException("The " + basePath + " is not writable.");
+  public Path getClusterFileSelectLogPath() {
+    return clusterFileSelectLogPath;
   }
 
   public String getLoginURL() {
@@ -384,77 +365,4 @@ public final class Configuration {
   public Path getSofiaAPIConfigurationPath() {
     return systemPath.resolve("apiDefinition.json");
   }
-
-  private void testConnection() throws ConfigurationException {
-    try {
-      Database.getConnection(null, 1);
-    } catch (SQLException e) {
-      throw new ConfigurationException("Invalid configuration for database. " + e.getMessage(), e);
-    }
-  }
-
-  public void checkAndCreateFile() throws ConfigurationException {
-    Utils.consoleOut("Checking configuration file path... ");
-    if (Configuration.getConfigurationFilePath() == null) {
-      Utils.consoleOutLn("Not found.");
-      if (System.console() != null) {
-        Utils.consoleOut("Create configuration file example? [Y/n]: ");
-        String createConfigurationFile = System.console().readLine();
-        if (createConfigurationFile.isBlank() || "y".equalsIgnoreCase(createConfigurationFile)) {
-          try {
-            Path configurationFilePath = Configuration.createFile();
-            Utils.consoleOutLn("Configure the file " + configurationFilePath + " and run the server again.");
-            System.exit(0);
-          } catch (ConfigurationException e) {
-            Utils.consoleOutLn(e.getMessage());
-            System.exit(1);
-          }
-        }
-      }
-      Logger.severe("Configuration file not found.");
-      System.exit(1);
-    }
-    Utils.consoleOutLn("OK");
-    Configuration.validateConfiguration();
-  }
-
-  public void loadAPIConfiguration(DatabaseCreators dataCreators) throws ConfigurationException {
-    Path apiConfigurationFilePath = Configuration.getInstance().getSofiaAPIConfigurationPath();
-    Logger.debug("Load Sofia API configuration file: %s", apiConfigurationFilePath);
-    apiConfiguration.add(apiConfigurationFilePath);
-
-    for (DataCreator dataCreator : dataCreators) {
-      apiConfiguration.add(dataCreator);
-    }
-  }
-
-  public Path getClusterFilesPath() {
-    return clusterFilesPath;
-  }
-
-  public Path getClusterFileSelectLogPath() {
-    return clusterFileSelectLogPath;
-  }
-
-  public Path getClusterFileLogPath() {
-    return clusterFileLogPath;
-  }
-
-  public void loadTexts() throws JSONParseException, IOException {
-
-    URL resource = getClass().getClassLoader().getResource("texts.json");
-    if (resource == null) {
-      throw new IllegalArgumentException("file not found!");
-    }
-
-    Path textsFilePath;
-    try {
-      textsFilePath = Paths.get(resource.toURI());
-    } catch (URISyntaxException e) {
-      throw new SofiaRuntimeException(e);
-    }
-    JSONObject jsonTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset().toString()).toJSONObject();
-    TextManager.add(jsonTexts);
-  }
-
 }

@@ -1024,3 +1024,7 @@ Para agregar textos en back
 1. Agregarlo en src/main/resources/texts.json y usar TextManager.get
 
 java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/resources/libs/ net.cabezudo.sofia.core.WebServer -dd -ctd -d -i
+
+Configuración global del servidor
+
+Configuración del sitio

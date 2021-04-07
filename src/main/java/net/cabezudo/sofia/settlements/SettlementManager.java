@@ -11,6 +11,8 @@ import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.geolocation.Latitude;
+import net.cabezudo.sofia.core.geolocation.Longitude;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.words.Word;
@@ -39,21 +41,23 @@ public class SettlementManager {
     return INSTANCE;
   }
 
-  public Settlement get(Language language, SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws ClusterException {
+  public Settlement get(Language language, SettlementType settlementType, Municipality municipality, Zone zone, String municipalityId, String name, User owner) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
-      return get(connection, language, settlementType, municipality, zone, name, owner);
+      return get(connection, language, settlementType, municipality, zone, municipalityId, name, owner);
     } catch (SQLException e) {
       throw new ClusterException(e);
     }
   }
 
-  public Settlement get(Connection connection, Language language, SettlementType settlementType, Municipality municipality, Zone zone, String name, User owner) throws ClusterException {
+  public Settlement get(Connection connection, Language language, SettlementType settlementType, Municipality municipality, Zone zone, String municipalityId, String name, User owner) throws ClusterException {
     String query = "SELECT "
             + "s.id AS id, "
             + "st.id AS typeId, "
             + "st.name AS typeName, "
             + "c.id AS cityId, "
             + "c.name AS cityName, "
+            + "c.latitude AS latitude, "
+            + "c.longitude AS longitude, "
             + "m.id AS municipalityId, "
             + "m.name AS municipalityName, "
             + "t.id AS stateId, "
@@ -61,9 +65,8 @@ public class SettlementManager {
             + "o.id AS countryId, "
             + "o.phoneCode AS countryPhoneCode, "
             + "o.twoLettersCountryCode AS countryTwoLettersCountryCode, "
-            + "w.value AS wordValue, "
-            + "w.value AS wordValue, "
-            + "w.value AS wordValue, "
+            + "cn.id AS countryNameId, "
+            + "cn.value AS countryName, "
             + "z.id AS zoneId, "
             + "z.name AS zoneName, "
             + "s.name AS name "
@@ -73,9 +76,9 @@ public class SettlementManager {
             + "LEFT JOIN " + MunicipalitiesTable.NAME + " AS m ON s.municipality = m.id "
             + "LEFT JOIN " + StatesTable.NAME + " AS t ON m.state = t.id "
             + "LEFT JOIN " + CountriesTable.NAME + " AS o ON t.country = o.id "
-            + "LEFT JOIN " + CountryNamesTable.NAME + " AS cn ON c.id = cn.country "
+            + "LEFT JOIN " + CountryNamesTable.NAME + " AS cn ON c.id = cn.id "
             + "LEFT JOIN " + ZonesTable.NAME + " AS z ON s.zone = z.id "
-            + "WHERE cn.language = ?, st.id = ? AND m.id = ? AND z.id = ? AND s.name = ? AND (s.owner = ? OR s.owner = 1)";
+            + "WHERE cn.language = ? AND st.id = ? AND m.id = ? AND z.id = ? AND s.name = ? AND (s.owner = ? OR s.owner = 1)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, language.getId());
@@ -87,14 +90,14 @@ public class SettlementManager {
       rs = ClusterManager.getInstance().executeQuery(ps);
       if (rs.next()) {
         settlementType = new SettlementType(rs.getInt("typeId"), rs.getString("typeName"));
-        int wordId = rs.getInt("wordId");
-        String wordValue = rs.getString("wordValue");
-        Word word = new Word(wordId, language, wordValue);
-        Country country = new Country(rs.getInt("countryId"), word, rs.getInt("countryPhoneCode"), rs.getString("countryTwoLettersCountryCode"));
+        int countryNameId = rs.getInt("countryNameId");
+        String countryNameString = rs.getString("countryName");
+        Word countryName = new Word(countryNameId, language, countryNameString);
+        Country country = new Country(rs.getInt("countryId"), rs.getString("countryTwoLettersCountryCode"), countryName, rs.getInt("countryPhoneCode"));
         State state = new State(rs.getInt("stateId"), country, rs.getString("stateName"));
         City city = null;
         if (rs.getInt("cityId") != 0) {
-          city = new City(rs.getInt("cityId"), state, rs.getString("cityName"));
+          city = new City(rs.getInt("cityId"), state, rs.getString("cityName"), new Latitude(rs.getBigDecimal("latitude")), new Longitude(rs.getBigDecimal("longitude")));
         }
         municipality = new Municipality(rs.getInt("municipalityId"), state, rs.getString("municipalityName"));
         zone = new Zone(rs.getInt("zoneId"), rs.getString("zoneName"));
@@ -108,21 +111,21 @@ public class SettlementManager {
     return null;
   }
 
-  public Settlement add(Language language, SettlementType settlementType, City city, Municipality municipality, Zone zone, String settlementName, User owner) throws ClusterException {
+  public Settlement add(Language language, SettlementType settlementType, City city, Municipality municipality, Zone zone, String municipalitySettlementId, String settlementName, User owner) throws ClusterException {
     try (Connection connection = Database.getConnection()) {
-      return add(connection, language, settlementType, city, municipality, zone, settlementName, owner);
+      return add(connection, language, settlementType, city, municipality, zone, municipalitySettlementId, settlementName, owner);
     } catch (SQLException e) {
       throw new ClusterException(e);
     }
   }
 
-  public Settlement add(Connection connection, Language language, SettlementType settlementType, City city, Municipality municipality, Zone zone, String name, User owner) throws ClusterException {
-    Settlement settlement = get(connection, language, settlementType, municipality, zone, name, owner);
+  public Settlement add(Connection connection, Language language, SettlementType settlementType, City city, Municipality municipality, Zone zone, String municipalityId, String name, User owner) throws ClusterException {
+    Settlement settlement = get(connection, language, settlementType, municipality, zone, municipalityId, name, owner);
     if (settlement != null) {
       return settlement;
     }
 
-    String query = "INSERT INTO " + SettlementsTable.NAME + " (type, city, municipality, zone, name, owner) VALUES (?, ?, ?, ?, ?, ?)";
+    String query = "INSERT INTO " + SettlementsTable.NAME + " (type, city, municipality, zone, municipalityId, name, owner) VALUES (?, ?, ?, ?, ?, ?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlementType.getId());
@@ -133,8 +136,9 @@ public class SettlementManager {
       }
       ps.setInt(3, municipality.getId());
       ps.setInt(4, zone.getId());
-      ps.setString(5, name);
-      ps.setInt(6, owner.getId());
+      ps.setString(5, municipalityId);
+      ps.setString(6, name);
+      ps.setInt(7, owner.getId());
 
       ClusterManager.getInstance().executeUpdate(ps);
 

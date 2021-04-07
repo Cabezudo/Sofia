@@ -29,7 +29,7 @@ public class TextManager {
     Path path = site.getVersionPath().resolve(page + ".texts").resolve(language.getTwoLetterCode() + ".json");
     Logger.debug("Read the language file %s.", path);
     try {
-      return JSON.parse(path, Configuration.getDefaultCharset().toString()).toJSONObject();
+      return JSON.parse(path, Configuration.getDefaultCharset()).toJSONObject();
     } catch (NoSuchFileException e) {
       Logger.debug(e.getMessage());
       return new JSONObject();

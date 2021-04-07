@@ -1,0 +1,12 @@
+{
+  "cities": {
+    "MX": "cities_mx.txt"
+  },
+  "postalCodes": {
+    "MX": "postal_codes_mx.txt"
+  },
+  "states": {
+    "MX": "states_mx.txt"
+  }
+}
+

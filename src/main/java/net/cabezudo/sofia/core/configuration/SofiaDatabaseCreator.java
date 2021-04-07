@@ -1,23 +1,19 @@
 package net.cabezudo.sofia.core.configuration;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.Socket;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.regex.Pattern;
 import net.cabezudo.sofia.addresses.AddressesTable;
 import net.cabezudo.sofia.cities.CitiesTable;
-import net.cabezudo.sofia.cities.City;
 import net.cabezudo.sofia.cities.CityManager;
+import net.cabezudo.sofia.cities.MexicoCitiesCreator;
 import net.cabezudo.sofia.clients.ClientTable;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.currency.CurrenciesTable;
 import net.cabezudo.sofia.core.currency.CurrencyManager;
 import net.cabezudo.sofia.core.database.sql.Database;
+import net.cabezudo.sofia.core.exceptions.DataConversionException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
 import net.cabezudo.sofia.core.languages.Language;
@@ -28,7 +24,6 @@ import net.cabezudo.sofia.core.schedule.TimeTypesTable;
 import net.cabezudo.sofia.core.schedule.TimesTable;
 import net.cabezudo.sofia.core.sites.SitesTable;
 import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
-import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UsersTable;
 import net.cabezudo.sofia.core.users.permission.PermissionTypesTable;
 import net.cabezudo.sofia.core.users.permission.PermissionsPermissionTypesTable;
@@ -44,24 +39,17 @@ import net.cabezudo.sofia.countries.CountryNamesTable;
 import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.municipalities.MunicipalitiesTable;
-import net.cabezudo.sofia.municipalities.Municipality;
-import net.cabezudo.sofia.municipalities.MunicipalityManager;
 import net.cabezudo.sofia.people.PeopleTable;
 import net.cabezudo.sofia.phonenumbers.PhoneNumbersTable;
+import net.cabezudo.sofia.postalcodes.MexicoPostalCodeCreator;
 import net.cabezudo.sofia.postalcodes.PostalCodeManager;
 import net.cabezudo.sofia.postalcodes.PostalCodesTable;
-import net.cabezudo.sofia.settlements.Settlement;
-import net.cabezudo.sofia.settlements.SettlementManager;
-import net.cabezudo.sofia.settlements.SettlementType;
-import net.cabezudo.sofia.settlements.SettlementTypeManager;
 import net.cabezudo.sofia.settlements.SettlementTypesTable;
 import net.cabezudo.sofia.settlements.SettlementsTable;
-import net.cabezudo.sofia.states.State;
+import net.cabezudo.sofia.states.MexicoStatesCreator;
 import net.cabezudo.sofia.states.StateManager;
 import net.cabezudo.sofia.states.StatesTable;
 import net.cabezudo.sofia.streets.StreetsTable;
-import net.cabezudo.sofia.zones.Zone;
-import net.cabezudo.sofia.zones.ZoneManager;
 import net.cabezudo.sofia.zones.ZonesTable;
 
 /**
@@ -144,18 +132,16 @@ public class SofiaDatabaseCreator extends DataCreator {
   }
 
   @Override
-  public void createDefaultData() throws DataCreationException {
+  public void createDefaultData() throws DataCreationException, ConfigurationException, DataConversionException {
     try {
       createCurrencies();
       createLanguages();
-      Country country = createCountries();
-      Language language;
-      language = LanguageManager.getInstance().get("es");
-      createPostalCodes(language, country, null);
+      createCountries();
+      createStates();
+      createCities();
+      createPostalCodes();
     } catch (ClusterException e) {
       throw new DataCreationException(e);
-    } catch (InvalidTwoLettersCodeException e) {
-      throw new SofiaRuntimeException(e);
     }
   }
 
@@ -183,6 +169,7 @@ public class SofiaDatabaseCreator extends DataCreator {
   }
 
   private Country createCountries() throws ClusterException {
+    // Create countries from file
     Language language;
     try {
       language = LanguageManager.getInstance().get("es");
@@ -192,61 +179,20 @@ public class SofiaDatabaseCreator extends DataCreator {
     return CountryManager.getInstance().add(language, "México", 52, "MX");
   }
 
-  private void createPostalCodes(Language language, Country country, User owner) throws ClusterException {
-    Logger.info("Create postal codes.");
-    Path postalCodesPath = Configuration.getInstance().getSystemResourcesPath().resolve("postalCodes.csv");
-    if (Files.exists(postalCodesPath)) {
-      createPostalCodesFromFile(language, country, owner, postalCodesPath);
-    }
+  private void createStates() throws ClusterException, ConfigurationException, DataConversionException {
+    MexicoStatesCreator mexicoStateCreator = new MexicoStatesCreator();
+    StateManager.getInstance().create(mexicoStateCreator);
   }
 
-  private void createPostalCodesFromFile(Language language, Country country, User owner, Path postalCodesPath) throws ClusterException {
-    try (BufferedReader br = new BufferedReader(new FileReader(postalCodesPath.toFile()))) {
-      String line;
-      boolean headers = true;
-      int counter = 0;
-      while ((line = br.readLine()) != null) {
-        if (!Environment.getInstance().isProduction()) {
-          if (counter < 1000) {
-            counter++;
-            continue;
-          } else {
-            counter = 0;
-          }
-        }
-        if (headers) {
-          headers = false;
-        } else {
-          String[] fields = line.split(Pattern.quote("|"));
+  private void createCities() throws ClusterException, ConfigurationException, DataConversionException {
+    MexicoCitiesCreator mexicoCitiesCreator = new MexicoCitiesCreator();
+    CityManager.getInstance().create(mexicoCitiesCreator);
+  }
 
-          String stateName = fields[0];
-          String cityName = fields[1];
-          String municipalityName = fields[2];
-          String settlementName = fields[3];
-          String settlementTypeName = fields[4];
-          String zoneName = fields[5];
-          String postalCodeNumber = fields[6];
-
-          State state = StateManager.getInstance().add(country, stateName);
-
-          City city = null;
-          if (!cityName.equals("-")) {
-            city = CityManager.getInstance().add(state, cityName, owner);
-          }
-
-          try (Connection connection = Database.getConnection()) {
-            SettlementType settlementType = SettlementTypeManager.getInstance().add(connection, settlementTypeName);
-            Municipality municipality = MunicipalityManager.getInstance().add(connection, state, municipalityName, owner);
-            Zone zone = ZoneManager.getInstance().add(connection, zoneName);
-            Settlement settlement = SettlementManager.getInstance().add(connection, language, settlementType, city, municipality, zone, settlementName, owner);
-            PostalCodeManager.getInstance().add(connection, settlement, Integer.parseInt(postalCodeNumber), owner);
-          } catch (SQLException e) {
-            throw new ClusterException(e);
-          }
-        }
-      }
-    } catch (IOException e) {
-      throw new RuntimeConfigurationException(e);
+  private void createPostalCodes() throws ClusterException, ConfigurationException, DataConversionException {
+    if (Environment.getInstance().isProduction()) {
+      MexicoPostalCodeCreator mexicoPostalCode = new MexicoPostalCodeCreator();
+      PostalCodeManager.getInstance().create(mexicoPostalCode);
     }
   }
 }
