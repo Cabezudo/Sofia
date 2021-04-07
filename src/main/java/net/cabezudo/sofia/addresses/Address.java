@@ -3,7 +3,8 @@ package net.cabezudo.sofia.addresses;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.languages.Language;
-import net.cabezudo.sofia.settlements.Settlement;
+import net.cabezudo.sofia.geography.AdministrativeDivision;
+import net.cabezudo.sofia.geography.AdministrativeDivisionFactory;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -11,24 +12,24 @@ import net.cabezudo.sofia.settlements.Settlement;
  */
 public class Address {
 
-  private final String street;
-  private final String exteriorNumber;
-  private final String interiorNumber;
-  private final Settlement settlement;
-  private final Integer postalCode;
-  private final String reference;
+  private String street;
+  private String exteriorNumber;
+  private String interiorNumber;
+  private final AdministrativeDivision parent;
+  private Integer postalCode;
+  private String reference;
 
-  public Address(String street, String exteriorNumber, String interiorNumber, Settlement settlement, Integer postalCode, String reference) {
+  public Address(String street, String exteriorNumber, String interiorNumber, AdministrativeDivision parent, Integer postalCode, String reference) {
     this.street = street;
     this.exteriorNumber = exteriorNumber;
     this.interiorNumber = interiorNumber;
-    this.settlement = settlement;
+    this.parent = parent;
     this.postalCode = postalCode;
     this.reference = reference;
   }
 
-  Address(JSONObject jsonAddress) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  Address(JSONObject o) {
+    this.parent = AdministrativeDivisionFactory.get(o);
   }
 
   public String getStreet() {
@@ -43,8 +44,8 @@ public class Address {
     return interiorNumber;
   }
 
-  public Settlement getSettlement() {
-    return settlement;
+  public AdministrativeDivision getParent() {
+    return parent;
   }
 
   public Integer getPostalCode() {
@@ -60,7 +61,7 @@ public class Address {
     jsonObject.add(new JSONPair("street", street));
     jsonObject.add(new JSONPair("exteriorNumber", exteriorNumber));
     jsonObject.add(new JSONPair("interiorNumber", interiorNumber));
-    jsonObject.add(new JSONPair("settlement", settlement.toJSONTree()));
+    jsonObject.add(new JSONPair(parent.getType(), parent.toJSONTree()));
     jsonObject.add(new JSONPair("postalCode", postalCode));
     jsonObject.add(new JSONPair("reference", reference));
     return jsonObject;
@@ -71,7 +72,7 @@ public class Address {
     jsonObject.add(new JSONPair("street", street));
     jsonObject.add(new JSONPair("exteriorNumber", exteriorNumber));
     jsonObject.add(new JSONPair("interiorNumber", interiorNumber));
-    jsonObject.add(new JSONPair("settlement", settlement.toWebListTree(language)));
+    jsonObject.add(new JSONPair(parent.getType(), parent.toJSONTree()));
     jsonObject.add(new JSONPair("postalCode", postalCode));
     jsonObject.add(new JSONPair("reference", reference));
     return jsonObject;
