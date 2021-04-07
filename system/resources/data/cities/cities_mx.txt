@@ -21,13 +21,13 @@ Veracruz de Ignacio de la Llave|Álamo|20.91154|-97.67554
 Chihuahua|Aldama|28.83669|-105.91423
 Coahuila de Zaragoza|Allende|28.34124|-100.85111
 Veracruz de Ignacio de la Llave|Allende|18.15514|-94.39289
-México|Almoloya de Juárez|19.36938|-99.75867
+Ciudad de México|Almoloya de Juárez|19.36938|-99.75867
 Tamaulipas|Altamira|22.39215|-97.93867
 Puebla|Altepexi|18.37035|-97.29966
 Veracruz de Ignacio de la Llave|Alto Lucero|20.95361|-97.44194
 Veracruz de Ignacio de la Llave|Altotonga|19.76613|-97.24514
 Veracruz de Ignacio de la Llave|Alvarado|18.77143|-95.76181
-México|Amatepec|18.68519|-100.18798
+Ciudad de México|Amatepec|18.68519|-100.18798
 Jalisco|Ameca|20.54629|-104.04508
 Nuevo León|Anáhuac|27.24457|-100.13337
 Hidalgo|Apan|19.70996|-98.45275
@@ -42,7 +42,7 @@ Chiapas|Arriaga|16.23589|-93.89849
 Coahuila de Zaragoza|Arteaga|25.45044|-100.85917
 Aguascalientes|Asientos|22.23836|-102.08954
 Oaxaca|Asunción Nochixtlán|17.459|-97.22522
-México|Atlacomulco de Fabela|19.79896|-99.8742
+Ciudad de México|Atlacomulco de Fabela|19.79896|-99.8742
 Puebla|Atlixco|18.90815|-98.43613
 Jalisco|Atotonilco el Alto|20.55079|-102.50942
 Veracruz de Ignacio de la Llave|Atoyac|18.91215|-96.7782
@@ -71,7 +71,7 @@ Sonora|Cananea|30.98699|-110.29062
 Durango|Canatlán|24.52774|-104.77828
 Quintana Roo|Cancún|21.17429|-86.84656
 Campeche|Candelaria|18.18478|-91.04609
-México|Capulhuac|19.19324|-99.46449
+Ciudad de México|Capulhuac|19.19324|-99.46449
 San Luis Potosí|Cárdenas|18.00135|-93.37559
 Tabasco|Cárdenas|22.00144|-99.64247
 Veracruz de Ignacio de la Llave|Carlos A. Carrillo|18.37477|-95.75444
@@ -84,22 +84,22 @@ Guanajuato|Celaya|20.52353|-100.8157
 San Luis Potosí|Cerritos|22.43287|-100.28372
 Veracruz de Ignacio de la Llave|Cerro Azul|21.192|-97.74088
 Oaxaca|Chahuites|16.28758|-94.19539
-México|Chalco de Díaz Covarrubias|19.26174|-98.89775
+Ciudad de México|Chalco de Díaz Covarrubias|19.26174|-98.89775
 Campeche|Champotón|19.34745|-90.72039
 Jalisco|Chapala|20.29616|-103.19123
 San Luis Potosí|Charcas|23.13083|-101.11418
 Quintana Roo|Chetumal|18.51413|-88.30381
 Chiapas|Chiapa de Corzo|16.7077|-93.01184
 Tlaxcala|Chiautempan|19.31905|-98.19982
-México|Chicoloapan|19.41687|-98.90202
-México|Chiconcuac|19.55939|-98.89884
-México|Chiconcuac|19.55699|-98.89902
+Ciudad de México|Chicoloapan|19.41687|-98.90202
+Ciudad de México|Chiconcuac|19.55939|-98.89884
+Ciudad de México|Chiconcuac|19.55699|-98.89902
 Tlaxcala|Chignahuapan|19.83866|-98.03171
 Chihuahua|Chihuahua|28.63528|-106.08889
 Guerrero|Chilapa de Álvarez|17.59917|-99.17389
 Guerrero|Chilapa de Álvarez|17.59994|-99.17353
 Guerrero|Chilpancingo|17.5506|-99.50578
-México|Chimalhuacán|19.41678|-98.9464
+Ciudad de México|Chimalhuacán|19.41678|-98.9464
 Sinaloa|Choix|26.70888|-108.3237
 Puebla|Cholula|19.06406|-98.30352
 Nuevo León|Ciénega de Flores|25.95467|-100.16695
@@ -109,7 +109,7 @@ Jalisco|Cihuatlán|19.23636|-104.56548
 Chiapas|Cintalapa de Figueroa|16.69829|-93.72066
 Chiapas|Cintalapa de Figueroa|16.68686|-93.72847
 Coahuila de Zaragoza|Ciudad Acuña|29.32322|-100.95217
-México|Ciudad Adolfo López Mateos|19.55706|-99.26777
+Ciudad de México|Ciudad Adolfo López Mateos|19.55706|-99.26777
 Guerrero|Ciudad Altamirano|18.3582|-100.66965
 Guerrero|Ciudad Apaxtla de Castrejón|18.1324|-99.93279
 Nuevo León|Ciudad Apodaca|25.78195|-100.18839
@@ -137,16 +137,16 @@ Oaxaca|Ciudad Ixtepec|16.55627|-95.0956
 Chihuahua|Ciudad Juárez|31.72024|-106.46084
 Michoacán de Ocampo|Ciudad Lázaro Cárdenas|17.97066|-102.22124
 Durango|Ciudad Lerdo|25.53718|-103.52456
-México|Ciudad López Mateos|19.55793|-99.25675
+Ciudad de México|Ciudad López Mateos|19.55793|-99.25675
 Tamaulipas|Ciudad Madero|22.27228|-97.83623
 Tamaulipas|Ciudad Mante|22.74304|-98.9739
 Guanajuato|Ciudad Manuel Doblado|20.72845|-101.95094
 Coahuila de Zaragoza|Ciudad Melchor Múzquiz|27.87933|-101.51615
 Veracruz de Ignacio de la Llave|Ciudad Mendoza|18.80645|-97.1787
 Tamaulipas|Ciudad Miguel Alemán|26.39952|-99.02836
-México|Ciudad Nezahualcóyotl|19.40061|-99.01483
-México|Ciudad Nicolás Romero|19.61735|-99.30313
-México|Ciudad Nicolás Romero|19.64177|-99.3068
+Ciudad de México|Ciudad Nezahualcóyotl|19.40061|-99.01483
+Ciudad de México|Ciudad Nicolás Romero|19.61735|-99.30313
+Ciudad de México|Ciudad Nicolás Romero|19.64177|-99.3068
 Sonora|Ciudad Obregón|27.48642|-109.94083
 Veracruz de Ignacio de la Llave|Ciudad Olmeca|18.15056|-94.5525
 Tamaulipas|Ciudad Río Bravo|25.98729|-98.09414
@@ -157,7 +157,7 @@ Puebla|Ciudad Serdán|18.98856|-97.44643
 Tamaulipas|Ciudad Tula|22.99669|-99.71231
 San Luis Potosí|Ciudad Valles|21.99631|-99.01093
 Tamaulipas|Ciudad Victoria|23.74174|-99.14599
-México|Coacalco|19.62923|-99.10689
+Ciudad de México|Coacalco|19.62923|-99.10689
 Veracruz de Ignacio de la Llave|Coatepec|19.45229|-96.96148
 Veracruz de Ignacio de la Llave|Coatzacoalcos|18.14905|-94.4447
 Veracruz de Ignacio de la Llave|Coatzintla|20.48699|-97.46823
@@ -180,7 +180,7 @@ Aguascalientes|Cosío|22.36632|-102.29961
 Oaxaca|Cosolapa|18.60209|-96.68271
 Veracruz de Ignacio de la Llave|Cosoleacaque|17.99913|-94.6359
 Michoacán de Ocampo|Cotija de la Paz|19.81043|-102.70578
-México|Coyotepec|19.77722|-99.21295
+Ciudad de México|Coyotepec|19.77722|-99.21295
 Guerrero|Coyuca de Benítez|17.00874|-100.08503
 Guerrero|Coyuca de Catalán|18.32413|-100.69613
 Jalisco|Coyula|20.65881|-103.22654
@@ -190,8 +190,8 @@ Guerrero|Cuajinicuilapa|16.47213|-98.41436
 Coahuila de Zaragoza|Cuatro Ciénegas de Carranza|26.98711|-102.06545
 Chihuahua|Cuauhtémoc|28.40884|-106.86319
 Hidalgo|Cuautepec de Hinojosa|20.03557|-98.31015
-México|Cuautitlán|19.67052|-99.17989
-México|Cuautitlán Izcalli|19.64388|-99.21598
+Ciudad de México|Cuautitlán|19.67052|-99.17989
+Ciudad de México|Cuautitlán Izcalli|19.64388|-99.21598
 Morelos|Cuautla|18.8106|-98.93525
 Puebla|Cuautlancingo|19.08995|-98.27319
 Guanajuato|Cuerámaro|20.62617|-101.6712
@@ -209,7 +209,7 @@ Guanajuato|Doctor Mora|21.1413|-100.32381
 Guanajuato|Dolores Hidalgo Cuna de la Independencia Nacional|21.15611|-100.9325
 Hidalgo|Don Antonio|19.87444|-98.93472
 San Luis Potosí|Ébano|22.21808|-98.37706
-México|Ecatepec de Morelos|19.60492|-99.06064
+Ciudad de México|Ecatepec de Morelos|19.60492|-99.06064
 Oaxaca|El Camaron Yautepec|16.55678|-96.02867
 Nuevo León|El cercado|25.40455|-100.13287
 Jalisco|El Grullo|19.80603|-104.21805
@@ -287,11 +287,11 @@ Puebla|Huejotzingo|19.15892|-98.40824
 Jalisco|Huejuquilla el Alto|22.62718|-103.8968
 Hidalgo|Huejutla de Reyes|21.14|-98.41944
 Michoacán de Ocampo|Huetamo de Núñez|18.62926|-100.897
-México|Huilango|19.68056|-99.25639
+Ciudad de México|Huilango|19.68056|-99.25639
 Veracruz de Ignacio de la Llave|Huiloapan de Cuauhtémoc|18.81663|-97.15231
 Tabasco|Huimanguillo|17.83366|-93.38926
 Guerrero|Huitzuco|18.30405|-99.33554
-México|Huixquilucan de Degollado|19.35985|-99.35016
+Ciudad de México|Huixquilucan de Degollado|19.35985|-99.35016
 Chiapas|Huixtla|15.13915|-92.4641
 Yucatán|Hunucmá|21.01723|-89.87551
 Guerrero|Iguala de la Independencia|18.34536|-99.5413
@@ -302,8 +302,8 @@ Hidalgo|Ixmiquilpan|20.47841|-99.21697
 Veracruz de Ignacio de la Llave|Ixtaczoquitlán|18.85364|-97.06229
 Jalisco|Ixtapa|20.71641|-105.20487
 Guerrero|Ixtapa-Zihuatanejo|17.64344|-101.55212
-México|Ixtapaluca|19.31556|-98.88284
-México|Ixtapan de la Sal|18.84369|-99.67671
+Ciudad de México|Ixtapaluca|19.31556|-98.88284
+Ciudad de México|Ixtapan de la Sal|18.84369|-99.67671
 Oaxaca|Ixtepec|16.56052|-95.10375
 Nayarit|Ixtlán del Río|21.03907|-104.37116
 Yucatán|Izamal|20.93537|-89.01802
@@ -319,7 +319,7 @@ Guanajuato|Jaral del Progreso|20.37237|-101.06249
 Tamaulipas|Jaumave|23.40641|-99.37597
 Guanajuato|Jerécuaro|20.15071|-100.5105
 Zacatecas|Jerez de García Salinas|22.64971|-102.99032
-México|Jesús del Monte|19.375|-99.29444
+Ciudad de México|Jesús del Monte|19.375|-99.29444
 Aguascalientes|Jesús María|21.96111|-102.34333
 Michoacán de Ocampo|Jiquilpan de Juárez|19.99482|-102.71969
 Chiapas|Jiquipilas|20.1492|-100.51062
@@ -335,7 +335,7 @@ Sinaloa|Juan José Ríos|25.75781|-108.8242
 Veracruz de Ignacio de la Llave|Juan Rodríguez Clara|17.9901|-95.40259
 Chihuahua|Juárez|31.73993|-106.48532
 Oaxaca|Juchitán de Zaragoza|16.43603|-95.01975
-México|Juchitepec de Mariano Rivapalacio|19.10059|-98.8788
+Ciudad de México|Juchitepec de Mariano Rivapalacio|19.10059|-98.8788
 Guanajuato|Juventino Rosas|20.64337|-100.99286
 Yucatán|Kanasín|20.93482|-89.55871
 Quintana Roo|Kantunilkín|21.10221|-87.48589
@@ -358,7 +358,7 @@ Nayarit|Las Varas|21.17567|-105.13563
 Baja California|Lázaro Cárdenas|30.52815|-115.92617
 Guanajuato|León de los Aldama|21.12908|-101.67374
 Veracruz de Ignacio de la Llave|Lerdo de Tejada|18.62936|-95.51968
-México|Lerma de Villada|19.28881|-99.51163
+Ciudad de México|Lerma de Villada|19.28881|-99.51163
 Sinaloa|Leyva Solano|25.66163|-108.637
 Puebla|Libres|19.46574|-97.68737
 Sinaloa|Licenciado Benito Juárez|24.65667|-107.545
@@ -368,7 +368,7 @@ Jalisco|Lomas del Sur|20.4925|-103.4175
 Baja California Sur|Loreto|26.01079|-111.34198
 Zacatecas|Loreto|22.2722|-101.98651
 Sinaloa|Los Mochis|22.27248|-101.98898
-México|Los Reyes Acaquilpan|25.79302|-108.99808
+Ciudad de México|Los Reyes Acaquilpan|25.79302|-108.99808
 Michoacán de Ocampo|Los Reyes de Salgado|18.94918|-97.80379
 Zacatecas|Luis Moya|19.59042|-102.47242
 Tabasco|Macuspana|17.76052|-92.59539
@@ -387,9 +387,9 @@ Coahuila de Zaragoza|Matamoros|25.52699|-103.2285
 San Luis Potosí|Matehuala|23.64824|-100.64334
 Oaxaca|Matías Romero Avendaño|16.87902|-95.03939
 Sinaloa|Mazatlán|23.24934|-106.41344
-México|Melchor Ocampo|19.70186|-99.14485
+Ciudad de México|Melchor Ocampo|19.70186|-99.14485
 Yucatán|Mérida|20.97537|-89.61696
-México|Metepec|19.25934|-99.60175
+Ciudad de México|Metepec|19.25934|-99.60175
 Baja California|Mexicali|32.62781|-115.45446
 Nayarit|Mezcales|20.73072|-105.28257
 Oaxaca|Miahuatlán de Porfirio Díaz|16.33276|-96.59562
@@ -415,7 +415,7 @@ Coahuila de Zaragoza|Nadadores|27.02999|-101.59054
 Veracruz de Ignacio de la Llave|Nanchital de Lázaro Cárdenas del Río|18.07117|-94.40756
 Veracruz de Ignacio de la Llave|Naranjos|21.35087|-97.68656
 Oaxaca|Natividad|17.29821|-96.43185
-México|Naucalpan de Juárez|19.47851|-99.23963
+Ciudad de México|Naucalpan de Juárez|19.47851|-99.23963
 Coahuila de Zaragoza|Nava|28.42071|-100.76565
 Sonora|Navojoa|27.07028|-109.44372
 Sinaloa|Navolato|24.7661|-107.70225
@@ -433,16 +433,16 @@ Chiapas|Ocosingo|16.90639|-92.09374
 Guerrero|Ocotito|17.24694|-99.51303
 Jalisco|Ocotlán|20.3553|-102.77358
 Oaxaca|Ocotlán de Morelos|16.79151|-96.67455
-México|Ocoyoacac|19.27127|-99.45787
+Ciudad de México|Ocoyoacac|19.27127|-99.45787
 Chiapas|Ocozocoautla de Espinosa|16.76231|-93.37476
 Chihuahua|Ojinaga|29.5457|-104.40881
-México|Ojo de Agua|19.67717|-99.03213
+Ciudad de México|Ojo de Agua|19.67717|-99.03213
 Zacatecas|Ojocaliente|22.57062|-102.25531
 Guerrero|Olinalá|17.77739|-98.73893
 Guerrero|Ometepec|16.69008|-98.40797
 Veracruz de Ignacio de la Llave|Orizaba|18.85195|-97.09957
 Yucatán|Oxkutzkab|20.30734|-89.41809
-México|Ozumba de Alzate|19.03689|-98.79516
+Ciudad de México|Ozumba de Alzate|19.03689|-98.79516
 Aguascalientes|Pabellón de Arteaga|22.14642|-102.2769
 Hidalgo|Pachuca de Soto|20.11697|-98.73329
 Coahuila de Zaragoza|Palau|27.89232|-101.42319
@@ -497,7 +497,7 @@ Oaxaca|Putla Villa de Guerrero|17.02655|-97.92823
 Sinaloa|Quilá|24.42115|-107.2199
 Coahuila de Zaragoza|Ramos Arizpe|25.53928|-100.94742
 Chiapas|Reforma|17.86519|-93.14897
-México|Reyes Acozac|19.7755|-98.98079
+Ciudad de México|Reyes Acozac|19.7755|-98.98079
 Tamaulipas|Reynosa|26.08061|-98.28835
 Aguascalientes|Rincón de Romos|22.22819|-102.32216
 Guanajuato|Rincón de Tamayo|20.42367|-100.75546
@@ -519,11 +519,11 @@ San Luis Potosí|Salinas de Hidalgo|22.62795|-101.71417
 Coahuila de Zaragoza|Saltillo|25.42321|-101.0053
 Guanajuato|Salvatierra|20.21322|-100.88023
 Puebla|San Andrés Cholula|19.05144|-98.29526
-México|San Andrés Cuexcontitlán|19.35892|-99.62151
+Ciudad de México|San Andrés Cuexcontitlán|19.35892|-99.62151
 Veracruz de Ignacio de la Llave|San Andrés Tuxtla|18.4487|-95.21327
-México|San Antonio Acahualco|19.274|-99.77169
+Ciudad de México|San Antonio Acahualco|19.274|-99.77169
 Oaxaca|San Antonio de la Cal|17.02921|-96.70094
-México|San Antonio Tecómitl|19.21741|-98.99347
+Ciudad de México|San Antonio Tecómitl|19.21741|-98.99347
 Puebla|San Bernardino Tlaxcalancingo|19.02867|-98.27698
 Nayarit|San Blas|21.5417|-105.28636
 Sinaloa|San Blas|26.08169|-108.76171
@@ -536,7 +536,7 @@ Guanajuato|San Diego de la Unión|21.46606|-100.874
 Baja California|San Felipe|31.02468|-114.83919
 Oaxaca|San Felipe Jalapa de Díaz|18.07158|-96.53448
 Tamaulipas|San Fernando|24.84749|-98.14828
-México|San Francisco Acuautla|19.34564|-98.86034
+Ciudad de México|San Francisco Acuautla|19.34564|-98.86034
 Campeche|San Francisco de Campeche|19.84593|-90.53696
 Aguascalientes|San Francisco de los Romo|22.07748|-102.2714
 Guanajuato|San Francisco del Rincón|21.01843|-101.85515
@@ -545,7 +545,7 @@ Oaxaca|San Francisco Telixtlahuaca|19.29474|-99.76771
 Baja California Sur|San Ignacio|27.28196|-112.89571
 Sinaloa|San Ignacio|23.94221|-106.42748
 Jalisco|San Ignacio Cerro Gordo|20.74188|-102.53615
-México|San Jerónimo Cuatro Vientos|19.29306|-98.84167
+Ciudad de México|San Jerónimo Cuatro Vientos|19.29306|-98.84167
 Guerrero|San Jerónimo de Juárez|17.13579|-100.46857
 Querétaro|San Jose de los Olvera|20.55307|-100.41518
 Baja California Sur|San José del Cabo|23.05888|-109.69771
@@ -561,11 +561,11 @@ Oaxaca|San Juan Cacahuatepec|16.61406|-98.15604
 Jalisco|San Juan de los Lagos|21.24893|-102.33036
 Querétaro|San Juan del Rio|20.38886|-99.99577
 Durango|San Juan del Río del Centauro del Norte|24.77964|-104.46002
-México|San Juan Ixtayopan|19.23187|-98.99867
-México|San Juan Teotihuacán de Arista|19.68862|-98.8611
-México|San Juan Zitlaltepec|19.81207|-99.14526
+Ciudad de México|San Juan Ixtayopan|19.23187|-98.99867
+Ciudad de México|San Juan Teotihuacán de Arista|19.68862|-98.8611
+Ciudad de México|San Juan Zitlaltepec|19.81207|-99.14526
 Jalisco|San Julián|21.011|-102.18054
-México|San Lorenzo Acopilco|19.33002|-99.32721
+Ciudad de México|San Lorenzo Acopilco|19.33002|-99.32721
 Guerrero|San Luis Acatlán|16.8091|-98.73333
 Guerrero|San Luis de la Loma|17.26997|-100.8925
 Guanajuato|San Luis de la Paz|21.29771|-100.51736
@@ -573,22 +573,22 @@ San Luis Potosí|San Luis Potosí|22.14982|-100.97916
 Sonora|San Luis Río Colorado|32.45612|-114.77186
 Guerrero|San Luis San Pedro|17.2651|-100.88215
 Guerrero|San Marcos|16.79532|-99.39057
-México|San Martín Azcatepec|19.68667|-98.97278
-México|San Martín Cuautlalpan|19.27618|-98.83167
+Ciudad de México|San Martín Azcatepec|19.68667|-98.97278
+Ciudad de México|San Martín Cuautlalpan|19.27618|-98.83167
 Puebla|San Martin Texmelucan de Labastida|19.28431|-98.43885
-México|San Mateo Atenco|19.26757|-99.53214
-México|San Mateo Huitzilzingo|19.22906|-98.92504
-México|San Mateo Otzacatipan|19.33273|-99.60345
-México|San Miguel Ajusco|19.22201|-99.20242
-México|San Miguel Coatlinchán|19.44999|-98.87274
+Ciudad de México|San Mateo Atenco|19.26757|-99.53214
+Ciudad de México|San Mateo Huitzilzingo|19.22906|-98.92504
+Ciudad de México|San Mateo Otzacatipan|19.33273|-99.60345
+Ciudad de México|San Miguel Ajusco|19.22201|-99.20242
+Ciudad de México|San Miguel Coatlinchán|19.44999|-98.87274
 Guanajuato|San Miguel de Allende|20.91528|-100.74389
 Jalisco|San Miguel el Alto|21.03011|-102.40414
 Oaxaca|San Miguel el Grande|17.0467|-97.62176
 Hidalgo|San Miguel Vindho|19.99338|-99.31473
-México|San Miguel Zinacantepec|19.28428|-99.73394
+Ciudad de México|San Miguel Zinacantepec|19.28428|-99.73394
 Nuevo León|San Nicolás de los Garza|25.74167|-100.30222
-México|San Pablo Autopan|19.35638|-99.65724
-México|San Pablo de las Salinas|19.66658|-99.09477
+Ciudad de México|San Pablo Autopan|19.35638|-99.65724
+Ciudad de México|San Pablo de las Salinas|19.66658|-99.09477
 Oaxaca|San Pablo Huitzo|17.27795|-96.88332
 Oaxaca|San Pablo Villa de Mitla|16.92174|-96.36273
 Coahuila de Zaragoza|San Pedro|25.75823|-102.98386
@@ -598,10 +598,10 @@ Oaxaca|San Pedro Mixtepec|15.98008|-97.07987
 Oaxaca|San Pedro Pochutla|15.74641|-96.46546
 Oaxaca|San Pedro Tapanatepec|16.36763|-94.19491
 Oaxaca|San Pedro Totolápam|16.66637|-96.30275
-México|San Pedro Totoltepec|19.31108|-99.57197
+Ciudad de México|San Pedro Totoltepec|19.31108|-99.57197
 Veracruz de Ignacio de la Llave|San Rafael|19.20959|-98.75636
 Puebla|San Rafael Tlanalapan|19.29167|-98.46806
-México|San Salvador Atenco|19.5517|-98.91867
+Ciudad de México|San Salvador Atenco|19.5517|-98.91867
 Puebla|San Salvador El Seco|19.13325|-97.64167
 Jalisco|San Sebastián el Grande|20.53274|-103.42804
 Oaxaca|San Sebastián Tecomaxtlahuaca|17.34682|-98.03173
@@ -615,19 +615,19 @@ Guanajuato|Santa Cruz Juventino Rosas|20.64356|-100.9952
 Oaxaca|Santa Cruz Xoxocotlán|17.02958|-96.73518
 Baja California|Santa Isabel|32.6333|-115.57605
 Oaxaca|Santa Lucía del Camino|17.06207|-96.69761
-México|Santa María Ajoloapan|19.7636|-98.95908
+Ciudad de México|Santa María Ajoloapan|19.7636|-98.95908
 Oaxaca|Santa María Atzompa|17.10165|-96.77686
-México|Santa María Chimalhuacán|19.42155|-98.95038
+Ciudad de México|Santa María Chimalhuacán|19.42155|-98.95038
 Durango|Santa María del Oro|25.94934|-105.36425
 San Luis Potosí|Santa María del Río|21.80055|-100.73665
 Oaxaca|Santa María Huatulco|15.83621|-96.32164
 Puebla|Santa María Moyotzingo|19.24811|-98.40486
-México|Santa Maria Tultepec|19.68509|-99.12871
+Ciudad de México|Santa Maria Tultepec|19.68509|-99.12871
 Querétaro|Santa Rosa Jauregui|20.74122|-100.44843
 Morelos|Santa Rosa Treinta|18.70025|-99.18357
 Baja California Sur|Santa Rosalía|27.33784|-112.26617
 Chihuahua|Santa Rosalía de Camargo|27.69523|-105.17317
-México|Santa Teresa|19.845|-99.23333
+Ciudad de México|Santa Teresa|19.845|-99.23333
 Nuevo León|Santiago|25.42533|-100.15205
 Querétaro|Santiago de Querétaro|20.58806|-100.38806
 Nayarit|Santiago Ixcuintla|21.81295|-105.20844
@@ -638,8 +638,8 @@ Puebla|Santiago Momoxpan|19.07361|-98.26694
 Durango|Santiago Papasquiaro|25.04389|-105.41917
 Oaxaca|Santiago Pinotepa Nacional|16.33899|-98.05002
 Oaxaca|Santiago Suchilquitongo|17.24737|-96.87377
-México|Santiago Teyahualco|19.65985|-99.12493
-México|Santiago Tlacotepec|19.22708|-99.67083
+Ciudad de México|Santiago Teyahualco|19.65985|-99.12493
+Ciudad de México|Santiago Tlacotepec|19.22708|-99.67083
 Hidalgo|Santiago Tulantepec|20.03618|-98.35563
 Veracruz de Ignacio de la Llave|Santiago Tuxtla|18.46576|-95.3006
 Oaxaca|Santo Domingo Tehuantepec|16.32463|-95.24104
@@ -670,7 +670,7 @@ Guanajuato|Tarandacuao|20.00358|-100.51638
 Guerrero|Taxco de Alarcón|18.55462|-99.60592
 Tabasco|Teapa|17.5497|-92.95211
 Jalisco|Tecalitlán|19.47103|-103.30682
-México|Tecámac de Felipe Villanueva|19.71306|-98.96833
+Ciudad de México|Tecámac de Felipe Villanueva|19.71306|-98.96833
 Puebla|Tecamachalco|18.88352|-97.73344
 Baja California|Tecate|32.56717|-116.62509
 Yucatán|Tecax|20.2052|-89.28522
@@ -678,16 +678,16 @@ Colima|Tecomán|18.91678|-103.87786
 Guerrero|Técpan de Galeana|17.21976|-100.63032
 Nayarit|Tecuala|22.39785|-105.45754
 Puebla|Tehuacán|18.46422|-97.39735
-México|Tejupilco de Hidalgo|18.90475|-100.15275
+Ciudad de México|Tejupilco de Hidalgo|18.90475|-100.15275
 Guerrero|Teloloapan|18.36663|-99.87185
 Morelos|Temixco|18.85254|-99.22537
 Veracruz de Ignacio de la Llave|Tempoal de Sánchez|21.52094|-98.39471
-México|Tenango de Arista|19.10446|-99.5898
+Ciudad de México|Tenango de Arista|19.10446|-99.5898
 Tabasco|Tenosique|17.4729|-91.4236
 Tabasco|Tenosique de Pino Suárez|17.47728|-91.42568
 Jalisco|Teocaltiche|21.43421|-102.57449
 Tlaxcala|Teolocholco|19.24333|-98.19083
-México|Teoloyucan|19.74423|-99.18113
+Ciudad de México|Teoloyucan|19.74423|-99.18113
 Chiapas|Teopisca|16.54182|-92.47405
 Oaxaca|Teotitlán de Flores Magón|18.13241|-97.07126
 Michoacán de Ocampo|Tepalcatepec|19.18666|-102.8493
@@ -696,17 +696,17 @@ Puebla|Tepatlaxco de Hidalgo|19.08067|-97.97338
 Puebla|Tepeaca|18.96688|-97.8998
 Hidalgo|Tepeapulco|19.7884|-98.55266
 Hidalgo|Tepeji del Río de Ocampo|19.90481|-99.34379
-México|Tepexpan|19.61387|-98.9364
+Ciudad de México|Tepexpan|19.61387|-98.9364
 Aguascalientes|Tepezalá|22.22363|-102.17217
 Nayarit|Tepic|21.50951|-104.89569
-México|Tepotzotlán|19.72116|-99.22391
+Ciudad de México|Tepotzotlán|19.72116|-99.22391
 Jalisco|Tequila|20.88205|-103.83599
 Querétaro|Tequisquiapan|20.5225|-99.89167
-México|Tequixquiac|19.90944|-99.14472
+Ciudad de México|Tequixquiac|19.90944|-99.14472
 Baja California|Terrazas del Valle|32.4875|-116.82667
 Jalisco|Tesistán|20.80051|-103.46993
 Tlaxcala|Tetla|19.44204|-98.10325
-México|Texcoco de Mora|19.51194|-98.88293
+Ciudad de México|Texcoco de Mora|19.51194|-98.88293
 Puebla|Teziutlán|19.8173|-97.35992
 Veracruz de Ignacio de la Llave|Tezonapa|19.59283|-98.91084
 Yucatán|Ticul|20.39833|-89.53541
@@ -721,8 +721,8 @@ Yucatán|Tizimín|21.14268|-88.15101
 Veracruz de Ignacio de la Llave|Tlacojalpan|18.23203|-95.94903
 Oaxaca|Tlacolula de Matamoros|16.95528|-96.47907
 Jalisco|Tlajomulco de Zúñiga|20.47421|-103.44654
-México|Tlalnepantla de Baz|19.54005|-99.19538
-México|Tlalpan|19.29513|-99.16206
+Ciudad de México|Tlalnepantla de Baz|19.54005|-99.19538
+Ciudad de México|Tlalpan|19.29513|-99.16206
 Zacatecas|Tlaltenango de Sánchez Román|21.78221|-103.30298
 Guerrero|Tlapa de Comonfort|17.54528|-98.57599
 Veracruz de Ignacio de la Llave|Tlapacoyan|19.96268|-97.21141
@@ -732,7 +732,7 @@ Morelos|Tlaquiltenango|18.63429|-99.1632
 Tlaxcala|Tlaxcala de Xicohténcatl|19.31694|-98.23823
 Hidalgo|Tlaxcoapan|20.09213|-99.22206
 Baja California Sur|Todos Santos|23.44693|-110.22576
-México|Toluca de Lerdo|19.28786|-99.65324
+Ciudad de México|Toluca de Lerdo|19.28786|-99.65324
 Chiapas|Tonalá|16.08977|-93.75489
 Jalisco|Tonalá|20.62445|-103.23423
 Sinaloa|Topolobampo|25.60076|-109.05141
@@ -741,10 +741,10 @@ Jalisco|Tototlán|20.54072|-102.7932
 Veracruz de Ignacio de la Llave|Tres Valles|18.23915|-96.13569
 Hidalgo|Tula de Allende|20.05161|-99.34397
 Hidalgo|Tulancingo|20.08355|-98.36288
-México|Tulantongo|19.53159|-98.87464
-México|Tultepec|19.685|-99.12806
-México|Tultitlán de Mariano Escobedo|19.64655|-99.16787
-México|Tulúm|20.21173|-87.46325
+Ciudad de México|Tulantongo|19.53159|-98.87464
+Ciudad de México|Tultepec|19.685|-99.12806
+Ciudad de México|Tultitlán de Mariano Escobedo|19.64655|-99.16787
+Ciudad de México|Tulúm|20.21173|-87.46325
 Veracruz de Ignacio de la Llave|Túxpam de Rodríguez Cano|20.95777|-97.40805
 Jalisco|Tuxpan|19.55555|-103.37587
 Michoacán de Ocampo|Tuxpan|21.94221|-105.2987
@@ -759,8 +759,8 @@ Guanajuato|Uriangato|20.14085|-101.18251
 Michoacán de Ocampo|Uruapan|19.41116|-102.05644
 Veracruz de Ignacio de la Llave|Valente Diaz|19.16347|-96.21648
 Yucatán|Valladolid|20.68812|-88.19936
-México|Valle de Bravo|19.19501|-100.13132
-México|Valle de Chalco Solidaridad|19.2934|-98.94093
+Ciudad de México|Valle de Bravo|19.19501|-100.13132
+Ciudad de México|Valle de Chalco Solidaridad|19.2934|-98.94093
 Jalisco|Valle de Guadalupe|21.0117|-102.61808
 Guanajuato|Valle de Santiago|20.3914|-101.19222
 Tamaulipas|Valle Hermoso|25.67207|-97.81313
@@ -784,7 +784,7 @@ Jalisco|Villa Hidalgo|21.67616|-102.58803
 Nayarit|Villa Hidalgo|21.74035|-105.23529
 Zacatecas|Villa Hidalgo|21.67702|-102.58879
 Sinaloa|Villa Juárez|24.65869|-107.54059
-México|Villa Milpa Alta|19.19251|-99.02317
+Ciudad de México|Villa Milpa Alta|19.19251|-99.02317
 Jalisco|Villa Purificación|19.72104|-104.60068
 Oaxaca|Villa Sola de Vega|16.51279|-96.97748
 Sinaloa|Villa Unión|23.18994|-106.21749
@@ -794,14 +794,14 @@ Guanajuato|Villagrán|20.51452|-100.99745
 Tabasco|Villahermosa|17.98689|-92.93028
 Zacatecas|Villanueva|22.35433|-102.88356
 Veracruz de Ignacio de la Llave|Xalapa-Enríquez|19.53124|-96.91589
-México|Xalatlaco|19.18314|-99.41844
+Ciudad de México|Xalatlaco|19.18314|-99.41844
 Nayarit|Xalisco|21.451|-104.8983
 Veracruz de Ignacio de la Llave|Xico|19.42178|-97.00819
 Tamaulipas|Xicoténcatl|22.99683|-98.94509
 Puebla|Xicotepec de Juárez|20.27605|-97.96111
-México|Xochimilco|19.25465|-99.10356
+Ciudad de México|Xochimilco|19.25465|-99.10356
 Morelos|Xochitepec|18.7808|-99.23049
-México|Xonacatlán|19.40513|-99.52807
+Ciudad de México|Xonacatlán|19.40513|-99.52807
 Jalisco|Yahualica de González Gallo|21.17835|-102.88592
 Chiapas|Yajalón|17.17276|-92.33315
 Morelos|Yautepec de Zaragoza|18.88188|-99.06715
@@ -826,6 +826,6 @@ Guerrero|Zihuatanejo|17.64212|-101.55708
 Hidalgo|Zimapán|20.73776|-99.38272
 Oaxaca|Zimatlán de Álvarez|16.86665|-96.78518
 Michoacán de Ocampo|Zinapécuaro de Figueroa|19.86006|-100.82857
-México|Zumpango|19.7967|-99.09946
+Ciudad de México|Zumpango|19.7967|-99.09946
 Guerrero|Zumpango del Río|17.65437|-99.52725
 

@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.addresses;
 
 import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -10,7 +11,7 @@ public class AddressFactory {
 
   public static Address get(JSONValue jsonAddress) {
     if (jsonAddress.isNull()) {
-      return null;
+      throw new SofiaRuntimeException("null parameter for address object.");
     }
     return new Address(jsonAddress.toJSONObject());
   }
