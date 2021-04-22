@@ -26,7 +26,7 @@ public class LatitudeValidatorService extends Service {
     try {
       BigDecimal latitude = token.toBigDecimal();
       Latitude.validate(latitude);
-    } catch (InvalidPathParameterException | InvalidLatitudException e) {
+    } catch (InvalidPathParameterException | InvalidLatitudeException e) {
       sendResponse(new Response(Response.Status.ERROR, Response.Type.VALIDATION, "latitude.notValid", token.toString()));
       return;
     }

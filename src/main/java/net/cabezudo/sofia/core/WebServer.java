@@ -13,11 +13,8 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
-import net.cabezudo.json.JSONPair;
-import net.cabezudo.json.exceptions.ElementNotExistException;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
-import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
@@ -32,14 +29,9 @@ import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
 import net.cabezudo.sofia.core.exceptions.DataConversionException;
 import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
-import net.cabezudo.sofia.core.geolocation.Latitude;
-import net.cabezudo.sofia.core.geolocation.Longitude;
 import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
 import net.cabezudo.sofia.core.languages.ChangeLanguageServlet;
-import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
-import net.cabezudo.sofia.core.languages.Language;
-import net.cabezudo.sofia.core.languages.LanguageManager;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.DataFilter;
@@ -51,17 +43,10 @@ import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
-import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.core.users.UserManager;
-import net.cabezudo.sofia.core.users.UserNotExistException;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
-import net.cabezudo.sofia.countries.Country;
-import net.cabezudo.sofia.countries.CountryManager;
-import net.cabezudo.sofia.geography.AdministrativeDivision;
-import net.cabezudo.sofia.geography.AdministrativeDivisionManager;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -81,47 +66,6 @@ public class WebServer {
   private final Server server;
 
   private WebServer() {
-    server = new Server(Configuration.getInstance().getServerPort());
-  }
-
-  public static void main(String... args)
-          throws ConfigurationException, JSONParseException, ClusterException, IOException, ElementNotExistException, InvalidTwoLettersCodeException, ServerException, PortAlreadyInUseException, SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, PropertyNotExistException, DataConversionException {
-    main_02(args);
-  }
-
-  public static void main_02(String... args) throws ConfigurationException, JSONParseException, ClusterException, IOException, ElementNotExistException, InvalidTwoLettersCodeException {
-    Configuration.getInstance().loadConfiguration();
-    Language language = LanguageManager.getInstance().get("en");
-    String coord = "19.452936816704366, -99.1692625144197";
-    String[] l = coord.split(",");
-    Latitude latitude = new Latitude(l[0].trim());
-    Longitude longitude = new Longitude(l[1].trim());
-    AdministrativeDivision ad = AdministrativeDivisionManager.getInstance().get(longitude, latitude);
-    JSONObject data = new JSONObject();
-    data.add(new JSONPair("longitude", longitude.toDouble()));
-    data.add(new JSONPair("latitude", latitude.toDouble()));
-    data.add(new JSONPair("code", ad == null ? null : ad.getCode()));
-    data.add(new JSONPair("name", ad == null ? null : ad.getName(language).toJSONTree()));
-    System.out.println(data);
-  }
-
-  public static void main_01(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException, ConfigurationException, JSONParseException, ElementNotExistException {
-    Configuration.getInstance().loadConfiguration();
-    Country country = CountryManager.getInstance().get("MX");
-    String coord = "25.462699031102062, -100.98917328340049";
-    String[] l = coord.split(",");
-    String lat = l[0].trim();
-    String lon = l[1].trim();
-    Latitude latitude = new Latitude(lat);
-    Longitude longitude = new Longitude(lon);
-    User owner = UserManager.getInstance().getAdministrator();
-    AdministrativeDivisionManager.getInstance().get(longitude, latitude);
-  }
-
-  public static void main_00(String... args)
-          throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
-          SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException, DataConversionException {
-
     Logger.info("Check configuration.");
     try {
       Configuration.load();
@@ -129,9 +73,16 @@ public class WebServer {
       Logger.severe(e);
       System.exit(1);
     }
+    server = new Server(Configuration.getInstance().getServerPort());
+  }
+
+  public static void main(String... args)
+          throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
+          SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException, DataConversionException {
+
+    Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
 
     List<String> arguments = Arrays.asList(args);
-    Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
 
     StartOptions startOptions = new StartOptions(arguments);
 
@@ -439,8 +390,8 @@ public class WebServer {
     instance.server.setHandler(handlerCollection);
     try {
       server.start();
+      Logger.info("Server started");
       server.join();
-      Logger.info("Server started.");
     } catch (Exception e) {
       if (Environment.getInstance().isDevelopment()) {
         e.printStackTrace();

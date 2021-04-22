@@ -11,12 +11,23 @@ public class Latitude {
 
   private final BigDecimal value;
 
-  public Latitude(String value) {
+  public Latitude(String value) throws InvalidLatitudeException {
     this.value = new BigDecimal(value).setScale(6, RoundingMode.HALF_UP);
+    Latitude.validate(this.value);
   }
 
-  public Latitude(BigDecimal value) {
+  public Latitude(BigDecimal value) throws InvalidLatitudeException {
     this.value = value.setScale(5);
+    Latitude.validate(this.value);
+  }
+
+  public static void validate(BigDecimal latitude) throws InvalidLatitudeException {
+    // (-90, 90)
+    // latitude < 0 => south
+    // latitude > 0 => north
+    if (latitude.doubleValue() > 90 || latitude.doubleValue() < -90) {
+      throw new InvalidLatitudeException();
+    }
   }
 
   public BigDecimal getValue() {
@@ -25,15 +36,6 @@ public class Latitude {
 
   public double toDouble() {
     return value.doubleValue();
-  }
-
-  public static void validate(BigDecimal latitude) throws InvalidLatitudException {
-    // (-90, 90)
-    // latitude < 0 => south
-    // latitude > 0 => north
-    if (latitude.doubleValue() > 90 || latitude.doubleValue() < -90) {
-      throw new InvalidLatitudException();
-    }
   }
 
   @Override

@@ -256,7 +256,7 @@ class StartOptionsHelper {
           Class<?> clazz;
           ClassLoader cl = ClassLoader.getSystemClassLoader();
           try {
-            Logger.debug("Load class %s.", className);
+            Logger.finest("Load class %s.", className);
             clazz = cl.loadClass(className);
           } catch (ClassNotFoundException e) {
             throw new SofiaRuntimeException(e);

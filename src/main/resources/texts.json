@@ -96,33 +96,6 @@
   "person.email.in.use": {
     "es": "El correo '{0},' ya está siendo utilizado por un usuario"
   },
-  "restaurant.location.invalid": {
-    "es": "El nombre para la ubicación del restaurante no es válido"
-  },
-  "restaurant.name.ok": {
-    "es": "El nombre del restaurante tiene un formato válido"
-  },
-  "restaurant.name.updated": {
-    "es": "El nombre del restaurante fue actualizado."
-  },
-  "restaurant.name.empty": {
-    "es": "En nombre del restaurante no puede estar vacío"
-  },
-  "restaurant.name.invalidCharacter": {
-    "es": "El nombre del restaurante no puede tener un caracter '{0},'"
-  },
-  "restaurant.type.invalid": {
-    "es": "El valor '{0},' para el tipo no es válido."
-  },
-  "restaurant.type.ok": {
-    "es": "El nombre del restaurante tiene un formato válido"
-  },
-  "restaurant.value.notFound": {
-    "es": "El valor '{0},' no se encontró."
-  },
-  "restaurant.value.updated": {
-    "es": "El campo '{0},' se ha actualizado por el valor '{1},'."
-  },
   "site.created": {
     "es": "El sitio fué creado"
   },
@@ -164,6 +137,9 @@
   },
   "site.updated": {
     "es": "Datos del sitio actualizados"
+  },
+  "state.found": {
+    "es": "La búsqueda de estado se realizó correctamente"
   },
   "user.added": {
     "es": "El usuario ha sido agregado"

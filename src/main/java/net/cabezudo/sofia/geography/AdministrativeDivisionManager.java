@@ -51,9 +51,9 @@ public class AdministrativeDivisionManager {
     dataPath = systemDataPath.resolve(ADMINISTRATIVE_DIVISION_DATA_PATH_NAME);
   }
 
-  public AdministrativeDivision get(Longitude longitude, Latitude latitude) throws JSONParseException, IOException, ElementNotExistException, ClusterException {
+  public AdministrativeDivision get(Longitude longitude, Latitude latitude, AdministrativeDivisionType administrativeDivisionType) throws JSONParseException, IOException, ClusterException, InvalidPolygonDataException {
     try {
-      return get(null, longitude, latitude);
+      return get(null, longitude, latitude, administrativeDivisionType);
     } catch (PropertyNotExistException e) {
       throw new SofiaRuntimeException(e);
     }
@@ -96,8 +96,8 @@ public class AdministrativeDivisionManager {
 
   }
 
-  private AdministrativeDivision get(AdministrativeDivision parent, Longitude longitude, Latitude latitude)
-          throws JSONParseException, IOException, ElementNotExistException, PropertyNotExistException, ClusterException {
+  private AdministrativeDivision get(AdministrativeDivision parent, Longitude longitude, Latitude latitude, AdministrativeDivisionType administrativeDivisionType)
+          throws JSONParseException, IOException, PropertyNotExistException, ClusterException, InvalidPolygonDataException {
 
     Point point = new Point(longitude.toDouble(), latitude.toDouble());
 
@@ -106,7 +106,7 @@ public class AdministrativeDivisionManager {
     for (AdministrativeDivision administrativeDivision : list) {
       int fileId = administrativeDivision.getFileId();
       if (fileId == 0) {
-        AdministrativeDivision actualAdministrativeDivision = get(administrativeDivision, longitude, latitude);
+        AdministrativeDivision actualAdministrativeDivision = get(administrativeDivision, longitude, latitude, administrativeDivisionType);
         if (actualAdministrativeDivision != null) {
           return actualAdministrativeDivision;
         }
@@ -118,7 +118,10 @@ public class AdministrativeDivisionManager {
         Polygons polygons = createPolygon(jsonjsonAdministrativeDivisionDataDataArray);
 
         if (polygons.isInside(point)) {
-          AdministrativeDivision result = get(administrativeDivision, longitude, latitude);
+          if (administrativeDivision.getType().equals(administrativeDivisionType)) {
+            return administrativeDivision;
+          }
+          AdministrativeDivision result = get(administrativeDivision, longitude, latitude, administrativeDivisionType);
           if (result != null) {
             return result;
           }
@@ -129,16 +132,20 @@ public class AdministrativeDivisionManager {
     return null;
   }
 
-  private Polygons createPolygon(JSONArray data) throws ElementNotExistException {
+  private Polygons createPolygon(JSONArray data) throws InvalidPolygonDataException {
     Polygons polygons = new Polygons();
     for (JSONValue jsonValue : data) {
       JSONArray polygonData = jsonValue.toJSONArray();
       Polygon polygon = new Polygon();
       for (int i = 0; i < polygonData.size(); i += 2) {
-        double longitude = polygonData.getDouble(i);
-        double latitude = polygonData.getDouble(i + 1);
-        Point point = new Point(longitude, latitude);
-        polygon.add(point);
+        try {
+          double longitude = polygonData.getDouble(i);
+          double latitude = polygonData.getDouble(i + 1);
+          Point point = new Point(longitude, latitude);
+          polygon.add(point);
+        } catch (ElementNotExistException e) {
+          throw new InvalidPolygonDataException(e);
+        }
       }
       polygons.add(polygon);
     }

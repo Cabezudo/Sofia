@@ -105,16 +105,16 @@ public final class Configuration {
     return StandardCharsets.UTF_8;
   }
 
-  public static void load() throws ConfigurationException, JSONParseException {
+  public static void load() throws ConfigurationException {
     INSTANCE.loadConfiguration();
   }
 
-  public void loadConfiguration() throws ConfigurationException, JSONParseException {
+  private void loadConfiguration() throws ConfigurationException {
     System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tH:%1$tM:%1$tS.%1$tL [%4$s] %2$s : %5$s%n");
 
     ConfigurationFile configurationFile = new ConfigurationFile();
 
-    Logger.info("Configuration file FOUND in " + configurationFile.getPath() + ".");
+    Logger.debug("Configuration file FOUND in " + configurationFile.getPath() + ".");
     if (Files.exists(configurationFile.getPath())) {
       try (InputStream is = new FileInputStream(configurationFile.getPath().toFile())) {
         Properties properties = new Properties();
@@ -137,7 +137,12 @@ public final class Configuration {
       validateConfiguration();
       createSystemPaths();
 
-      GlobalConfigurationFile.getInstance().load();
+      try {
+        GlobalConfigurationFile.getInstance().load();
+      } catch (JSONParseException e) {
+        throw new ConfigurationException(e);
+      }
+
     }
   }
 
