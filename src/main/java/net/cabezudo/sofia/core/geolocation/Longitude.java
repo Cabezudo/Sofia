@@ -11,20 +11,14 @@ public class Longitude {
 
   private final BigDecimal value;
 
-  public Longitude(String value) {
+  public Longitude(String value) throws InvalidLongitudeException {
     this.value = new BigDecimal(value).setScale(6, RoundingMode.HALF_UP);
+    Longitude.validate(this.value);
   }
 
-  public Longitude(BigDecimal value) {
+  public Longitude(BigDecimal value) throws InvalidLongitudeException {
     this.value = value.setScale(5);
-  }
-
-  public BigDecimal getValue() {
-    return value;
-  }
-
-  public double toDouble() {
-    return value.doubleValue();
+    Longitude.validate(this.value);
   }
 
   public static void validate(BigDecimal longitude) throws InvalidLongitudeException {
@@ -34,6 +28,14 @@ public class Longitude {
     if (longitude.doubleValue() > 180 || longitude.doubleValue() < -180) {
       throw new InvalidLongitudeException();
     }
+  }
+
+  public BigDecimal getValue() {
+    return value;
+  }
+
+  public double toDouble() {
+    return value.doubleValue();
   }
 
   @Override
