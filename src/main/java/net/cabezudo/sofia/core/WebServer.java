@@ -13,9 +13,11 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.exceptions.ElementNotExistException;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
-import net.cabezudo.sofia.cities.CityManager;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
@@ -36,6 +38,8 @@ import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
 import net.cabezudo.sofia.core.languages.ChangeLanguageServlet;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
+import net.cabezudo.sofia.core.languages.Language;
+import net.cabezudo.sofia.core.languages.LanguageManager;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.DataFilter;
@@ -56,6 +60,8 @@ import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.countries.Country;
 import net.cabezudo.sofia.countries.CountryManager;
+import net.cabezudo.sofia.geography.AdministrativeDivision;
+import net.cabezudo.sofia.geography.AdministrativeDivisionManager;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 import org.eclipse.jetty.server.Handler;
@@ -78,7 +84,28 @@ public class WebServer {
     server = new Server(Configuration.getInstance().getServerPort());
   }
 
-  public static void _main(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException, ConfigurationException, JSONParseException {
+  public static void main(String... args)
+          throws ConfigurationException, JSONParseException, ClusterException, IOException, ElementNotExistException, InvalidTwoLettersCodeException, ServerException, PortAlreadyInUseException, SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, PropertyNotExistException, DataConversionException {
+    main_02(args);
+  }
+
+  public static void main_02(String... args) throws ConfigurationException, JSONParseException, ClusterException, IOException, ElementNotExistException, InvalidTwoLettersCodeException {
+    Configuration.getInstance().loadConfiguration();
+    Language language = LanguageManager.getInstance().get("en");
+    String coord = "19.452936816704366, -99.1692625144197";
+    String[] l = coord.split(",");
+    Latitude latitude = new Latitude(l[0].trim());
+    Longitude longitude = new Longitude(l[1].trim());
+    AdministrativeDivision ad = AdministrativeDivisionManager.getInstance().get(longitude, latitude);
+    JSONObject data = new JSONObject();
+    data.add(new JSONPair("longitude", longitude.toDouble()));
+    data.add(new JSONPair("latitude", latitude.toDouble()));
+    data.add(new JSONPair("code", ad == null ? null : ad.getCode()));
+    data.add(new JSONPair("name", ad == null ? null : ad.getName(language).toJSONTree()));
+    System.out.println(data);
+  }
+
+  public static void main_01(String... args) throws UserNotExistException, ClusterException, IOException, PropertyNotExistException, InvalidTwoLettersCodeException, ConfigurationException, JSONParseException, ElementNotExistException {
     Configuration.getInstance().loadConfiguration();
     Country country = CountryManager.getInstance().get("MX");
     String coord = "25.462699031102062, -100.98917328340049";
@@ -88,10 +115,10 @@ public class WebServer {
     Latitude latitude = new Latitude(lat);
     Longitude longitude = new Longitude(lon);
     User owner = UserManager.getInstance().getAdministrator();
-    CityManager.getInstance().get(country, latitude, longitude, owner);
+    AdministrativeDivisionManager.getInstance().get(longitude, latitude);
   }
 
-  public static void main(String... args)
+  public static void main_00(String... args)
           throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
           SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException, DataConversionException {
 

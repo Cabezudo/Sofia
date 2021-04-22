@@ -79,6 +79,10 @@
     {
       "path": "/api/v1/restaurants/latitudes/{value}/validate",
       "class": "net.cabezudo.sofia.core.geolocation.LatitudeValidatorService"
+    },
+    {
+      "path": "/api/v1/locations/{longitude}/{latitude}",
+      "class": "net.cabezudo.sofia.core.geolocation.LocationService"
     }
   ],
   "post": [

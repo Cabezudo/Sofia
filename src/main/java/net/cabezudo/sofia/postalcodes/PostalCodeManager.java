@@ -9,13 +9,10 @@ import java.sql.Statement;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.configuration.Configuration;
-import net.cabezudo.sofia.core.configuration.ConfigurationException;
-import net.cabezudo.sofia.core.data.DataCreator;
 import net.cabezudo.sofia.core.database.sql.Database;
-import net.cabezudo.sofia.core.exceptions.DataConversionException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.users.User;
-import net.cabezudo.sofia.settlements.Settlement;
+import net.cabezudo.sofia.geography.Settlement;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -84,10 +81,6 @@ public class PostalCodeManager {
     } finally {
       ClusterManager.getInstance().close(rs);
     }
-  }
-
-  public void create(DataCreator postalCodeCreator) throws ClusterException, ConfigurationException, DataConversionException {
-    postalCodeCreator.create();
   }
 
   public Path getPostalCodesDataFile(String twoLetterCountryCode) {

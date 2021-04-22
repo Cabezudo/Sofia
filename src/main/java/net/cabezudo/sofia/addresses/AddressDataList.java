@@ -3,7 +3,6 @@ package net.cabezudo.sofia.addresses;
 import net.cabezudo.sofia.cities.CityList;
 import net.cabezudo.sofia.municipalities.MunicipalityList;
 import net.cabezudo.sofia.postalcodes.PostalCodeList;
-import net.cabezudo.sofia.settlements.SettlementList;
 import net.cabezudo.sofia.states.StateList;
 import net.cabezudo.sofia.streets.StreetList;
 
@@ -15,7 +14,6 @@ public class AddressDataList {
 
   private final StreetList streetList = new StreetList();
   private final PostalCodeList postalCodeList = new PostalCodeList();
-  private final SettlementList settlementList = new SettlementList();
   private final CityList cityList = new CityList();
   private final MunicipalityList municipalityList = new MunicipalityList();
   private final StateList stateList = new StateList();

@@ -6,8 +6,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import net.cabezudo.sofia.addresses.AddressesTable;
 import net.cabezudo.sofia.cities.CitiesTable;
-import net.cabezudo.sofia.cities.CityManager;
-import net.cabezudo.sofia.cities.MexicoCitiesCreator;
 import net.cabezudo.sofia.clients.ClientTable;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.currency.CurrenciesTable;
@@ -37,17 +35,15 @@ import net.cabezudo.sofia.countries.Country;
 import net.cabezudo.sofia.countries.CountryManager;
 import net.cabezudo.sofia.countries.CountryNamesTable;
 import net.cabezudo.sofia.emails.EMailsTable;
+import net.cabezudo.sofia.geography.AdministrativeDivisionCreator;
+import net.cabezudo.sofia.geography.AdministrativeDivisionNameTable;
+import net.cabezudo.sofia.geography.AdministrativeDivisionTable;
 import net.cabezudo.sofia.logger.Logger;
 import net.cabezudo.sofia.municipalities.MunicipalitiesTable;
 import net.cabezudo.sofia.people.PeopleTable;
 import net.cabezudo.sofia.phonenumbers.PhoneNumbersTable;
 import net.cabezudo.sofia.postalcodes.MexicoPostalCodeCreator;
-import net.cabezudo.sofia.postalcodes.PostalCodeManager;
 import net.cabezudo.sofia.postalcodes.PostalCodesTable;
-import net.cabezudo.sofia.settlements.SettlementTypesTable;
-import net.cabezudo.sofia.settlements.SettlementsTable;
-import net.cabezudo.sofia.states.MexicoStatesCreator;
-import net.cabezudo.sofia.states.StateManager;
 import net.cabezudo.sofia.states.StatesTable;
 import net.cabezudo.sofia.streets.StreetsTable;
 import net.cabezudo.sofia.zones.ZonesTable;
@@ -111,9 +107,9 @@ public class SofiaDatabaseCreator extends DataCreator {
       Database.createTable(connection, StatesTable.CREATION_QUERY);
       Database.createTable(connection, MunicipalitiesTable.CREATION_QUERY);
       Database.createTable(connection, CitiesTable.CREATION_QUERY);
-      Database.createTable(connection, SettlementTypesTable.CREATION_QUERY);
       Database.createTable(connection, ZonesTable.CREATION_QUERY);
-      Database.createTable(connection, SettlementsTable.CREATION_QUERY);
+      Database.createTable(connection, AdministrativeDivisionTable.CREATION_QUERY);
+      Database.createTable(connection, AdministrativeDivisionNameTable.CREATION_QUERY);
       Database.createTable(connection, PostalCodesTable.CREATION_QUERY);
       Database.createTable(connection, StreetsTable.CREATION_QUERY);
       Database.createTable(connection, AddressesTable.CREATION_QUERY);
@@ -137,9 +133,13 @@ public class SofiaDatabaseCreator extends DataCreator {
       createCurrencies();
       createLanguages();
       createCountries();
-      createStates();
-      createCities();
-      createPostalCodes();
+
+      new AdministrativeDivisionCreator().create();
+
+      if (Environment.getInstance().isProduction()) {
+        new MexicoPostalCodeCreator().create();
+      }
+
     } catch (ClusterException e) {
       throw new DataCreationException(e);
     }
@@ -177,22 +177,5 @@ public class SofiaDatabaseCreator extends DataCreator {
       throw new SofiaRuntimeException(e);
     }
     return CountryManager.getInstance().add(language, "México", 52, "MX");
-  }
-
-  private void createStates() throws ClusterException, ConfigurationException, DataConversionException {
-    MexicoStatesCreator mexicoStateCreator = new MexicoStatesCreator();
-    StateManager.getInstance().create(mexicoStateCreator);
-  }
-
-  private void createCities() throws ClusterException, ConfigurationException, DataConversionException {
-    MexicoCitiesCreator mexicoCitiesCreator = new MexicoCitiesCreator();
-    CityManager.getInstance().create(mexicoCitiesCreator);
-  }
-
-  private void createPostalCodes() throws ClusterException, ConfigurationException, DataConversionException {
-    if (Environment.getInstance().isProduction()) {
-      MexicoPostalCodeCreator mexicoPostalCode = new MexicoPostalCodeCreator();
-      PostalCodeManager.getInstance().create(mexicoPostalCode);
-    }
   }
 }

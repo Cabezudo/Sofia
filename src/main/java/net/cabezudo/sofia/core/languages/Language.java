@@ -34,10 +34,10 @@ public class Language implements Comparable<Language> {
   }
 
   public JSONObject toJSONTree() {
-    JSONObject jsonRestaurantType = new JSONObject();
-    jsonRestaurantType.add(new JSONPair("id", id));
-    jsonRestaurantType.add(new JSONPair("twoLetterCode", twoLetterCode));
-    return jsonRestaurantType;
+    JSONObject jsonLanguage = new JSONObject();
+    jsonLanguage.add(new JSONPair("id", id));
+    jsonLanguage.add(new JSONPair("twoLetterCode", twoLetterCode));
+    return jsonLanguage;
   }
 
   @Override
