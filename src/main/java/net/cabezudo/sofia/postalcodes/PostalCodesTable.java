@@ -1,7 +1,7 @@
 package net.cabezudo.sofia.postalcodes;
 
 import net.cabezudo.sofia.core.users.UsersTable;
-import net.cabezudo.sofia.settlements.SettlementsTable;
+import net.cabezudo.sofia.geography.AdministrativeDivisionTable;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -22,7 +22,7 @@ public class PostalCodesTable {
           + "`postalCode` INT NOT NULL, "
           + "`owner` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "FOREIGN KEY (`settlement`) REFERENCES " + SettlementsTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`settlement`) REFERENCES " + AdministrativeDivisionTable.DATABASE_NAME + "." + AdministrativeDivisionTable.NAME + "(`id`), "
           + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iSettlementPostalCode` (`settlement`, `postalCode`)"
           + ") "

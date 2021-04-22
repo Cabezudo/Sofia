@@ -23,6 +23,10 @@ public class Latitude {
     return value;
   }
 
+  public double toDouble() {
+    return value.doubleValue();
+  }
+
   public static void validate(BigDecimal latitude) throws InvalidLatitudException {
     // (-90, 90)
     // latitude < 0 => south

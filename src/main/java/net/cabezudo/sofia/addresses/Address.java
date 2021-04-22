@@ -4,7 +4,6 @@ import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.geography.AdministrativeDivision;
-import net.cabezudo.sofia.geography.AdministrativeDivisionFactory;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -29,7 +28,7 @@ public class Address {
   }
 
   Address(JSONObject o) {
-    this.parent = AdministrativeDivisionFactory.get(o);
+    this.parent = null;
   }
 
   public String getStreet() {

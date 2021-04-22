@@ -1,49 +1,20 @@
 package net.cabezudo.sofia.geography;
 
-import net.cabezudo.sofia.core.languages.Language;
+import net.cabezudo.sofia.core.catalogs.CatalogEntry;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
- * @version 0.01.00, 2021.04.07
+ * @version 0.01.00, 2021.04.21
  */
-public abstract class AdministrativeDivisionType {
+public class AdministrativeDivisionType extends CatalogEntry {
 
-  public static final int BOROUGH = 1;
-  public static final int CANTON = 2;
-  public static final int CITY = 3;
-  public static final int CPIMTU = 4;
-  public static final int DEPARTMENT = 5;
-  public static final int DISTRICT = 6;
-  public static final int EMIRATE = 7;
-  public static final int STATE = 8;
-  public static final int GOVERNORATE = 9;
-  public static final int HUNDRED = 10;
-  public static final int METROPOLITAN_AREA = 11;
-  public static final int MUNICIPALITY = 12;
-  public static final int PARISH = 13;
-  public static final int PREFECTURE = 14;
-  public static final int PROVINCE = 15;
-  public static final int REGION = 16;
-  public static final int RURAL_DISTRICT = 17;
-  public static final int SHIRE = 18;
-  public static final int SUBDISTRICT = 19;
-  public static final int SUBPREFECTURE = 20;
-  public static final int TOWN = 21;
-  public static final int TOWNSHIP = 22;
-  public static final int VILLAGE = 23;
+  public static final AdministrativeDivisionType CONTINENT = new AdministrativeDivisionType(1, "continent");
+  public static final AdministrativeDivisionType COUNTRY = new AdministrativeDivisionType(2, "country");
+  public static final AdministrativeDivisionType STATE = new AdministrativeDivisionType(3, "state");
+  public static final AdministrativeDivisionType CITY = new AdministrativeDivisionType(4, "city");
+  public static final AdministrativeDivisionType SETTLEMENT = new AdministrativeDivisionType(5, "settlement");
 
-  private final String name;
-
-  public AdministrativeDivisionType(String name) {
-    this.name = name;
+  public AdministrativeDivisionType(int id, String name) {
+    super(id, name);
   }
-
-  public String getName() {
-    return name;
-  }
-
-  public String getName(Language language) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
 }

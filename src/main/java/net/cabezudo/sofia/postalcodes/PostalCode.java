@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.postalcodes;
 
-import net.cabezudo.sofia.settlements.Settlement;
+import net.cabezudo.sofia.geography.Settlement;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

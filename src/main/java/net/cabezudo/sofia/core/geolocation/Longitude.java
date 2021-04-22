@@ -23,6 +23,10 @@ public class Longitude {
     return value;
   }
 
+  public double toDouble() {
+    return value.doubleValue();
+  }
+
   public static void validate(BigDecimal longitude) throws InvalidLongitudeException {
     // (-180, 180)
     // longitude < 0 => west

@@ -1,18 +1,20 @@
 package net.cabezudo.sofia.geography;
 
-import net.cabezudo.json.exceptions.JSONParseException;
-import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.cluster.ClusterException;
-import net.cabezudo.sofia.core.words.MultiLanguageWord;
+import net.cabezudo.sofia.core.languages.Language;
+import net.cabezudo.sofia.names.InternationalizedName;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2021.04.07
  */
-public class AdministrativeDivisionName extends MultiLanguageWord {
+public class AdministrativeDivisionName extends InternationalizedName {
 
-  public AdministrativeDivisionName(JSONObject jsonObject) throws JSONParseException, ClusterException {
-    super(jsonObject);
+  public AdministrativeDivisionName(int id, Language language, String value) {
+    super(id, language, value);
+  }
+
+  public AdministrativeDivisionName(InternationalizedName name) {
+    super(name);
   }
 
 }
