@@ -385,7 +385,7 @@ También podemos definir variables de plantilla usando el id del template que va
 #### validateIdOrElement: (id, element)
 ### window.onload
 
-Usuarios y privilegios de acceso
+## Usuarios y privilegios de acceso
 Si el servidor está trabajando en un ambiente de desarrollo se puede colocar en la url un parámetro ``user`` con la dirección de correo de un usuario válido. Automáticamente el sitema accede con ese usuario y sus privilegios. Esto permite que se prueben características que solo pueden ser probadas con un usuario registrado en el sistema sin necesidad de realizar el proceso de acceso al sitema cada vez que se realiza la prueba.
 
 # El servidor
@@ -394,24 +394,28 @@ Si el servidor está trabajando en un ambiente de desarrollo se puede colocar en
 ## Perfiles
 ## Permisos
 
-
-Orden de lectura de archivos
+## Orden de lectura de archivos
 Cuando el sistema crea una página estática toma una serie de archivos para hacer la tarea.
 Lee el archivo commons.json y toma los valores comunes para todo el sitio. Toma el el nombre del tema para el sitio. El tema lo va a buscar de un direcotrio `themes` dentro de `data`.
 Lee el archivo `fonts.css` que se encuentra en el raíz de los fuentes del sitio y lo agrega a los estilos del sitio. Este archivo se utiliza para colocar en un solo sitio todas las fuentes.
+
 Lee el archivo `style.css` que se encuentra en el raíz de los fuentes del sitio. Este archivo se utiliza para colocar configuraciónes de estilos que no pueden ser colocadas en otro lugar. Configuraciones temporales, de prueba o globales que no pertenecen al tema.
+
 Lee el archivo `style.css` que existe dentro del directorio del tema elegido.
+
 Luego se copia el directorio de imágenes completo de las fuentes al directorio donde se creará el sitio.
+
 Utilizando el nombre de la página a mostrar se busca un archivo de configuración con el mismo nombre. Si la página es index.html se busca primero `index.json`. Si se encuentra el archivo de configuración se agrega las variables de plantilla a las variables de plantilla y se busca una propiedad `template`. Si esta propiedad se encuentra se busca primero un attributo para indicar la configuración a leer, si no se encuentra especificada una configuración en un atributo se busca un archivo con el nombre del id de la sección y extensión `.json`, luego se busca un archivo de configuración con el nombre del archivo plantilla y por último el archivo la plantilla indicada en la propiedad. Si no se encuentra se carga el archivo `index.html`.
+
 Si no se encuentra el archivo de configuración simplemente se carga el archivo `index.html`.
 
+## Funciones de carga de página
+
+para crear GUI
 
 
-
-Funciones de carga de página
-- para crear GUI
-Funciones de configuración de página
-- para setear valores por defecto
+## Funciones de configuración de página
+para setear valores por defecto
 
 
 Se puede colocar un mensaje que será mostrado en la siguiente página que se cargue usando `Core.setSessionMessage(message)`
@@ -420,611 +424,64 @@ Las imágenes se colocan en un directorio `images` en el directorio de base de l
 
 Las variables del query string de la urls se puedeon obtener utilizando Core.queryParameters
 
-Todos los nombres de dominio agregados tienen por defecto un subdominio localque esta pensado para configurar el archivo de hosts para que apunte a la máquina y poder hacer pruebas locales con el servidor.
+Todos los nombres de dominio agregados tienen por defecto un subdominio local que esta pensado para configurar el archivo de hosts para que apunte a la máquina y poder hacer pruebas locales con el servidor.
 
 Todos los nombres de dominio que comienzan con api, por ejemplo api.x.com, apuntan por defecto a x.com/api.
 
 Todos los nombres de dominio que comienzan con admin, por ejemplo admin.x.com, apuntan por defecto a x.com/admin.
 
-Se puede configurar el sitio para ser un contenedor de empresas con un subdominio propio. Si un subdominio está listado como empresa, internamente se hace una transformación de nombre de ominio y URL para hacer match con los valores configurados para ese subdominio. El nombre del subdominio encontrado para el archivo HTML es colocado en una variable de sessión para que pueda ser utilizado en las otras peticiones para esa página. Si en la siguiente petición a un archivo
+## Internacionalización
+Sofía tiene soporte para internacionalización incluida entre sus características. Tanto el servidor como las aplicaciones ya manejan todos los lenguajes que se desee.
+Para hacer esto se utilizan archivos JSON con el contenido de los textos. LA forma de estos archivos facilita la traducción de mensajes a otros idiomas. Cada texto es una entrada en un objeto cuyas propiedades son claves para acceder al texto correspondiente. Esta proiedad es un objeto cuyas propiedades son los códigos de lenguajes de dos letras que contiene la correspondiente traducción.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Lenguaje de transformaciones
-Se puede utilizar un lenguaje para transformar las imágenes. Mediante este lenguaje se puede indicar que transformaciones y en que orden se aplicar a una imagen. Cada instrucción toma la imagen entregada por la instrucción anterior y le aplica la transformación correspondiente.
-Las transformaciones se expresan con un JSON en donde cada propiedad es una transformación y se ejecutan en el orden que se encuentran.
-Algunas propiedades tienen objetos como valores y el tipo de propiedad determina que valores pueden ir en el objeto.
-
-{
-  width: 300,
-  blend: {
-    image: "http://url.com/image.jpg",
-    mode: "normal",
-    alignHorizontal: "top"
+```
+"longitude.ok": {
+    "en": "The longitude value es correct",
+    "es": "El valor para la longitud es correcto"
   }
-}
-
-Properties
-`image: url`
-`brightness: value`
-Adjusts the overall brightness of the image.
-Valid values are in the range -100 – 100. The default value is 0, which leaves the image unchanged.
-`contrast: value`
-Adjusts the contrast of the image.
-Valid values are in the range -100 – 100. The default value is 0, which leaves the image unchanged.
-`exposure: value`
-Adjusts the exposure setting for an image, similar to changing the F-stop on a camera.
-Valid values are in the range -100 – 100. The default value is 0, which leaves the image unchanged.
-`gamma: value`
-Adjusts gamma and midtone brightness.
-Valid values are in the range -100 – 100. The default value is 0, which leaves the image unchanged.
-`highlight: value`
-Adjusts the highlight tonal mapping of an image while preserving detail in highlighted areas.
-`hueShift: value`
-Changes the hue, or tint, of each pixel in the image.
-The value is an angle along a hue color wheel, with the pixel's starting color at 0. Valid values are in the range 0 – 359. The default value is 0, which leaves the image unchanged.
-`invert: true`
-Inverts all pixel colors and brightness values within the image, producing a negative of the image.
-`saturation: value`
-Adjusts the saturation of the image.
-Valid values are in the range -100 – 100. The default value is 0, which leaves the image unchanged. A value of -100 will convert the image to grayscale.
-`shadow: true`
-Adjusts the shadow tonal mapping of an image while preserving detail in shadowed areas.
-Valid values are in the range 0 – 100. The default value is 0, which leaves the image unchanged.
-`sharpen: value`
-Sharpens the image using luminance (which only affects the black and white values), providing crisp detail with minimal color artifacts.
-Valid values are in the range 0 – 100. The default value is 0, which leaves the image unchanged.
-`unsharpMask: value`
-Sharpens the image details using an unsharp mask (a blurred, inverted copy of the image).
-Valid values are any floating point number. The default value is 0, which leaves the image unchanged. This parameter should be used in conjunction with usmrad.
-For images with general noise, we suggest using the sharp parameter instead. Unsharp mask and radius are better for thumbnails and fine-tuned sharpening.
-`unsharpMaskRadius: value`
-Determines how many pixels should be included to enhance the contrast when using the unsharp mask parameter.
-Valid values are positive numbers, and the default is 2.5. This parameter will have no effect on the image if usm is not set.
-For images with general noise, we suggest using the sharp parameter instead. Unsharp mask and radius are better for thumbnails and fine-tuned sharpening.
-`vibrance: value`
-Adjusts the color saturation of an image while keeping pleasing skin tones.
-Valid values are in the range -100 – 100. The default value is 0, which leaves the image unchanged.
-`enhance: true`
-Adjust the image using the distribution of highlights, midtones, and shadows across all three channels—red, green, and blue (RGB). Overall, the enhancement gives images a more vibrant appearance.
-The adjustment affects individual images differently, and works best with editorial photography, stock photography, and user-generated content for social media applications.
-`compress: value`
-Compress the image (if is posible) to the value specified.
-When value=auto, Sofia will apply best-effort techniques to reduce the size of the image. This includes altering our normal processing algorithm to apply more aggressive image compression. auto=format is respected, so images will be served in a WebP format whenever possible. If the WebP format is not supported, images that contain transparency will be served in a PNG8 format, if supported, and all others will be served as JPEG. The quality standard (q) is set to 45.
-`format: value`
-When value=auto, Sofia determines whether the image can be served in a better format by a process called automatic content negotiation. It compiles the various signals available to us—including headers, user agents, and image analytics—to select the optimal image format for your user. This format is served back and the image is correctly cached.
-Read: https://docs.imgix.com/tutorials/improved-compression-auto-content-negotiation
-`redeye: true`
-Red-eye removal is applied to any detected faces.
 ```
-Blending
-blend: {
-  mode: normal|Darken|darken|multiply|burn|Lighten|lighten|screen|dodge|contrast|overlay|softlight|hardlight|inversion|difference|exclusion,
-  color: value
-  image: value
+
+Si se desea agregar otro lenguaje simplemente se agrega la propiedad correspondiente.
+
+```
+"longitude.ok": {
+    "en": "The longitude value es correct",
+    "es": "El valor para la longitud es correcto",
+    "zh": "长度值正确"
+  }
+```
+
+Esto es lo único que se necesita para agregar un lenguaje. Cuando se intenta utilizar un lenguaje que no se encuentra en los textos, siempre y cuando la clave exista, el sistema intenta utilizar inglés como reemplazo. Si no es posible utilizar inglés utiliza el primer lenguaje definido. Si no hay lenguajes definido regresa la clave utilizada para hacer la llamada. Esto quiere decir que siempre se obtiene una respuesta de una clave existente en la lista.
+
+La internacionalización se divide en dos partes. El backend y el frontend. Se realiza mediante archivos JSON que contiene todos los textos y los lenguajes existentes.
+
+### Para agregar textos en back
+
+Los textos para el backend de core, esto es, los textos que se muestran en los mensajes de error y en las respuestas de servicios web del servidor se colocan en `src/main/resources/texts.json`. Se deberá de modificar esto si se desea agregar un lenguaje inexistente para el backend.
+
+Dentro del código utilizamos `TextManager`, un singleton que administra los textos del sistema.
+
+Los textos que vamos a utilizar en módulos agregados al servidor, el JAR debe tener un archivo `/META-INF/texts.json` con el mismo formato utilizado en el backend. Para evitar conflictos desagradables a la hora de definir las claves vamos a utilizar el mismo formato que los paquetes de Java, esto es, el nombre de dominio del desarrollador invirtiendo las partes.
+
+```
+"net.cabezudo.article.name.empty": {
+  "en": "The article name can't be empty",
+  "es": "En nombre del artículo no puede estar vacío"
 }
 ```
 
-##mode
+### Para agregar textos en el front
 
-####normal
-Turns off blending, causing the overlay to be superimposed. This behavior is intended for use with watermarks, similar to the mark parameter.
+Existen varias formas para agregar textos en el frontend.
 
-###Darken
+1. Podemos agregarlo agergarlo en el archivo texts.json del raíz de los fuentes del sitio.
 
-####darken
-Compares the color value of each overlapping pixel from the two layers, and keeps the darker value.
+1. Usar un archivo `[nombrePagina].texts.json`. Este archivo reemplaza las entradas que encuentre en texts.json
 
-####multiply
-Multiplies the color values of each overlapping pixel from the two layers, resulting in a darker composite image. Multiplying with black as the blend color will result in black; multiplying with white will leave the image unchanged.
-
-####burn
-Darkens the image based on the overlay image or color.
-
-###Lighten
-
-####lighten
-Compares the color value of each overlapping pixel from the two layers, and keeps the lighter value.
-
-####screen
-The reverse of blend-mode=multiply—this parameter multiplies the inverse of the color values of each overlapping pixel from the two layers, lightening the image.
-
-####dodge
-Brightens the image based on the overlay image or color.
-
-###Contrast
-
-####overlay
-Overlays the blend image or color, while preserving the highlights and shadows. It effectively multiplies or screens, depending on the background color.
-
-####softlight
-Lightens each pixel if the overlay is brighter than 50% grey (similar to blend-mode=dodge), and darkens it if the overlay is darker than 50% grey (similar to blend-mode=burn). Effect is like a diffuse spotlight.
-
-####hardlight
-Lightens each pixel if the overlay is brighter than 50% grey (similar to blend-mode=screen), and darkens it if the overlay is darker than 50% grey (similar to blend-mode=multiply). Effect is like a harsh spotlight.
-
-###Inversion
-
-####difference
-Subtracts the value of the pixel on the overlay layer from the value of the underlying pixel on the base layers or vice versa, depending on which is brighter.
-
-####exclusion
-Similar to blend-mode=difference, but with less contrast.
-
-###Color Components
-####color
-Blends the hue and saturation values of the overlay with the luminance of the base layer.
-####hue
-Blends the hue value of the overlay with the luminance and saturation of the base layer.
-####saturation
-Blends the saturation value of the overlay with the luminance and hue of the base layer.
-####luminosity
-Blends the luminance value of the overlay with the hue and saturation of the base layer.
-
-```
-align: {
-  horizontal: value,
-  vertical: value
-}
-```
-Alinea la imagen con respecto a la imagen padre
-
-color: value
-To blend a solid color over your image, give the blend-color parameter a color, expressed either as a color keyword or 3- (RGB), 4- (ARGB) 6- (RRGGBB) or 8-digit (AARRGGBB) hexadecimal value. The "A" in a 4- or 8-digit hex value represents the color's alpha transparency.
-
-alpha: value
-Sets the level of transparency for an overlay image or color. Valid values are from 0 – 100 where 0 is fully transparent and 100 is fully opaque.
-
-crop
-Controls how the overlay layer is cropped
-Valid values are top, bottom, left, right, and faces. Multiple values can be used by separating them with a comma.
-Note: blend-crop is not applicable to color or text overlays—color overlays apply to the entire image, and text overlay cropping can be controlled with the txt-clip parameter.
-
-Unset: Default. Crop to the center of the overlay layer.
-top: Crop from the top of the overlay layer, down.
-bottom: Crop from the bottom of the overlay layer, up.
-left: Crop from the left of the overlay layer, right.
-right: Crop from the right of the overlay layer, left.
-faces: If faces are detected in the overlay layer, attempts to center the crop to them. Otherwise, the cropping alignment will default to centered if no additional values are provided. For example, blend-crop=faces,top,right will crop to faces, and if there are no faces, then crops to the top right.
-
-size: auto|length|percentage|cover|contain
-size: {
-  width: value|percentage,
-  height: value|percentage
-}
-
-auto	Default value. The background image is displayed in its original size
-length	Sets the width and height of the background image. The first value sets the width, the second value sets the height. If only one value is given, the second is set to "auto". Read about length units
-percentage	Sets the width and height of the background image in percent of the parent element. The first value sets the width, the second value sets the height. If only one value is given, the second is set to "auto"
-cover	Resize the background image to cover the entire container, even if it has to stretch the image or cut a little bit off one of the edges
-contain	Resize the background image to make sure the image is fully visible
-initial	Sets this property to its default value. Read about initial
-inherit
-
-padding: value|percentage
-
-padding: {
-  top: value|percentage,
-  right: value|percentage,
-  bottom: value|percentage,
-  left: value|percentage,
-}
-
-x: value|percentage
-
-y: value|percentage
-
-border: {
-  size: value,
-  color: value,
-  radius: value
-  type: inner|outer
-}
-Draws a border around the image, in the width and color defined. The border will overlap the image rather or altering its size.
-The default is no border, and the width and color values must be specified as a comma-separated list with the width first. Valid color values are a color keyword or 3- (RGB), 4- (ARGB) 6- (RRGGBB) or 8-digit (AARRGGBB) hexadecimal values. The "A" in a 4- or 8-digit hex value represents the color's alpha transparency. The default is transparent white, 0FFF.
-
-Face Detection
-face: {
-  index: value,
-  padding: value
-}
-
-background: {
-  color: value
-}
-Define el color con el cual se van a completar los pixeles transparentes
-
-Focal Point
-foalPoint: {
-  debug: true,
-  x: value|percentage,
-  y: value|percentage,
-  zoom: value
-}
-
-format: gif|jp2|jpg|json|jxr|pjpg|mp4|png|png8|png32|webm|webp.
-Choose the image format for the final image (e.g. JPEG, PNG)
-
-quality: lossless|value
-Set the quality level for compression, and enable lossless compression for formats that support it.
-
-clientHints: boolean
-Let the browser override image properties automatically based on the image headers.
-
-autoDownload: boolean
-Make the image download instead of displaying in the browser.
-
-mask: {
-  type: circle|square (ver)
-}
-
-Noise Reduction
-noiseReduction: value
-Sets the threshold for noise reduction.
-Valid values are in the range -100 to 100. If no value is supplied, the default is 20.
-The nr value sets the threshold at which noise is removed. Pixels with a luminance value that falls below the threshold are considered noise and will be blurred. Pixels above the threshold will be sharpened according to the nrs parameter value.
-If only nr is set, then nrs will be set to its default, and vice versa. If neither value is supplied, then no noise reduction will be applied. Try setting nr=60 and nrs=40 below to see the difference from the defaults.
-
-Noise Reduction Sharpen
-noiseReductionSharpen: value
-Determines the amount of sharpening in pixels above the bound set by nr, reducing noise in the image.
-Valid values are in the range -100 to 100. If no value is supplied, the default is 20.
-Pixels with a luminance value that falls below the threshold are considered noise and will be blurred. Pixels above the threshold will be sharpened according to the nrs parameter value.
-If only nr is set, then nrs will be set to its default, and vice versa. If neither value is supplied, then no noise reduction will be applied. Try setting nr=60 and nrs=40 below to see the difference from the defaults.
-
-PDF
-pdf: value
-page
-PDF Page Number
-
-Rotation
-Flips the image horizontally, vertically.
-flip: horizontal|vertical
-
-Orientation orient
-orient: value
-Changes the cardinal orientation of the image by overriding any Exif orientation metadata.
-By default, when an image is transformed using any parameter, imgix automatically uses Exchangeable image file format (Exif) metadata present in the master image to orient your photos correctly. If your image does not contain Exif orientation data, we assume a value of 0 and do not rotate the image.
-To override the Exif data, you can set the value either to 1 through 8 (following Exif format), or to 90, 180, 270, etc. as degree aliases for the Exif values where 90 = 6, 180 = 3, and 270 = 8. See the diagram below for how these values relate to the orientation of the image when it was shot.
-
-Rotation
-rotate: value
-
-Aspect Ratio
-aspectRatio: {
-  value: value,
-  mode: crop|fit
-}
-
-
-Duotone
-duotone: {
-  color1: value,
-  color2: value,
-  alpha: value
-}
-Applies a duotone effect—a gradient with two different colors as its endpoints—to the image.
-
-To achieve this effect, the image is first converted to greyscale. Two colors, usually contrasting, are then mapped to that gradient. In duotone={color1},{color2}, the first color is mapped to the darker parts of the image, and the second to the lighter parts. If you were to set a light color as color1 and a dark color as color2, you would create a duotone with a photo negative effect.
-
-The duotone parameter accepts colors, expressed as either color keywords or 3- (RGB) or 6-digit (RRGGBB) hexadecimal color values. The opacity of the duotone effect can also be set separately using the parameter duotone-alpha. The default value is 100, which makes the duotone fully opaque. To blend the duotone with the original image, set a lower duotone-alpha value.
-
-Gaussian Blur
-blur: vlaue
-Applies a Gaussian style blur to your image, smoothing out image noise.
-Valid values are in the range from 0 – 2000. The default value is 0, which leaves the image unchanged.
-
-Monochrome
-monochrome: color
-Applies an overall monochromatic hue change.
-The monochrome parameter accepts a color, expressed as either a color keyword or a 3- (RGB), 4- (ARGB) 6- (RRGGBB) or 8-digit (AARRGGBB) hexadecimal value. The "A" in a 4- or 8-digit hex value represents the color's alpha transparency and therefore the intensity of the monochromatic transformation. The higher the intensity, the closer you will get to a duotone effect.
-
-Pixellate
-pixellate:value
-Applies a square pixellation effect to the image.
-Valid values are in the range 0 – 100. The default value is 0, which leaves the image unchanged.
-
-
-Sepia Tone
-sepia: value
-Applies a sepia-toning effect to the image.
-Valid values are in the range from 0 – 100. The default value is 0, which leaves the image unchanged.
-
-Text
-text: {
-  area: {
-    top: value|percentaje,
-    left: value|percentaje,
-    width: value|percentaje,
-    heigth: value|percentaje,
-  },
-  align: left|center|right|justified,
-  verticalAlign: top|center|bottom,
-  color: color,
-  font: value,
-  lineHeight: value,
-  letterSpace: value,
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-image: url
-brightness: value
-contrast: value
-exposure: value
-gamma: value
-highlight: value
-hueShift: value
-invert: true
-saturation: value
-shadow: true
-sharpen: value
-unsharpMask: value
-unsharpMaskRadius: value
-vibrance: value
-enhance: true
-compress: value
-format: value
-redeye: true
-blend: {
-  mode: normal|Darken|darken|multiply|burn|Lighten|lighten|screen|dodge|contrast|overlay|softlight|hardlight|inversion|difference|exclusion,
-  color: value
-  image: value
-}
-align: {
-  horizontal: value,
-  vertical: value
-}
-color: value
-alpha: value
-position: top|bottom|left|right
-crop: {
-  position: top|bottom|left|right|faces
-}
-size: auto|length|percentage|cover|contain
-size: {
-  width: value|percentage,
-  height: value|percentage
-}
-padding: value|percentage
-padding: {
-  top: value|percentage,
-  right: value|percentage,
-  bottom: value|percentage,
-  left: value|percentage,
-}
-x: value|percentage
-y: value|percentage
-border: {
-  size: value,
-  color: value,
-  radius: value
-  type: inner|outer
-}
-face: {
-  index: value,
-  padding: value
-}
-background: {
-  color: value
-}
-Focal Point
-foalPoint: {
-  debug: true,
-  x: value|percentage,
-  y: value|percentage,
-  zoom: value
-}
-format: gif|jp2|jpg|json|jxr|pjpg|mp4|png|png8|png32|webm|webp.
-Choose the image format for the final image (e.g. JPEG, PNG)
-quality: lossless|value
-clientHints: boolean
-autoDownload: boolean
-mask: {
-  type: circle|square (ver)
-}
-noiseReduction: value
-noiseReductionSharpen: value
-pdf: value
-page: value
-flip: horizontal|vertical
-orient: value
-rotate: value
-aspectRatio: {
-  value: value,
-  mode: crop|fit
-}
-duotone: {
-  color1: value,
-  color2: value,
-  alpha: value
-}
-blur: value
-monochrome: color
-pixellate:value
-Sepia Tone
-sepia: value
-text: {
-  area: {
-    top: value|percentaje,
-    left: value|percentaje,
-    width: value|percentaje,
-    heigth: value|percentaje,
-  },
-  align: left|center|right|justified,
-  verticalAlign: top|center|bottom,
-  color: color,
-  font: value,
-  lineHeight: value,
-  letterSpace: value,
-}
-
-
-
-Para agregar textos a páginas.
-1. Agergarlo en el archivo texts.json del raiz del sitio
-2. Usar un archivo [nombrePagina].texts.json que reemplaza las entradas que encuentre en texts.json
-3. Usando Core.addTexts en el código JS. Solo funciona para el idioma actual.
-
-Para agregar textos en back
-1. Agregarlo en src/main/resources/texts.json y usar TextManager.get
+1. Usando la función `Core.addTexts` dentro del código JS. Esto solo funciona para el lenguaje actual por lo que solo se debería de utilizar en una función en tiempo de ejecución. Es una punto de entrada al mecanismo de manejo de textos para aumentar la flexibilidad.
 
 java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/resources/libs/ net.cabezudo.sofia.core.WebServer -dd -ctd -d -i
 
-Configuración global del servidor
+### Configuración global del servidor
 
-Configuración del sitio
+## Configuración del sitio
