@@ -27,16 +27,27 @@ database.password=tenorio2017
 system.home=/home/juan/servidor
 ```
 `environment` hace referencia al ambiente donde se está ejecutando el servidor. Puede tomar dos valores: `development` o `production`. `development` indica que se está ejecutando el servidor en un ambiente de desarrollo que permite acceder a ciertas características que facilitan el desarrollo. Por ejemplo, se puede indicar que se ha accedido al sistema con determinado usuario desde la url para evitar registrarse para hacer pruebas con determinado usuario. También se genera código mas fácil de leer y debugear, se muestran nombres de archivos origen en el código generado y un sinnúmero de otras facilidades de las cuales hablaremos mas adelante. Cuando se configura como `production` el servidor se centra en la velocidad y elimina información innecesaria del código. `server.port` es un valor entero que indica el puerto donde se va a arrancar el servidor. Si vamos a usarlo localmente, la opción mas común es `8080` ya que no se necesitan privilegios de root para ejecutarlo y nos evitamos problemas de permisos. En producción vamos a querer correrlo en el 80 para que sirva HTTP.
+
 La propiedad `database.driver` indica el driver jdbc que vamos a utilizar para acceder a la base de datos. Está ahí para que se pueda cambiar en el futuro. Actualmente se utiliza solamente mySQL para desarrollar, pero se podría usar otras bases de datos en el futuro. Por lo pronto no es necesario tocar esta propiedad.
+
 El host del servidor de base de datos se indica en `database.hostname`. La mayoría de las veces se puede dejar esta propiedad sin cambiar.
+
 `database.port` permite configurar el puerto en el cual la base de datos está corriendo. Ya que usamos únicamente mySQL o MariaDB no hay necesidad de modificarlo.
+
 `database.name` define el nombre de la base de datos a utilizar. A no ser que ya se esté utilizando una base de datos con el mismo nombre no es necesario modificar esta propiedad.
+
 Las propiedades que seguro hay que modificar son las siguietnes tres.
+
 `database.username` indica el usuario con el cual el sistema va a acceder a la base de datos. Este usuario debe tener los siguientes privilegios: `CREATE`, `DROP`, `INDEX`, `INSERT`, `LOCK TABLES`, `SELECT` y `UPDATE`.
+
 Con `database.password` especificamos la contraseña que se va a utilizar para acceder a la base de datos.
+
 `system.home` indica el directorio donde se va a colocar el directorio de datos de la aplicación. Este viene en el paquete del servidor y se llama `system`. La propiedad `system.home` indica mediante una ruta completa el directorio donde `system` es colocado sin especificar la barra al final.
+
 Una vez que hemos editado el archivo de configuración y estamos seguros de que vamos a utilizar esas propiedades de configuración podemos correr el servidor.
+
 ## Ejecutando el servidor
+
 Para ejecutar el servidor usamos el siguiente comando:
 ```
 java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer
@@ -480,7 +491,11 @@ Existen varias formas para agregar textos en el frontend.
 
 1. Usando la función `Core.addTexts` dentro del código JS. Esto solo funciona para el lenguaje actual por lo que solo se debería de utilizar en una función en tiempo de ejecución. Es una punto de entrada al mecanismo de manejo de textos para aumentar la flexibilidad.
 
+Si desamos poner a cero el servidor en un ambiente de desarrollo podemos utilizar el siguiente commando:
+```
 java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/resources/libs/ net.cabezudo.sofia.core.WebServer -dd -ctd -d -i
+```
+De esta forma se recrea la base de datos de cero y se cargan datos de prueba.
 
 ### Configuración global del servidor
 
