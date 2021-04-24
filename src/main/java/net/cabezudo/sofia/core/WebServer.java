@@ -182,7 +182,7 @@ public class WebServer {
     }
 
     if (startOptions.hasDropDatabase()) {
-      System.out.println("The database has dropped and recreated. Execution terminated.");
+      Utils.consoleOutLn("The database has dropped and recreated. Execution terminated.");
       System.exit(0);
     }
 

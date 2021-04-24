@@ -33,21 +33,15 @@ public class SiteTextsService extends Service {
       URLToken pageToken = tokens.getValue("page");
       String page = pageToken.toString().replaceAll("\\.", "/");
 
-      System.out.println(page);
-
       int i = page.indexOf("/", 1);
-      System.out.println(i);
       if (i > 0) {
         String subdomain = page.substring(1, i);
-        System.out.println(subdomain);
         Integer companyId = CompanySubdomainManager.getInstance().get(subdomain);
-        System.out.println(companyId);
 
         if (companyId != null) {
           page = page.replace(subdomain, "restaurant");
         }
       }
-      System.out.println(page);
 
       URLToken languageToken = tokens.getValue("language");
       String twoLettersCode = languageToken.toString();
