@@ -78,13 +78,13 @@ class ConfigurationFile {
     }
     if (Files.isWritable(basePath)) {
       try {
-        Files.createFile(path);
+        Files.createFile(filePath);
       } catch (IOException e) {
         throw new ConfigurationException("Can't create the file. " + e.getMessage());
       }
       try {
         try (FileWriter out = new FileWriter(filePath.toFile())) {
-          out.write("environment=production\n");
+          out.write("environment=development\n");
           out.write("database.driver=com.mysql.cj.jdbc.Driver\n");
           out.write("database.hostname=localhost\n");
           out.write("database.port=3306\n");

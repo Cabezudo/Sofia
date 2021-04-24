@@ -4,8 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -20,7 +18,6 @@ import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
-import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.texts.TextManager;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -227,18 +224,7 @@ public final class Configuration {
   }
 
   public void loadTexts() throws JSONParseException, IOException {
-
-    URL resource = getClass().getClassLoader().getResource("texts.json");
-    if (resource == null) {
-      throw new IllegalArgumentException("file not found!");
-    }
-
-    Path textsFilePath;
-    try {
-      textsFilePath = Paths.get(resource.toURI());
-    } catch (URISyntaxException e) {
-      throw new SofiaRuntimeException(e);
-    }
+    Path textsFilePath = this.getSystemResourcesPath().resolve("texts.json");
     JSONObject jsonTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset()).toJSONObject();
     TextManager.add(jsonTexts);
   }

@@ -61,19 +61,19 @@ Una vez que hemos editado el archivo de configuración y estamos seguros de que 
 
 Para ejecutar el servidor usamos el siguiente comando:
 ```
-java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer
+java -cp target/sofia-web-server-1.0.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer
 ```
 Si queremos que borre la base de datos podemos usar:
 ```
-java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i
+java -cp target/sofia-web-server-1.0.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i
 ```
 Y si además queremos que trabaje en modo silencioso, esto es, que no pregunte por dominio o usuario administrador y configure con el usuario por defecto podemos colocar el modificador `--ide` o simplemente `-i':
 ```
-java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i
+java -cp target/sofia-web-server-1.0.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i
 ```
 Si necesitamos datos para pruebas podemos agregarlos a nuestra librería y ejecutar con un modificador para crearlos
 ```
-java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i -ctd
+java -cp target/sofia-web-server-1.0.jar:./system/data/libs/ net.cabezudo.sofia.core.WebServer -dd -i -ctd
 ```
 Es importante tener presente que se necesitan permisos de root para ejecutar en puertos por abajo de 1024. El servidor no va a indicar que no tiene permisos para ejecutarse, solo va a quedar esperando indefinidamente.
 
@@ -407,8 +407,8 @@ No se puede especificar la misma librería con dos versiones diferentes en una m
 
 ### Componentes
 ### Javascript
-###Variables del sistema
-####URLSearchParams
+### Variables del sistema
+#### URLSearchParams
 ### Estilos
 Las fuentes de todo el sitio se definen en el archivo de estilos fonts.
 
@@ -561,7 +561,7 @@ Existen varias formas para agregar textos en el frontend.
 
 Si desamos poner a cero el servidor en un ambiente de desarrollo podemos utilizar el siguiente commando:
 ```
-java -cp target/sofia-web-server-1.0-SNAPSHOT.jar:./system/resources/libs/ net.cabezudo.sofia.core.WebServer -dd -ctd -d -i
+java -cp target/sofia-web-server-1.0.jar:./system/resources/libs/ net.cabezudo.sofia.core.WebServer -dd -ctd -d -i
 ```
 De esta forma se recrea la base de datos de cero y se cargan datos de prueba.
 
