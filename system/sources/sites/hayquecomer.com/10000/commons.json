@@ -1,0 +1,12 @@
+{
+  "site": {
+    "name": "Menú electrónico",
+    "shortName": "Menú electrónico",
+    "socialMedia": {
+      "twitter": {
+        "url": ""
+      }
+    }
+  },
+  "themeName": "basic"
+}

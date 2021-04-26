@@ -61,7 +61,7 @@ public class Address {
     jsonObject.add(new JSONPair("exteriorNumber", exteriorNumber));
     jsonObject.add(new JSONPair("interiorNumber", interiorNumber));
     if (parent != null) {
-      jsonObject.add(new JSONPair(parent.getType(), parent.toJSONTree()));
+      jsonObject.add(new JSONPair(parent.getType().getName(), parent.toJSONTree()));
     }
     jsonObject.add(new JSONPair("postalCode", postalCode));
     jsonObject.add(new JSONPair("reference", reference));
@@ -74,7 +74,7 @@ public class Address {
     jsonObject.add(new JSONPair("exteriorNumber", exteriorNumber));
     jsonObject.add(new JSONPair("interiorNumber", interiorNumber));
     if (parent != null) {
-      jsonObject.add(new JSONPair(parent.getType(), parent.toJSONTree()));
+      jsonObject.add(new JSONPair(parent.getType().getName(), parent.toJSONTree()));
     }
     jsonObject.add(new JSONPair("postalCode", postalCode));
     jsonObject.add(new JSONPair("reference", reference));

@@ -43,6 +43,7 @@ import net.cabezudo.sofia.core.sites.SiteList;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.domainname.DomainName;
 import net.cabezudo.sofia.core.sites.domainname.DomainNameList;
+import net.cabezudo.sofia.core.sites.texts.TextManager;
 import net.cabezudo.sofia.core.users.autentication.LogoutHolder;
 import net.cabezudo.sofia.core.users.authorization.HTMLAuthorizationFilter;
 import net.cabezudo.sofia.core.ws.WebServicesUniverse;
@@ -124,14 +125,14 @@ public class WebServer {
 
     if (!mainDefaultDataCreator.databaseExists()) {
       mainDefaultDataCreator.createDatabase();
-      mainDefaultDataCreator.riseDatabaseCreatedFlag();
       mainDefaultDataCreator.createDatabaseStructure();
+      mainDefaultDataCreator.riseDatabaseCreatedFlag();
     }
     for (DataCreator defaultDataCreator : defaultDataCreators) {
       if (!defaultDataCreator.databaseExists()) {
         defaultDataCreator.createDatabase();
-        defaultDataCreator.riseDatabaseCreatedFlag();
         defaultDataCreator.createDatabaseStructure();
+        defaultDataCreator.riseDatabaseCreatedFlag();
       }
     }
 
@@ -191,7 +192,7 @@ public class WebServer {
     // TODO DatabaseManager MUST loads the default data creators
     Configuration.getInstance().loadAPIConfiguration(defaultDataCreators);
     // TODO Text manager MUST load the texts
-    Configuration.getInstance().loadTexts();
+    TextManager.getInstance().loadTexts();
     SofiaDatabase.getInstance().loadData();
 
     int port = Configuration.getInstance().getServerPort();

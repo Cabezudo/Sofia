@@ -1,4 +1,4 @@
-package net.cabezudo.hayquecomer.restaurants;
+package net.cabezudo.sofia.core.schedule;
 
 import net.cabezudo.sofia.core.languages.Language;
 

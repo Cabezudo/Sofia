@@ -24,6 +24,10 @@ public class TextManager {
     jsonTexts = new JSONObject();
   }
 
+  public static TextManager getInstance() {
+    return INSTANCE;
+  }
+
   public static JSONObject get(Site site, String absolutPage, Language language) throws JSONParseException, IOException {
     String page = absolutPage.substring(1);
     Path path = site.getVersionPath().resolve(page + ".texts").resolve(language.getTwoLetterCode() + ".json");
@@ -56,4 +60,11 @@ public class TextManager {
     }
     return text;
   }
+
+  public void loadTexts() throws JSONParseException, IOException {
+    Path textsFilePath = Configuration.getInstance().getSystemResourcesPath().resolve("texts.json");
+    JSONObject fileJSONTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset()).toJSONObject();
+    TextManager.add(fileJSONTexts);
+  }
+
 }
