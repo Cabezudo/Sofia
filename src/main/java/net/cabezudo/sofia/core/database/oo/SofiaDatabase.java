@@ -1,7 +1,6 @@
 package net.cabezudo.sofia.core.database.oo;
 
 import java.io.IOException;
-import net.cabezudo.hayquecomer.restaurants.RestaurantManager;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.sofia.core.cluster.ClusterException;
@@ -19,7 +18,7 @@ public class SofiaDatabase {
   }
 
   public void loadData() throws JSONParseException, IOException, ClusterException, PropertyNotExistException {
-    RestaurantManager.getInstance().loadData();
+    // Load data for Sofia Object Oriented Database
   }
 
 }
