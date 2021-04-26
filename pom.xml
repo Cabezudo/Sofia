@@ -84,6 +84,10 @@
                     <exclude name="${project.build.directory}/server/system/sites/**" />
                   </fileset>
                 </copy>
+                <copy todir="${project.build.directory}/server">
+                  <fileset file="${basedir}/run.sh"></fileset>
+                  <fileset file="${basedir}/README.md"></fileset>
+                </copy>
               </target>
             </configuration>
             <goals>
@@ -205,11 +209,6 @@
       <groupId>${project.groupId}</groupId>
       <artifactId>sofia-logger</artifactId>
       <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>net.cabezudo</groupId>
-      <artifactId>hay-que-comer-com-back</artifactId>
-      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
   <properties>

@@ -1,21 +1,22 @@
 <assembly>
   <id>all</id>
   <formats>
-    <format>tar.bz2</format>
+    <format>zip</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+  <baseDirectory>server</baseDirectory>
   <fileSets>
     <fileSet>
+      <directory>target/server</directory>
+      <outputDirectory>server</outputDirectory>
       <includes>
-        <include>README*</include>
+        <include>**</include>
       </includes>
-    </fileSet>
-    <fileSet>
-      <directory>${project.build.directory}/server</directory>
-      <outputDirectory>${basedir}</outputDirectory>
-      <includes>
-        <include>*</include>
-      </includes>
+      <excludes>
+        <exclude>/system/sites</exclude>
+        <exclude>**/images/cache/**</exclude>
+        <exclude>**/images/flags/cache/ **</exclude>
+      </excludes>
     </fileSet>
   </fileSets>
 </assembly>
