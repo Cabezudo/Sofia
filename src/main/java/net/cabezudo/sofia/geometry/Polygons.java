@@ -17,9 +17,6 @@ public class Polygons implements Iterable<Polygon> {
   private Double yMin = null;
   private Double yMax = null;
 
-  public Polygons() {
-  }
-
   public void add(Polygon polygon) {
     list.add(polygon);
     if (polygon.getWidth() > width) {

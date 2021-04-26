@@ -1,4 +1,4 @@
-package net.cabezudo.hayquecomer.restaurants;
+package net.cabezudo.sofia.core.validation;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

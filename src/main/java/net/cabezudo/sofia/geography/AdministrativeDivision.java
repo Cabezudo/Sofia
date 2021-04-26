@@ -15,8 +15,8 @@ import net.cabezudo.sofia.names.InternationalizedName;
  */
 public class AdministrativeDivision {
 
-  private int id;
-  private AdministrativeDivisionType type;
+  private final int id;
+  private final AdministrativeDivisionType type;
   private final String code;
   private final Integer fileId;
   private final int parentId;
@@ -40,6 +40,7 @@ public class AdministrativeDivision {
     this.parent = null;
   }
 
+  @Override
   public String toString() {
     return "[ id = " + id + ", type = " + type + ", code = " + code + ", fieldId = " + fileId + ", parentId = " + parentId + " ]";
   }
@@ -48,8 +49,8 @@ public class AdministrativeDivision {
     return id;
   }
 
-  public String getType() {
-    return this.getClass().getName().toLowerCase();
+  public AdministrativeDivisionType getType() {
+    return type;
   }
 
   public String getCode() {

@@ -11,14 +11,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Properties;
-import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
-import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
-import net.cabezudo.sofia.core.sites.texts.TextManager;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -221,12 +218,6 @@ public final class Configuration {
     for (DataCreator dataCreator : dataCreators) {
       apiConfiguration.add(dataCreator);
     }
-  }
-
-  public void loadTexts() throws JSONParseException, IOException {
-    Path textsFilePath = this.getSystemResourcesPath().resolve("texts.json");
-    JSONObject jsonTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset()).toJSONObject();
-    TextManager.add(jsonTexts);
   }
 
   public Charset getEncoding() {

@@ -2,11 +2,13 @@ package net.cabezudo.sofia.core;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -192,9 +194,14 @@ class StartOptionsHelper {
       throw new SofiaRuntimeException("No class found in class paths.");
     }
     Path systemLibsPath = Configuration.getInstance().getSystemLibsPath();
+    File systemLibsFile = systemLibsPath.toFile();
     // TODO read all the jar in directory
-    Path jarFileName = systemLibsPath.resolve("hay-que-comer-com-back-1.0-SNAPSHOT.jar");
-    readJAR(databaseCreators, systemClassesPath, jarFileName);
+
+    FilenameFilter filter = (File file, String name) -> name.endsWith(".jar");
+    String[] jarFileNames = systemLibsFile.list(filter);
+    for (String jarFileName : jarFileNames) {
+      readJAR(databaseCreators, systemClassesPath, Paths.get(jarFileName));
+    }
     return databaseCreators;
   }
 

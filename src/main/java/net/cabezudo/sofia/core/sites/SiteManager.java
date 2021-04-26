@@ -32,6 +32,12 @@ import net.cabezudo.sofia.core.sites.domainname.DomainNamesTable;
 import net.cabezudo.sofia.core.sites.validators.EmptySiteNameException;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UsersTable;
+import net.cabezudo.sofia.core.users.permission.PermissionTypesTable;
+import net.cabezudo.sofia.core.users.permission.PermissionsPermissionTypesTable;
+import net.cabezudo.sofia.core.users.permission.PermissionsTable;
+import net.cabezudo.sofia.core.users.permission.ProfilesPermissionsTable;
+import net.cabezudo.sofia.core.users.profiles.ProfilesTable;
+import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.emails.EMail;
 import net.cabezudo.sofia.emails.EMailsTable;
 import net.cabezudo.sofia.logger.Logger;
@@ -365,14 +371,48 @@ public class SiteManager extends Manager {
   }
 
   public void delete(Connection connection, int siteId) throws ClusterException {
+
+    String deleteUsersProfilesQuery = "DELETE FROM " + UsersProfilesTable.NAME + " WHERE user IN (SELECT user FROM " + UsersTable.NAME + " WHERE site = ?)";
+    String deleteUsersQuery = "DELETE FROM " + UsersTable.NAME + " WHERE site = ?";
+    String deleteProfilesPermissionsQuery = "DELETE FROM " + ProfilesPermissionsTable.NAME + " WHERE site = ?";
     String deleteHostsQuery = "DELETE FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
+    String deleteProfilesQuery = "DELETE FROM " + ProfilesTable.NAME + " WHERE site = ?";
+    String deletePermissionsPermissionTypesQuery = "DELETE FROM " + PermissionsPermissionTypesTable.NAME + " WHERE site = ?";
+    String deletePermissionsQuery = "DELETE FROM " + PermissionsTable.NAME + " WHERE site = ?";
+    String deletePermissionTypesQuery = "DELETE FROM " + PermissionTypesTable.NAME + " WHERE site = ?";
     String deleteSiteQuery = "DELETE FROM " + SitesTable.NAME + " WHERE id = ?";
-    try (PreparedStatement dhps = connection.prepareStatement(deleteHostsQuery); PreparedStatement dsps = connection.prepareStatement(deleteSiteQuery);) {
+    try (
+            PreparedStatement dupps = connection.prepareStatement(deleteUsersProfilesQuery);
+            PreparedStatement dups = connection.prepareStatement(deleteUsersQuery);
+            PreparedStatement dppps = connection.prepareStatement(deleteProfilesPermissionsQuery);
+            PreparedStatement dhps = connection.prepareStatement(deleteHostsQuery);
+            PreparedStatement dprps = connection.prepareStatement(deleteProfilesQuery);
+            PreparedStatement dpptps = connection.prepareStatement(deletePermissionsPermissionTypesQuery);
+            PreparedStatement dpps = connection.prepareStatement(deletePermissionsQuery);
+            PreparedStatement dptps = connection.prepareStatement(deletePermissionTypesQuery);
+            PreparedStatement dsps = connection.prepareStatement(deleteSiteQuery);) {
+
       connection.setAutoCommit(false);
+
+      dupps.setInt(1, siteId);
+      ClusterManager.getInstance().executeUpdate(dupps);
+      dups.setInt(1, siteId);
+      ClusterManager.getInstance().executeUpdate(dups);
+      dppps.setInt(1, siteId);
+      ClusterManager.getInstance().executeUpdate(dppps);
       dhps.setInt(1, siteId);
-      ClusterManager.getInstance().executeQuery(dhps);
+      ClusterManager.getInstance().executeUpdate(dhps);
+      dprps.setInt(1, siteId);
+      ClusterManager.getInstance().executeUpdate(dprps);
+      dpptps.setInt(1, siteId);
+      ClusterManager.getInstance().executeUpdate(dpptps);
+      dpps.setInt(1, siteId);
+      ClusterManager.getInstance().executeUpdate(dpps);
+      dptps.setInt(1, siteId);
+      ClusterManager.getInstance().executeUpdate(dptps);
       dsps.setInt(1, siteId);
-      ClusterManager.getInstance().executeQuery(dsps);
+      ClusterManager.getInstance().executeUpdate(dsps);
+
       connection.commit();
     } catch (SQLException e) {
       try {
