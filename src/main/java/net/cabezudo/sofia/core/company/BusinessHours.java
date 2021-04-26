@@ -4,11 +4,6 @@ import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import net.cabezudo.hayquecomer.food.Categories;
-import net.cabezudo.hayquecomer.food.CategoryHours;
-import net.cabezudo.hayquecomer.food.category.Category;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.languages.Language;
@@ -84,24 +79,13 @@ public class BusinessHours {
     return openNow;
   }
 
-  public Map<Category, CategoryHours> getHoursById(Categories categories) {
-    Map<Category, CategoryHours> map = new TreeMap<>();
-
-    for (Category category : categories) {
-      TimeEvents temporalEvents = createEvents();
-      OpenTimes cleanTimes = cleanOverlapedEventsById(temporalEvents);
-      map.put(category, new CategoryHours(cleanTimes));
-    }
-    return map;
-  }
-
   public JSONObject toJSONTree() {
     JSONObject jsonObject = new JSONObject();
     jsonObject.add(new JSONPair("businessHours", times.toJSONTree()));
     return jsonObject;
   }
 
-  private TimeEvents createEvents() {
+  public TimeEvents createEvents() {
     TimeEvents events = new TimeEvents();
 
     for (AbstractTime time : times) {
@@ -156,7 +140,7 @@ public class BusinessHours {
     return null;
   }
 
-  private OpenTimes cleanOverlapedEventsById(TimeEvents temporalEvents) {
+  public OpenTimes cleanOverlapedEventsById(TimeEvents temporalEvents) {
     OpenTimes cleanTimes = new OpenTimes();
     Event lastEvent = null;
     int open = 0;

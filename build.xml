@@ -70,13 +70,5 @@
     nbproject/build-impl.xml file.
 
   -->
-  <target name="-pre-init" description="Zip the application to the sample project">
-    <delete file="sofia.cabezudo.net.dist.zip" quiet="true"/>
-  </target>
-  <target name="-post-jar" description="Zip the application to the sample project">
-    <zip destfile="sofia.cabezudo.net.dist.zip"
-         basedir=""
-         includes="system/**,dist/**z"
-    />
-  </target>
+
 </project>
