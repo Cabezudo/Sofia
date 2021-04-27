@@ -139,6 +139,10 @@ body, html {
   font-weight: 300;
 }
 
+p.center {
+  text-align: center;
+}
+
 .centered {
   justify-content: center;
 }
