@@ -40,18 +40,12 @@ public class WebUserDataManager {
     return INSTANCE;
   }
 
-  public WebUserData createFakeWebUserData() throws InvalidTwoLettersCodeException, ClusterException, InvalidCurrencyCodeException {
-    Language spanish = LanguageManager.getInstance().get("es");
-    Currency mexicanPeso = CurrencyManager.getInstance().get("MXN");
-    return new WebUserData(1, "fackeSessionId", 0, spanish, spanish, mexicanPeso);
-  }
-
   public synchronized WebUserData add(HttpServletRequest request) throws ClusterException {
     HttpSession session = request.getSession();
     String sessionId = session.getId();
 
     try (Connection connection = Database.getConnection()) {
-      return insert(connection, sessionId);
+      return insert(connection, request);
     } catch (SQLException e) {
       throw new ClusterException(e);
     }
@@ -172,22 +166,23 @@ public class WebUserDataManager {
     }
   }
 
-  private WebUserData insert(Connection connection, String sessionId) throws SQLException, ClusterException {
+  private WebUserData insert(Connection connection, HttpServletRequest request) throws SQLException, ClusterException {
     ResultSet rs = null;
     String query
             = "INSERT INTO " + WebUserDataTable.NAME + " "
             + "(`sessionId`, `failLoginResponseTime`, `countryLanguage`, `actualLanguage`, `actualCurrency`) "
             + "VALUES (?, ?, ?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
+      String sessionId = request.getSession().getId();
       ps.setString(1, sessionId);
       // TODO take the default values from configuration database for the site
       ps.setLong(2, INITIAL_FAIL_LOGIN_RESPONSE_TIME);
       try {
         // TODO Detect the country using the localization. IP and Web localization
         // TODO use the default country language
-        Language spanish = LanguageManager.getInstance().get("es");
-        ps.setInt(3, spanish.getId());
-        ps.setInt(4, spanish.getId());
+        Language language = LanguageManager.getInstance().get(request);
+        ps.setInt(3, language.getId());
+        ps.setInt(4, language.getId());
         // TODO Get the country currency
         Currency mexicanPeso = CurrencyManager.getInstance().get("MXN");
         ps.setInt(5, mexicanPeso.getId());
@@ -195,7 +190,7 @@ public class WebUserDataManager {
         rs = ps.getGeneratedKeys();
         if (rs.next()) {
           int id = rs.getInt(1);
-          return new WebUserData(id, sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, spanish, spanish, mexicanPeso);
+          return new WebUserData(id, sessionId, INITIAL_FAIL_LOGIN_RESPONSE_TIME, language, language, mexicanPeso);
         }
       } catch (InvalidTwoLettersCodeException | InvalidCurrencyCodeException e) {
         throw new SofiaRuntimeException(e);
@@ -208,9 +203,9 @@ public class WebUserDataManager {
     }
   }
 
-  public void insert(String sessionId) throws InvalidTwoLettersCodeException, ClusterException {
+  public void insert(HttpServletRequest request) throws InvalidTwoLettersCodeException, ClusterException {
     try (Connection connection = Database.getConnection()) {
-      insert(connection, sessionId);
+      insert(connection, request);
     } catch (SQLException e) {
       throw new ClusterException(e);
     }

@@ -12,14 +12,15 @@
     <script>
       {
         const createGUI = () => {
-          linkTo({
+          const managerLinkElement = new Link({
             id: 'managerLink',
             onClick: '/manager/'
           });
-          linkTo({
+          const documentationLinkElement = new Link({
             id: 'documentationLink',
             onClick: '/docs/'
           });
+          Core.setTextsFor([documentationLinkElement, managerLinkElement, "message", "title"]);
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -30,11 +31,11 @@
       <section id="header" template="headers/menu/simple/menu"></section>
       <section class="container straitened">
         <section class="content">
-          <h2 class="title">Sofía Server</h2>
-          <div id="managerLink" class="screenMenuItem">Manager</div>
-          <div id="documentationLink" class="screenMenuItem">Documentation</div>
+          <h2 class="title" id="title"></h2>
+          <div id="managerLink" class="screenMenuItem"></div>
+          <div id="documentationLink" class="screenMenuItem"></div>
           <p>&nbsp;</p>
-          <p>The server is working!</p>
+          <p id="message"></p>
         </section>
       </section>
       <section id="footer" file="footer.html"></section>

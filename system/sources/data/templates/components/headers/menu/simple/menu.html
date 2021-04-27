@@ -143,7 +143,7 @@
   @media all and ( min-width: 1800px ) {
   }
 </style>
-<script lib="linkTo/0.1.0"></script>
+<script lib="link/0.1.0"></script>
 <style>
   .languageFlagContainer {
     padding-left: 10px;
@@ -252,7 +252,7 @@
             pathElement.setAttribute('fill', svg.path.fill);
             pathElement.setAttribute('d', svg.path.d);
             svgElement.appendChild(pathElement);
-            linkTo({
+            new Link({
               onClick: url,
               element: itemElement
             });
@@ -264,7 +264,7 @@
             itemElement.className = 'item';
             itemElement.texts = item.name;
             setText(item.name, itemElement);
-            linkTo({
+            new Link({
               onClick: item.url,
               element: itemElement
             });

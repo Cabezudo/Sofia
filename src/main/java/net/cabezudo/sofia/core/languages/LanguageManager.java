@@ -5,6 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Enumeration;
+import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.sql.Database;
@@ -71,5 +74,14 @@ public class LanguageManager {
     } finally {
       ClusterManager.getInstance().close(rs);
     }
+  }
+
+  public Language get(HttpServletRequest request) throws InvalidTwoLettersCodeException, ClusterException {
+    Enumeration<Locale> locales = request.getLocales();
+    while (locales.hasMoreElements()) {
+      Locale locale = locales.nextElement();
+      return get(locale.getLanguage());
+    }
+    return get("en");
   }
 }
