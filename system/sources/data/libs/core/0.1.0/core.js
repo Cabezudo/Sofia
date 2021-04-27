@@ -15,7 +15,7 @@ const Core = {
   messagesContainer: null,
   requestId: 0,
   resizeTimer: null,
-  onChangeLanguageFunctions: [],
+  onSetLanguageFunctions: [],
   onCreateFunctions: [],
   onLoadFunctions: [],
   onResizeFunctions: [],
@@ -34,8 +34,8 @@ const Core = {
       throw new Error('No messages container defined.');
     }
   },
-  addOnChangeLanguageFunction: (func) => {
-    Core.onChangeLanguageFunctions.push(func);
+  addOnSetLanguageFunction: (func) => {
+    Core.onSetLanguageFunctions.push(func);
   },
   addOnCreateFunction: (func) => {
     Core.onCreateFunctions.push(func);
@@ -62,6 +62,9 @@ const Core = {
   },
   addTexts: texts => {
     variables.texts = Object.assign(variables.texts, texts);
+    Core.onSetLanguageFunctions.forEach(func => {
+      func(variables.site.language);
+    });
   },
   getURLForLanguage: language => {
     let pathname = window.location.pathname.toLowerCase();
@@ -76,9 +79,6 @@ const Core = {
       const texts = response.data;
       variables.site.language = language;
       Core.addTexts(texts);
-      Core.onChangeLanguageFunctions.forEach(func => {
-        func(language);
-      });
     });
   },
   loadLanguage: language => {
@@ -152,7 +152,7 @@ const Core = {
   getText: (key, values) => {
     let text = variables.texts[key];
     if (!text) {
-      throw new Error(`Invalid key for text: ${key}`);
+      throw new Error(`Invalid key for text: ${key}.`);
     }
     if (values) {
       if (Core.isArray(values)) {
@@ -539,8 +539,8 @@ const Core = {
     console.log(`*** ${JSON.stringify(message)}`);
     Core.sendPost(`/api/v1/messages/session`, null, message);
   },
-  setTextsFor: ids => {
-    ids.forEach(o => {
+  setTextsFor: values => {
+    values.forEach(o => {
       if (Object.prototype.toString.call(o) === '[object String]') {
         const id = o;
         const element = document.getElementById(id);

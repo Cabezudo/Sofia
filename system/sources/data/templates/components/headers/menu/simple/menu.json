@@ -51,9 +51,7 @@
     },
     "items": [
       {
-        "name": {
-          "es": "item 1"
-        },
+        "id": "item 1",
         "url": "url",
         "logged": null,
         "hide": [
@@ -65,9 +63,7 @@
         ]
       },
       {
-        "name": {
-          "es": "item 2"
-        },
+        "id": "item 2",
         "url": "url",
         "logged": null
       }

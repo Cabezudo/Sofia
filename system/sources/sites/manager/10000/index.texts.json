@@ -14,5 +14,17 @@
   "title": {
     "en": "Sofia server",
     "es": "Servidor Sofía"
+  },
+  "login": {
+    "en": "Login",
+    "es": "Acceso"
+  },
+  "logout": {
+    "en": "Logout",
+    "es": "Salir"
+  },
+  "documentation": {
+    "en": "Documentation",
+    "es": "Documentación"
   }
 }

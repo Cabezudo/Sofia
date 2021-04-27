@@ -13,26 +13,17 @@
       "description": "web for people",
       "items": [
         {
-          "name": {
-            "en": "Login",
-            "es": "Acceso"
-          },
+          "id": "login",
           "logged": false,
           "url": "/login.html"
         },
         {
-          "name": {
-            "en": "Logout",
-            "es": "Salir"
-          },
+          "id": "logout",
           "logged": true,
           "url": "/logout"
         },
         {
-          "name": {
-            "en": "Documentation",
-            "es": "Documentación"
-          },
+          "id": "documentation",
           "url": "/docs/"
         },
         {
