@@ -9,7 +9,6 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.SessionManager;
-import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.texts.TextManager;
@@ -17,6 +16,7 @@ import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
+import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 
 /**
@@ -44,8 +44,8 @@ public class VariablesJSServlet {
       URI uri = new URI(referrer);
       String path = uri.getPath();
       String page;
-      if (path.equals("/")) {
-        page = "/index";
+      if (path.endsWith("/")) {
+        page = path + "index";
       } else {
         page = path.substring(0, path.length() - 5);
       }
