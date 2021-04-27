@@ -15,9 +15,9 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class HTMLFragmentLine extends HTMLFileLine {
 
-  public HTMLFragmentLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller)
+  public HTMLFragmentLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, TextsFile textsFile, Tag tag, int lineNumber, Caller caller)
           throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
-    super(site, basePath, parentPath, templateVariables, tag, lineNumber, caller);
+    super(site, basePath, parentPath, templateVariables, textsFile, tag, lineNumber, caller);
   }
 
   @Override
@@ -27,6 +27,13 @@ public class HTMLFragmentLine extends HTMLFileLine {
     int i = fileName.lastIndexOf(".");
     String partialFile = fileName.substring(0, i);
     return templatesBasePath.resolve(partialFile + ".json");
+  }
+
+  @Override
+  Path getTextsFilePath() {
+    String fileName = getFilePath().toString();
+    String textsFileName = fileName.replace(".html", ".texts.json");
+    return getBasePath().resolve(textsFileName);
   }
 
   @Override
@@ -47,6 +54,6 @@ public class HTMLFragmentLine extends HTMLFileLine {
     } else {
       fullFileBasePath = caller.getBasePath().resolve(partialFilePathString);
     }
-    return new HTMLFragmentSourceFile(getSite(), fullFileBasePath, getFilePath(), null, getTemplateVariables(), caller);
+    return new HTMLFragmentSourceFile(getSite(), fullFileBasePath, getFilePath(), null, getTemplateVariables(), getTextsFile(), caller);
   }
 }

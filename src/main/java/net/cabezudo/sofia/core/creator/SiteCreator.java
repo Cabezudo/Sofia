@@ -51,6 +51,8 @@ public class SiteCreator {
     Files.createDirectories(site.getVersionPath());
 
     TemplateVariables templateVariables = new TemplateVariables();
+    TextsFile textsFile = new TextsFile();
+
     try {
       templateVariables.add(site.getVersionedSourcesPath(), Site.COMMONS_FILE_NAME);
     } catch (UndefinedLiteralException e) {
@@ -68,7 +70,7 @@ public class SiteCreator {
 
     Path basePath = site.getVersionedSourcesPath();
 
-    HTMLSourceFile baseFile = new HTMLPageSourceFile(site, basePath, htmlPartialPath, templateVariables, null);
+    HTMLSourceFile baseFile = new HTMLPageSourceFile(site, basePath, htmlPartialPath, templateVariables, textsFile, null);
     baseFile.loadHTMLFile();
 
     Caller baseFileCaller = new Caller(baseFile, 0);
@@ -89,8 +91,6 @@ public class SiteCreator {
     // Read all the CSS files from the CSS path
     Path cssFilePath = site.getFilesPath(cssPartialPath);
     cssFile.save(cssFilePath);
-
-    TextsFile textsFile = new TextsFile();
 
     Path commonsFileTextsPath = site.getVersionedSourcesPath().resolve(Site.TEXTS_FILE_NAME);
     try {

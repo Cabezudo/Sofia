@@ -16,9 +16,9 @@ import net.cabezudo.sofia.logger.Logger;
  */
 class HTMLTemplateLine extends HTMLFileLine {
 
-  public HTMLTemplateLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller)
+  public HTMLTemplateLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, TextsFile textsFile, Tag tag, int lineNumber, Caller caller)
           throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
-    super(site, basePath, parentPath, templateVariables, tag, lineNumber, caller);
+    super(site, basePath, parentPath, templateVariables, textsFile, tag, lineNumber, caller);
   }
 
   @Override
@@ -37,6 +37,13 @@ class HTMLTemplateLine extends HTMLFileLine {
   }
 
   @Override
+  Path getTextsFilePath() {
+    String fileName = getFilePath().toString();
+    String textsFileName = fileName.replace(".html", ".texts.json");
+    return getBasePath().resolve(textsFileName);
+  }
+
+  @Override
   Path getFilePath() {
     String templateName = getTag().getValue("template");
     return Paths.get(templateName + ".html");
@@ -47,6 +54,6 @@ class HTMLTemplateLine extends HTMLFileLine {
   HTMLSourceFile getHTMLSourceFile(Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException {
     Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
     Logger.debug("[HTMLTemplateLine:getHTMLSourceFile] Create new HTMLTemplateSectionSourceFile using %s.", templatesBasePath);
-    return new HTMLTemplateSectionSourceFile(getSite(), templatesBasePath, getFilePath(), getTag().getId(), getTemplateVariables(), caller);
+    return new HTMLTemplateSectionSourceFile(getSite(), templatesBasePath, getFilePath(), getTag().getId(), getTemplateVariables(), getTextsFile(), caller);
   }
 }

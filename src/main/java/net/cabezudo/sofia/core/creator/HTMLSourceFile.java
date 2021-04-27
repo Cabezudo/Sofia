@@ -28,6 +28,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   private final Path partialPath;
   private final Path partialFilePath;
   private final TemplateVariables templateVariables;
+  private final TextsFile textsFile;
   private final Caller caller;
   private final Lines lines;
   protected final CSSImports cssImports;
@@ -37,13 +38,14 @@ abstract class HTMLSourceFile implements SofiaSource {
   private Profiles profiles = new Profiles();
   private final String id;
 
-  HTMLSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, Caller caller)
+  HTMLSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, TextsFile textsFile, Caller caller)
           throws IOException, LocatedSiteCreationException, SiteCreationException, InvalidFragmentTag {
     this.site = site;
     this.basePath = basePath;
     this.partialFilePath = partialPath;
     this.partialPath = partialPath.getParent();
     this.templateVariables = templateVariables;
+    this.textsFile = textsFile;
     this.caller = caller;
     this.lines = new Lines();
     this.cssImports = new CSSImports();
@@ -78,6 +80,10 @@ abstract class HTMLSourceFile implements SofiaSource {
 
   TemplateVariables getTemplateVariables() {
     return templateVariables;
+  }
+
+  TextsFile getTextsFile() {
+    return textsFile;
   }
 
   Caller getCaller() {
@@ -126,7 +132,7 @@ abstract class HTMLSourceFile implements SofiaSource {
         Logger.debug("[HTMLSourceFile:loadHTMLFile] Load template %s from file %s in HTML source file.", voidTemplatePath, jsonPartialPath);
 
         Caller templateCaller = new Caller(getBasePath(), getPartialFilePath(), 0, caller);
-        HTMLSourceFile templateFile = new JSONTemplateHTMLSourceFile(getSite(), commonsComponentsTemplatePath, voidTemplatePath, getTemplateVariables(), templateCaller);
+        HTMLSourceFile templateFile = new JSONTemplateHTMLSourceFile(getSite(), commonsComponentsTemplatePath, voidTemplatePath, getTemplateVariables(), getTextsFile(), templateCaller);
         templateFile.loadHTMLFile();
         profiles.add(templateFile.getProfiles());
         libraries.add(templateFile.getLibraries());
@@ -146,7 +152,7 @@ abstract class HTMLSourceFile implements SofiaSource {
         Logger.debug("[HTMLSourceFile:loadHTMLFile] Load page %s from file %s in HTML source file.", voidPagePath, jsonPartialPath);
 
         Caller pageCaller = new Caller(getBasePath(), getPartialFilePath(), 0, caller);
-        HTMLSourceFile pageSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), pageCaller);
+        HTMLSourceFile pageSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), getTextsFile(), pageCaller);
         pageSourceFile.loadHTMLFile();
         profiles.add(pageSourceFile.getProfiles());
         libraries.add(pageSourceFile.getLibraries());
@@ -260,7 +266,7 @@ abstract class HTMLSourceFile implements SofiaSource {
     // If the tag is a section we search for a file or template in order to load the file
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
-        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), tag, lineNumber, getCaller());
+        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), getTextsFile(), tag, lineNumber, getCaller());
         fragmentLine.load();
         // TODO Add custom configuration for a file.
         return fragmentLine;
@@ -296,7 +302,7 @@ abstract class HTMLSourceFile implements SofiaSource {
           throw new SiteCreationException(e.getMessage());
         }
 
-        HTMLTemplateLine templateLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), tag, lineNumber, getCaller());
+        HTMLTemplateLine templateLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), textsFile, tag, lineNumber, getCaller());
         templateLine.load();
 
         return templateLine;

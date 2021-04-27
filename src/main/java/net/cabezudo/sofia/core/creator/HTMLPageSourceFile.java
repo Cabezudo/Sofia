@@ -16,9 +16,9 @@ import net.cabezudo.sofia.logger.Logger;
  */
 class HTMLPageSourceFile extends HTMLSourceFile {
 
-  HTMLPageSourceFile(Site site, Path basePath, Path htmlPartialPath, TemplateVariables templateVariables, Caller caller)
+  HTMLPageSourceFile(Site site, Path basePath, Path htmlPartialPath, TemplateVariables templateVariables, TextsFile textsFile, Caller caller)
           throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag {
-    super(site, basePath, htmlPartialPath, null, templateVariables, caller);
+    super(site, basePath, htmlPartialPath, null, templateVariables, textsFile, caller);
   }
 
   @Override
