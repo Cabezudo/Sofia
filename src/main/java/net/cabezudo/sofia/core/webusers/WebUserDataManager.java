@@ -15,7 +15,6 @@ import net.cabezudo.sofia.core.currency.CurrencyManager;
 import net.cabezudo.sofia.core.currency.InvalidCurrencyCodeException;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
-import net.cabezudo.sofia.core.http.WebUserData;
 import net.cabezudo.sofia.core.languages.InvalidTwoLettersCodeException;
 import net.cabezudo.sofia.core.languages.Language;
 import net.cabezudo.sofia.core.languages.LanguageManager;

@@ -568,3 +568,5 @@ De esta forma se recrea la base de datos de cero y se cargan datos de prueba.
 ### Configuración global del servidor
 
 ## Configuración del sitio
+
+El lenguaje por defecto es el aceptado por el navegador y si no se encuentra inglés.
