@@ -8,15 +8,11 @@
       },
       "items": [
         {
-          "name": {
-            "en": "Home"
-          },
+          "id": "home",
           "url": "/"
         },
         {
-          "name": {
-            "en": "Logout"
-          },
+          "id": "logout",
           "logged": true,
           "url": "/logout"
         },

@@ -1,2 +1,18 @@
 {
+  "home": {
+    "en": "Home",
+    "es": "Inicio"
+  },
+  "login": {
+    "en": "Login",
+    "es": "Acceso"
+  },
+  "logout": {
+    "en": "Logout",
+    "es": "Salir"
+  },
+  "license": {
+    "en": "License",
+    "es": "Licencia"
+  }
 }

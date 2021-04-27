@@ -13,14 +13,15 @@
     <script>
       {
         const createGUI = () => {
-          linkTo({
+          new Link({
             id: 'sitesLink',
             onClick: '/manager/sites/sites.html'
           });
-          linkTo({
+          new Link({
             id: 'usersLink',
             onClick: '/manager/users/users.html'
           });
+          Core.setTextsFor(['title']);
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -46,10 +47,9 @@
       <section id="header" template="headers/menu/simple/menu"></section>
       <section class="container straitened">
         <section class="content">
-          <h2 class="title">Administración</h2>
-          <div id="sitesLink" class="screenMenuItem">Sitios</div>
-          <div id="sitesLink" class="screenMenuItem">URL transformations</div>
-          <div id="usersLink" class="screenMenuItem">Usuarios</div>
+          <h2 class="title" id="title"></h2>
+          <div id="sitesLink" class="screenMenuItem"></div>
+          <div id="usersLink" class="screenMenuItem"></div>
         </section>
       </section>
       <section id="footer" file="/footer.html"></section>
