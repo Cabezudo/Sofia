@@ -24,19 +24,21 @@ public abstract class HTMLFileLine extends Line {
   private final Site site;
   private final Path basePath;
   private final TemplateVariables templateVariables;
+  private final TextsFile textsFile;
   private final Tag tag;
   private final Caller caller;
   private final Line startLine;
   private final Line endLine;
   private HTMLSourceFile htmlSourceFile;
 
-  HTMLFileLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, Tag tag, int lineNumber, Caller caller)
+  HTMLFileLine(Site site, Path basePath, Path parentPath, TemplateVariables templateVariables, TextsFile textsFile, Tag tag, int lineNumber, Caller caller)
           throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     super(lineNumber);
 
     this.site = site;
     this.basePath = basePath;
     this.templateVariables = templateVariables;
+    this.textsFile = textsFile;
     this.tag = tag;
     this.caller = caller;
 
@@ -49,6 +51,7 @@ public abstract class HTMLFileLine extends Line {
     Logger.debug("[HTMLFileLine:load] Load file line %s.", getFilePath());
 
     readJSONFile();
+    readTextsFile();
 
     try {
       String configurationFile = tag.getValue("configurationFile");
@@ -71,6 +74,8 @@ public abstract class HTMLFileLine extends Line {
 
   abstract Path getConfigurationFilePath(Caller caller);
 
+  abstract Path getTextsFilePath();
+
   abstract Path getFilePath();
 
   abstract HTMLSourceFile getHTMLSourceFile(Caller caller)
@@ -85,6 +90,18 @@ public abstract class HTMLFileLine extends Line {
       templateVariables.merge(jsonObject);
     } else {
       Logger.debug("Configuration file %s NOT FOUND.", configurationFilePath);
+    }
+  }
+
+  private void readTextsFile() throws JSONParseException, IOException {
+    Path textsFilePath = getTextsFilePath();
+    Logger.debug("Search texts file %s.", textsFilePath);
+    if (Files.exists(textsFilePath)) {
+      Logger.debug("Load texts file %s.", textsFilePath);
+      JSONObject jsonObject = JSON.parse(textsFilePath, Configuration.getInstance().getEncoding().toString()).toJSONObject();
+      textsFile.add(jsonObject);
+    } else {
+      Logger.debug("Texts file %s NOT FOUND.", textsFilePath);
     }
   }
 
@@ -119,6 +136,10 @@ public abstract class HTMLFileLine extends Line {
 
   TemplateVariables getTemplateVariables() {
     return templateVariables;
+  }
+
+  TextsFile getTextsFile() {
+    return textsFile;
   }
 
   @Override

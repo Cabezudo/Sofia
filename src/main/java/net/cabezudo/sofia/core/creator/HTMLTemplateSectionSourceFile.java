@@ -10,8 +10,8 @@ import net.cabezudo.sofia.core.sites.Site;
  */
 public class HTMLTemplateSectionSourceFile extends HTMLTemplateSourceFile {
 
-  public HTMLTemplateSectionSourceFile(Site site, Path templatesBasePath, Path templatePath, String id, TemplateVariables templateVariables, Caller caller)
+  public HTMLTemplateSectionSourceFile(Site site, Path templatesBasePath, Path templatePath, String id, TemplateVariables templateVariables, TextsFile textsFile, Caller caller)
           throws IOException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag {
-    super(site, templatesBasePath, templatePath, id, templateVariables, caller);
+    super(site, templatesBasePath, templatePath, id, templateVariables, textsFile, caller);
   }
 }

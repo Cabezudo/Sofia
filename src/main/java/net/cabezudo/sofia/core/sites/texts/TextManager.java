@@ -43,6 +43,7 @@ public class TextManager {
   public static void add(JSONObject jsonTexts) {
     INSTANCE.jsonTexts.merge(jsonTexts);
   }
+
   private final JSONObject jsonTexts;
 
   public static String get(Language language, String messageKey, Object... parameters) {

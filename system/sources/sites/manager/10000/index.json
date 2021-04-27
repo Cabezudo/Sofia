@@ -14,21 +14,24 @@
       "items": [
         {
           "name": {
-            "en": "Login"
+            "en": "Login",
+            "es": "Acceso"
           },
           "logged": false,
           "url": "/login.html"
         },
         {
           "name": {
-            "en": "Logout"
+            "en": "Logout",
+            "es": "Salir"
           },
           "logged": true,
           "url": "/logout"
         },
         {
           "name": {
-            "en": "Documentation"
+            "en": "Documentation",
+            "es": "Documentación"
           },
           "url": "/docs/"
         },
