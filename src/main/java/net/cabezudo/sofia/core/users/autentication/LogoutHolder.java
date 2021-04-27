@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.SessionManager;
-import net.cabezudo.sofia.core.http.WebUserData;
+import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 
 /**

@@ -16,7 +16,7 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.QueryString;
 import net.cabezudo.sofia.core.http.SessionManager;
-import net.cabezudo.sofia.core.http.WebUserData;
+import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.server.html.SofiaHTMLServletRequest;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;

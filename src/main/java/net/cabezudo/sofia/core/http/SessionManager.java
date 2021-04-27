@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.http;
 
+import net.cabezudo.sofia.core.webusers.WebUserData;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;

@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.http;
+package net.cabezudo.sofia.core.webusers;
 
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
