@@ -1,0 +1,18 @@
+{
+  "documentationLink": {
+    "en": "Documentation",
+    "es": "Documentación"
+  },
+  "managerLink": {
+    "en": "Manager",
+    "es": "Administrador"
+  },
+  "message": {
+    "en": "The server is working!",
+    "es": "¡El servidor está funcionando!"
+  },
+  "title": {
+    "en": "Sofia server",
+    "es": "Servidor Sofía"
+  }
+}

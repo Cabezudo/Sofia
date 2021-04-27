@@ -77,7 +77,6 @@ const Core = {
       variables.site.language = language;
       Core.addTexts(texts);
       Core.onChangeLanguageFunctions.forEach(func => {
-        console.log(func);
         func(language);
       });
     });
@@ -207,6 +206,12 @@ const Core = {
   },
   isDIV: o => {
     return o !== null && o.tagName === 'DIV';
+  },
+  isObject: v => {
+    return Object.prototype.toString.call(v) === '[object Object]';
+  },
+  isString: v => {
+    return Object.prototype.toString.call(v) === '[object String]';
   },
   isTab: event => {
     return event.key === 'Tab';
@@ -533,6 +538,36 @@ const Core = {
   setSessionMessage: message => {
     console.log(`*** ${JSON.stringify(message)}`);
     Core.sendPost(`/api/v1/messages/session`, null, message);
+  },
+  setTextsFor: ids => {
+    ids.forEach(o => {
+      if (Object.prototype.toString.call(o) === '[object String]') {
+        const id = o;
+        const element = document.getElementById(id);
+        if (element) {
+          const text = variables.texts[id];
+          if (text) {
+            element.innerHTML = text;
+          } else {
+            console.warn(`No text found for the key ${id}`);
+          }
+        } else {
+          console.warn(`No element found for the id ${id}`);
+        }
+      }
+      if (Object.prototype.toString.call(o) === '[object Object]') {
+        const object = o;
+        if (Core.isFunction(object.setText)) {
+          const id = object.getId();
+          const text = variables.texts[id];
+          if (text) {
+            object.setText(text);
+          } else {
+            console.warn(`No text found for the key ${id}`);
+          }
+        }
+      }
+    });
   },
   show: (id) => {
     const element = typeof id === 'string' ? document.getElementById(id) : id;
