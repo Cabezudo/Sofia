@@ -555,7 +555,19 @@ Existen varias formas para agregar textos en el frontend.
 
 1. Podemos agregarlo agergarlo en el archivo texts.json del raíz de los fuentes del sitio.
 
-1. Usar un archivo `[nombrePagina].texts.json`. Este archivo reemplaza las entradas que encuentre en texts.json
+1. Usar un archivo `[nombrePagina].texts.json`. Este archivo reemplaza las entradas que encuentre en texts.json y funciona con fragmentos y templates. Si creamos contenido dinámicamente podemos utilizar `Core.getText(key, [arguments])`. Para los téxtos en elementos HTML debemos marcarlos para actualizar usando `setTextFor(values)`. Esta función toma un arreglo de valores que pueden ser cadenas u objetos.
+
+Si es una cadena, es utilizada como id del elemento HTML en donde se va a sustituir el texto y como clave para obtener el texto en core. Esto quiere decir que el id del elemento debe ser igual a la clave del texto. Esta es la forma mas económica pero solo se le puede poner un texto a un `id`.
+
+El valor puede ser un objeto. En este caso existen tres posibilidades.
+
+La otra posibilidad es que el valor sea un objeto con una funcion `setText(Value)` y una funcion `getId()`. En este caso se utiliza el id entregado por el objeto para encontrar el texto en Core. Esta es la forma mas económica de aplicarle un texto a un componente.
+
+Si el objeto tiene una propiedad `id` y una propiedad `key` se usa el id para encontrar el elemento y la key para encontrar el valor en los textos. De esta forma se pueden tener el mismo texto para varios `id`.
+
+Si el objeto tiene una propiedad `key` y una propiedad `object`, se utiliza la `key` para obtener el texto y se aplica el texto al objeto indicado en la propiedad `object`. Este objeto debe tener una función `setText(Value)` para poder aplicarle el texto. De esta forma se puede aplicar el mismo texto a varios componentes.
+
+Es posible, a algunos componentes, indicarle la key para encontrar el texto y que este se asigne automáticamente. La idea es que en un futuro todos los componentes tengan esta posibilidad. Los nuevos componentes deberían se ser programados para tomar un parámetro `key` para encontrar el texto buscado, un parámetro `parameters` para sustituir los parámetros en el texto y un método `setText(value, parameters)` para modificar el texto programáticamente.
 
 1. Usando la función `Core.addTexts` dentro del código JS. Esto solo funciona para el lenguaje actual por lo que solo se debería de utilizar en una función en tiempo de ejecución. Es una punto de entrada al mecanismo de manejo de textos para aumentar la flexibilidad.
 

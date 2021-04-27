@@ -190,27 +190,12 @@
         setFlag();
       };
       createGUI();
-      Core.addOnChangeLanguageFunction(setFlag);
+      Core.addOnSetLanguageFunction(setFlag);
     }
   }
 </script>
 <script>
   {
-    const setText = (texts, element) => {
-      if (texts) {
-        let text = texts[variables.site.language];
-        if (!text) {
-          text = texts.en;
-        }
-        element.innerHTML = text;
-      }
-    };
-    const setTexts = () => {
-      menu.childNodes.forEach(item => {
-        const texts = item.texts;
-        setText(texts, item);
-      });
-    };
     const createGUI = () => {
       const items = #{menu}.items;
       const menu = Core.validateById('menu');
@@ -258,13 +243,16 @@
             });
             return itemElement;
           };
-          if (item.name !== undefined) {
+          if (item.id) {
             const itemElement = document.createElement('div');
             menu.appendChild(itemElement);
             itemElement.className = 'item';
-            itemElement.texts = item.name;
-            setText(item.name, itemElement);
+            itemElement.id = item.id;
+            if (!item.key) {
+              item.key = item.id;
+            }
             new Link({
+              key: item.key,
               onClick: item.url,
               element: itemElement
             });
@@ -337,7 +325,6 @@
       });
     };
     Core.addOnCreateFunction(createGUI);
-    Core.addOnChangeLanguageFunction(setTexts);
   }
 </script>
 <div class="headerContainer">
