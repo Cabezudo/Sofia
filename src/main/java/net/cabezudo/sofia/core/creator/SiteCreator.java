@@ -33,10 +33,18 @@ public class SiteCreator {
     return INSTANCE;
   }
 
-  public void createPages(Site site, String requestURI) throws IOException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, ClusterException {
+  public void createPages(Site site, String requestURI)
+          throws IOException, JSONParseException, SiteCreationException, LocatedSiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, ClusterException {
+
+    Logger.debug("Create pages for URI %s.", requestURI);
     String htmlPartialPathName = requestURI.substring(1);
     String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPathName.length() - 5); // Used to create the javascript and css files for this html page
     Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");
+    Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
+    if (Environment.getInstance().isProduction() && Files.exists(htmlFilePath)) {
+      return;
+    }
+
     Path cssPartialPath = Paths.get(voidPartialPathName + ".css");
     Path jsPartialPath = Paths.get(voidPartialPathName + ".js");
     Path textsPartialPath = Paths.get(voidPartialPathName);
@@ -114,7 +122,6 @@ public class SiteCreator {
     Path textsFilePath = site.getFilesPath(textsPartialPath);
     textsFile.save(textsFilePath);
 
-    Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
     baseFile.save(htmlFilePath);
   }
 

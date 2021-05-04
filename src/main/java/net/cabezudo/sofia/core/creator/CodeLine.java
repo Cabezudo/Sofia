@@ -53,12 +53,12 @@ public class CodeLine extends Line {
 
   @Override
   boolean isNotEmpty() {
-    return !line.isEmpty();
+    return !line.trim().isEmpty();
   }
 
   @Override
   boolean isCSSImport() {
-    return line.startsWith("@import ");
+    return line.trim().startsWith("@import ");
   }
 
   @Override
@@ -73,7 +73,7 @@ public class CodeLine extends Line {
 
   @Override
   boolean startWith(String start) {
-    return line.startsWith(start);
+    return line.trim().startsWith(start);
   }
 
   @Override

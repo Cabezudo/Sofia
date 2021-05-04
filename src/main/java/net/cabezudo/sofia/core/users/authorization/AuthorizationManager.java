@@ -60,7 +60,7 @@ public class AuthorizationManager {
       for (Profile profile : profiles) {
         Logger.debug("Profile %s.", profile.getName());
         if (PermissionManager.getInstance().has(connection, profile, requestURI, permissionType, site)) {
-          Logger.debug("The usrer has permissions.");
+          Logger.debug("The user has permissions.");
           return true;
         }
       }

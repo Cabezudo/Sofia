@@ -47,7 +47,7 @@ abstract class HTMLSourceFile implements SofiaSource {
     this.templateVariables = templateVariables;
     this.textsFile = textsFile;
     this.caller = caller;
-    this.lines = new Lines();
+    this.lines = new HTMLLines();
     this.cssImports = new CSSImports();
     this.libraries = new Libraries();
     this.id = id;
@@ -387,7 +387,7 @@ abstract class HTMLSourceFile implements SofiaSource {
 
   @Override
   public Lines getJavaScriptLines() {
-    Lines codeLines = new Lines();
+    Lines codeLines = new JSLines();
     codeLines.add(js.getJavaScriptLines());
     for (Line line : getLines()) {
       codeLines.add(line.getJavaScriptLines());
@@ -411,7 +411,7 @@ abstract class HTMLSourceFile implements SofiaSource {
 
   @Override
   public Lines getCascadingStyleSheetLines() {
-    Lines codeLines = new Lines();
+    Lines codeLines = new CSSLines();
     codeLines.add(css.getCascadingStyleSheetLines());
     for (Line line : getLines()) {
       Lines cssLines = line.getCascadingStyleSheetLines();
