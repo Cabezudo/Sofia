@@ -38,7 +38,7 @@ public class Utils {
   }
 
   private Utils() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 
   public static String repeat(char c, int length) {

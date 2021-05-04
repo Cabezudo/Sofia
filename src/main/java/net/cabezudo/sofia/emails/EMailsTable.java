@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.emails;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.people.PeopleTable;
 
 /**
@@ -12,15 +13,16 @@ public class EMailsTable {
     // Nothing to do here
   }
 
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "emails";
   public static final String CREATION_QUERY
-          = "CREATE TABLE " + NAME + " "
+          = "CREATE TABLE " + DATABASE_NAME + "." + NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`personId` INT NOT NULL, "
           + "`address` VARCHAR(" + EMail.MAX_LENGTH + ") NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "FOREIGN KEY (`personId`) REFERENCES " + PeopleTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`personId`) REFERENCES " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + "(`id`), "
           + "INDEX `iPersonId` (`personId`), "
           + "UNIQUE INDEX `iAddress` (`address`)"
           + ") "

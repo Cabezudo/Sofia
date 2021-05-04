@@ -1,12 +1,14 @@
 package net.cabezudo.sofia.core.currency;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2021.03.30
  */
 public class CurrenciesTable {
 
-  public static final String DATABASE_NAME = "sofia";
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "currencies";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "

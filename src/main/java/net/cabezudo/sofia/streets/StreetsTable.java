@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.streets;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.users.UsersTable;
 
 /**
@@ -8,6 +9,11 @@ import net.cabezudo.sofia.core.users.UsersTable;
  */
 public class StreetsTable {
 
+  private StreetsTable() {
+    // Utility classes should not have public constructors.
+  }
+
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "streets";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -16,7 +22,7 @@ public class StreetsTable {
           + "`name` INT NOT NULL, "
           + "`owner` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iNameOwner` (`name`, `owner`)"
           + ") "
           + "CHARACTER SET = UTF8";

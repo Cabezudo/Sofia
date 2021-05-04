@@ -113,7 +113,9 @@ public class AuthorizationManager {
   }
 
   public void delete(Connection connection, String requestURI, Site site) throws ClusterException {
-    String query = "DELETE FROM " + ProfilesPermissionsTable.NAME + " WHERE permission = (SELECT id FROM " + PermissionsTable.NAME + " WHERE uri = ? AND site = ?)";
+    String query
+            = "DELETE FROM " + ProfilesPermissionsTable.DATABASE_NAME + "." + ProfilesPermissionsTable.NAME + " "
+            + "WHERE permission = (SELECT id FROM " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " WHERE uri = ? AND site = ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, requestURI);
       ps.setInt(2, site.getId());

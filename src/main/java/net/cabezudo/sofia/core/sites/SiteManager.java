@@ -70,9 +70,10 @@ public class SiteManager extends Manager {
   public Site getById(Connection connection, int siteId) throws ClusterException {
     ResultSet rs = null;
     String query
-            = "SELECT s.id AS siteId, s.name AS siteName, s.basePath AS sitebasePath, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
-            + "FROM " + SitesTable.NAME + " AS s "
-            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            = "SELECT s.id AS siteId, s.name AS siteName, s.basePath AS sitebasePath, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, "
+            + "d.name AS domainNameName "
+            + "FROM " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.id = ? ORDER BY domainName";
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, siteId);
@@ -166,7 +167,7 @@ public class SiteManager extends Manager {
 
   public Site update(Connection connection, Site site) throws ClusterException {
     // TODO Update the domain name list
-    String query = "UPDATE " + SitesTable.NAME + " SET name = ?, domainName = ? WHERE id = ?";
+    String query = "UPDATE " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " SET name = ?, domainName = ? WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, site.getName());
       ps.setInt(2, site.getBaseDomainName().getId());
@@ -201,9 +202,10 @@ public class SiteManager extends Manager {
 
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
       String query
-              = "SELECT s.id AS siteId, s.name AS siteName, s.basePath AS siteBasePath, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
-              + "FROM " + SitesTable.NAME + " AS s "
-              + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+              = "SELECT s.id AS siteId, s.name AS siteName, s.basePath AS siteBasePath, s.domainName AS baseDomainNameId, s.version AS siteVersion, "
+              + "d.id AS domainNameId, d.name AS domainNameName "
+              + "FROM " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " AS s "
+              + "LEFT JOIN " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
               + where + sqlSort + sqlLimit;
       ResultSet rs = null;
       SiteList list;
@@ -268,7 +270,7 @@ public class SiteManager extends Manager {
       default:
         throw new InvalidParameterException("Invalid parameter value: " + field);
     }
-    String query = "UPDATE " + SitesTable.NAME + " SET " + field + " = ? WHERE id = ?";
+    String query = "UPDATE " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " SET " + field + " = ? WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, value);
       ps.setInt(2, siteId);
@@ -312,8 +314,8 @@ public class SiteManager extends Manager {
             = "SELECT "
             + "s.id AS siteId, s.name AS siteName, s.basePath aS siteBasePath, s.domainName AS baseDomainNameId, version AS siteVersion, "
             + "d.id AS domainNameId, d.name AS domainNameName "
-            + "FROM " + SitesTable.NAME + " AS s "
-            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "FROM " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.name = ? ORDER BY domainName";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -374,15 +376,17 @@ public class SiteManager extends Manager {
 
   public void delete(Connection connection, int siteId) throws ClusterException {
 
-    String deleteUsersProfilesQuery = "DELETE FROM " + UsersProfilesTable.NAME + " WHERE user IN (SELECT user FROM " + UsersTable.NAME + " WHERE site = ?)";
-    String deleteUsersQuery = "DELETE FROM " + UsersTable.NAME + " WHERE site = ?";
-    String deleteProfilesPermissionsQuery = "DELETE FROM " + ProfilesPermissionsTable.NAME + " WHERE site = ?";
-    String deleteHostsQuery = "DELETE FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
-    String deleteProfilesQuery = "DELETE FROM " + ProfilesTable.NAME + " WHERE site = ?";
-    String deletePermissionsPermissionTypesQuery = "DELETE FROM " + PermissionsPermissionTypesTable.NAME + " WHERE site = ?";
-    String deletePermissionsQuery = "DELETE FROM " + PermissionsTable.NAME + " WHERE site = ?";
-    String deletePermissionTypesQuery = "DELETE FROM " + PermissionTypesTable.NAME + " WHERE site = ?";
-    String deleteSiteQuery = "DELETE FROM " + SitesTable.NAME + " WHERE id = ?";
+    String deleteUsersProfilesQuery
+            = "DELETE FROM " + UsersProfilesTable.DATABASE_NAME + "." + UsersProfilesTable.NAME + " "
+            + "WHERE user IN (SELECT user FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " WHERE site = ?)";
+    String deleteUsersQuery = "DELETE FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " WHERE site = ?";
+    String deleteProfilesPermissionsQuery = "DELETE FROM " + ProfilesPermissionsTable.DATABASE_NAME + "." + ProfilesPermissionsTable.NAME + " WHERE site = ?";
+    String deleteHostsQuery = "DELETE FROM " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " WHERE siteId = ?";
+    String deleteProfilesQuery = "DELETE FROM " + ProfilesTable.DATABASE_NAME + "." + ProfilesTable.NAME + " WHERE site = ?";
+    String deletePermissionsPermissionTypesQuery = "DELETE FROM " + PermissionsPermissionTypesTable.DATABASE_NAME + "." + PermissionsPermissionTypesTable.NAME + " WHERE site = ?";
+    String deletePermissionsQuery = "DELETE FROM " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " WHERE site = ?";
+    String deletePermissionTypesQuery = "DELETE FROM " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + " WHERE site = ?";
+    String deleteSiteQuery = "DELETE FROM " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " WHERE id = ?";
     try (
             PreparedStatement dupps = connection.prepareStatement(deleteUsersProfilesQuery);
             PreparedStatement dups = connection.prepareStatement(deleteUsersQuery);
@@ -437,11 +441,11 @@ public class SiteManager extends Manager {
   public Sites getByUserEMail(Connection connection, EMail eMail) throws ClusterException {
     String query
             = "SELECT s.id AS siteId, s.name AS siteName, s.domainName AS baseDomainNameId, s.version AS siteVersion, d.id AS domainNameId, h.name AS domainNameName "
-            + "FROM " + SitesTable.NAME + " AS s "
-            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
-            + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON h.id = d.siteId "
-            + "LEFT JOIN " + UsersTable.NAME + " AS u ON s.id = u.id "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "FROM " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " AS s "
+            + "LEFT JOIN " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
+            + "LEFT JOIN " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " AS d ON h.id = d.siteId "
+            + "LEFT JOIN " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u ON s.id = u.id "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
             + "WHERE address = ? "
             + "ORDER BY siteId";
 
@@ -486,7 +490,7 @@ public class SiteManager extends Manager {
       String sqlSort = QueryHelper.getOrderString(sort, "name", validSortColumns);
       String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-      String query = "SELECT count(*) AS total FROM " + SitesTable.NAME + where + sqlSort + sqlLimit;
+      String query = "SELECT count(*) AS total FROM " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + where + sqlSort + sqlLimit;
       ResultSet rs = null;
       try (PreparedStatement ps = connection.prepareStatement(query);) {
         QueryHelper.setFiltersValues(filters, ps);
@@ -522,7 +526,7 @@ public class SiteManager extends Manager {
 
     String sqlLimit = " LIMIT " + sqlOffsetValue + ", " + sqlLimitValue;
 
-    String query = "SELECT count(*) AS total FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
+    String query = "SELECT count(*) AS total FROM " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
     ResultSet rs = null;
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       int i = 1;
@@ -587,7 +591,7 @@ public class SiteManager extends Manager {
       ResultSet rs = null;
       DomainNameList list;
       int i = 1;
-      String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
+      String query = "SELECT id, siteId, name FROM " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + where + sqlSort + sqlLimit;
       try (PreparedStatement ps = connection.prepareStatement(query);) {
         ps.setInt(i, site.getId());
         setHostFilters(filters, ps);

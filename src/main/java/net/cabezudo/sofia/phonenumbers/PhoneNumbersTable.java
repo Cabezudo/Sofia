@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.phonenumbers;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.people.PeopleTable;
 
 /**
@@ -8,9 +9,7 @@ import net.cabezudo.sofia.people.PeopleTable;
  */
 public class PhoneNumbersTable {
 
-  private PhoneNumbersTable() {
-    // Nothing to do here
-  }
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "phoneNumbers";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -18,7 +17,11 @@ public class PhoneNumbersTable {
           + "`personId` INT NOT NULL, "
           + "`number` INT(" + PhoneNumber.MAX_LENGTH + ") NOT NULL, "
           + "PRIMARY KEY (`personId`), "
-          + "FOREIGN KEY (`personId`) REFERENCES " + PeopleTable.NAME + "(`id`)"
+          + "FOREIGN KEY (`personId`) REFERENCES " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + "(`id`)"
           + ") "
           + "CHARACTER SET = UTF8";
+
+  private PhoneNumbersTable() {
+    // Utility classes should not have public constructors.
+  }
 }

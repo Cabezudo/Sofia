@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,6 +12,7 @@ import java.util.Scanner;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -20,7 +22,7 @@ import net.cabezudo.sofia.logger.Logger;
 public class Database {
 
   private Database() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 
   public static Connection getConnection() throws SQLException {
@@ -28,12 +30,16 @@ public class Database {
   }
 
   public static Connection getConnection(String databaseName) throws SQLException {
-    return getConnection(databaseName, 20);
+    return getConnection(databaseName, 0);
   }
 
   public static Connection getConnection(String databaseName, int maxReconnects) throws SQLException {
     if (maxReconnects == 0) {
-      maxReconnects = 20;
+      if (Environment.getInstance().isDevelopment()) {
+        maxReconnects = 2;
+      } else {
+        maxReconnects = 20;
+      }
     }
     String databaseHostname = Configuration.getInstance().getDatabaseHostname();
     String databasePort = Configuration.getInstance().getDatabasePort();
@@ -135,16 +141,15 @@ public class Database {
 
   public static boolean exist(String databaseName) throws ClusterException {
     ResultSet rs = null;
-    boolean next;
-    try (Connection connection = getConnection(null, 5); Statement statement = connection.createStatement()) {
-      String query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = '" + databaseName + "'";
-      rs = statement.executeQuery(query);
-      next = rs.next();
+    String query = "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = ?";
+    try (Connection connection = getConnection(null, 5); PreparedStatement ps = connection.prepareStatement(query);) {
+      ps.setString(1, databaseName);
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      return rs.next();
     } catch (SQLException e) {
       throw new ClusterException(e);
     } finally {
       ClusterManager.getInstance().close(rs);
     }
-    return next;
   }
 }

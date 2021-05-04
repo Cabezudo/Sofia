@@ -38,7 +38,7 @@ public class PermissionTypeManager {
   }
 
   private PermissionType get(Connection connection, String name, Site site) throws ClusterException {
-    String query = "SELECT id, name FROM " + PermissionTypesTable.NAME + " WHERE name = ? AND site = ?";
+    String query = "SELECT id, name FROM " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + " WHERE name = ? AND site = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
@@ -65,7 +65,7 @@ public class PermissionTypeManager {
 
   public PermissionType create(Connection connection, String name, Site site) throws ClusterException {
     Logger.debug("Create permission %s of site %s.", name, site.getId());
-    String query = "INSERT INTO " + PermissionTypesTable.NAME + " (name, site) VALUES (?, ?)";
+    String query = "INSERT INTO " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + " (name, site) VALUES (?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);

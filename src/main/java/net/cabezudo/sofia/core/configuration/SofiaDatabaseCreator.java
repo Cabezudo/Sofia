@@ -54,7 +54,7 @@ import net.cabezudo.sofia.zones.ZonesTable;
  */
 public class SofiaDatabaseCreator extends DataCreator {
 
-  private static final String DATABASE_NAME = "sofia";
+  private static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
 
   public SofiaDatabaseCreator() {
     try {

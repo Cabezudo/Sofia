@@ -18,7 +18,7 @@ import net.cabezudo.sofia.core.users.UserManager;
 public class CustomerService {
 
   private CustomerService() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 
   public static Hash sendPasswordRecoveryEMail(Site site, String address) throws MailServerException, IOException, ClusterException, ConfigurationException {

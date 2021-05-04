@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.cities;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.users.UsersTable;
 import net.cabezudo.sofia.states.StatesTable;
 
@@ -9,11 +10,7 @@ import net.cabezudo.sofia.states.StatesTable;
  */
 public class CitiesTable {
 
-  private CitiesTable() {
-    // Nothing to do here. Utility classes should not have public constructors.
-  }
-
-  public static final String DATABASE_NAME = "sofia";
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "cities";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -25,10 +22,14 @@ public class CitiesTable {
           + "`longitude` DECIMAL(8, 5) NOT NULL, "
           + "`owner` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "FOREIGN KEY (`state`) REFERENCES " + StatesTable.NAME + "(`id`), "
-          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`state`) REFERENCES " + StatesTable.DATABASE_NAME + "." + StatesTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iStateName` (`state`, `name`)"
           + ") "
           + "CHARACTER SET = UTF8";
+
+  private CitiesTable() {
+    // Utility classes should not have public constructors.
+  }
 
 }
