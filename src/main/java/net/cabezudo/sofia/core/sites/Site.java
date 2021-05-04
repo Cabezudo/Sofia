@@ -205,7 +205,7 @@ public class Site implements Comparable<Integer> {
   public EMail getNoReplyEMail() {
     // TODO Get this from de site configuration
 //    return new EMail(0, 0, "no-reply@" + this.getBaseHost().getName());
-    return new EMail(0, 0, "esteban@cabezudo.net");
+    return new EMail(0, 0, "test@sofia.academy");
   }
 
   public long getPasswordChangeHashExpireTime() {

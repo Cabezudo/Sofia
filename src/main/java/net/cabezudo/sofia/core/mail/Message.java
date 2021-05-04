@@ -5,6 +5,7 @@ import net.cabezudo.json.JSONable;
 import net.cabezudo.json.values.JSONArray;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.json.values.JSONValue;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.emails.EMail;
 
 /**
@@ -23,7 +24,7 @@ public class Message implements JSONable {
 
   public Message(String fromName, EMail from, String toName, EMail to, String subject, String text, String html) {
     if (from == null) {
-      throw new RuntimeException("No se encontró la dirección de envío.");
+      throw new SofiaRuntimeException("No se encontró la dirección de envío.");
     }
     this.fromName = fromName;
     this.from = from;
@@ -72,45 +73,6 @@ public class Message implements JSONable {
 
     return jsonMessage;
   }
-
-  /*      {
-                 "Messages":[
-                    {
-                       "From":{
-                          "Email":"esteban@cabezudo.net",
-                          "Name":"Mailjet Pilot"
-                       },
-                       "To\":[
-                          {
-                             "Email":"esteban.cabezudo@gmail.com",
-                             "Name":"passenger 1"
-                          }
-                       ],
-                       "Subject":"Your email flight plan!",
-                       "TextPart":"Dear passenger 1, welcome to Mailjet! May the delivery force be with you!",
-                       "HTMLPart":"<h3>Dear passenger 1, welcome to Mailjet!</h3><br />May the delivery force be with you!"
-                    }
-                 ]
-              }
-
-
-  [ { "From": { "Email": "esteban@cabezudo.net", "Name": "No responder" }, "To": { "Email": "esteban.cabezudo@gmail.com", "Name": "Esteban Cabezudo" }, "Subject": "subject", "TextPart": "Plain text", "HTMLPart": "html text" } ]
-  [ { "From": { "Email": "esteban@cabezudo.net",
-   "Name\":"Mailjet Pilot"
-},
-"To\":[
-   {
-      "Email":"esteban.cabezudo@gmail.com",
-      "Name":"passenger 1"
-   }
-],
-"Subject":"Your email flight plan!",
-"TextPart":"Dear passenger 1, welcome to Mailjet! May the delivery force be with you!",
-"HTMLPart":"<h3>Dear passenger 1, welcome to Mailjet!</h3><br />May the delivery force be with you!"
-}
-]
-
-   */
 
   @Override
   public String toFormatedString() {
