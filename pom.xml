@@ -86,6 +86,7 @@
                 </copy>
                 <copy todir="${project.build.directory}/server">
                   <fileset file="${basedir}/run.sh"></fileset>
+                  <fileset file="${basedir}/dd.sh"></fileset>
                   <fileset file="${basedir}/README.md"></fileset>
                 </copy>
               </target>
