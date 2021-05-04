@@ -33,7 +33,7 @@ class CSSSourceFile implements SofiaSource {
     this.caller = caller;
     this.cssImports = new CSSImports();
     this.libraries = new Libraries();
-    this.lines = new Lines();
+    this.lines = new CSSLines();
   }
 
   Site getSite() {

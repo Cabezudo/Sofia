@@ -28,7 +28,7 @@ final class ThemeSourceFile implements SofiaSource {
     this.templateVariables = templateVariables;
     this.themeName = themeName;
     this.cssImports = new CSSImports();
-    this.lines = new Lines();
+    this.lines = new CSSLines();
   }
 
   Site getSite() {

@@ -8,11 +8,16 @@ import java.util.List;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.11.12
  */
-class Lines implements Iterable<Line> {
+abstract class Lines implements Iterable<Line> {
 
   List<Line> lines = new ArrayList<>();
 
+  protected abstract boolean filter(Line line);
+
   void add(Line line) {
+    if (filter(line)) {
+      return;
+    }
     lines.add(line);
   }
 

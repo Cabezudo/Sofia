@@ -33,7 +33,7 @@ class JSSourceFile implements SofiaSource {
     this.caller = caller;
     this.imports = new CSSImports();
     this.libraries = new Libraries();
-    this.lines = new Lines();
+    this.lines = new JSLines();
   }
 
   Site getSite() {

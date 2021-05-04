@@ -84,19 +84,15 @@ public class HTMLFilter implements Filter {
   }
 
   private void createPages(Site site, String requestURI) throws ServletException {
-    if (Environment.getInstance().isDevelopment()) {
-      Logger.debug("Create pages for URI %s.", requestURI);
-      try {
-        SiteCreator.getInstance().createPages(site, requestURI);
-      } catch (ClusterException | IOException | InvalidFragmentTag e) {
-        if (Environment.getInstance().isDevelopment()) {
-          e.printStackTrace();
-        }
-        throw new ServletException(e);
-      } catch (JSONParseException | SiteCreationException | LibraryVersionConflictException e) {
-        throw new ServletException(e);
+    try {
+      SiteCreator.getInstance().createPages(site, requestURI);
+    } catch (ClusterException | IOException | InvalidFragmentTag e) {
+      if (Environment.getInstance().isDevelopment()) {
+        e.printStackTrace();
       }
+      throw new ServletException(e);
+    } catch (JSONParseException | SiteCreationException | LibraryVersionConflictException e) {
+      throw new ServletException(e);
     }
   }
-
 }
