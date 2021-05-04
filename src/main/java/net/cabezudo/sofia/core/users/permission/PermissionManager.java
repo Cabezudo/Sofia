@@ -187,7 +187,33 @@ public class PermissionManager {
             + "LEFT JOIN " + PermissionsTable.NAME + " AS ps ON pp.permission = ps.id "
             + "LEFT JOIN " + PermissionsPermissionTypesTable.NAME + " AS ppt ON ps.id = ppt.permission "
             + "LEFT JOIN " + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
-            + "WHERE p.name = 'all' OR (ps.uri = ? AND pt.id = ? AND p.site = ?)";
+            + "WHERE (p.name = 'all' OR p.name = ?) AND (ps.uri = ? AND pt.id = ? AND p.site = ?)";
+
+    ResultSet rs = null;
+    try (PreparedStatement ps = connection.prepareStatement(query);) {
+      ps.setString(1, profile.getName());
+      ps.setString(2, requestURI);
+      ps.setInt(3, permissionType.getId());
+      ps.setInt(4, site.getId());
+      rs = ClusterManager.getInstance().executeQuery(ps);
+      return rs.next();
+    } catch (SQLException e) {
+      throw new ClusterException(e);
+    } finally {
+      ClusterManager.getInstance().close(rs);
+    }
+  }
+
+  public boolean isPublic(Connection connection, String requestURI, PermissionType permissionType, Site site) throws ClusterException {
+
+    String query
+            = "SELECT p.id AS profileId, p.name AS profileName, p.site AS siteId, ps.id AS permissionId, ps.uri AS permissionURI, pt.id AS permissionTypeId, pt.name AS permissionTypeName "
+            + "FROM " + ProfilesTable.NAME + " AS p "
+            + "LEFT JOIN " + ProfilesPermissionsTable.NAME + " AS pp ON p.id = pp.profile "
+            + "LEFT JOIN " + PermissionsTable.NAME + " AS ps ON pp.permission = ps.id "
+            + "LEFT JOIN " + PermissionsPermissionTypesTable.NAME + " AS ppt ON ps.id = ppt.permission "
+            + "LEFT JOIN " + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
+            + "WHERE p.name = 'all' AND (ps.uri = ? AND pt.id = ? AND p.site = ?)";
 
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {

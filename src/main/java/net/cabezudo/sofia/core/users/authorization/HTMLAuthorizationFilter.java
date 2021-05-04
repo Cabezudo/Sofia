@@ -16,7 +16,6 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.QueryString;
 import net.cabezudo.sofia.core.http.SessionManager;
-import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.server.html.SofiaHTMLServletRequest;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
@@ -24,6 +23,7 @@ import net.cabezudo.sofia.core.users.UserManager;
 import net.cabezudo.sofia.core.users.autentication.NotLoggedException;
 import net.cabezudo.sofia.core.users.permission.PermissionTypeManager;
 import net.cabezudo.sofia.core.users.profiles.PermissionType;
+import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -84,12 +84,14 @@ public class HTMLAuthorizationFilter implements Filter {
       Path path = Paths.get(requestURI);
       if (path.toString().endsWith("html")) {
         try {
-          Logger.fine("Check for read permissions for user " + user + ".");
+          Logger.fine("Check for read permissions for user " + user + " to " + path + ".");
           PermissionType permissionType = PermissionTypeManager.getInstance().get("read", site);
           if (!AuthorizationManager.getInstance().hasAuthorization(path.toString(), user, permissionType, site)) {
+            Logger.fine("Forbiden.");
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return;
           }
+          Logger.fine("Allowed.");
         } catch (NotLoggedException e) {
           if (requestURI.endsWith("html")) {
             String goBackPage = requestURI;
