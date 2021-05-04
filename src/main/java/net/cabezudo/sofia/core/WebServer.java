@@ -259,8 +259,11 @@ public class WebServer {
     for (DomainName domainName : domainNames) {
       virtualHosts[i] = domainName.getName();
       Logger.debug("    %s.", domainName.getName());
-      virtualHosts[i + 1] = "local." + domainName.getName();
-      i += 2;
+      i += 1;
+      if (Environment.getInstance().isDevelopment()) {
+        virtualHosts[i] = "local." + domainName.getName();
+        i += 1;
+      }
     }
 
     context.setVirtualHosts(virtualHosts);

@@ -105,7 +105,7 @@ public class WebServicesTest {
 
   @Test
   public void testMailValidation() throws Exception {
-    String eMail = "esteban@cabezudo.net";
+    String eMail = "test@sofia.academy";
 
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
       HttpGet get = new HttpGet("http://localhost:8080/api/v1/mail/validate/" + eMail);
@@ -314,7 +314,7 @@ public class WebServicesTest {
 
   @Test
   public void testLoginOK() throws Exception {
-    String eMail = "esteban@cabezudo.net";
+    String eMail = "test@sofia.academy";
     Password password = Password.createFromPlain("popo");
 
     String response = testLoginWithResponse(eMail, password);
@@ -324,7 +324,7 @@ public class WebServicesTest {
 
   @Test
   public void testFailedLogin() throws Exception {
-    String eMail = "esteban@cabezudo.net";
+    String eMail = "test@sofia.academy";
     Password password = Password.createFromPlain("badPassword");
 
     String body;
@@ -428,7 +428,7 @@ public class WebServicesTest {
       String expected = "{ \"messages\": [ { \"message\": \"El usuario no está registrado.\", \"type\": \"OK\" } ], \"status\": \"NOT_LOGGED\" }";
       Assert.assertEquals(expected, body);
 
-      String eMail = "esteban@cabezudo.net";
+      String eMail = "test@sofia.academy";
       Password password = Password.createFromPlain("popo");
 
       HttpPost post = new HttpPost("http://localhost:8080/api/v1/users/login");
@@ -452,7 +452,7 @@ public class WebServicesTest {
   @Test
   public void testPasswordRecovery() throws Exception {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      HttpGet get = new HttpGet("http://localhost:8080/api/v1/users/password/esteban@cabezudo.net/password/recover");
+      HttpGet get = new HttpGet("http://localhost:8080/api/v1/users/password/test@sofia.academy/password/recover");
       CloseableHttpResponse response = httpclient.execute(get);
       HttpEntity httpEntity = response.getEntity();
       String body = EntityUtils.toString(httpEntity, StandardCharsets.UTF_8);
@@ -490,24 +490,10 @@ public class WebServicesTest {
   @Test
   public void testUptadePasswordByHash() throws Exception {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      HttpGet get = new HttpGet("http://localhost:8080/api/v1/users/password/esteban@cabezudo.net/password/recover");
+      HttpGet get = new HttpGet("http://localhost:8080/api/v1/users/password/test@sofia.academy/password/recover");
       CloseableHttpResponse response = httpclient.execute(get);
       response.getEntity();
     }
-
-//    User user = UserManager.getInstance().getByEMail("esteban@cabezudo.net", owner);
-//    String hash = user.getPasswordRecoveryHash();
-//
-//    Password password = Password.createFromPlain("newPassword");
-//
-//    try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-//      HttpPost post = new HttpPost("http://localhost:8080/api/v1/users/" + hash + "/password");
-//      String json = "{ \"password\": \"" + password.toBase64() + "\" }";
-//      StringEntity entity = new StringEntity(json);
-//      post.setEntity(entity);
-//      CloseableHttpResponse response = httpclient.execute(post);
-//      Assert.assertEquals(200, response.getStatusLine().getStatusCode());
-//    }
   }
 
   @Test

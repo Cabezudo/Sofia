@@ -74,7 +74,7 @@ class StartOptionsHelper {
 
   public void createAdministrator() throws ClusterException {
     if (System.console() == null || startOptions.hasIDE()) {
-      createSofiaAdministrator("Esteban", "Cabezudo", "esteban@cabezudo.net", Password.createFromPlain("1234"));
+      createSofiaAdministrator("Esteban", "Cabezudo", "test@sofia.academy", Password.createFromPlain("1234"));
     } else {
       Utils.consoleOutLn("Create administrator user.");
 
