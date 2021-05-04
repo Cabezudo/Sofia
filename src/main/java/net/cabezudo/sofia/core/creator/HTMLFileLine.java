@@ -162,12 +162,22 @@ public abstract class HTMLFileLine extends Line {
   }
 
   @Override
+  boolean isEmpty() {
+    return false;
+  }
+
+  @Override
   boolean isNotEmpty() {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    return true;
   }
 
   @Override
   boolean startWith(String start) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+
+  @Override
+  boolean endWith(String end) {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
 

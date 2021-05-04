@@ -9,16 +9,27 @@ import net.cabezudo.sofia.core.configuration.Environment;
 public class JSLines extends Lines {
 
   @Override
-  protected boolean filter(Line line) {
+  protected Line transform(Line line) {
     if (Environment.getInstance().isProduction()) {
+      if (line.isEmpty()) {
+        return null;
+      }
+      if (line.startWith("console.warn")) {
+        return null;
+      }
       if (line.startWith("console.log")) {
-        return true;
+        return null;
       }
-      if (line.startWith("// ")) {
-        return true;
+      if (line.startWith("//")) {
+        return null;
       }
-      return (line.startWith("console.trace"));
+      if (line.startWith("/*") && line.endWith("*/")) {
+        return null;
+      }
+      if (line.startWith("console.trace")) {
+        return null;
+      }
     }
-    return false;
+    return line;
   }
 }

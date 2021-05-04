@@ -16,6 +16,8 @@ import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.Utils;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.logger.Logger;
 
 /**
@@ -174,6 +176,13 @@ public final class Configuration {
     commonsThemesPath = createSystemPath(sitesDataPath, "themes");
     sitesSourcesPath = createSystemPath(commonSourcesPath, "sites");
     sitesPath = createSystemPath(systemPath, "sites");
+    if (Environment.getInstance().isProduction()) {
+      try {
+        FileHelper.deleteDirectories(sitesPath);
+      } catch (IOException e) {
+        throw new SofiaRuntimeException(e);
+      }
+    }
     clusterFilesPath = createSystemPath(systemResourcesPath, "cluster");
 
     clusterFileSelectLogPath = clusterFilesPath.resolve("select.log");

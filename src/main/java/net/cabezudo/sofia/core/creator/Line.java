@@ -18,9 +18,13 @@ public abstract class Line implements Comparable<Line> {
 
   abstract Line replace(TemplateVariables templateVariables) throws UndefinedLiteralException;
 
+  abstract boolean isEmpty();
+
   abstract boolean isNotEmpty();
 
   abstract boolean startWith(String start);
+
+  abstract boolean endWith(String end);
 
   abstract String getCode();
 

@@ -1,10 +1,12 @@
 package net.cabezudo.sofia.core.files;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,8 +20,11 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class FileHelper {
 
-  private FileHelper() {
-    // Utility classes should not have public constructors
+  public static void deleteDirectories(Path pathToBeDeleted) throws IOException {
+    Files.walk(pathToBeDeleted)
+            .sorted(Comparator.reverseOrder())
+            .map(Path::toFile)
+            .forEach(File::delete);
   }
 
   public static void copyDirectory(Path src, Path dest) throws IOException {
@@ -84,4 +89,9 @@ public class FileHelper {
       }
     }
   }
+
+  private FileHelper() {
+    // Utility classes should not have public constructors
+  }
+
 }
