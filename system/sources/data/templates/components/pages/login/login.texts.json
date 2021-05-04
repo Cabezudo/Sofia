@@ -1,0 +1,10 @@
+{
+  "passwordRecovery": {
+    "en": "password recovery",
+    "es": "recuperación de contraseña"
+  },
+  "title": {
+    "en": "Login",
+    "es": "Acceder"
+  }
+}

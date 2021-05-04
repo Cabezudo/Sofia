@@ -16,14 +16,15 @@ class Button {
       }
     };
     const setText = () => {
-      this.text = text;
-      this.key = key;
       if (text !== null) {
         this.element.innerHTML = text;
         return;
       }
       if (key !== null) {
-        this.element.innerHTML = Core.getText(this.key, this.parameters);
+        this.element.innerHTML = Core.getText(key, parameters);
+        return;
+      } else {
+        this.element.innerHTML = Core.getText(id, parameters);
         return;
       }
       if (this.element.innerHTML === '') {

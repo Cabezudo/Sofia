@@ -11,6 +11,7 @@
     <script>
       const login = (() => {
         const createGUI = () => {
+          Core.setTextsFor(['title', 'passwordRecovery']);
           Core.setMessagesContainer('messages');
         };
         Core.addOnloadFunction(createGUI);
@@ -24,11 +25,11 @@
       <section id="header" template="headers/menu/simple/menu"></section>
       <section class="container">
         <section class="content">
-          <h2 class="title">Access</h2>
+          <h2 class="title" id="title"></h2>
           <section id="login" template="logins/simple/login"></section>
           <div class="linkContainer">
             <div class="link centered smallText">
-              <a href="#{login.passwordRecoveryPage}">password recovery</a>
+              <a href="#{login.passwordRecoveryPage}" id="passwordRecovery"></a>
             </div>
           </div>
         </section>

@@ -17,9 +17,7 @@
       },
       "items": [
         {
-          "name": {
-            "en": "Home"
-          },
+          "id": "home",
           "url": "../index.html"
         },
         {
