@@ -99,14 +99,14 @@ public final class Configuration {
     return StandardCharsets.UTF_8;
   }
 
-  public static void load() throws ConfigurationException {
-    INSTANCE.loadConfiguration();
+  public static void load(Path customConfigurationFilePath) throws ConfigurationException {
+    INSTANCE.loadConfiguration(customConfigurationFilePath);
   }
 
-  private void loadConfiguration() throws ConfigurationException {
+  private void loadConfiguration(Path customConfigurationFilePath) throws ConfigurationException {
     System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tF %1$tH:%1$tM:%1$tS.%1$tL [%4$s] %2$s : %5$s%n");
 
-    ConfigurationFile configurationFile = new ConfigurationFile();
+    ConfigurationFile configurationFile = new ConfigurationFile(customConfigurationFilePath);
 
     Logger.debug("Configuration file FOUND in " + configurationFile.getPath() + ".");
     if (Files.exists(configurationFile.getPath())) {

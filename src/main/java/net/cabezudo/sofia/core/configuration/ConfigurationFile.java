@@ -18,15 +18,17 @@ class ConfigurationFile {
 
   private final Path path;
 
-  ConfigurationFile() throws ConfigurationException {
-    Path intendedPath = getConfigurationFilePath();
+  ConfigurationFile(Path customConfigurationFilePath) throws ConfigurationException {
+    Path intendedPath = getConfigurationFilePath(customConfigurationFilePath);
     checkAndCreateConfigurationFile(intendedPath);
     path = intendedPath;
   }
 
-  private Path getConfigurationFilePath() {
-    String userHomePath;
-    userHomePath = searchOn(System.getProperty("user.dir") + System.getProperty("file.separator") + CONFIGURATION_FILENAME);
+  private Path getConfigurationFilePath(Path customConfigurationFilePath) {
+    if (customConfigurationFilePath != null && Files.exists(customConfigurationFilePath)) {
+      return customConfigurationFilePath;
+    }
+    String userHomePath = searchOn(System.getProperty("user.dir") + System.getProperty("file.separator") + CONFIGURATION_FILENAME);
     if (userHomePath != null) {
       return Paths.get(userHomePath);
     }

@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core;
 
-import java.util.List;
+import java.util.Queue;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -13,19 +13,22 @@ public class StartOptions {
   private String invalidArgument;
   private boolean help;
   private boolean debug;
+  private String customConfigurationFile;
   private boolean configureAdministrator;
   private boolean changeUserPassword;
   private boolean dropDatabase;
   private boolean createTestData;
   private boolean ide;
 
-  public StartOptions(List<String> arguments) {
+  public StartOptions(Queue<String> arguments) {
     Logger.debug("Check start options.");
     if (arguments != null && arguments.isEmpty()) {
       Logger.debug("%s command lines argument FOUND.", arguments.size());
     }
-    for (String argument : arguments) {
-      switch (argument) {
+    while (arguments != null && !arguments.isEmpty()) {
+      String argument = arguments.poll();
+      String[] parts = argument.split("=");
+      switch (parts[0]) {
         case "--help":
         case "-h":
           help = true;
@@ -36,12 +39,21 @@ public class StartOptions {
           Logger.debug("Debug activated.");
           debug = true;
           break;
+        case "--configurationFile":
+        case "-cf":
+          if (parts.length == 2) {
+            customConfigurationFile = parts[1];
+          } else {
+            throw new InvalidParameterException("Invalid argument for configuration file.");
+          }
+          Logger.debug("Custom configuration file %s", customConfigurationFile);
+          break;
         case "--createAdministrator":
         case "-ca":
           Logger.debug("Administrator configuration activated");
           configureAdministrator = true;
           break;
-        case "--change password":
+        case "--changePassword":
         case "-cp":
           Logger.debug("Change user password");
           changeUserPassword = true;
@@ -75,7 +87,8 @@ public class StartOptions {
     sb.append("-h, --help - This help.").append('\n');
     sb.append("-d, --debug - Print all the debug information.").append('\n');
     sb.append("-cr, --createAdministrator - Configure a system administrator.").append('\n');
-    sb.append("-cp, --change password - Change a user password.").append('\n');
+    sb.append("-cf, --configurationFile=FILE_NAME - Read the configuration from a specific file.").append('\n');
+    sb.append("-cp, --changePassword - Change a user password.").append('\n');
     sb.append("-dd, --dropDatabase - Drop de database and create a new one.").append('\n');
     sb.append("-ctd, --createTestData - Create default test data.").append('\n');
     sb.append("-i, --ide - Configure the system to work inside an IDE").append('\n');
@@ -88,6 +101,10 @@ public class StartOptions {
 
   public boolean hasDebug() {
     return debug;
+  }
+
+  public String getCustomConfigurationFile() {
+    return customConfigurationFile;
   }
 
   public boolean hasConfigureAdministrator() {
