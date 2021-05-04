@@ -10,7 +10,8 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 import javax.naming.NamingException;
 import javax.servlet.DispatcherType;
 import net.cabezudo.json.exceptions.JSONParseException;
@@ -62,30 +63,36 @@ import org.eclipse.jetty.servlet.ServletHolder;
  */
 public class WebServer {
 
-  private static final WebServer instance = new WebServer();
-
-  private final Server server;
-
-  private WebServer() {
-    Logger.info("Check configuration.");
-    try {
-      Configuration.load();
-    } catch (ConfigurationException e) {
-      Logger.severe(e);
-      System.exit(1);
-    }
-    server = new Server(Configuration.getInstance().getServerPort());
-  }
+  private static WebServer INSTANCE;
+  private Server server;
 
   public static void main(String... args)
           throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
           SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException, DataConversionException {
 
-    Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
-
-    List<String> arguments = Arrays.asList(args);
-
+    Queue<String> arguments = new LinkedList<>(Arrays.asList(args));
     StartOptions startOptions = new StartOptions(arguments);
+
+    WebServer webServer = WebServer.getInstance();
+    webServer.configure(startOptions);
+    webServer.start();
+  }
+
+  public static WebServer getInstance() {
+    if (INSTANCE == null) {
+      INSTANCE = new WebServer();
+    }
+    return INSTANCE;
+  }
+
+  private WebServer() {
+    // Protect the instance
+  }
+
+  private void configure(StartOptions startOptions)
+          throws IOException, ConfigurationException, DataCreationException, ClusterException, DataConversionException, JSONParseException, PropertyNotExistException {
+
+    Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
 
     if (startOptions.hasHelp() || startOptions.hasInvalidArgument()) {
       if (startOptions.hasInvalidArgument()) {
@@ -100,6 +107,22 @@ public class WebServer {
     }
 
     StartOptionsHelper soh = new StartOptionsHelper(startOptions);
+
+    Logger.info("Check configuration.");
+    try {
+      String customConfigurationFile = startOptions.getCustomConfigurationFile();
+      Path customConfigurationFilePath = null;
+      if (customConfigurationFile != null) {
+        customConfigurationFilePath = Paths.get(customConfigurationFile);
+        if (!Files.exists(customConfigurationFilePath)) {
+          throw new InvalidParameterException("Configuration file not exist: " + customConfigurationFile);
+        }
+      }
+      Configuration.load(customConfigurationFilePath);
+    } catch (ConfigurationException e) {
+      Logger.severe(e);
+      System.exit(1);
+    }
 
     SofiaDatabaseCreator mainDefaultDataCreator = new SofiaDatabaseCreator();
     DatabaseCreators defaultDataCreators = soh.readModuleData();
@@ -203,12 +226,7 @@ public class WebServer {
       Logger.severe("Can't open the port " + port + ". " + e.getMessage());
       System.exit(1);
     }
-
-    WebServer.getInstance().start();
-  }
-
-  public static WebServer getInstance() throws ServerException, PortAlreadyInUseException, ConfigurationException {
-    return instance;
+    server = new Server(Configuration.getInstance().getServerPort());
   }
 
   private Handler setServer(Site site) throws ServerException, ConfigurationException {
@@ -297,7 +315,7 @@ public class WebServer {
   }
 
   public static void add(DomainName domainName) {
-    HandlerCollection handlerCollection = (HandlerCollection) instance.server.getHandler();
+    HandlerCollection handlerCollection = (HandlerCollection) INSTANCE.server.getHandler();
 
     Handler[] contexts = handlerCollection.getHandlers();
 
@@ -311,7 +329,7 @@ public class WebServer {
   }
 
   public static void delete(DomainName domainName) {
-    HandlerCollection handlerCollection = (HandlerCollection) instance.server.getHandler();
+    HandlerCollection handlerCollection = (HandlerCollection) INSTANCE.server.getHandler();
 
     Handler[] contexts = handlerCollection.getHandlers();
 
@@ -385,11 +403,11 @@ public class WebServer {
     }
 
     for (Site site : siteList) {
-      handlerCollection.addHandler(instance.setServer(site));
-      handlerCollection.addHandler(instance.setAPI(site));
+      handlerCollection.addHandler(INSTANCE.setServer(site));
+      handlerCollection.addHandler(INSTANCE.setAPI(site));
     }
 
-    instance.server.setHandler(handlerCollection);
+    INSTANCE.server.setHandler(handlerCollection);
     try {
       server.start();
       Logger.info("Server started");
