@@ -51,6 +51,7 @@
             },
             notLoggedURL: '/'
           });
+          Core.setTextsFor(['title']);
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -62,7 +63,7 @@
       <section id="header" template="headers/menu/simple/menu"></section>
       <section class="container">
         <section id="detail" class="content">
-          <h2 class="title">Users</h2>
+          <h2 class="title" id="title"></h2>
           <div id="userList"></div>
           <div class="field space"></div>
           <div class="firstButtonContainer">

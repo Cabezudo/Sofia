@@ -1,0 +1,14 @@
+{
+  "addSiteButton": {
+    "en": "Add site",
+    "es": "Agregar sitio"
+  },
+  "defaultMessage": {
+    "en": "Select one site in order to modify",
+    "es": "Seleccione un sitio para poder modificarlo"
+  },
+  "title": {
+    "en": "Sites",
+    "es": "Sitios"
+  }
+}

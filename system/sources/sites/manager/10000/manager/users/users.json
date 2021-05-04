@@ -13,27 +13,19 @@
       },
       "items": [
         {
-          "name": {
-            "en": "Home"
-          },
+          "id": "home",
           "url": "/"
         },
         {
-          "name": {
-            "en": "Manager"
-          },
+          "id": "manager",
           "url": "../index.html"
         },
         {
-          "name": {
-            "en": "Add"
-          },
+          "id": "add",
           "url": "add.html"
         },
         {
-          "name": {
-            "en": "Logout"
-          },
+          "id": "logout",
           "logged": true,
           "url": "/logout"
         },

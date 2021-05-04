@@ -309,7 +309,9 @@ public class SiteManager extends Manager {
 
   public Site getByName(Connection connection, String name) throws ClusterException {
     String query
-            = "SELECT s.id AS id, s.name AS name, s.domainName AS baseDomainNameId, version AS siteVersion, d.id AS domainNameId, d.name AS domainNameName "
+            = "SELECT "
+            + "s.id AS siteId, s.name AS siteName, s.basePath aS siteBasePath, s.domainName AS baseDomainNameId, version AS siteVersion, "
+            + "d.id AS domainNameId, d.name AS domainNameName "
             + "FROM " + SitesTable.NAME + " AS s "
             + "LEFT JOIN " + DomainNamesTable.NAME + " AS d ON s.id = d.siteId "
             + "WHERE s.name = ? ORDER BY domainName";

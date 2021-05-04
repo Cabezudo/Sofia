@@ -8,6 +8,7 @@
 
 class Link {
   constructor( { onClick = null, id = null, element = null, key = null, parameters = null } = {}) {
+    console.log(`Create Link`);
     this.key = key;
     this.parameters = parameters;
     this.id = id;
@@ -23,6 +24,7 @@ class Link {
         }
         this.id = this.element.id;
       }
+      console.log('Element: ', element);
       if (onClick === null) {
         throw Error('You must define a url or function in a property onClick.');
       }
@@ -40,18 +42,18 @@ class Link {
       };
     };
     const setLanguage = () => {
-      console.log('this.element: ', this.element);
-
-      if (this.key) {
-        console.log('this.key: ', this.key);
-        this.setText(Core.getText(this.key, this.parameters));
+      console.log(`Set text for`, this.element);
+      if (this.key !== null && this.key.length > 0) {
+        const value = Core.getText(this.key, this.parameters);
+        this.setText(value);
         return;
       }
-      if (this.id) {
-        console.log('this.id: ', this.id);
-        this.setText(Core.getText(this.id, this.parameters));
+      if (this.id !== null && this.id.length > 0) {
+        const value = Core.getText(this.id, this.parameters);
+        this.setText(value);
         return;
       }
+      console.log('No key nor id to set text for link.');
     };
     const assignTriggers = () => {
     };

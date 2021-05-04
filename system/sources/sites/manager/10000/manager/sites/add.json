@@ -1,7 +1,7 @@
 {
   "messages": {
     "message": {
-      "default": "Fill the site name and host"
+      "default": "add.site.default.message"
     }
   },
   "header": {
@@ -13,27 +13,24 @@
       },
       "items": [
         {
-          "name": {
-            "en": "Home"
-          },
+          "id": "home",
           "url": "/"
         },
         {
-          "name": {
-            "en": "Manager"
-          },
+          "id": "manager",
           "url": "../index.html"
         },
         {
-          "name": {
-            "en": "List"
-          },
+          "id": "list",
           "url": "sites.html"
         },
         {
-          "name": {
-            "en": "Logout"
-          },
+          "id": "login",
+          "logged": false,
+          "url": "/login"
+        },
+        {
+          "id": "logout",
           "logged": true,
           "url": "/logout"
         },

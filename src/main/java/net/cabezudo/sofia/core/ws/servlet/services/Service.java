@@ -8,14 +8,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.core.http.SessionManager;
-import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
+import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -113,15 +115,14 @@ public abstract class Service<T extends Response> {
     sendError(error, cause.getMessage(), cause);
   }
 
-  protected final void sendError(int error, String message, Throwable cause) throws ServletException {
+  protected final void sendError(int errorCode, String message, Throwable cause) throws ServletException {
     if (cause != null && Environment.getInstance().isDevelopment()) {
       cause.printStackTrace();
     }
-    try {
-      response.sendError(error, message);
-    } catch (IOException e) {
-      throw new ServletException(e);
-    }
+    JSONObject jsonErrorPayload = new JSONObject();
+    jsonErrorPayload.add(new JSONPair("errorCode", errorCode));
+    jsonErrorPayload.add(new JSONPair("message", message));
+    out.print(jsonErrorPayload.toJSON());
   }
 
   public final HttpSession getSession() {

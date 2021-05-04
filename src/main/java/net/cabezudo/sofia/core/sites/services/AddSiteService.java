@@ -40,6 +40,7 @@ public class AddSiteService extends Service {
     } catch (JSONParseException e) {
       throw new ServletException(e);
     }
+    // TODO Validte name for security
     String name = data.getNullString("name");
     try {
       SiteNameValidator.getInstance().validate(name);
@@ -56,9 +57,6 @@ public class AddSiteService extends Service {
       return;
     }
 
-    String basePathName = data.getNullString("basePathName");
-    Path basePath = Paths.get(basePathName);
-
     String hostname = data.getNullString("hostname");
     try {
       HostnameValidator.getInstance().validate(hostname);
@@ -70,11 +68,18 @@ public class AddSiteService extends Service {
       return;
     }
 
+    // TODO Validte basePathName for security
+    String basePathName = data.getNullString("basePathName");
+    if (basePathName == null) {
+      basePathName = hostname;
+    }
+    Path basePath = Paths.get(basePathName);
+
     try {
       SiteManager.getInstance().create(name, basePath, hostname);
     } catch (ClusterException | IOException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
-    sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, "site.name.created"));
+    sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, "site.created"));
   }
 }

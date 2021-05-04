@@ -1,0 +1,38 @@
+{
+  "add.site": {
+    "en": "Add site",
+    "es": "Agregar sitio"
+  },
+  "add.site.default.message": {
+    "en": "Fill the site name and host",
+    "es": "Complete el nombre del sitio y el host"
+  },
+  "complete.the.fields": {
+    "en": "Complete the fields to add a new site",
+    "es": "Complete los campos para agregar un sitio nuevo"
+  },
+  "complete.the.site.name": {
+    "en": "Complete the site name field to complete the data",
+    "es": "Complete el nombre del sitio para completar los datos"
+  },
+  "complete.the.site.host": {
+    "en": "Complete the site host field to complete the data",
+    "es": "Complete el nombre del host para completar los datos"
+  },
+  "name": {
+    "en": "Name",
+    "es": "Nombre"
+  },
+  "hostname": {
+    "en": "Hostname",
+    "es": "Nombre del host"
+  },
+  "the.data.is.correct": {
+    "en": "The data to add the site are correct",
+    "es": "Los datos para agregar el sitio están correctos"
+  },
+  "title": {
+    "en": "Add site",
+    "es": "Agregar sitio"
+  }
+}
