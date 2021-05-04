@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
@@ -96,11 +97,23 @@ abstract class HTMLSourceFile implements SofiaSource {
           throws IOException, LocatedSiteCreationException, InvalidFragmentTag, SiteCreationException, LibraryVersionConflictException, JSONParseException, ClusterException {
 
     if (caller == null) {
-      Logger.debug("[HTMLSourceFile:loadHTMLFile] Load HTML %s requested.", partialFilePath);
+      Logger.debug("Load HTML %s requested.", partialFilePath);
     } else {
-      Logger.debug("[HTMLSourceFile:loadHTMLFile] Load HTML %s called from %s.", partialFilePath, caller);
+      Logger.debug("Load HTML %s called from %s.", partialFilePath, caller);
     }
     SofiaSource actual = this;
+
+    // Search for texts file using the name of the page
+    String partialTextsFilePathName = partialFilePath.toString().replace(".html", "") + ".texts.json";
+    Path textsFilePath = getBasePath().resolve(partialTextsFilePathName);
+    Logger.debug("Search for texts file %s.", textsFilePath);
+    if (Files.exists(textsFilePath)) {
+      JSONObject jsonTexts = JSON.parse(textsFilePath, Configuration.getDefaultCharset()).toJSONObject();
+      Logger.debug("Texts file FOUND.");
+      textsFile.add(jsonTexts);
+    } else {
+      Logger.debug("Texts file NOT FOUND.");
+    }
 
     // Search for a configuration file using the name of the page
     JSONConfiguration jsonSourceConfiguration = new JSONConfiguration();
@@ -121,18 +134,18 @@ abstract class HTMLSourceFile implements SofiaSource {
       }
     }
 
-    Logger.debug("[HTMLSourceFile:loadHTMLFile] Search in %s for a reference to another file.", jsonPartialPath);
+    Logger.debug("Search in %s for a reference to another file.", jsonPartialPath);
     do {
       // Search for template property and if exist read the template file
       if (templateReference != null) {
-        Logger.debug("[HTMLSourceFile:loadHTMLFile] The configuration file has a template property. Load templte %s.", templateReference);
+        Logger.debug("The configuration file has a template property. Load template %s.", templateReference);
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
         Path voidTemplatePath = Paths.get(templateReference + ".html");
 
-        Logger.debug("[HTMLSourceFile:loadHTMLFile] Load template %s from file %s in HTML source file.", voidTemplatePath, jsonPartialPath);
+        Logger.debug("Load template %s from file %s in HTML source file.", voidTemplatePath, jsonPartialPath);
 
         Caller templateCaller = new Caller(getBasePath(), getPartialFilePath(), 0, caller);
-        HTMLSourceFile templateFile = new JSONTemplateHTMLSourceFile(getSite(), commonsComponentsTemplatePath, voidTemplatePath, getTemplateVariables(), getTextsFile(), templateCaller);
+        HTMLSourceFile templateFile = new JSONTemplateHTMLSourceFile(getSite(), commonsComponentsTemplatePath, voidTemplatePath, getTemplateVariables(), textsFile, templateCaller);
         templateFile.loadHTMLFile();
         profiles.add(templateFile.getProfiles());
         libraries.add(templateFile.getLibraries());
@@ -145,14 +158,14 @@ abstract class HTMLSourceFile implements SofiaSource {
 
       // Search for page property and if exist read the page file
       if (pageReference != null) {
-        Logger.debug("[HTMLSourceFile:loadHTMLFile] The configuration file has a page property. Load page %s.", pageReference);
+        Logger.debug("The configuration file has a page property. Load page %s.", pageReference);
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
         Path voidPagePath = Paths.get(pageReference + ".html");
 
-        Logger.debug("[HTMLSourceFile:loadHTMLFile] Load page %s from file %s in HTML source file.", voidPagePath, jsonPartialPath);
+        Logger.debug("Load page %s from file %s in HTML source file.", voidPagePath, jsonPartialPath);
 
         Caller pageCaller = new Caller(getBasePath(), getPartialFilePath(), 0, caller);
-        HTMLSourceFile pageSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), getTextsFile(), pageCaller);
+        HTMLSourceFile pageSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
         pageSourceFile.loadHTMLFile();
         profiles.add(pageSourceFile.getProfiles());
         libraries.add(pageSourceFile.getLibraries());
@@ -162,11 +175,11 @@ abstract class HTMLSourceFile implements SofiaSource {
         this.lines.add(pageSourceFile.getLines());
         break;
       }
-      Logger.debug("HTMLSourceFile:loadHTMLFile] No references to templates or pages found in configuration file %s. An attempt is made to read the html file %s.", jsonPartialPath, partialFilePath);
+      Logger.debug("No references to templates or pages found in configuration file %s. An attempt is made to read the html file %s.", jsonPartialPath, partialFilePath);
 
       final Path htmlSourceFilePath = getSourceFilePath(caller);
 
-      Logger.debug("[HTMLSourceFile:loadHTMLFile] Full path to HTML file to load %s.", htmlSourceFilePath);
+      Logger.debug("Full path to HTML file to load %s.", htmlSourceFilePath);
       List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
       int lineNumber = 1;
       for (String line : linesFromFile) {
@@ -182,7 +195,7 @@ abstract class HTMLSourceFile implements SofiaSource {
           // Search for HTML tags with JavaScript libraries references
           if (trimmedNewLine.startsWith("<script lib=\"") && trimmedNewLine.endsWith("\"></script>")) {
             String libraryReference = trimmedNewLine.substring(13, trimmedNewLine.length() - 11);
-            Logger.debug("[HTMLSourceFile:loadHTMLFile] Library reference name found: %s.", libraryReference);
+            Logger.debug("Library reference name found: %s.", libraryReference);
 
             Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
             Library library = new Library(getSite(), libraryReference, getTemplateVariables(), newCaller);
@@ -191,7 +204,7 @@ abstract class HTMLSourceFile implements SofiaSource {
           }
           if (trimmedNewLine.startsWith("<script file=\"") && trimmedNewLine.endsWith("\"></script>")) {
             String fileReference = trimmedNewLine.substring(14, trimmedNewLine.length() - 11);
-            Logger.debug("[HTMLSourceFile:loadHTMLFile] File reference name found: %s.", fileReference);
+            Logger.debug("File reference name found: %s.", fileReference);
             Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
             js.load(null, fileReference, newCaller);
             break;
@@ -200,7 +213,7 @@ abstract class HTMLSourceFile implements SofiaSource {
           // Search for HTML tags with CSS file references
           if (trimmedNewLine.startsWith("<style file=\"") && trimmedNewLine.endsWith("\"></style>")) {
             String styleFilePartialFileName = trimmedNewLine.substring(13, trimmedNewLine.length() - 10);
-            Logger.debug("HTMLSourceFile:loadHTMLFile:Found independent style file call: %s.", styleFilePartialFileName);
+            Logger.debug("Found independent style file call: %s.", styleFilePartialFileName);
             Caller newCaller = new Caller(getBasePath(), getPartialFilePath(), lineNumber, getCaller());
             css.load(null, styleFilePartialFileName, newCaller);
             break;
@@ -266,7 +279,7 @@ abstract class HTMLSourceFile implements SofiaSource {
     // If the tag is a section we search for a file or template in order to load the file
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
-        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), getTextsFile(), tag, lineNumber, getCaller());
+        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), textsFile, tag, lineNumber, getCaller());
         fragmentLine.load();
         // TODO Add custom configuration for a file.
         return fragmentLine;
