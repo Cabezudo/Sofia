@@ -54,6 +54,9 @@ public class AuthorizationManager {
         }
         profiles = new Profiles(profile);
       } else {
+        if (user.getId() == 1) {
+          return true;
+        }
         profiles = UserManager.getInstance().getProfiles(user);
       }
       Logger.debug("Check permission for profiles found for user %s.", user);
@@ -63,6 +66,10 @@ public class AuthorizationManager {
           Logger.debug("The user has permissions.");
           return true;
         }
+      }
+      if (PermissionManager.getInstance().isPublic(connection, requestURI, permissionType, site)) {
+        Logger.debug("The page is public.");
+        return true;
       }
       if (user == null) {
         throw new NotLoggedException();
