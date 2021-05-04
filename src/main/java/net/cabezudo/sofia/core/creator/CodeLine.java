@@ -52,6 +52,11 @@ public class CodeLine extends Line {
   }
 
   @Override
+  boolean isEmpty() {
+    return line.trim().isEmpty();
+  }
+
+  @Override
   boolean isNotEmpty() {
     return !line.trim().isEmpty();
   }
@@ -74,6 +79,11 @@ public class CodeLine extends Line {
   @Override
   boolean startWith(String start) {
     return line.trim().startsWith(start);
+  }
+
+  @Override
+  boolean endWith(String end) {
+    return line.trim().endsWith(end);
   }
 
   @Override

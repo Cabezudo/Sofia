@@ -12,10 +12,11 @@ abstract class Lines implements Iterable<Line> {
 
   List<Line> lines = new ArrayList<>();
 
-  protected abstract boolean filter(Line line);
+  protected abstract Line transform(Line line);
 
   void add(Line line) {
-    if (filter(line)) {
+    line = transform(line);
+    if (line == null) {
       return;
     }
     lines.add(line);
