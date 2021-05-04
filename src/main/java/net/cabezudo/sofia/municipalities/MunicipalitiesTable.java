@@ -17,12 +17,12 @@ public class MunicipalitiesTable {
           + "`name` VARCHAR(100) NOT NULL, "
           + "`owner` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iStateName` (`state`, `name`)"
           + ") "
           + "CHARACTER SET = UTF8";
 
   private MunicipalitiesTable() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 }

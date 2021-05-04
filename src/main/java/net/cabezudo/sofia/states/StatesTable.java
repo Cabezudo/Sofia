@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.states;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.countries.CountriesTable;
 
 /**
@@ -8,7 +9,7 @@ import net.cabezudo.sofia.countries.CountriesTable;
  */
 public class StatesTable {
 
-  public static final String DATABASE_NAME = "sofia";
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "states";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -17,12 +18,12 @@ public class StatesTable {
           + "`country` INT NOT NULL, "
           + "`name` VARCHAR(100) NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "FOREIGN KEY (`country`) REFERENCES " + CountriesTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`country`) REFERENCES " + CountriesTable.DATABASE_NAME + "." + CountriesTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iCountryName` (`country`, `name`)"
           + ") "
           + "CHARACTER SET = UTF8";
 
   private StatesTable() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 }

@@ -7,14 +7,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import net.cabezudo.sofia.core.list.Filters;
-import net.cabezudo.sofia.core.list.Limit;
-import net.cabezudo.sofia.core.list.Offset;
-import net.cabezudo.sofia.core.list.Sort;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.list.Filters;
+import net.cabezudo.sofia.core.list.Limit;
+import net.cabezudo.sofia.core.list.Offset;
+import net.cabezudo.sofia.core.list.Sort;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.User;
 import net.cabezudo.sofia.core.validation.EmptyValueException;
@@ -44,7 +44,7 @@ public class DomainNameManager {
   }
 
   public DomainNameList get(Connection connection, Site site) throws ClusterException {
-    String query = "SELECT id, name FROM " + DomainNamesTable.NAME + " WHERE siteId = ?";
+    String query = "SELECT id, name FROM " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " WHERE siteId = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, site.getId());
@@ -66,7 +66,7 @@ public class DomainNameManager {
   }
 
   public DomainName add(Connection connection, int siteId, String domainNameName) throws ClusterException {
-    String query = "INSERT INTO " + DomainNamesTable.NAME + " (siteId, name) VALUES (?, ?)";
+    String query = "INSERT INTO " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " (siteId, name) VALUES (?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, siteId);
@@ -94,7 +94,7 @@ public class DomainNameManager {
   }
 
   public DomainName get(Connection connection, int domainNameId) throws ClusterException {
-    String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + " WHERE id = ?";
+    String query = "SELECT id, siteId, name FROM " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " WHERE id = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, domainNameId);
@@ -156,7 +156,7 @@ public class DomainNameManager {
 
   public DomainName getByDomainNameName(Connection connection, String domainNameName) throws ClusterException {
     // TODO agregar una cache aquí. No olvidar modificar los registros que se modifiquen.
-    String query = "SELECT id, siteId, name FROM " + DomainNamesTable.NAME + " WHERE name = ?";
+    String query = "SELECT id, siteId, name FROM " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " WHERE name = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, domainNameName);
@@ -184,7 +184,7 @@ public class DomainNameManager {
   }
 
   public DomainName update(Connection connection, DomainName domainName) throws ClusterException {
-    String query = "UPDATE " + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
+    String query = "UPDATE " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " SET name = ? WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setString(1, domainName.getName());
       ps.setInt(2, domainName.getId());
@@ -205,7 +205,7 @@ public class DomainNameManager {
   }
 
   public void delete(Connection connection, int hostId) throws ClusterException {
-    String query = "DELETE FROM " + DomainNamesTable.NAME + " WHERE id = ?";
+    String query = "DELETE FROM " + DomainNamesTable.DATABASE_NAME + "." + DomainNamesTable.NAME + " WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, hostId);
       ClusterManager.getInstance().executeUpdate(ps);

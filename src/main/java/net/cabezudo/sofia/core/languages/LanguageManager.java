@@ -22,7 +22,7 @@ public class LanguageManager {
   private static final LanguageManager INSTANCE = new LanguageManager();
 
   private LanguageManager() {
-    // Nothing to do here. Jus protect the instance
+    // Protect the singleton
   }
 
   public static LanguageManager getInstance() {

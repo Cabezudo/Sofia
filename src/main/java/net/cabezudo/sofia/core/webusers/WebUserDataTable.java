@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.webusers;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.currency.CurrenciesTable;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
 
@@ -9,7 +10,7 @@ import net.cabezudo.sofia.core.languages.LanguagesTable;
  */
 public class WebUserDataTable {
 
-  public static final String DATABASE_NAME = "sofia";
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "webUsersData";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -30,6 +31,6 @@ public class WebUserDataTable {
           + "CHARACTER SET=UTF8";
 
   private WebUserDataTable() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 }

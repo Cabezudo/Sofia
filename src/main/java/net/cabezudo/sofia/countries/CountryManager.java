@@ -32,7 +32,9 @@ public class CountryManager {
   }
 
   public Country get(Connection connection, Language language, String name) throws ClusterException {
-    String query = "SELECT id, w.id AS wordId, w.value AS wordValue, phoneCode, twoLettersCountryCode FROM " + CountriesTable.NAME + " WHERE name =  ?";
+    String query
+            = "SELECT id, w.id AS wordId, w.value AS wordValue, phoneCode, twoLettersCountryCode "
+            + "FROM " + CountriesTable.DATABASE_NAME + "." + CountriesTable.NAME + " WHERE name =  ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
@@ -60,7 +62,7 @@ public class CountryManager {
   }
 
   public Country get(Connection connection, String twoLettersCountryCode) throws ClusterException {
-    String query = "SELECT id, phoneCode FROM " + CountriesTable.NAME + " WHERE twoLettersCountryCode =  ?";
+    String query = "SELECT id, phoneCode FROM " + CountriesTable.DATABASE_NAME + "." + CountriesTable.NAME + " WHERE twoLettersCountryCode =  ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, twoLettersCountryCode);
@@ -89,7 +91,7 @@ public class CountryManager {
   public Country add(Connection connection, Language language, String name, int phoneCode, String twoLettersCountryCode) throws ClusterException {
     try {
       connection.setAutoCommit(false);
-      String query = "INSERT INTO " + CountriesTable.NAME + " (phoneCode, twoLettersCountryCode) VALUES (?, ?)";
+      String query = "INSERT INTO " + CountriesTable.DATABASE_NAME + "." + CountriesTable.NAME + " (phoneCode, twoLettersCountryCode) VALUES (?, ?)";
       ResultSet rs = null;
       try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
         ps.setInt(1, phoneCode);

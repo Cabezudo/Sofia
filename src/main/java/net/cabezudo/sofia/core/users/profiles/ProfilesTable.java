@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.users.profiles;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.sites.SitesTable;
 
 /**
@@ -8,20 +9,21 @@ import net.cabezudo.sofia.core.sites.SitesTable;
  */
 public class ProfilesTable {
 
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "profiles";
   public static final String CREATION_QUERY
-          = "CREATE TABLE " + NAME + " "
+          = "CREATE TABLE " + DATABASE_NAME + "." + NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`name` VARCHAR(20) NOT NULL, "
           + "`site` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
-          + "FOREIGN KEY (`site`) REFERENCES " + SitesTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`site`) REFERENCES " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iName` (`name`, `site`)"
           + ") "
           + "CHARACTER SET = UTF8";
 
   private ProfilesTable() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 }

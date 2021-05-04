@@ -34,7 +34,7 @@ public class EMailManager {
 
   public EMail get(Connection connection, String address) throws ClusterException {
 
-    String query = "SELECT id, personId FROM " + EMailsTable.NAME + " WHERE address = ?";
+    String query = "SELECT id, personId FROM " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " WHERE address = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, address);
@@ -61,7 +61,7 @@ public class EMailManager {
   }
 
   public EMail get(Connection connection, int id) throws ClusterException {
-    String query = "SELECT id, personId, address FROM " + EMailsTable.NAME + " WHERE id = ?";
+    String query = "SELECT id, personId, address FROM " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " WHERE id = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setLong(1, id);
@@ -89,7 +89,7 @@ public class EMailManager {
 
   public EMails getByPersonId(Connection connection, int personId) throws ClusterException {
 
-    String query = "SELECT id, address FROM " + EMailsTable.NAME + " WHERE personId = ?";
+    String query = "SELECT id, address FROM " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " WHERE personId = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, personId);
@@ -117,7 +117,7 @@ public class EMailManager {
   }
 
   public EMail create(Connection connection, int personId, String address) throws ClusterException {
-    String query = "INSERT INTO " + EMailsTable.NAME + " (personId, address) VALUES (?, ?)";
+    String query = "INSERT INTO " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " (personId, address) VALUES (?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, personId);

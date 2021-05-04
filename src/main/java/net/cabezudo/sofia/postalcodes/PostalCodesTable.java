@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.postalcodes;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.users.UsersTable;
 import net.cabezudo.sofia.geography.AdministrativeDivisionTable;
 
@@ -13,9 +14,10 @@ public class PostalCodesTable {
     // Nothing to do here
   }
 
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "postalCodes";
   public static final String CREATION_QUERY
-          = "CREATE TABLE " + NAME + " "
+          = "CREATE TABLE " + DATABASE_NAME + "." + NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`settlement` INT NOT NULL, "
@@ -23,7 +25,7 @@ public class PostalCodesTable {
           + "`owner` INT NOT NULL, "
           + "PRIMARY KEY (`id`), "
           + "FOREIGN KEY (`settlement`) REFERENCES " + AdministrativeDivisionTable.DATABASE_NAME + "." + AdministrativeDivisionTable.NAME + "(`id`), "
-          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.NAME + "(`id`), "
+          + "FOREIGN KEY (`owner`) REFERENCES " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + "(`id`), "
           + "UNIQUE INDEX `iSettlementPostalCode` (`settlement`, `postalCode`)"
           + ") "
           + "CHARACTER SET = UTF8";

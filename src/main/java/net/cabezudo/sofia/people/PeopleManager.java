@@ -46,7 +46,7 @@ public class PeopleManager {
   }
 
   public Person create(Connection connection, String name, String lastName, User owner) throws ClusterException {
-    String query = "INSERT INTO " + PeopleTable.NAME + " (name, lastName, owner) VALUES (?, ?, ?)";
+    String query = "INSERT INTO " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " (name, lastName, owner) VALUES (?, ?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
@@ -75,7 +75,7 @@ public class PeopleManager {
     if (eMail.getId() == 0) {
       throw new SofiaRuntimeException("The email id is 0.");
     }
-    String query = "UPDATE " + PeopleTable.NAME + " SET primaryEMailId = ? WHERE id = ?";
+    String query = "UPDATE " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " SET primaryEMailId = ? WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, eMail.getId());
       ps.setLong(2, person.getId());
@@ -99,8 +99,8 @@ public class PeopleManager {
 
     String query
             = "SELECT p.id, name, lastName, primaryEMailId, owner "
-            + "FROM " + PeopleTable.NAME + " AS p "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
+            + "FROM " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON p.id = e.personId "
             + "WHERE address = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -137,8 +137,8 @@ public class PeopleManager {
 
     String query
             = "SELECT p.id, name, lastName, primaryEMailId, owner "
-            + "FROM " + PeopleTable.NAME + " AS p "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON p.id = e.personId "
+            + "FROM " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON p.id = e.personId "
             + "WHERE p.id = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {

@@ -1,5 +1,7 @@
 package net.cabezudo.sofia.people;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
+
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.17
@@ -10,9 +12,10 @@ public class PeopleTable {
     // Nothing to do here
   }
 
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "people";
   public static final String CREATION_QUERY
-          = "CREATE TABLE " + NAME + " "
+          = "CREATE TABLE " + DATABASE_NAME + "." + NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
           + "`firstName` VARCHAR(60) DEFAULT NULL, "

@@ -125,6 +125,11 @@ public class WebServer {
     }
 
     SofiaDatabaseCreator mainDefaultDataCreator = new SofiaDatabaseCreator();
+    Utils.consoleOutLn("Using database: " + Configuration.getInstance().getDatabaseName());
+    if (!mainDefaultDataCreator.databaseExists()) {
+      Utils.consoleOutLn("Configured database DO NOT exist: " + Configuration.getInstance().getDatabaseName());
+//      System.exit(1);
+    }
     DatabaseCreators defaultDataCreators = soh.readModuleData();
 
     try {

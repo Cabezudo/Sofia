@@ -38,7 +38,7 @@ public class ZoneManager {
     if (zone != null) {
       return zone;
     }
-    String query = "INSERT INTO " + ZonesTable.NAME + " (name) VALUES (?)";
+    String query = "INSERT INTO " + ZonesTable.DATABASE_NAME + "." + ZonesTable.NAME + " (name) VALUES (?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
@@ -57,7 +57,7 @@ public class ZoneManager {
   }
 
   private Zone get(Connection connection, String name) throws ClusterException {
-    String query = "SELECT id, name FROM " + ZonesTable.NAME + " WHERE name = ?";
+    String query = "SELECT id, name FROM " + ZonesTable.DATABASE_NAME + "." + ZonesTable.NAME + " WHERE name = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);

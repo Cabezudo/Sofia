@@ -31,6 +31,7 @@ import net.cabezudo.sofia.core.templates.EMailTemplate;
 import net.cabezudo.sofia.core.templates.TemplatesManager;
 import net.cabezudo.sofia.core.users.profiles.Profile;
 import net.cabezudo.sofia.core.users.profiles.Profiles;
+import net.cabezudo.sofia.core.users.profiles.ProfilesTable;
 import net.cabezudo.sofia.core.users.profiles.UsersProfilesTable;
 import net.cabezudo.sofia.customers.CustomerService;
 import net.cabezudo.sofia.emails.EMail;
@@ -65,7 +66,7 @@ public class UserManager extends Manager {
   }
 
   public Person getPerson(Connection connection, EMail eMail) throws ClusterException {
-    String query = "SELECT id, name, lastName, owner FROM " + PeopleTable.NAME + " WHERE primaryEMailId=? AND owner=1";
+    String query = "SELECT id, name, lastName, owner FROM " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " WHERE primaryEMailId=? AND owner=1";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, eMail.getId());
@@ -87,7 +88,7 @@ public class UserManager extends Manager {
   }
 
   public Person add(Connection connection, String name, String lastName, int ownerId) throws ClusterException {
-    String query = "INSERT INTO " + PeopleTable.NAME + " (firstName, lastName, owner) VALUES (?, ?, ?)";
+    String query = "INSERT INTO " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " (firstName, lastName, owner) VALUES (?, ?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
@@ -109,7 +110,7 @@ public class UserManager extends Manager {
   }
 
   public Person updatePerson(Connection connection, int id, String name, String lastName, int ownerId) throws ClusterException {
-    String query = "UPDATE " + PeopleTable.NAME + " SET name=?, lastName=?, owner=? WHERE id=?";
+    String query = "UPDATE " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " SET name=?, lastName=?, owner=? WHERE id=?";
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
       ps.setString(2, lastName);
@@ -126,9 +127,9 @@ public class UserManager extends Manager {
     ResultSet rs = null;
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, passwordRecoveryUUID, passwordRecoveryDate "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE address = ? AND (site = ? OR u.id = 1) AND password = ?";
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, emailAddress);
@@ -188,9 +189,9 @@ public class UserManager extends Manager {
 
   private void updateHash(Connection connection, String address, Hash hash) throws ClusterException {
     String query
-            = "UPDATE " + UsersTable.NAME + " "
+            = "UPDATE " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " "
             + "SET passwordRecoveryUUID = ?, passwordRecoveryDate = ? "
-            + "WHERE eMail = (SELECT id FROM " + EMailsTable.NAME + " WHERE address = ?)";
+            + "WHERE eMail = (SELECT id FROM " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " WHERE address = ?)";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setString(1, hash.toString());
       Timestamp timestamp = new Timestamp(new Date().getTime());
@@ -239,7 +240,7 @@ public class UserManager extends Manager {
 
   public User set(Connection connection, Site site, String address, Password password) throws EMailAddressNotExistException, ClusterException {
     ResultSet rs = null;
-    String query = "INSERT INTO " + UsersTable.NAME + " (site, eMail, password, activated) VALUES (?, ?, ?, TRUE)";
+    String query = "INSERT INTO " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " (site, eMail, password, activated) VALUES (?, ?, ?, TRUE)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       EMail eMail = EMailManager.getInstance().get(connection, address);
       if (eMail == null) {
@@ -265,7 +266,7 @@ public class UserManager extends Manager {
   }
 
   private void deactivateAllPasswords(Connection connection, EMail eMail) throws ClusterException {
-    String query = "UPDATE " + UsersTable.NAME + " SET activated = false WHERE eMail = ?";
+    String query = "UPDATE " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " SET activated = false WHERE eMail = ?";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setLong(1, eMail.getId());
       ClusterManager.getInstance().executeUpdate(ps);
@@ -279,9 +280,9 @@ public class UserManager extends Manager {
     ResultSet rs = null;
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE address = ? AND site = ?";
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, address);
@@ -311,9 +312,9 @@ public class UserManager extends Manager {
     ResultSet rs = null;
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE address = ?";
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       Users users = new Users();
@@ -350,9 +351,9 @@ public class UserManager extends Manager {
   public User getByPersonId(Connection connection, int personId) throws ClusterException {
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE personId = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -390,9 +391,9 @@ public class UserManager extends Manager {
   public User get(Connection connection, int id) throws ClusterException {
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE u.id = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -421,9 +422,9 @@ public class UserManager extends Manager {
   public User getByHash(Connection connection, Hash hash) throws ClusterException {
     String query
             = "SELECT u.id, site, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + "WHERE passwordRecoveryUUID = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -467,7 +468,7 @@ public class UserManager extends Manager {
         throw new HashTooOldException("change.password.hash.old");
       }
 
-      String query = "UPDATE " + UsersTable.NAME + " SET passwordRecoveryUUID = ?, password = ? WHERE site = ? AND passwordRecoveryUUID = ?";
+      String query = "UPDATE " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " SET passwordRecoveryUUID = ?, password = ? WHERE site = ? AND passwordRecoveryUUID = ?";
       try (PreparedStatement ps = connection.prepareStatement(query)) {
         ps.setString(1, hash.toString());
         ps.setBytes(2, password.getBytes());
@@ -486,7 +487,7 @@ public class UserManager extends Manager {
 
   public void changePassword(User user, Password password) throws MailServerException, IOException, EMailNotExistException, UserNotFoundByHashException, NullHashException, HashTooOldException, ClusterException {
     try (Connection connection = Database.getConnection()) {
-      String query = "UPDATE " + UsersTable.NAME + " SET password=? WHERE id=?";
+      String query = "UPDATE " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " SET password=? WHERE id=?";
       try (PreparedStatement ps = connection.prepareStatement(query)) {
         ps.setBytes(1, password.getBytes());
         ps.setInt(2, user.getId());
@@ -530,10 +531,10 @@ public class UserManager extends Manager {
 
     String query
             = "SELECT u.id, u.site AS siteId, s.name AS siteName, e.id AS eMailId, p.id AS personId, e.address AS address, creationDate, activated, activated, passwordRecoveryUUID, passwordRecoveryDate "
-            + "FROM " + UsersTable.NAME + " AS u "
-            + "LEFT JOIN " + SitesTable.NAME + " AS s ON u.site = s.id "
-            + "LEFT JOIN " + EMailsTable.NAME + " AS e ON u.eMail = e.id "
-            + "LEFT JOIN " + PeopleTable.NAME + " AS p ON e.personId = p.id "
+            + "FROM " + UsersTable.DATABASE_NAME + "." + UsersTable.NAME + " AS u "
+            + "LEFT JOIN " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " AS s ON u.site = s.id "
+            + "LEFT JOIN " + EMailsTable.DATABASE_NAME + "." + EMailsTable.NAME + " AS e ON u.eMail = e.id "
+            + "LEFT JOIN " + PeopleTable.DATABASE_NAME + "." + PeopleTable.NAME + " AS p ON e.personId = p.id "
             + where + sqlSort + sqlLimit;
     ResultSet rs = null;
     UserList list;
@@ -610,7 +611,11 @@ public class UserManager extends Manager {
 
   public Profiles getProfiles(User user) throws ClusterException {
     Logger.fine("User profile list for %s.", user);
-    String query = "SELECT p.id, p.name, p.site FROM usersProfiles AS up LEFT JOIN profiles AS p ON up.profile = p.id WHERE up.user = ?";
+    String query
+            = "SELECT p.id, p.name, p.site "
+            + "FROM " + UsersProfilesTable.DATABASE_NAME + "." + UsersProfilesTable.NAME + " AS up "
+            + "LEFT JOIN " + ProfilesTable.DATABASE_NAME + "." + ProfilesTable.NAME + " AS p ON up.profile = p.id "
+            + "WHERE up.user = ?";
     ResultSet rs = null;
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, user.getId());
@@ -632,7 +637,7 @@ public class UserManager extends Manager {
   }
 
   public void add(Connection connection, User user, Profile profile, int ownerId) throws ClusterException {
-    String query = "INSERT INTO " + UsersProfilesTable.NAME + " (user, profile, owner) VALUES (?, ?, ?)";
+    String query = "INSERT INTO " + UsersProfilesTable.DATABASE_NAME + "." + UsersProfilesTable.NAME + " (user, profile, owner) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
       ps.setInt(1, user.getId());
       ps.setInt(2, profile.getId());

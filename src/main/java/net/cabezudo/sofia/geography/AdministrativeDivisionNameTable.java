@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.geography;
 
+import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.languages.LanguagesTable;
 
 /**
@@ -8,7 +9,7 @@ import net.cabezudo.sofia.core.languages.LanguagesTable;
  */
 public class AdministrativeDivisionNameTable {
 
-  public static final String DATABASE_NAME = "sofia";
+  public static final String DATABASE_NAME = Configuration.getInstance().getDatabaseName();
   public static final String NAME = "administrativeDivisionNames";
   public static final String CREATION_QUERY
           = "CREATE TABLE " + NAME + " "
@@ -22,6 +23,6 @@ public class AdministrativeDivisionNameTable {
           + "CHARACTER SET = UTF8";
 
   private AdministrativeDivisionNameTable() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 }

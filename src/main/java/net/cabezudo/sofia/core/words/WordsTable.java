@@ -9,7 +9,7 @@ import net.cabezudo.sofia.core.languages.LanguagesTable;
 public class WordsTable {
 
   private WordsTable() {
-    // Nothing to do here. Utility classes should not have public constructors.
+    // Utility classes should not have public constructors.
   }
 
   public static String getCreationQuery(String targetDatabaseName, String targetTableName, String databaseName, String tableName) {

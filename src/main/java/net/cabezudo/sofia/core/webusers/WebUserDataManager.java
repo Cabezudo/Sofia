@@ -168,7 +168,7 @@ public class WebUserDataManager {
   private WebUserData insert(Connection connection, HttpServletRequest request) throws SQLException, ClusterException {
     ResultSet rs = null;
     String query
-            = "INSERT INTO " + WebUserDataTable.NAME + " "
+            = "INSERT INTO " + WebUserDataTable.DATABASE_NAME + "." + WebUserDataTable.NAME + " "
             + "(`sessionId`, `failLoginResponseTime`, `countryLanguage`, `actualLanguage`, `actualCurrency`) "
             + "VALUES (?, ?, ?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
@@ -211,7 +211,10 @@ public class WebUserDataManager {
   }
 
   public void update(WebUserData webUserData) throws ClusterException {
-    String query = "UPDATE " + WebUserDataTable.NAME + " SET `failLoginResponseTime` = ?, `countryLanguage` = ?, `actualLanguage` = ? , `actualCurrency` = ? WHERE sessionId = ?";
+    String query
+            = "UPDATE " + WebUserDataTable.DATABASE_NAME + "." + WebUserDataTable.NAME + " "
+            + "SET `failLoginResponseTime` = ?, `countryLanguage` = ?, `actualLanguage` = ? , `actualCurrency` = ? "
+            + "WHERE sessionId = ?";
     try (Connection connection = Database.getConnection(); PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setLong(1, webUserData.getFailLoginResponseTime());
       ps.setInt(2, webUserData.getCountryLanguage().getId());

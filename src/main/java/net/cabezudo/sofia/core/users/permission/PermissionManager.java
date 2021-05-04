@@ -39,7 +39,7 @@ public class PermissionManager {
 
   public Permission get(Connection connection, String path, Site site) throws ClusterException {
     String query
-            = "SELECT id FROM " + PermissionsTable.NAME + " WHERE uri = ? AND site = ?";
+            = "SELECT id FROM " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " WHERE uri = ? AND site = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, path);
@@ -67,9 +67,9 @@ public class PermissionManager {
 
   public Permission get(Connection connection, String path, PermissionType permissionType, Site site) throws ClusterException {
     String query
-            = "SELECT p.id FROM " + PermissionsTable.NAME + " AS p "
-            + "LEFT JOIN " + PermissionsPermissionTypesTable.NAME + " AS ppt ON p.id = ppt.permission "
-            + "LEFT JOIN " + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
+            = "SELECT p.id FROM " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " AS p "
+            + "LEFT JOIN " + PermissionsPermissionTypesTable.DATABASE_NAME + "." + PermissionsPermissionTypesTable.NAME + " AS ppt ON p.id = ppt.permission "
+            + "LEFT JOIN " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
             + "WHERE uri = ? AND pt.name = ? AND p.site = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
@@ -98,7 +98,7 @@ public class PermissionManager {
   }
 
   public PermissionType getPermissionType(Connection connection, String name) throws ClusterException {
-    String query = "SELECT id, name FROM " + PermissionTypesTable.NAME + "  WHERE name = ?";
+    String query = "SELECT id, name FROM " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + "  WHERE name = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
@@ -124,7 +124,7 @@ public class PermissionManager {
   }
 
   public PermissionType createPermissionType(Connection connection, String name) throws ClusterException {
-    String query = "INSERT INTO " + PermissionTypesTable.NAME + " (name) VALUES (?)";
+    String query = "INSERT INTO " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + " (name) VALUES (?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
@@ -151,7 +151,7 @@ public class PermissionManager {
   }
 
   public Permission create(Connection connection, String uri, Site site) throws ClusterException {
-    String query = "INSERT INTO " + PermissionsTable.NAME + " (uri, site) VALUES (?, ?)";
+    String query = "INSERT INTO " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " (uri, site) VALUES (?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, uri);
@@ -182,11 +182,11 @@ public class PermissionManager {
 
     String query
             = "SELECT p.id AS profileId, p.name AS profileName, p.site AS siteId, ps.id AS permissionId, ps.uri AS permissionURI, pt.id AS permissionTypeId, pt.name AS permissionTypeName "
-            + "FROM " + ProfilesTable.NAME + " AS p "
-            + "LEFT JOIN " + ProfilesPermissionsTable.NAME + " AS pp ON p.id = pp.profile "
-            + "LEFT JOIN " + PermissionsTable.NAME + " AS ps ON pp.permission = ps.id "
-            + "LEFT JOIN " + PermissionsPermissionTypesTable.NAME + " AS ppt ON ps.id = ppt.permission "
-            + "LEFT JOIN " + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
+            + "FROM " + ProfilesTable.DATABASE_NAME + "." + ProfilesTable.NAME + " AS p "
+            + "LEFT JOIN " + ProfilesPermissionsTable.DATABASE_NAME + "." + ProfilesPermissionsTable.NAME + " AS pp ON p.id = pp.profile "
+            + "LEFT JOIN " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " AS ps ON pp.permission = ps.id "
+            + "LEFT JOIN " + PermissionsPermissionTypesTable.DATABASE_NAME + "." + PermissionsPermissionTypesTable.NAME + " AS ppt ON ps.id = ppt.permission "
+            + "LEFT JOIN " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
             + "WHERE (p.name = 'all' OR p.name = ?) AND (ps.uri = ? AND pt.id = ? AND p.site = ?)";
 
     ResultSet rs = null;
@@ -208,11 +208,11 @@ public class PermissionManager {
 
     String query
             = "SELECT p.id AS profileId, p.name AS profileName, p.site AS siteId, ps.id AS permissionId, ps.uri AS permissionURI, pt.id AS permissionTypeId, pt.name AS permissionTypeName "
-            + "FROM " + ProfilesTable.NAME + " AS p "
-            + "LEFT JOIN " + ProfilesPermissionsTable.NAME + " AS pp ON p.id = pp.profile "
-            + "LEFT JOIN " + PermissionsTable.NAME + " AS ps ON pp.permission = ps.id "
-            + "LEFT JOIN " + PermissionsPermissionTypesTable.NAME + " AS ppt ON ps.id = ppt.permission "
-            + "LEFT JOIN " + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
+            + "FROM " + ProfilesTable.DATABASE_NAME + "." + ProfilesTable.NAME + " AS p "
+            + "LEFT JOIN " + ProfilesPermissionsTable.DATABASE_NAME + "." + ProfilesPermissionsTable.NAME + " AS pp ON p.id = pp.profile "
+            + "LEFT JOIN " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " AS ps ON pp.permission = ps.id "
+            + "LEFT JOIN " + PermissionsPermissionTypesTable.DATABASE_NAME + "." + PermissionsPermissionTypesTable.NAME + " AS ppt ON ps.id = ppt.permission "
+            + "LEFT JOIN " + PermissionTypesTable.DATABASE_NAME + "." + PermissionTypesTable.NAME + " AS pt ON ppt.permissionType = pt.id "
             + "WHERE p.name = 'all' AND (ps.uri = ? AND pt.id = ? AND p.site = ?)";
 
     ResultSet rs = null;
@@ -238,7 +238,7 @@ public class PermissionManager {
   }
 
   public void add(Connection connection, Permission permission, PermissionType permissionType, Site site) throws ClusterException {
-    String query = "INSERT INTO " + PermissionsPermissionTypesTable.NAME + " (permission, permissionType, site) VALUES (?, ?, ?)";
+    String query = "INSERT INTO " + PermissionsPermissionTypesTable.DATABASE_NAME + "." + PermissionsPermissionTypesTable.NAME + " (permission, permissionType, site) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, permission.getId());
       ps.setInt(2, permissionType.getId());
@@ -258,7 +258,10 @@ public class PermissionManager {
   }
 
   public boolean hasRelation(Connection connection, Permission permission, PermissionType permissionType, Site site) throws ClusterException {
-    String query = "SELECT permission, permissionType, site FROM permissionsPermissionTypes WHERE permission = ? AND permissionType = ? AND site = ?";
+    String query
+            = "SELECT permission, permissionType, site "
+            + "FROM " + PermissionsPermissionTypesTable.DATABASE_NAME + "." + PermissionsPermissionTypesTable.NAME + " "
+            + "WHERE permission = ? AND permissionType = ? AND site = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, permission.getId());

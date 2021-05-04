@@ -42,7 +42,7 @@ public class PostalCodeManager {
     if (state != null) {
       return state;
     }
-    String query = "INSERT INTO " + PostalCodesTable.NAME + " (settlement, postalCode, owner) VALUES (?, ?, ?)";
+    String query = "INSERT INTO " + PostalCodesTable.DATABASE_NAME + "." + PostalCodesTable.NAME + " (settlement, postalCode, owner) VALUES (?, ?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setInt(1, settlement.getId());
@@ -65,7 +65,9 @@ public class PostalCodeManager {
   }
 
   private PostalCode get(Connection connection, Settlement settlement, int postalCode, User owner) throws ClusterException {
-    String query = "SELECT id, settlement, postalCode FROM " + PostalCodesTable.NAME + " WHERE settlement = ? AND postalCode = ? AND (owner = ? OR owner = 1)";
+    String query
+            = "SELECT id, settlement, postalCode FROM " + PostalCodesTable.DATABASE_NAME + "." + PostalCodesTable.NAME + " "
+            + "WHERE settlement = ? AND postalCode = ? AND (owner = ? OR owner = 1)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, settlement.getId());

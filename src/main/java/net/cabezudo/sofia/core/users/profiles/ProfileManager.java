@@ -49,7 +49,7 @@ public class ProfileManager {
   }
 
   public Profile create(Connection connection, String name, Site site) throws ClusterException {
-    String query = "INSERT INTO " + ProfilesTable.NAME + " (name, site) VALUES (?, ?)";
+    String query = "INSERT INTO " + ProfilesTable.DATABASE_NAME + "." + ProfilesTable.NAME + " (name, site) VALUES (?, ?)";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);) {
       ps.setString(1, name);
@@ -77,7 +77,7 @@ public class ProfileManager {
   }
 
   public Profile get(Connection connection, String name, Site site) throws ClusterException {
-    String query = "SELECT `id`, `name`, `site` FROM " + ProfilesTable.NAME + " WHERE name = ? AND site = ?";
+    String query = "SELECT `id`, `name`, `site` FROM " + ProfilesTable.DATABASE_NAME + "." + ProfilesTable.NAME + " WHERE name = ? AND site = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setString(1, name);
@@ -104,7 +104,10 @@ public class ProfileManager {
   }
 
   public boolean has(Connection connection, Profile profile, Permission permission, Site site) throws ClusterException {
-    String query = "SELECT `profile`, `permission`, `site` FROM " + ProfilesPermissionsTable.NAME + " WHERE profile = ? AND permission = ? AND site = ?";
+    String query
+            = "SELECT `profile`, `permission`, `site` "
+            + "FROM " + ProfilesPermissionsTable.DATABASE_NAME + "." + ProfilesPermissionsTable.NAME + " "
+            + "WHERE profile = ? AND permission = ? AND site = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {
       ps.setInt(1, profile.getId());
@@ -128,7 +131,7 @@ public class ProfileManager {
   }
 
   public void add(Connection connection, Profile profile, Permission permission, Site site) throws ClusterException {
-    String query = "INSERT INTO " + ProfilesPermissionsTable.NAME + " (profile, permission, site) VALUES (?, ?, ?)";
+    String query = "INSERT INTO " + ProfilesPermissionsTable.DATABASE_NAME + "." + ProfilesPermissionsTable.NAME + " (profile, permission, site) VALUES (?, ?, ?)";
     try (PreparedStatement ps = connection.prepareStatement(query)) {
       ps.setInt(1, profile.getId());
       ps.setInt(2, permission.getId());
@@ -141,8 +144,8 @@ public class ProfileManager {
 
   public Permissions getPermissions(Connection connection, Profile profile, Site site) throws ClusterException {
     String query
-            = "SELECT p.id, p.uri FROM " + ProfilesPermissionsTable.NAME + " AS pp "
-            + "LEFT JOIN " + PermissionsTable.NAME + " AS p ON pp.profile = p.id "
+            = "SELECT p.id, p.uri FROM " + ProfilesPermissionsTable.DATABASE_NAME + "." + ProfilesPermissionsTable.NAME + " AS pp "
+            + "LEFT JOIN " + PermissionsTable.DATABASE_NAME + "." + PermissionsTable.NAME + " AS p ON pp.profile = p.id "
             + "WHERE pp.profile = ? AND pp.site = ?";
     ResultSet rs = null;
     try (PreparedStatement ps = connection.prepareStatement(query);) {

@@ -19,7 +19,7 @@ public class CurrencyManager {
   private static final CurrencyManager INSTANCE = new CurrencyManager();
 
   private CurrencyManager() {
-    // Nothing to do here. Jus protect the instance
+    // Protect the singleton
   }
 
   public static CurrencyManager getInstance() {
