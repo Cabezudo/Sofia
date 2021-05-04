@@ -128,7 +128,24 @@ public class WebServer {
     Utils.consoleOutLn("Using database: " + Configuration.getInstance().getDatabaseName());
     if (!mainDefaultDataCreator.databaseExists()) {
       Utils.consoleOutLn("Configured database DO NOT exist: " + Configuration.getInstance().getDatabaseName());
-//      System.exit(1);
+      int maxAttempsNumber = 100;
+      int i = 0;
+      for (; i < maxAttempsNumber; i++) {
+        Utils.consoleOut("Create the database or terminate the excecution? [Y/n]: ");
+        String response = System.console().readLine();
+        if (response != null) {
+          if ("n".equalsIgnoreCase(response)) {
+            System.exit(1);
+          }
+          if (response.isBlank() || "y".equalsIgnoreCase(response)) {
+            break;
+          }
+        }
+        Utils.consoleOutLn("Invalid response: " + response);
+      }
+      if (i >= maxAttempsNumber) {
+        System.exit(1);
+      }
     }
     DatabaseCreators defaultDataCreators = soh.readModuleData();
 
