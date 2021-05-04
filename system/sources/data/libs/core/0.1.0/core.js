@@ -150,9 +150,12 @@ const Core = {
     return Core.requestId;
   },
   getText: (key, values) => {
+    if (!key) {
+      throw new Error(`Missing parameter key.`);
+    }
     let text = variables.texts[key];
     if (!text) {
-      throw new Error(`Invalid key for text: ${key}.`);
+      throw new Error(`Key not found searching texts: ${key}.`);
     }
     if (values) {
       if (Core.isArray(values)) {
@@ -364,7 +367,14 @@ const Core = {
                   };
                   do {
                     if (Core.isFunction(targetElement)) {
-                      targetElement(jsonData);
+                      console.log(`Running function: ${targetElement}`);
+                      try {
+                        targetElement(jsonData);
+                      } catch (error) {
+                        console.log(targetElement);
+                        console.trace();
+                        console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
+                      }
                       break;
                     }
                     if (targetElement) {
@@ -373,6 +383,7 @@ const Core = {
                     }
                   } while (false);
                 } catch (error) {
+                  console.trace();
                   console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
                 }
               })
@@ -552,7 +563,7 @@ const Core = {
             console.warn(`No text found for the key ${id}`);
           }
         } else {
-          console.warn(`No element found for the id ${id}`);
+          console.warn(`No element found with the id '${id}'`);
         }
       }
       if (Object.prototype.toString.call(o) === '[object Object]') {

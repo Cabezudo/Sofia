@@ -1,7 +1,19 @@
 {
+  "add": {
+    "en": "Add",
+    "es": "Agregar"
+  },
   "home": {
     "en": "Home",
     "es": "Inicio"
+  },
+  "list": {
+    "en": "List",
+    "es": "Listar"
+  },
+  "manager": {
+    "en": "Manager",
+    "es": "Administrador"
   },
   "login": {
     "en": "Login",

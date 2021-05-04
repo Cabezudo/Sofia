@@ -51,6 +51,7 @@
             },
             notLoggedURL: '/'
           });
+          Core.setTextsFor(['addSiteButton', 'title']);
         };
         Core.addOnloadFunction(createGUI);
       }
@@ -62,12 +63,12 @@
       <section id="header" template="headers/menu/simple/menu"></section>
       <section class="container">
         <section id="detail" class="content">
-          <h2 class="title">Sites</h2>
+          <h2 class="title"></h2>
           <div id="siteList"></div>
           <div class="field space"></div>
           <div class="firstButtonContainer">
             <div class="secondButtonContainer">
-              <div id="addSiteButton">add site</div>
+              <div id="addSiteButton"></div>
             </div>
           </div>
         </section>

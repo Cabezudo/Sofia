@@ -19,6 +19,13 @@ const simpleStaticMessage = ({ id = null, element = null, onShow = null, default
     messageContainer = document.createElement('div');
     element.appendChild(messageContainer);
     showMessage(defaultMessage);
+    Core.addOnSetLanguageFunction(setMessage);
+  };
+  const setMessage = () => {
+    let text = Core.getText(this.key, this.parameters);
+    if (text) {
+      messageContainer.innerText = text;
+    }
   };
   const clearMessage = () => {
     console.log('simpleStaticMessage : clearMessage.');
@@ -28,21 +35,32 @@ const simpleStaticMessage = ({ id = null, element = null, onShow = null, default
   };
   const showMessage = data => {
     console.log(`simpleStaticMessage : trigger : showMessage : ${JSON.stringify(data)}`);
+    this.key = data.key;
+    this.parameters = data.parameters;
+    let text;
+    if (this.key) {
+      text = Core.getText(this.key, this.parameters);
+      if (!text) {
+        text = data.message;
+      }
+    } else {
+      text = data.message;
+    }
     switch (data.status) {
       case 'ERROR':
-        messageContainer.innerText = data.message;
+        messageContainer.innerText = text;
         element.classList.remove('ok');
         element.classList.remove('message');
         element.classList.add('error');
         break;
       case 'OK':
-        messageContainer.innerText = data.message;
+        messageContainer.innerText = text;
         element.classList.remove('error');
         element.classList.remove('message');
         element.classList.add('ok');
         break;
       case 'MESSAGE':
-        messageContainer.innerText = data.message;
+        messageContainer.innerText = text;
         element.classList.remove('ok');
         element.classList.remove('error');
         element.classList.add('message');

@@ -120,6 +120,10 @@
   "site.name.empty": {
     "es": "El nombre del sitio no debe estar vacío"
   },
+  "site.hostname.exist.for.other.site": {
+    "en": "The host name already used for another site.",
+    "es": "El nombre de host ya está siendo utilizado para otro sitio."
+  },
   "site.version.empty": {
     "es": "Debe especificarse una version para el sitio"
   },

@@ -254,6 +254,7 @@ public class WebServer {
     ServletHolder logoutHolder = new ServletHolder("logout", LogoutHolder.class);
     context.addServlet(logoutHolder, "/logout");
 
+    // TODO Add JSON 500 error to the api
     ServletHolder apiHolder = new ServletHolder("webServices", WebServicesServlet.class);
     context.addServlet(apiHolder, "/api/*");
 
