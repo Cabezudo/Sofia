@@ -125,13 +125,17 @@ public class WebServer {
     }
 
     SofiaDatabaseCreator mainDefaultDataCreator = new SofiaDatabaseCreator();
-    Utils.consoleOutLn("Using database: " + Configuration.getInstance().getDatabaseName());
+    String databaseName = Configuration.getInstance().getDatabaseName();
+    Utils.consoleOutLn("Using database: " + databaseName);
     if (!mainDefaultDataCreator.databaseExists()) {
-      Utils.consoleOutLn("Configured database DO NOT exist: " + Configuration.getInstance().getDatabaseName());
+      Utils.consoleOutLn("Configured database DO NOT exist: " + databaseName);
       int maxAttempsNumber = 100;
       int i = 0;
       for (; i < maxAttempsNumber; i++) {
         Utils.consoleOut("Create the database or terminate the excecution? [Y/n]: ");
+        if (System.console() == null) {
+          throw new ConfigurationException("Database do not exist: " + databaseName);
+        }
         String response = System.console().readLine();
         if (response != null) {
           if ("n".equalsIgnoreCase(response)) {
