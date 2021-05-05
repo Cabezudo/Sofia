@@ -1,0 +1,12 @@
+{
+  "site": {
+    "name": "Mi sitio",
+    "shortName": "Mi sitio",
+    "socialMedia": {
+      "twitter": {
+        "url": ""
+      }
+    }
+  },
+  "themeName": "basic"
+}

@@ -24,12 +24,12 @@ class Link {
         }
         this.id = this.element.id;
       }
-      console.log('Element: ', element);
       if (onClick === null) {
         throw Error('You must define a url or function in a property onClick.');
       }
     };
     const createGUI = () => {
+      console.log('Link :: createGUI :: Using element ', element);
       this.element.classList.add('linkTo');
       const html = this.element.innerHTML;
       this.setText(html);
@@ -42,18 +42,19 @@ class Link {
       };
     };
     const setLanguage = () => {
-      console.log(`Set text for`, this.element);
       if (this.key !== null && this.key.length > 0) {
         const value = Core.getText(this.key, this.parameters);
+        console.log(`Link :: setLanguage :: Set text ${value} for`, this.element);
         this.setText(value);
         return;
       }
       if (this.id !== null && this.id.length > 0) {
         const value = Core.getText(this.id, this.parameters);
+        console.log(`Link :: setLanguage :: Set text ${value} for`, this.element);
         this.setText(value);
         return;
       }
-      console.log('No key nor id to set text for link.');
+      console.log('Link :: setLanguage :: No key nor id to set text for link.');
     };
     const assignTriggers = () => {
     };

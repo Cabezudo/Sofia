@@ -34,7 +34,6 @@ const simpleStaticMessage = ({ id = null, element = null, onShow = null, default
     element.classList.remove('green');
   };
   const showMessage = data => {
-    console.log(`simpleStaticMessage : trigger : showMessage : ${JSON.stringify(data)}`);
     this.key = data.key;
     this.parameters = data.parameters;
     let text;
@@ -46,6 +45,14 @@ const simpleStaticMessage = ({ id = null, element = null, onShow = null, default
     } else {
       text = data.message;
     }
+    if (messageTimer) {
+      clearTimeout(messageTimer);
+    }
+    if (this.lastMessage === text) {
+      return;
+    }
+    console.log(`simpleStaticMessage : showMessage : ${JSON.stringify(data)}`);
+    this.lastMessage = text;
     switch (data.status) {
       case 'ERROR':
         messageContainer.innerText = text;
@@ -70,9 +77,6 @@ const simpleStaticMessage = ({ id = null, element = null, onShow = null, default
     }
     if (Core.isFunction(onShow)) {
       onShow();
-    }
-    if (messageTimer) {
-      clearTimeout(messageTimer);
     }
     messageTimer = setTimeout(() => {
       showMessage(defaultMessage);

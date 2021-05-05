@@ -71,7 +71,7 @@ public class DeleteSiteHostnameService extends Service {
 
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", hostId));
-      sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.host.deleted"));
+      sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.hostname.deleted"));
     } catch (ClusterException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }

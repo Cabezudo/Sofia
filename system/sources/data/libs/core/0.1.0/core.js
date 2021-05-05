@@ -81,11 +81,16 @@ const Core = {
       Core.addTexts(texts);
     });
   },
-  loadLanguage: language => {
+  loadLanguage: parameter => {
     Core.sendGet(Core.getURLForLanguage(variables.site.language), response => {
       const texts = response.data;
-      variables.site.language = language;
+      if (Core.isString(parameter)) {
+        variables.site.language = parameter;
+      }
       Core.addTexts(texts);
+      if (Core.isFunction(parameter)) {
+        parameter();
+      }
     });
   },
   changeSection: section => {
@@ -151,6 +156,7 @@ const Core = {
   },
   getText: (key, values) => {
     if (!key) {
+      console.trace();
       throw new Error(`Missing parameter key.`);
     }
     let text = variables.texts[key];
@@ -366,20 +372,14 @@ const Core = {
                     data: JSON.parse(text)
                   };
                   do {
-                    if (Core.isFunction(targetElement)) {
-                      console.log(`Running function: ${targetElement}`);
-                      try {
-                        targetElement(jsonData);
-                      } catch (error) {
-                        console.log(targetElement);
-                        console.trace();
-                        console.log(`%cCore : sendGet : ${error.message}\n${text}`, 'color: red');
-                      }
-                      break;
-                    }
                     if (targetElement) {
-                      Core.trigger(targetElement, 'response', jsonData);
-                      break;
+                      if (Core.isFunction(targetElement)) {
+                        targetElement(jsonData);
+                        break;
+                      } else {
+                        Core.trigger(targetElement, 'response', jsonData);
+                        break;
+                      }
                     }
                   } while (false);
                 } catch (error) {
@@ -551,6 +551,7 @@ const Core = {
     Core.sendPost(`/api/v1/messages/session`, null, message);
   },
   setTextsFor: values => {
+    console.log(`Core : setTextsFor : Set text for ${values}`);
     values.forEach(o => {
       if (Object.prototype.toString.call(o) === '[object String]') {
         const id = o;
@@ -638,26 +639,37 @@ window.onresize = () => {
     });
   }, 500);
 };
-window.onload = () => {
-  Core.loadLanguage();
+
+const pageLoaded = () => {
+  console.log(`Core :: pageLoaded :: Page loaded.`);
   Core.onCreateFunctions.forEach(func => {
     func();
   });
   Core.onLoadFunctions.forEach(func => {
+    console.log(`Run on load function ${func.name}`);
     func();
   });
   Core.setPageFunctions.forEach(func => {
     func();
   });
+  console.log(`Core :: pageLoaded :: templateVariables: `, templateVariables);
+
+  console.log(`Core :: startPage`);
   if (Core.queryParameters.has('section')) {
     Core.changeSection(Core.queryParameters.get('section'));
   }
-  console.log(templateVariables);
   Core.testFunctions.forEach(func => {
     func();
   });
-  document.body.style.opacity = "1";
-  if (variables.message !== null) {
-    Core.showMessage(variables.message);
-  }
+
+  const loadLanguageCallBack = () => {
+    console.log(`Core :: startPage :: loadLanguageCallBack`);
+    document.body.style.opacity = "1";
+    if (variables.message !== null) {
+      Core.showMessage(variables.message);
+    }
+  };
+  Core.loadLanguage(loadLanguageCallBack);
 };
+
+window.addEventListener("load", pageLoaded, false);
