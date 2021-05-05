@@ -5,33 +5,38 @@
 
 /* global Core */
 
-const crossButton = ({ onClick = null, onResponse = null } = {}) => {
-  const element = document.createElement('div');
-  const validateOptions = () => {
-  };
-  const createGUI = () => {
-    element.innerHTML = '<div class="arm"></div><div class="arm"></div>';
-    element.className = 'crossButton';
-    linkTo({
-      element: element,
-      onClick: () => {
-        if (Core.isFunction(onClick)) {
-          onClick();
+class CrossButton {
+  constructor( { onClick = null, onResponse = null } = {})  {
+    this.element = document.createElement('div');
+    const validateOptions = () => {
+    };
+    const createGUI = () => {
+      this.element.innerHTML = '<div class="arm"></div><div class="arm"></div>';
+      this.element.className = 'crossButton';
+      new Link({
+        element: this.element,
+        onClick: () => {
+          if (Core.isFunction(onClick)) {
+            onClick();
+          }
         }
-      }
-    });
+      });
 
-  };
-  const assignTriggers = () => {
-    element.addEventListener('response', event => {
-      if (Core.isFunction(onResponse)) {
-        onResponse(event);
-      }
-    });
+    };
+    const assignTriggers = () => {
+      this.element.addEventListener('response', event => {
+        if (Core.isFunction(onResponse)) {
+          onResponse(event);
+        }
+      });
 
-  };
-  validateOptions();
-  createGUI();
-  assignTriggers();
-  return element;
-};
+    };
+    validateOptions();
+    createGUI();
+    assignTriggers();
+  }
+  getElement() {
+    return this.element;
+  }
+}
+;

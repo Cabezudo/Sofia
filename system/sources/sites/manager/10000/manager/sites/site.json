@@ -1,7 +1,7 @@
 {
   "messages": {
     "message": {
-      "default": "Site details"
+      "default": "default.message"
     }
   },
   "header": {
@@ -13,27 +13,19 @@
       },
       "items": [
         {
-          "name": {
-            "en": "Home"
-          },
+          "id": "home",
           "url": "../index.html"
         },
         {
-          "name": {
-            "en": "List"
-          },
+          "id": "list",
           "url": "sites.html"
         },
         {
-          "name": {
-            "en": "Add"
-          },
+          "id": "add",
           "url": "add.html"
         },
         {
-          "name": {
-            "en": "Logout"
-          },
+          "id": "logout",
           "logged": true,
           "url": "/logout"
         },

@@ -1,0 +1,46 @@
+{
+  "add.host.button": {
+    "en": "Add host",
+    "es": "Agregar host"
+  },
+  "cancel.add.host.button": {
+    "en": "Cancel add host",
+    "es": "Cancelar host"
+  },
+  "delete.site.button": {
+    "en": "Delete site",
+    "es": "Borrar sitio"
+  },
+  "domains.subtitle": {
+    "en": "Domains",
+    "es": "Dominios"
+  },
+  "new.blank.hostname.input.placeholder": {
+    "en": "Hostname",
+    "es": "Hostname"
+  },
+  "save.host.button": {
+    "en": "Save host",
+    "es": "Guardar host"
+  },
+  "saving.new.host": {
+    "en": "Saving new host...",
+    "es": "Guardando nuevo host..."
+  },
+  "default.message": {
+    "en": "Site details",
+    "es": "Detalles del sitio"
+  },
+  "specify.a.new.host.name": {
+    "en": "Specify a new host name",
+    "es": "Indique un nuevo nombre de host"
+  },
+  "the.data.for.the.site.are.correct": {
+    "en": "The data for the site are correct",
+    "es": "Los datos para el sitio son correctos"
+  },
+  "title": {
+    "en": "Site detail",
+    "es": "Detalle de sitio"
+  }
+}

@@ -6,39 +6,48 @@
 /* global Core */
 
 class Button {
-  constructor( { id = null, element = null, type = null, key = null, text = null, enabled = true, onClick = null, onResponse = null } = {}) {
+  constructor( { id = null, element = null, type = null, key = null, parameters = null, text = null, enabled = true, onClick = null, onResponse = null } = {}) {
     this.enabled = enabled;
+    this.element = element;
 
     const validateOptions = () => {
-      this.element = Core.validateIdOrElement(id, element);
+      this.element = Core.validateIdOrElement(id, this.element);
       if (type === null) {
-        throw Error('You must specify a button type.');
+        throw Error('Button :: setLanguage :: You must specify a button type.');
       }
     };
-    const setText = () => {
+    const setLanguage = () => {
       if (text !== null) {
         this.element.innerHTML = text;
+        console.log(`Button :: setLanguage :: Set text '${text}' from text for button ${id}`);
         return;
       }
       if (key !== null) {
-        this.element.innerHTML = Core.getText(key, parameters);
+        const text = Core.getText(key, parameters);
+        console.log(`Button :: setLanguage :: Set text '${text}' from key for button ${id}`);
+        this.element.innerHTML = text;
         return;
-      } else {
-        this.element.innerHTML = Core.getText(id, parameters);
+      }
+      if (id !== null) {
+        const text = Core.getText(id, parameters);
+        console.log(`Button :: setLanguage :: Set text '${text}' from id for button ${id}`);
+        this.element.innerHTML = text;
         return;
       }
       if (this.element.innerHTML === '') {
         this.element.innerHTML = 'Action';
       }
+      console.log(`Button :: setLanguage :: No text to set`);
     }
     ;
     const createGUI = () => {
+      console.log(`Button :: createGUI :: Create button using`, element);
       this.element.className = 'button';
       this.element.classList.add(`${type}Button`);
       if (!enabled) {
         this.element.setAttribute('disabled', true);
       }
-      Core.addOnSetLanguageFunction(setText);
+      Core.addOnSetLanguageFunction(setLanguage);
     };
     const assignTriggers = () => {
       this.element.addEventListener('enabled', () => {

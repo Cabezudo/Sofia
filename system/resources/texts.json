@@ -41,7 +41,7 @@
   "hostname.notExists": {
     "es": "El nombre de host '{0},' no existe"
   },
-  "hostname.nameOk": {
+  "hostname.ok": {
     "es": "El nombre de host '{0},' es correcto"
   },
   "image.upload.ok": {
@@ -98,6 +98,10 @@
   },
   "site.created": {
     "es": "El sitio fué creado"
+  },
+  "site.hostname.addeded": {
+    "en": "The hostname {0} was addeded to the site {1}",
+    "es": "El hostname {0} fué agregado en el sitio {1}"
   },
   "site.hostname.deleted": {
     "es": "El host fue eliminado"

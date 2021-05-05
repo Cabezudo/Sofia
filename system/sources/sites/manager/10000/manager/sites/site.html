@@ -25,22 +25,100 @@
                 saveHostButton,
                 cancelAddHostButton,
                 nameValidated,
-                nameErrorMessage,
+                nameErrorMessage = null,
                 newHostInput,
                 savingNewHost = false,
                 hostnameErrorMessage,
                 newHostInputValidated = false,
-                newHostnameErrorMessage;
+                newHostnameMessage = null;
         const createGUI = () => {
+          console.log(`site.html :: createGUI`);
           deleteSiteButton = Core.validateById('deleteSiteButton');
           addHostButton = Core.validateById('addHostButton');
           saveHostButton = Core.validateById('saveHostButton');
           cancelAddHostButton = Core.validateById('cancelAddHostButton');
           detailDiv = Core.validateById('detail');
+          redButton({
+            key: 'delete.site.button',
+            element: deleteSiteButton,
+            enabled: false,
+            onClick: () => {
+              Core.screenBlocker.block();
+              Core.sendDelete(`/api/v1/sites/${siteData.id}`, deleteSiteButton);
+            },
+            onResponse: event => {
+              const {detail} = event;
+              const {data} = detail;
+              if (data.status === 'OK') {
+                Core.setSessionMessage({
+                  status: "OK", message: `${data.message}`
+                });
+                if (variables.goBackPage === null) {
+                  location.assign('/manager/sites/sites.html');
+                } else {
+                  location.assign(variables.goBackPage);
+                }
+              } else {
+                Core.screenBlocker.unblock();
+                Core.showMessage({status: 'ERROR', message: data.message});
+              }
+            }
+          });
+          blueButton({
+            key: 'add.host.button',
+            element: addHostButton,
+            enabled: true,
+            onClick: () => {
+              addBlankHost();
+            },
+            onResponse: event => {
+              const {detail} = event;
+              const {data} = detail;
+              if (data.status === 'OK') {
+                if (variables.goBackPage === null) {
+                  location.assign('/manager/sites/sites.html');
+                } else {
+                  location.assign(variables.goBackPage);
+                }
+              } else {
+                Core.showMessage({status: 'ERROR', message: data.message});
+              }
+            }
+          });
+          blueButton({
+            key: 'save.host.button',
+            element: saveHostButton,
+            enabled: false,
+            onClick: () => {
+              addNewHostOnServer();
+            },
+            onResponse: event => {
+              const {detail} = event;
+              const {data} = detail;
+              if (data.status === 'OK') {
+                removeNewHostInput();
+                savingNewHost = false;
+                addDomainToList(siteData.id, data.data.id, data.data.name);
+                Core.showMessage({status: 'OK', message: data.message});
+                updateView();
+              } else {
+                savingNewHost = false;
+                Core.showMessage({status: 'ERROR', message: data.message});
+                updateView();
+              }
+            }
+          });
+          redButton({
+            key: 'cancel.add.host.button',
+            element: cancelAddHostButton,
+            enabled: false,
+            onClick: () => {
+              removeNewHostInput();
+            }
+          });
           detailDiv.addEventListener('response', event => {
             const {detail} = event;
             siteData = detail.data;
-
             new EditableField({
               id: 'nameInput',
               validationURI: `/api/v1/sites/${siteData.id}/names/{value}/validate`,
@@ -48,79 +126,6 @@
               field: 'name',
               defaultValue: siteData.name,
               disabled: (siteData.id === 1 || siteData.id === 2)
-            });
-            redButton({
-              element: deleteSiteButton,
-              enabled: false,
-              onClick: () => {
-                Core.screenBlocker.block();
-                Core.sendDelete(`/api/v1/sites/${siteData.id}`, deleteSiteButton);
-              },
-              onResponse: event => {
-                const {detail} = event;
-                const {data} = detail;
-                if (data.status === 'OK') {
-                  Core.setSessionMessage({
-                    status: "OK", message: `${data.message}`
-                  });
-                  if (variables.goBackPage === null) {
-                    location.assign('/manager/sites/sites.html');
-                  } else {
-                    location.assign(variables.goBackPage);
-                  }
-                } else {
-                  Core.screenBlocker.unblock();
-                  Core.showMessage({status: 'ERROR', message: data.message});
-                }
-              }
-            });
-            blueButton({
-              element: addHostButton,
-              enabled: true,
-              onClick: () => {
-                addBlankHost();
-              },
-              onResponse: event => {
-                const {detail} = event;
-                const {data} = detail;
-                if (data.status === 'OK') {
-                  if (variables.goBackPage === null) {
-                    location.assign('/manager/sites/sites.html');
-                  } else {
-                    location.assign(variables.goBackPage);
-                  }
-                } else {
-                  Core.showMessage({status: 'ERROR', message: data.message});
-                }
-              }
-            });
-            blueButton({
-              element: saveHostButton,
-              enabled: false,
-              onClick: () => {
-                addNewHostOnServer();
-              },
-              onResponse: event => {
-                const {detail} = event;
-                const {data} = detail;
-                if (data.status === 'OK') {
-                  removeNewHostInput();
-                  savingNewHost = false;
-                  addDomainToList(siteData.id, data.data.id, data.data.name);
-                  updateView();
-                } else {
-                  savingNewHost = false;
-                  Core.showMessage({status: 'ERROR', message: data.message});
-                  updateView();
-                }
-              }
-            });
-            redButton({
-              element: cancelAddHostButton,
-              enabled: false,
-              onClick: () => {
-                removeNewHostInput();
-              }
             });
             const domains = siteData.domains;
             const baseDomain = domains.base;
@@ -135,6 +140,7 @@
               Core.enable(deleteSiteButton);
             }
           });
+          Core.setTextsFor(['title', 'domains.subtitle']);
         };
         const addNewHostOnServer = () => {
           savingNewHost = true;
@@ -161,9 +167,9 @@
             editableFieldContainerDiv.appendChild(editableFieldDiv);
 
             if (!baseDomain) {
-              const deleteHostButtonDiv = crossButton({
+              const deleteHostButton = new CrossButton({
                 onClick: () => {
-                  Core.sendDelete(`/api/v1/sites/${siteId}/hosts/${hostId}`, deleteHostButtonDiv);
+                  Core.sendDelete(`/api/v1/sites/${siteId}/hosts/${hostId}`, deleteHostButton.getElement());
                 },
                 onResponse: event => {
                   const {detail} = event;
@@ -178,7 +184,7 @@
                   }
                 }
               });
-              editableFieldContainerDiv.appendChild(deleteHostButtonDiv);
+              editableFieldContainerDiv.appendChild(deleteHostButton.getElement());
             }
             return editableFieldContainerDiv;
           };
@@ -188,7 +194,7 @@
           newHostInputValidated = false;
           newHostInput = undefined;
           newHost.remove();
-          newHostnameErrorMessage = undefined;
+          newHostnameMessage = undefined;
           updateView();
         };
         const addBlankHost = () => {
@@ -197,7 +203,8 @@
             return;
           }
           const newHost = document.createElement('div');
-          newHost.innerHTML = '<input placeholder="Hostname" spellcheck="false"/>';
+          const placeHolderText = Core.getText('new.blank.hostname.input.placeholder');
+          newHost.innerHTML = `<input placeholder="${placeHolderText}" spellcheck="false"/>`;
           newHost.id = 'newHost';
           newHost.className = 'editableField';
           newHostInput = newHost.children[0];
@@ -207,19 +214,19 @@
             }
           });
           domainsElement.appendChild(newHost);
-          inputGenericValidator({
+          new InputGenericValidator({
             element: newHostInput,
             getValidationURL: () => {
               return `/api/v1/hosts/names/${newHostInput.value}/validate`;
             },
-            onValid: event => {
+            onValid: data => {
               newHostInputValidated = true;
-              newHostnameErrorMessage = undefined;
+              newHostnameMessage = data;
               updateView();
             },
             onNotValid: data => {
               newHostInputValidated = true;
-              newHostnameErrorMessage = data;
+              newHostnameMessage = data;
               updateView();
             },
             onFocus: () => {
@@ -238,34 +245,34 @@
         const setMessage = () => {
           do {
             if (savingNewHost) {
-              Core.showMessage({status: "OK", message: 'Saving new host...'});
+              Core.showMessage({status: "OK", key: 'saving.new.host'});
               break;
             }
             if (nameErrorMessage && Core.inFocus(nameInput)) {
               Core.showMessage(nameErrorMessage);
               break;
             }
-            if (newHostnameErrorMessage) {
-              Core.showMessage(newHostnameErrorMessage);
+            if (newHostnameMessage) {
+              Core.showMessage(newHostnameMessage);
               break;
             }
             if (!newHostInputValidated && newHostInput !== undefined && newHostInput.value === '') {
-              Core.showMessage({status: "OK", message: 'Specify a new host name.'});
+              Core.showMessage({status: "OK", key: 'specify.a.new.host.name'});
               break;
             }
-            if (!nameErrorMessage && !newHostnameErrorMessage) {
-              Core.showMessage({status: "OK", message: 'The data for the site are correct.'});
+            if (nameErrorMessage !== null && newHostnameMessage !== null && !nameErrorMessage && !newHostnameMessage) {
+              Core.showMessage({status: "OK", key: 'the.data.for.the.site.are.correct'});
               break;
             }
           } while (false);
         };
         const setFormStatus = () => {
-          console.log(`savingNewHost ${savingNewHost}`);
-          console.log(`hostnameErrorMessage ${hostnameErrorMessage}`);
-          console.log(`newHostInput ${newHostInput}`);
-          console.log(`nameErrorMessage ${nameErrorMessage}`);
-          console.log(`newHostnameErrorMessage ${newHostnameErrorMessage}`);
-          console.log(`newHostInputValidated ${newHostInputValidated}`);
+          console.log(`savingNewHost: `, savingNewHost);
+          console.log(`hostnameErrorMessage:`, hostnameErrorMessage);
+          console.log(`newHostInput: `, newHostInput);
+          console.log(`nameErrorMessage: `, nameErrorMessage);
+          console.log(`newHostnameMessage: `, newHostnameMessage);
+          console.log(`newHostInputValidated: `, newHostInputValidated);
           if (savingNewHost) {
             Core.disable(deleteSiteButton);
             Core.disable(cancelAddHostButton);
@@ -282,7 +289,7 @@
             Core.disable(addHostButton);
             Core.enable(cancelAddHostButton);
           }
-          if (addHostButton.getAttribute('disabled') && newHostInputValidated && !newHostnameErrorMessage) {
+          if (addHostButton.getAttribute('disabled') && newHostInputValidated && newHostnameMessage.status === 'OK') {
             Core.enable(saveHostButton);
           } else {
             saveHostButton.setAttribute('disabled', true);
@@ -331,21 +338,21 @@
       <section id="header" template="headers/menu/simple/menu"></section>
       <section class="container">
         <section id="detail" class="content">
-          <h2 class="title">Detalle de sitio</h2>
+          <h2 class="title" id="title"></h2>
           <div class="form">
             <div class="field"><div id="nameInput" spellcheck="false"></div></div>
             <div class="field"><div id="versionInput" spellcheck="false"></div></div>
-            <div class="subtitle">Domains</div>
+            <div class="subtitle" id="domains.subtitle"></div>
             <div><div id="domains" class="list"></div></div>
             <div class="field space"></div>
             <div class="firstButtonContainer">
               <div class="secondButtonContainer">
-                <div id="addHostButton">add host</div>
-                <div id="saveHostButton">save host</div>
+                <div id="addHostButton"></div>
+                <div id="saveHostButton"></div>
               </div>
               <div class="secondButtonContainer">
-                <div id="cancelAddHostButton">cancel</div>
-                <div id="deleteSiteButton">delete site</div>
+                <div id="cancelAddHostButton"></div>
+                <div id="deleteSiteButton"></div>
               </div>
             </div>
           </div>

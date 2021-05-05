@@ -67,7 +67,7 @@ public class SiteHostnameAddService extends Service {
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", domainName.getId()));
       data.add(new JSONPair("name", domainName.getName()));
-      sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, data, messageKey, domainName.getName()));
+      sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, data, "site.hostname.addeded", domainName.getName(), site.getName()));
     } catch (JSONParseException | PropertyNotExistException | HostnameMaxSizeException e) {
       sendError(HttpServletResponse.SC_BAD_REQUEST, e.getMessage(), e);
     } catch (SQLException | ClusterException e) {

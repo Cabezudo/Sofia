@@ -6,7 +6,7 @@
 .crossButton {
   width: 16px;
   height: 16px;
-  padding-right: 20px;
+  margin: 20px;
   display: flex;
   flex-direction: column;
   justify-content: center;
