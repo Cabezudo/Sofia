@@ -100,7 +100,8 @@ public class VariablesJSServlet {
     }
     sb.append("  site: {\n");
     sb.append("    id: \"").append(site.getId()).append("\",\n");
-    sb.append("    language: \"").append(actualLanguage.getTwoLetterCode()).append("\"\n");
+    sb.append("    language: \"").append(actualLanguage.getTwoLetterCode()).append("\",\n");
+    sb.append("    baseDomainName: \"").append(site.getBaseDomainName().getName()).append("\"\n");
     sb.append("  },\n");
     sb.append("  company: ").append(" {").append("\n");
     sb.append("    id: ").append(request.getSession().getAttribute("companyId")).append("\n");
