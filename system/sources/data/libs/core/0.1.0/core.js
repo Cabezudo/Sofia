@@ -551,7 +551,7 @@ const Core = {
     Core.sendPost(`/api/v1/messages/session`, null, message);
   },
   setTextsFor: values => {
-    console.log(`Core : setTextsFor : Set text for ${values}`);
+    console.log(`Core :: setTextsFor :: Set text for ${values}`);
     values.forEach(o => {
       if (Object.prototype.toString.call(o) === '[object String]') {
         const id = o;
@@ -566,6 +566,20 @@ const Core = {
         } else {
           console.warn(`No element found with the id '${id}'`);
         }
+        return;
+      }
+      if (Object.prototype.toString.call(o) === '[object Array]') {
+        console.log(o);
+        const id = o.shift();
+        console.log(`Core :: setTextsFor :: id: ${id}`);
+        const parameters = o;
+        const element = document.getElementById(id);
+        if (element) {
+          element.innerHTML = Core.getText(id, parameters);
+        } else {
+          console.warn(`No element found with the id '${id}'`);
+        }
+        return;
       }
       if (Object.prototype.toString.call(o) === '[object Object]') {
         const object = o;
@@ -578,7 +592,9 @@ const Core = {
             console.warn(`No text found for the key ${id}`);
           }
         }
+        return;
       }
+      throw Error(`Unrecognized object type ${Object.prototype.toString.call(o)}`);
     });
   },
   show: (id) => {
