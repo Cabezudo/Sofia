@@ -58,8 +58,10 @@ class EditableField {
       inputElement.setAttribute('spellcheck', 'false');
       inputElement.setAttribute('placeholder', placeholder !== null ? placeholder : '');
       inputElement.value = defaultValue;
-      lastValue = defaultValue.toString();
-      lastValueSaved = defaultValue.toString();
+      if (defaultValue) {
+        lastValue = defaultValue.toString();
+        lastValueSaved = defaultValue.toString();
+      }
       element.appendChild(inputElement);
       element.inputElement = inputElement;
       inputElement.data = {validationURI, field};

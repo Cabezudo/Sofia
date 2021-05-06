@@ -1,22 +1,10 @@
 {
-  "documentationLink": {
-    "en": "Documentation",
-    "es": "Documentación"
+  "default.html.page.title": {
+    "en": "Home page",
+    "es": "Pagina inicial"
   },
-  "managerLink": {
-    "en": "Manager",
-    "es": "Administrador"
-  },
-  "message": {
-    "en": "The server is working!",
-    "es": "¡El servidor está funcionando!"
-  },
-  "title": {
-    "en": "Sofia server",
-    "es": "Servidor Sofía"
-  },
-  "documentation": {
-    "en": "Documentation",
-    "es": "Documentación"
+  "default.html.page.message": {
+    "en": "Welcome to the {0} very first site page",
+    "es": "Bienvenido a la primerísima página de {0}"
   }
 }

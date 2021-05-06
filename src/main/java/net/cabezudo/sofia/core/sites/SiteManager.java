@@ -1,6 +1,8 @@
 package net.cabezudo.sofia.core.sites;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
@@ -12,6 +14,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import net.cabezudo.json.JSONPair;
+import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidParameterException;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.cluster.ClusterException;
@@ -162,7 +166,47 @@ public class SiteManager extends Manager {
     if (!Files.exists(siteSourcesBasePath)) {
       Files.createDirectories(siteSourcesBasePath);
     }
+    createSiteDefaultConfigurationFile(site);
+    createSiteDefaultCommonsJSONFile(site);
     return site;
+  }
+
+  private void createSiteDefaultConfigurationFile(Site site) {
+    JSONObject jsonObject = new JSONObject();
+    jsonObject.add(new JSONPair("page", "pages/sites/default/index"));
+    Path path = site.getVersionedSourcesPath().resolve("index.json");
+    Logger.debug("Check for default configuration file: %s", path);
+    if (!Files.exists(path)) {
+      Logger.debug("Create default configuration file: %s", path);
+      try (PrintWriter out = new PrintWriter(path.toFile())) {
+        out.print(jsonObject.toString());
+      } catch (FileNotFoundException e) {
+        throw new SofiaRuntimeException(e);
+      }
+    } else {
+      Logger.debug("Default configuration file exists");
+    }
+  }
+
+  private void createSiteDefaultCommonsJSONFile(Site site) {
+    JSONObject jsonObject = new JSONObject();
+    JSONObject jsonSiteObject = new JSONObject();
+    jsonSiteObject.add(new JSONPair("name", site.getName()));
+    jsonObject.add(new JSONPair("site", jsonSiteObject));
+    jsonObject.add(new JSONPair("themeName", "basic"));
+
+    Path path = site.getVersionedSourcesPath().resolve("commons.json");
+    Logger.debug("Check for default commons file: %s", path);
+    if (!Files.exists(path)) {
+      Logger.debug("Create default commons file: %s", path);
+      try (PrintWriter out = new PrintWriter(path.toFile())) {
+        out.print(jsonObject.toString());
+      } catch (FileNotFoundException e) {
+        throw new SofiaRuntimeException(e);
+      }
+    } else {
+      Logger.debug("commons file exists");
+    }
   }
 
   public Site update(Connection connection, Site site) throws ClusterException {
