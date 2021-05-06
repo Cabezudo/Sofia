@@ -46,7 +46,7 @@ class HTMLPageSourceFile extends HTMLSourceFile {
     } else {
       htmlSourceFilePath = Configuration.getInstance().getCommonsComponentsTemplatesPath().resolve(getPartialFilePath().toString());
     }
-    Logger.debug("HTMLPageSourceFile:getSourceFilePath:Load HTML source file %s.", htmlSourceFilePath);
+    Logger.debug("Load HTML source file %s.", htmlSourceFilePath);
 
     if (Files.exists(htmlSourceFilePath)) {
       return htmlSourceFilePath;
@@ -59,7 +59,7 @@ class HTMLPageSourceFile extends HTMLSourceFile {
     if (Files.exists(htmlSourceFilePath)) {
       return htmlSourceFilePath;
     }
-    Logger.debug("HTMLPageSourceFile:getSourceFilePath:htmlSourceFilePath: %s", htmlSourceFilePath);
+    Logger.debug("HTML source file path: %s", htmlSourceFilePath);
     if (caller == null) {
       throw new SiteCreationException("File " + getPartialFilePath() + " NOT FOUND");
     }

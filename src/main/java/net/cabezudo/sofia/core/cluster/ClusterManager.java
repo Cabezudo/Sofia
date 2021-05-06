@@ -16,6 +16,7 @@ import net.cabezudo.sofia.core.configuration.Environment;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2021.02.20
  */
+// TODO implement AutoCloseable
 public class ClusterManager {
 
   private static final ClusterManager INSTANCE = new ClusterManager();
