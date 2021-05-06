@@ -7,7 +7,7 @@
 
 class InputGenericValidator {
   constructor(
-  { element = null, id = null, placeholderKey = null, placeholderParameters = null, getValidationURL = null, onValid = null, onNotValid = null, onKeyPress = null, onFocus = null } = {}) {
+  { element = null, id = null, placeholderKey = null, placeholderParameters = null, getValidationURL = null, onValid = null, onNotValid = null, onEnter = null, onFocus = null } = {}) {
     this.placeholderKey = placeholderKey;
     this.placeholderParameters = placeholderParameters;
     this.verificationTimer;
@@ -58,6 +58,14 @@ class InputGenericValidator {
           onFocus(event);
         }
       });
+      element.addEventListener("keydown", event => {
+        console.log('InputGenericValidator :: Enter pressed.');
+        if (Core.isEnter(event)) {
+          if (Core.isFunction(onEnter)) {
+            onEnter();
+          }
+        }
+      });
       element.addEventListener("keyup", event => {
         if (Core.isModifierKey(event) || Core.isNavigationKey(event)) {
           return;
@@ -78,7 +86,7 @@ class InputGenericValidator {
     const sendValidationRequest = element => {
       if (element.value !== null && element.value !== undefined) {
         const name = element.value.trim();
-        console.log(`inputGenericValidator : sendValidationRequest : send GET with ${getValidationURL()}`);
+        console.log(`InputGenericValidator :: sendValidationRequest :: Send GET with ${getValidationURL()}`);
         const response = Core.sendGet(getValidationURL(), element);
         this.requestId = response.requestId;
       }
