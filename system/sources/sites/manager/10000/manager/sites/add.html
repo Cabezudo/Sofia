@@ -41,6 +41,9 @@
             onFocus: () => {
               setFormStatus();
               setMessage();
+            },
+            onEnter: () => {
+              sendAddSiteInformation();
             }
           });
           new InputGenericValidator({
@@ -64,6 +67,9 @@
             onFocus: () => {
               setFormStatus();
               setMessage();
+            },
+            onEnter: () => {
+              sendAddSiteInformation();
             }
           });
           const sendAddSiteInformation = () => {
@@ -91,11 +97,7 @@
               const {data} = detail;
 
               if (data.status === 'OK') {
-                if (variables.goBackPage === null) {
-                  location.assign('/manager/sites/sites.html');
-                } else {
-                  location.assign(variables.goBackPage);
-                }
+                location.assign('/manager/sites/sites.html');
               } else {
                 Core.showMessage({status: 'ERROR', message: data.message});
               }
