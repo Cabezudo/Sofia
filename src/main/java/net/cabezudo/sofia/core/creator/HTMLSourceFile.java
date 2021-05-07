@@ -279,7 +279,8 @@ abstract class HTMLSourceFile implements SofiaSource {
     // If the tag is a section we search for a file or template in order to load the file
     if (tag != null && tag.isSection()) {
       if (tag.getValue("file") != null) {
-        HTMLFragmentLine fragmentLine = new HTMLFragmentLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), textsFile, tag, lineNumber, getCaller());
+        Caller caller = new Caller(this, lineNumber);
+        HTMLFragmentFileLine fragmentLine = new HTMLFragmentFileLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), textsFile, tag, lineNumber, caller);
         fragmentLine.load();
         // TODO Add custom configuration for a file.
         return fragmentLine;

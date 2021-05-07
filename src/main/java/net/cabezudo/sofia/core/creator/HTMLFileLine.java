@@ -41,6 +41,7 @@ public abstract class HTMLFileLine extends Line {
     this.textsFile = textsFile;
     this.tag = tag;
     this.caller = caller;
+    Logger.debug("basePath: %s.", this.basePath);
 
     tag.rename("div");
     startLine = new CodeLine(tag.getStartTag(), lineNumber);
@@ -48,7 +49,7 @@ public abstract class HTMLFileLine extends Line {
   }
 
   void load() throws InvalidFragmentTag, IOException, SiteCreationException, LocatedSiteCreationException, LibraryVersionConflictException, JSONParseException, ClusterException {
-    Logger.debug("[HTMLFileLine:load] Load file line %s.", getFilePath());
+    Logger.debug("Load file line %s.", getFilePath());
 
     readJSONFile();
     readTextsFile();
@@ -57,16 +58,54 @@ public abstract class HTMLFileLine extends Line {
       String configurationFile = tag.getValue("configurationFile");
       Path newPartialPath;
       if (configurationFile == null) {
-        Logger.debug("[HTMLFileLine:load] configurationFile tag attribute NOT FOUND.");
+        Logger.debug("configurationFile tag attribute NOT FOUND.");
         newPartialPath = Paths.get(tag.getId() + ".json");
       } else {
-        Logger.debug("[HTMLFileLine:load] configurationFile tag attribute FOUND.");
+        Logger.debug("configurationFile tag attribute FOUND.");
         newPartialPath = Paths.get(configurationFile);
       }
-      Logger.debug("[HTMLFileLine:load] Use %s.", newPartialPath);
-      readJSONFileForId(basePath, newPartialPath, tag.getId(), templateVariables);
-      htmlSourceFile = getHTMLSourceFile(caller);
-      htmlSourceFile.loadHTMLFile();
+      Logger.debug("Use %s.", newPartialPath);
+      Path configurationPartialFilePath;
+      if (caller == null) {
+        configurationPartialFilePath = getBasePath().resolve(newPartialPath);
+      } else {
+        Path callerRelativePathParent = caller.getRelativePath().getParent();
+        if (callerRelativePathParent == null) {
+          configurationPartialFilePath = newPartialPath;
+        } else {
+          configurationPartialFilePath = callerRelativePathParent.resolve(newPartialPath);
+        }
+      }
+      JSONObject jsonObject;
+      Path jsonSourceFilePath = basePath.resolve(configurationPartialFilePath);
+      Logger.debug("Search configuration file %s for id %s.", jsonSourceFilePath, tag.getId());
+      if (Files.isRegularFile(jsonSourceFilePath)) {
+        Logger.debug("FOUND configuration file %s for id %s.", jsonSourceFilePath, tag.getId());
+        try {
+          jsonObject = JSON.parse(jsonSourceFilePath, Configuration.getInstance().getEncoding().toString()).toJSONObject();
+
+          String pageReference = jsonObject.getNullString("page");
+          if (pageReference == null) {
+          } else {
+            Logger.debug("The configuration file has a page property. Load page %s.", pageReference);
+            Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+            Path voidPagePath = Paths.get(pageReference + ".html");
+
+            Logger.debug("Load page %s from file %s in HTML source file.", voidPagePath, configurationPartialFilePath);
+
+            Caller pageCaller = new Caller(getBasePath(), configurationPartialFilePath, 0, caller);
+            htmlSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
+            htmlSourceFile.loadHTMLFile();
+          }
+
+          setTemplateVariablesForId(jsonObject, tag.getId(), templateVariables);
+        } catch (JSONParseException e) {
+          throw new SiteCreationException("Can't parse " + jsonSourceFilePath + ". " + e.getMessage());
+        }
+      } else {
+        htmlSourceFile = getHTMLSourceFile(caller);
+        htmlSourceFile.loadHTMLFile();
+      }
     } catch (NoSuchFileException e) {
       throw new NoSuchFileException("No such file: " + getFilePath());
     }
@@ -74,7 +113,7 @@ public abstract class HTMLFileLine extends Line {
 
   abstract Path getConfigurationFilePath(Caller caller);
 
-  abstract Path getTextsFilePath();
+  abstract Path getTextsFilePath(Caller caller);
 
   abstract Path getFilePath();
 
@@ -94,7 +133,7 @@ public abstract class HTMLFileLine extends Line {
   }
 
   private void readTextsFile() throws JSONParseException, IOException {
-    Path textsFilePath = getTextsFilePath();
+    Path textsFilePath = getTextsFilePath(caller);
     Logger.debug("Search texts file %s.", textsFilePath);
     if (Files.exists(textsFilePath)) {
       Logger.debug("Load texts file %s.", textsFilePath);
@@ -105,21 +144,11 @@ public abstract class HTMLFileLine extends Line {
     }
   }
 
-  private void readJSONFileForId(Path basePath, Path partialPath, String tagId, TemplateVariables templateVariables) throws IOException, SiteCreationException {
-    Path jsonSourceFilePath = basePath.resolve(partialPath);
-    Logger.debug("[HTMLFileLine:readJSONFileForId] Search configuration file %s for id %s.", jsonSourceFilePath, tagId);
-    if (Files.isRegularFile(jsonSourceFilePath)) {
-      Logger.debug("[HTMLFileLine:readJSONFileForId] FOUND configuration file %s for id %s.", jsonSourceFilePath, tagId);
-      try {
-        JSONObject jsonObject = JSON.parse(jsonSourceFilePath, Configuration.getInstance().getEncoding().toString()).toJSONObject();
-        JSONPair jsonPair = new JSONPair(tagId, jsonObject);
-        JSONObject jsonTemplateObject = new JSONObject();
-        jsonTemplateObject.add(jsonPair);
-        templateVariables.merge(jsonTemplateObject);
-      } catch (JSONParseException e) {
-        throw new SiteCreationException("Can't parse " + jsonSourceFilePath + ". " + e.getMessage());
-      }
-    }
+  private void setTemplateVariablesForId(JSONObject jsonObject, String tagId, TemplateVariables templateVariables) throws IOException, SiteCreationException {
+    JSONPair jsonPair = new JSONPair(tagId, jsonObject);
+    JSONObject jsonTemplateObject = new JSONObject();
+    jsonTemplateObject.add(jsonPair);
+    templateVariables.merge(jsonTemplateObject);
   }
 
   Tag getTag() {

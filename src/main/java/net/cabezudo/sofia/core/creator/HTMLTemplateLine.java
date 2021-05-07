@@ -37,10 +37,18 @@ class HTMLTemplateLine extends HTMLFileLine {
   }
 
   @Override
-  Path getTextsFilePath() {
+  Path getTextsFilePath(Caller caller) {
     String fileName = getFilePath().toString();
     String textsFileName = fileName.replace(".html", ".texts.json");
-    return getBasePath().resolve(textsFileName);
+
+    Path textsFilePath;
+    if (caller == null) {
+      textsFilePath = getSite().getBasePath().resolve(textsFileName);
+    } else {
+      textsFilePath = caller.getBasePath().resolve(caller.getRelativePath()).getParent().resolve(textsFileName);
+    }
+    Logger.debug("Text file path: %s", textsFilePath);
+    return textsFilePath;
   }
 
   @Override

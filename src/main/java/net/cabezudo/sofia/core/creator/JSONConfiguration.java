@@ -26,7 +26,7 @@ class JSONConfiguration {
           throws IOException, LocatedSiteCreationException, SiteCreationException, InvalidFragmentTag, LibraryVersionConflictException, JSONParseException {
     jsonPartialPath = Paths.get(htmlSourceFile.getVoidPartialPathName() + ".json");
     Path jsonSourceFilePath = htmlSourceFile.getBasePath().resolve(jsonPartialPath);
-    Logger.debug("Search configuration file %s for HTML source file %s.", jsonPartialPath, htmlSourceFile.getPartialFilePath());
+    Logger.debug("Search configuration file %s for HTML source file %s.", jsonSourceFilePath, htmlSourceFile.getPartialFilePath());
     if (Files.isRegularFile(jsonSourceFilePath)) {
       Logger.debug("FOUND configuration file %s for HTML %s.", jsonPartialPath, htmlSourceFile.getPartialFilePath());
 
@@ -64,6 +64,8 @@ class JSONConfiguration {
         htmlSourceFile.getTemplateVariables().merge(getJSONObject());
       }
 
+    } else {
+      Logger.debug("Configuration file %s for HTML %s NOT FOUND.", jsonSourceFilePath, htmlSourceFile.getPartialFilePath());
     }
     return jsonObject;
   }
