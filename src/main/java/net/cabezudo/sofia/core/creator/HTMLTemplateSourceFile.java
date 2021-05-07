@@ -27,7 +27,7 @@ abstract class HTMLTemplateSourceFile extends HTMLSourceFile {
   @Override
   Path getSourceFilePath(Caller caller) throws SiteCreationException {
     Path htmlSourceFilePath = getBasePath().resolve(getPartialFilePath());
-    Logger.debug("[HTMLTemplateSourceFile:getSourceFilePath] Load template HTML source file %s.", htmlSourceFilePath);
+    Logger.debug("Load template HTML source file %s.", htmlSourceFilePath);
     return htmlSourceFilePath;
   }
 
