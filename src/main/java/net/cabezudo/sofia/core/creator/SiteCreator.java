@@ -67,14 +67,13 @@ public class SiteCreator {
       throw new SiteCreationException(e.getMessage());
     }
 
+    ThemeSourceFile themeSourceFile = null;
     String themeName = templateVariables.get("themeName");
-    if (themeName == null) {
-      throw new SiteCreationException("Can't find the theme for the site in the " + Site.COMMONS_FILE_NAME + " file.");
+    if (themeName != null) {
+      // TODO Read all the theme style sheets after the entire site
+      themeSourceFile = new ThemeSourceFile(site, themeName, templateVariables);
+      themeSourceFile.loadFile();
     }
-
-    // TODO Read all the theme style sheets after the entire site
-    ThemeSourceFile themeSourceFile = new ThemeSourceFile(site, themeName, templateVariables);
-    themeSourceFile.loadFile();
 
     Path basePath = site.getVersionedSourcesPath();
 
@@ -91,8 +90,10 @@ public class SiteCreator {
     jsFile.save(jsFilePath);
 
     CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, baseFileCaller);
-    cssFile.add(themeSourceFile.getCascadingStyleSheetImports());
-    cssFile.add(themeSourceFile.getCascadingStyleSheetLines());
+    if (themeSourceFile != null) {
+      cssFile.add(themeSourceFile.getCascadingStyleSheetImports());
+      cssFile.add(themeSourceFile.getCascadingStyleSheetLines());
+    }
     cssFile.add(baseFile.getLibraries());
     cssFile.add(baseFile.getCascadingStyleSheetImports());
     cssFile.add(baseFile.getCascadingStyleSheetLines());
