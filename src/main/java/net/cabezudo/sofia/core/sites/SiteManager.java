@@ -193,7 +193,6 @@ public class SiteManager extends Manager {
     JSONObject jsonSiteObject = new JSONObject();
     jsonSiteObject.add(new JSONPair("name", site.getName()));
     jsonObject.add(new JSONPair("site", jsonSiteObject));
-    jsonObject.add(new JSONPair("themeName", "basic"));
 
     Path path = site.getVersionedSourcesPath().resolve("commons.json");
     Logger.debug("Check for default commons file: %s", path);
