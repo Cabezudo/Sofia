@@ -13,7 +13,7 @@
   </head>
   <body>
     <section id="application">
-      <section id="header" template="headers/menu/simple/menu" configurationFile="menu.json"></section>
+      <section id="header" template="headers/menu/simple/menu.html" configurationFile="menu.json"></section>
       <section class="container">
         <section class="content">
           <div class="documentation">
@@ -322,7 +322,7 @@ ff02::2 ip6-allrouters</pre>
               <p>Cada etiqueta <span class="code">section</span> que hace referencia a un componente tiene un id. Este id sirve, no solamente para hacer referencia al componente en la página, también es utilizado para indicar que configuración corresponde a que componente dentro del archivo de configuración de nuestra página principal. En este caso el id de nuestro componente es <span class="code">helloWord</span>, por lo tanto vamos a agregar una propiedad con ese nombre para colocar la configuración que le corresponde a ese componente como un objeto valor.</p>
               <p>Solo vamos a colocar las propiedades que nos interesan cambiar. En este caso, solo el texto. Pero podemos jugar con los otros valores para experimentar un poco.</p>
               <p>Esto parece muy simple. Podríamos hablerlo escrito en 5 minutos y sin tanto problema. Pero imaginemos algo mas complicado. Imaginemos que tenemos que colocar varios textos centrados en una misma página. Imaginemos ahora algo mas complejo como un menú o un acceso a usuarios registrados. Utilizando esta idea, para agregar un acceso a usuarios a nuestro sitio solo debemos cambiar la propiedad template de la linea a la cual apunta nuestro componente y poner la siguiente línea.</p>
-              <pre>&lt;section id="login" template="logins/basic-login/login">&lt;/section></pre>
+              <pre>&lt;section id="login" template="logins/basic-login/login.html">&lt;/section></pre>
               <p>Si. Un login completo, totalmente funcional, que permite a una persona registrarse en el sistema, que valida en tiempo real si el correo está bien formado o si el nombre de dominio es válido. Todo sin hacer absolutamente nada mas.</p>
               <h2>Estilos</h2>
               <h2>Javascript</h2>

@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
@@ -33,13 +34,14 @@ class HTMLTemplateLine extends HTMLFileLine {
   Path getConfigurationFilePath(Caller caller) {
     Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
     String templateName = getTag().getValue("template");
-    return templatesBasePath.resolve(templateName + ".json");
+    Logger.debug("Get configuration file path from template tag attribute: %s", templateName);
+    return templatesBasePath.resolve(FileHelper.removeExtension(templateName) + ".json");
   }
 
   @Override
   Path getTextsFilePath(Caller caller) {
     String fileName = getFilePath().toString();
-    String textsFileName = fileName.replace(".html", ".texts.json");
+    String textsFileName = FileHelper.removeExtension(fileName) + ".texts.json";
 
     Path textsFilePath;
     if (caller == null) {
@@ -54,7 +56,7 @@ class HTMLTemplateLine extends HTMLFileLine {
   @Override
   Path getFilePath() {
     String templateName = getTag().getValue("template");
-    return Paths.get(templateName + ".html");
+    return Paths.get(templateName);
 
   }
 

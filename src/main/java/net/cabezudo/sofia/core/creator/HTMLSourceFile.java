@@ -3,6 +3,7 @@ package net.cabezudo.sofia.core.creator;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
@@ -12,6 +13,7 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.html.HTMLTagFactory;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.sites.Site;
@@ -104,7 +106,7 @@ abstract class HTMLSourceFile implements SofiaSource {
     SofiaSource actual = this;
 
     // Search for texts file using the name of the page
-    String partialTextsFilePathName = partialFilePath.toString().replace(".html", "") + ".texts.json";
+    String partialTextsFilePathName = FileHelper.removeExtension(partialFilePath) + ".texts.json";
     Path textsFilePath = getBasePath().resolve(partialTextsFilePathName);
     Logger.debug("Search for texts file %s.", textsFilePath);
     if (Files.exists(textsFilePath)) {
@@ -140,7 +142,7 @@ abstract class HTMLSourceFile implements SofiaSource {
       if (templateReference != null) {
         Logger.debug("The configuration file has a template property. Load template %s.", templateReference);
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        Path voidTemplatePath = Paths.get(templateReference + ".html");
+        Path voidTemplatePath = Paths.get(templateReference);
 
         Logger.debug("Load template %s from file %s in HTML source file.", voidTemplatePath, jsonPartialPath);
 
@@ -160,7 +162,7 @@ abstract class HTMLSourceFile implements SofiaSource {
       if (pageReference != null) {
         Logger.debug("The configuration file has a page property. Load page %s.", pageReference);
         Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-        Path voidPagePath = Paths.get(pageReference + ".html");
+        Path voidPagePath = Paths.get(pageReference);
 
         Logger.debug("Load page %s from file %s in HTML source file.", voidPagePath, jsonPartialPath);
 
@@ -180,7 +182,13 @@ abstract class HTMLSourceFile implements SofiaSource {
       final Path htmlSourceFilePath = getSourceFilePath(caller);
 
       Logger.debug("Full path to HTML file to load %s.", htmlSourceFilePath);
-      List<String> linesFromFile = Files.readAllLines(htmlSourceFilePath);
+      List<String> linesFromFile;
+      try {
+        linesFromFile = Files.readAllLines(htmlSourceFilePath);
+      } catch (NoSuchFileException e) {
+        throw new NoSuchFileException("No such file: " + htmlSourceFilePath);
+      }
+
       int lineNumber = 1;
       for (String line : linesFromFile) {
         String newLine = replaceTemplateVariables(line, lineNumber, htmlSourceFilePath);
@@ -384,7 +392,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   @Override
   public final String getVoidPartialPathName() {
     String partialPathName = getPartialFilePath().toString();
-    return partialPathName.substring(0, partialPathName.length() - 5);
+    return FileHelper.removeExtension(partialPathName);
   }
 
   void setProfiles(Profiles profiles) {

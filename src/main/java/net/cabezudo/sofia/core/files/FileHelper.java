@@ -90,6 +90,19 @@ public class FileHelper {
     }
   }
 
+  public static String removeExtension(Path fullFileName) {
+    String fileName = fullFileName.toString();
+    return removeExtension(fileName);
+  }
+
+  public static String removeExtension(String fileName) {
+    int lastIndexOf = fileName.lastIndexOf(".");
+    if (lastIndexOf == -1) {
+      return fileName;
+    }
+    return fileName.substring(0, lastIndexOf);
+  }
+
   private FileHelper() {
     // Utility classes should not have public constructors
   }

@@ -2,7 +2,6 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.cabezudo.json.JSON;
@@ -51,63 +50,58 @@ public abstract class HTMLFileLine extends Line {
   void load() throws InvalidFragmentTag, IOException, SiteCreationException, LocatedSiteCreationException, LibraryVersionConflictException, JSONParseException, ClusterException {
     Logger.debug("Load file line %s.", getFilePath());
 
-    readJSONFile();
+    Path configurationFilePath;
+    String configurationFile = tag.getValue("configurationFile");
+    if (configurationFile == null) {
+      Logger.debug("configurationFile tag attribute NOT FOUND.");
+      configurationFilePath = getConfigurationFilePath(caller);
+    } else {
+      Logger.debug("configurationFile tag attribute FOUND.");
+      configurationFilePath = Paths.get(configurationFile);
+    }
+
+    Logger.debug("Search configuration file %s.", configurationFilePath);
+    JSONObject jsonConfiguration = null;
+    if (Files.exists(configurationFilePath)) {
+      Logger.debug("Load configuration file %s.", configurationFilePath);
+      jsonConfiguration = JSON.parse(configurationFilePath, Configuration.getInstance().getEncoding().toString()).toJSONObject();
+    } else {
+      Logger.debug("Configuration file %s NOT FOUND.", configurationFilePath);
+      jsonConfiguration = new JSONObject();
+    }
     readTextsFile();
 
-    try {
-      String configurationFile = tag.getValue("configurationFile");
-      Path newPartialPath;
-      if (configurationFile == null) {
-        Logger.debug("configurationFile tag attribute NOT FOUND.");
-        newPartialPath = Paths.get(tag.getId() + ".json");
-      } else {
-        Logger.debug("configurationFile tag attribute FOUND.");
-        newPartialPath = Paths.get(configurationFile);
-      }
-      Logger.debug("Use %s.", newPartialPath);
-      Path configurationPartialFilePath;
-      if (caller == null) {
-        configurationPartialFilePath = getBasePath().resolve(newPartialPath);
-      } else {
-        Path callerRelativePathParent = caller.getRelativePath().getParent();
-        if (callerRelativePathParent == null) {
-          configurationPartialFilePath = newPartialPath;
-        } else {
-          configurationPartialFilePath = callerRelativePathParent.resolve(newPartialPath);
-        }
-      }
+    String tagId = tag.getId();
+    String pageReference = jsonConfiguration.getNullString("page");
+
+    if (pageReference == null) {
+      templateVariables.merge(jsonConfiguration);
+      htmlSourceFile = getHTMLSourceFile(caller);
+      htmlSourceFile.loadHTMLFile();
+
       JSONObject jsonObject;
-      Path jsonSourceFilePath = basePath.resolve(configurationPartialFilePath);
-      Logger.debug("Search configuration file %s for id %s.", jsonSourceFilePath, tag.getId());
-      if (Files.isRegularFile(jsonSourceFilePath)) {
-        Logger.debug("FOUND configuration file %s for id %s.", jsonSourceFilePath, tag.getId());
+      Path jsonIdConfigurationFilePath = configurationFilePath.getParent().resolve(tagId + ".json");
+      Logger.debug("Search configuration file %s for id %s.", jsonIdConfigurationFilePath, tagId);
+      if (Files.isRegularFile(jsonIdConfigurationFilePath)) {
+        Logger.debug("FOUND configuration file %s for id %s.", jsonIdConfigurationFilePath, tagId);
         try {
-          jsonObject = JSON.parse(jsonSourceFilePath, Configuration.getInstance().getEncoding().toString()).toJSONObject();
-
-          String pageReference = jsonObject.getNullString("page");
-          if (pageReference == null) {
-          } else {
-            Logger.debug("The configuration file has a page property. Load page %s.", pageReference);
-            Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
-            Path voidPagePath = Paths.get(pageReference + ".html");
-
-            Logger.debug("Load page %s from file %s in HTML source file.", voidPagePath, configurationPartialFilePath);
-
-            Caller pageCaller = new Caller(getBasePath(), configurationPartialFilePath, 0, caller);
-            htmlSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
-            htmlSourceFile.loadHTMLFile();
-          }
-
-          setTemplateVariablesForId(jsonObject, tag.getId(), templateVariables);
+          jsonObject = JSON.parse(jsonIdConfigurationFilePath, Configuration.getInstance().getEncoding().toString()).toJSONObject();
+          setTemplateVariablesForId(jsonObject, tagId, templateVariables);
         } catch (JSONParseException e) {
-          throw new SiteCreationException("Can't parse " + jsonSourceFilePath + ". " + e.getMessage());
+          throw new SiteCreationException("Can't parse " + jsonIdConfigurationFilePath + ". " + e.getMessage());
         }
-      } else {
-        htmlSourceFile = getHTMLSourceFile(caller);
-        htmlSourceFile.loadHTMLFile();
       }
-    } catch (NoSuchFileException e) {
-      throw new NoSuchFileException("No such file: " + getFilePath());
+    } else {
+      Logger.debug("The configuration file has a page property. Load page %s.", pageReference);
+      jsonConfiguration.remove("page");
+      Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+      Path voidPagePath = Paths.get(pageReference);
+
+      Logger.debug("Load page %s.", voidPagePath);
+
+      Caller pageCaller = new Caller(getBasePath(), configurationFilePath, 0, caller);
+      htmlSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
+      htmlSourceFile.loadHTMLFile();
     }
   }
 
@@ -119,18 +113,6 @@ public abstract class HTMLFileLine extends Line {
 
   abstract HTMLSourceFile getHTMLSourceFile(Caller caller)
           throws IOException, SiteCreationException, LocatedSiteCreationException, LibraryVersionConflictException, JSONParseException;
-
-  private void readJSONFile() throws JSONParseException, IOException {
-    Path configurationFilePath = getConfigurationFilePath(caller);
-    Logger.debug("Search configuration file %s.", configurationFilePath);
-    if (Files.exists(configurationFilePath)) {
-      Logger.debug("Load configuration file %s.", configurationFilePath);
-      JSONObject jsonObject = JSON.parse(configurationFilePath, Configuration.getInstance().getEncoding().toString()).toJSONObject();
-      templateVariables.merge(jsonObject);
-    } else {
-      Logger.debug("Configuration file %s NOT FOUND.", configurationFilePath);
-    }
-  }
 
   private void readTextsFile() throws JSONParseException, IOException {
     Path textsFilePath = getTextsFilePath(caller);

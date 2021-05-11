@@ -11,6 +11,7 @@ import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.users.authorization.AuthorizationManager;
 import net.cabezudo.sofia.core.users.permission.PermissionTypeManager;
@@ -38,7 +39,7 @@ public class SiteCreator {
 
     Logger.debug("Create pages for URI %s.", requestURI);
     String htmlPartialPathName = requestURI.substring(1);
-    String voidPartialPathName = requestURI.substring(1).substring(0, htmlPartialPathName.length() - 5); // Used to create the javascript and css files for this html page
+    String voidPartialPathName = FileHelper.removeExtension(htmlPartialPathName); // Used to create the javascript and css files for this html page
     Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");
     Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
     if (Environment.getInstance().isProduction() && Files.exists(htmlFilePath)) {
