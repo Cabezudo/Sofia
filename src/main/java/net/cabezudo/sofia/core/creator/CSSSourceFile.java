@@ -161,6 +161,7 @@ class CSSSourceFile implements SofiaSource {
     List<String> linesFromFile = Files.readAllLines(cssFullSourceFilePath);
     int lineNumber = 1;
     Logger.debug("[CSSSourceFile:load] Replace template variables on source file %s.", cssFullSourceFilePath);
+    System.out.println("getTemplateVariables(): " + getTemplateVariables());
     for (String line : linesFromFile) {
       try {
         String newLine = getTemplateVariables().replace(line);
@@ -177,11 +178,7 @@ class CSSSourceFile implements SofiaSource {
     Path htmlPartialPath = site.getVersionPath().relativize(filePath);
     Path cssBasePath = site.getFilesPath(htmlPartialPath);
     String htmlFileName = filePath.getFileName().toString();
-    int i = htmlFileName.lastIndexOf('.');
-    if (i == -1) {
-      return null;
-    }
-    String cssFileName = htmlFileName.substring(0, i) + ".css";
+    String cssFileName = FileHelper.removeExtension(htmlFileName) + ".css";
     Path cssFilePath = cssBasePath.resolve(cssFileName);
     if (!Files.exists(cssFilePath)) {
       Logger.debug("The Cascading Style Sheet source file %s DO NOT exists.", cssFilePath);
