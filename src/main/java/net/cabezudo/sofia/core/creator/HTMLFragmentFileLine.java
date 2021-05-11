@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
@@ -23,7 +24,12 @@ public class HTMLFragmentFileLine extends HTMLFileLine {
   Path getConfigurationFilePath(Caller caller) {
     String fileName = getFilePath().toString();
     int i = fileName.lastIndexOf(".");
-    String partialFile = fileName.substring(0, i);
+    String partialFile;
+    if (i != -1) {
+      partialFile = fileName.substring(0, i);
+    } else {
+      partialFile = fileName;
+    }
     Path configurationFilePath = caller.getBasePath().resolve(caller.getRelativePath()).getParent().resolve(partialFile + ".json");
     Logger.debug("Configuration file path: %s", configurationFilePath);
     return configurationFilePath;
@@ -32,7 +38,7 @@ public class HTMLFragmentFileLine extends HTMLFileLine {
   @Override
   Path getTextsFilePath(Caller caller) {
     String fileName = getFilePath().toString();
-    String textsFileName = fileName.replace(".html", ".texts.json");
+    String textsFileName = FileHelper.removeExtension(fileName) + ".texts.json";
 
     Path textsFilePath = caller.getBasePath().resolve(caller.getRelativePath()).getParent().resolve(textsFileName);
     Logger.debug("Text file path: %s", textsFilePath);

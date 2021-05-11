@@ -164,10 +164,10 @@ public final class Configuration {
     statesDataPath = createSystemPath(systemDataPath, "states");
     citiesDataPath = createSystemPath(systemDataPath, "cities");
     postalCodesDataPath = createSystemPath(systemDataPath, "postalCodes");
-    systemImagesPath = createSystemPath(systemResourcesPath, "images");
     systemLibsPath = createSystemPath(systemResourcesPath, "libs");
     commonSourcesPath = createSystemPath(systemPath, "sources");
     sitesDataPath = createSystemPath(commonSourcesPath, "data");
+    systemImagesPath = createSystemPath(sitesDataPath, "images");
     commonsFontsPath = createSystemPath(sitesDataPath, "fonts");
     commonsLibsPath = createSystemPath(sitesDataPath, "libs");
     commonsTemplatesPath = createSystemPath(sitesDataPath, "templates");
