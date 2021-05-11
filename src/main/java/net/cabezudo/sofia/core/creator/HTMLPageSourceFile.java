@@ -24,6 +24,7 @@ class HTMLPageSourceFile extends HTMLSourceFile {
   @Override
   public boolean searchHTMLTag(SofiaSource actual, String line, Path filePath, int lineNumber) throws InvalidFragmentTag, ClusterException {
     if (line.startsWith("<html")) {
+      Logger.debug("HTML tag found: %s", line);
       int i = line.indexOf("profiles");
       if (i > 0) {
         String profileString = line.substring(i + 10, line.length() - 2);

@@ -161,7 +161,6 @@ class CSSSourceFile implements SofiaSource {
     List<String> linesFromFile = Files.readAllLines(cssFullSourceFilePath);
     int lineNumber = 1;
     Logger.debug("[CSSSourceFile:load] Replace template variables on source file %s.", cssFullSourceFilePath);
-    System.out.println("getTemplateVariables(): " + getTemplateVariables());
     for (String line : linesFromFile) {
       try {
         String newLine = getTemplateVariables().replace(line);
