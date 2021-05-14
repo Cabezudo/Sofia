@@ -10,6 +10,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.List;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 
@@ -33,13 +34,12 @@ public class Library {
     // TODO add > to version in order to accept that versión or greater
     // TODO add < to versión in order to accept that versión or less
     // TODO add x to version number in order to accept any minor or fix version
-    int i = reference.indexOf("/");
+    int i = reference.lastIndexOf("/");
     if (i != -1) {
-      String[] pair = reference.split("/");
-      this.name = pair[0];
-      this.version = pair[1];
+      this.name = reference.substring(0, i);
+      this.version = reference.substring(i + 1);
     } else {
-      throw new RuntimeException("The library reference must have a slash separator: " + reference + " called from " + caller);
+      throw new SofiaRuntimeException("The library reference must have a slash to separate name and version: " + reference + " called from " + caller);
     }
     this.caller = caller;
     Path basePath = Configuration.getInstance().getCommonsLibsPath();

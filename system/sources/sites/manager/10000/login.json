@@ -1,5 +1,5 @@
 {
-  "page": "pages/login/login",
+  "page": "pages/logins/simple/login/login.html",
   "login": {
     "afterLoginSucessfullPage": "/manager/index.html"
   },
