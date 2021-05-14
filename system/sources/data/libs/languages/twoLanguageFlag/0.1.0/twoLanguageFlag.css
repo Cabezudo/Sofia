@@ -1,0 +1,15 @@
+/*
+ * Created on: 11/05/2021
+ * Author:     Esteban Cabezudo
+ */
+
+.languageFlagContainer {
+}
+.languageFlag {
+  width: 16px;
+  height: 11px;
+  display: none;
+}
+.languageFlag:hover {
+  cursor: pointer;
+}

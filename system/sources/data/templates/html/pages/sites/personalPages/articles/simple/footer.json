@@ -1,0 +1,20 @@
+{
+  "page": "footers/simple/footer.html",
+  "theme": {
+    "fonts": {
+      "serif": {
+        "fontFamily": "Lora"
+      },
+      "sansSerif": {
+        "fontFamily": "Ubuntu"
+      }
+    },
+    "colors": {
+      "main": "",
+      "borders": {
+        "normal": "#e1ebf7",
+        "highlight": "#a7c5eb"
+      }
+    }
+  }
+}

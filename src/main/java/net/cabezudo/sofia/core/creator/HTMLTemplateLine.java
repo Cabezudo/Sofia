@@ -32,10 +32,10 @@ class HTMLTemplateLine extends HTMLFileLine {
 
   @Override
   Path getConfigurationFilePath(Caller caller) {
-    Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+    Path commonsHTMLTemplatesPath = Configuration.getInstance().getCommonsHTMLTemplatesPath();
     String templateName = getTag().getValue("template");
     Logger.debug("Get configuration file path from template tag attribute: %s", templateName);
-    return templatesBasePath.resolve(FileHelper.removeExtension(templateName) + ".json");
+    return commonsHTMLTemplatesPath.resolve(FileHelper.removeExtension(templateName) + ".json");
   }
 
   @Override
@@ -62,7 +62,7 @@ class HTMLTemplateLine extends HTMLFileLine {
 
   @Override
   HTMLSourceFile getHTMLSourceFile(Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException {
-    Path templatesBasePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+    Path templatesBasePath = Configuration.getInstance().getCommonsHTMLTemplatesPath();
     Logger.debug("[HTMLTemplateLine:getHTMLSourceFile] Create new HTMLTemplateSectionSourceFile using %s.", templatesBasePath);
     return new HTMLTemplateSectionSourceFile(getSite(), templatesBasePath, getFilePath(), getTag().getId(), getTemplateVariables(), getTextsFile(), caller);
   }

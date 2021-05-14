@@ -94,13 +94,13 @@ public abstract class HTMLFileLine extends Line {
     } else {
       Logger.debug("The configuration file has a page property. Load page %s.", pageReference);
       jsonConfiguration.remove("page");
-      Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+      Path commonsHTMLTemplatesPath = Configuration.getInstance().getCommonsHTMLTemplatesPath();
       Path voidPagePath = Paths.get(pageReference);
 
       Logger.debug("Load page %s.", voidPagePath);
 
       Caller pageCaller = new Caller(getBasePath(), configurationFilePath, 0, caller);
-      htmlSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
+      htmlSourceFile = new HTMLPageSourceFile(getSite(), commonsHTMLTemplatesPath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
       htmlSourceFile.loadHTMLFile();
     }
   }

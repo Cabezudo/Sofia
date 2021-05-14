@@ -1,0 +1,14 @@
+{
+  "editableField.loadingData": {
+    "en": "Loading data...",
+    "es": "Leyendo datos..."
+  },
+  "editableField.saving": {
+    "en": "Saving {0}...",
+    "es": "Guardando {0}..."
+  },
+  "editableField.saved": {
+    "en": "The field for '{0}' has been updates with the value '{1}'",
+    "es": "El campo para '{0}' ha sido actualizado por el valor '{1}'."
+  }
+}

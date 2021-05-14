@@ -1,0 +1,68 @@
+/*
+ * Created on: 29/09/2020
+ * Author:     Esteban Cabezudo
+ */
+
+.roundButton {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: white;
+}
+.roundButton:hover:not([disabled]) {
+  background-color: #eeeeee;
+}
+.roundButton:active:not([disabled]) {
+  background-color: #cccccc;
+}
+.roundButton > .drawContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+.roundButton:not([disabled]) > .drawContainer {
+  cursor: pointer;
+}
+.roundButton > .drawContainer > .patty {
+  height: 2px;
+  background-color: black;
+}
+.roundButton[disabled] > .drawContainer > .patty {
+  background-color: #cccccc;
+}
+.crossButton > .drawContainer > .patty:first-child {
+  transform: translateY(1px) rotate(45deg);
+  width: 17px;
+}
+.crossButton > .drawContainer > .patty:last-child {
+  transform: translateY(-1px) rotate(-45deg);
+  width: 17px;
+}
+.removeButton > .drawContainer > .patty:first-child {
+  transform: translateY(1px);
+  width: 14px;
+}
+.addButton > .drawContainer > .patty:first-child {
+  transform: translateY(1px) rotate(90deg);
+  width: 14px;
+}
+.addButton > .drawContainer > .patty:last-child {
+  transform: translateY(-1px);
+  width: 14px;
+}
+
+
+@media all and ( min-width: 480px ) {
+}
+@media all and ( min-width: 750px ) {
+}
+@media all and ( min-width: 1024px ) {
+}
+@media all and ( min-width: 1250px ) {
+}
+@media all and ( min-width: 1800px ) {
+}

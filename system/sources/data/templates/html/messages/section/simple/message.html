@@ -1,0 +1,12 @@
+<script lib="simpleStaticMessage/0.1.0"></script>
+<script>
+  (() => {
+    const createGUI = () => {
+      console.log('Create GUI for simpleStaticMessage:0.1.0');
+      simpleStaticMessage({id: 'simpleStaticMessage', defaultMessage: {status: "MESSAGE", key: '#{message.default}', parameters: []}});
+    };
+    Core.addOnloadFunction(createGUI);
+  }
+  )();
+</script>
+<div id="simpleStaticMessage"></div>

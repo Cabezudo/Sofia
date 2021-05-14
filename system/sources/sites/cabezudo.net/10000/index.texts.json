@@ -1,0 +1,14 @@
+{
+  "default.html.page.message": {
+    "en": "{0}",
+    "es": "{0}"
+  },
+  "articles.0001.title": {
+    "en": "Sofia",
+    "es": "Sofía"
+  },
+  "articles.0001.description": {
+    "en": "Description",
+    "es": "Descripción"
+  }
+}

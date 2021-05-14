@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html profiles="all">
+  <head>
+    <title id="default.html.page.title"></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/index.css">
+    <style file="/index.css"></style>
+    <script src="/index.js"></script>
+    <script src="/variables.js"></script>
+    <script lib="core/0.1.0"></script>
+  </head>
+  <script>
+    {
+      const createGUI = () => {
+        Core.setTextsFor(['default.html.page.title', ['default.html.page.message', variables.site.baseDomainName]]);
+      };
+      Core.addOnloadFunction(createGUI);
+    }
+  </script>
+  <style>
+    #pageContainer {
+      display: flex;
+      height: 100vh;
+      justify-content: center;
+      align-items: center;
+    }
+  </style>
+  <body>
+    <div id="pageContainer">
+      <div id="default.html.page.message"></div>
+    </div>
+  </body>
+</html>
