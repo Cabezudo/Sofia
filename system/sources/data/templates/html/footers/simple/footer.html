@@ -12,10 +12,10 @@
 </script>
 <style>
   footer {
-    font-family: "#{theme.fonts.sansSerif.fontFamily}";
-    background-color: #222;
+    font-family: '#{footer.font.family}';
+    background-color: #{footer.colors.background};
     bottom: 0px;
-    color: #fff;
+    color: #{footer.colors.color};
     display: flex;
     flex-grow: 0;
     font-size: 12px;
@@ -30,6 +30,6 @@
 </style>
 <footer>
   <div>
-    &copy; #{copyright.startDate} - #{copyright.endDate} <a href="mailto:#{copyright.owner.eMail}">#{copyright.owner.name}</a>&nbsp;|&nbsp;<a href="#{copyright.license.url}" id="license"></a>
+    &copy; #{footer.copyright.startDate} - #{footer.copyright.endDate} <a href="mailto:#{footer.copyright.owner.eMail}">#{footer.copyright.owner.name}</a>&nbsp;|&nbsp;<a href="#{footer.copyright.license.url}" id="license"></a>
   </div>
 </footer>
