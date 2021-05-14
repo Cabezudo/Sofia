@@ -41,10 +41,10 @@ public class StartOptions {
           break;
         case "--configurationFile":
         case "-cf":
-          if (parts.length == 2) {
-            customConfigurationFile = parts[1];
+          if (parts.length == 1) {
+            throw new InvalidParameterException("No value for configuration file parameter.");
           } else {
-            throw new InvalidParameterException("Invalid argument for configuration file.");
+            customConfigurationFile = parts[1];
           }
           Logger.debug("Custom configuration file %s", customConfigurationFile);
           break;
