@@ -40,6 +40,7 @@ abstract class HTMLSourceFile implements SofiaSource {
   private final JSSourceFile js;
   private Profiles profiles = new Profiles();
   private final String id;
+  private final String cssPartialFileName;
 
   HTMLSourceFile(Site site, Path basePath, Path partialPath, String id, TemplateVariables templateVariables, TextsFile textsFile, Caller caller)
           throws IOException, LocatedSiteCreationException, SiteCreationException, InvalidFragmentTag {
@@ -55,14 +56,12 @@ abstract class HTMLSourceFile implements SofiaSource {
     this.libraries = new Libraries();
     this.id = id;
 
-    String cssPartialFileName = getVoidPartialPathName() + ".css";
+    this.cssPartialFileName = getVoidPartialPathName() + ".css";
     Path cssPartialPath = Paths.get(cssPartialFileName);
     Path jsPartialPath = Paths.get(getVoidPartialPathName() + ".js");
 
     css = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
-    css.load(basePath, cssPartialFileName, caller);
     js = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
-    js.loadFile();
   }
 
   Site getSite() {
@@ -134,6 +133,7 @@ abstract class HTMLSourceFile implements SofiaSource {
       if (templateReference != null && pageReference != null) {
         throw new SiteCreationException("You can't set a template and a page at the same time.");
       }
+//      getTemplateVariables().merge(jsonConfiguration);
     }
 
     Logger.debug("Search in %s for a reference to another file.", jsonPartialPath);
@@ -141,13 +141,13 @@ abstract class HTMLSourceFile implements SofiaSource {
       // Search for template property and if exist read the template file
       if (templateReference != null) {
         Logger.debug("The configuration file has a template property. Load template %s.", templateReference);
-        Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+        Path commonsHTMLTemplatePath = Configuration.getInstance().getCommonsHTMLTemplatesPath();
         Path voidTemplatePath = Paths.get(templateReference);
 
         Logger.debug("Load template %s from file %s in HTML source file.", voidTemplatePath, jsonPartialPath);
 
         Caller templateCaller = new Caller(getBasePath(), getPartialFilePath(), 0, caller);
-        HTMLSourceFile templateFile = new JSONTemplateHTMLSourceFile(getSite(), commonsComponentsTemplatePath, voidTemplatePath, getTemplateVariables(), textsFile, templateCaller);
+        HTMLSourceFile templateFile = new JSONTemplateHTMLSourceFile(getSite(), commonsHTMLTemplatePath, voidTemplatePath, getTemplateVariables(), textsFile, templateCaller);
         templateFile.loadHTMLFile();
         profiles.add(templateFile.getProfiles());
         libraries.add(templateFile.getLibraries());
@@ -161,14 +161,16 @@ abstract class HTMLSourceFile implements SofiaSource {
       // Search for page property and if exist read the page file
       if (pageReference != null) {
         Logger.debug("The configuration file has a page property. Load page %s.", pageReference);
-        Path commonsComponentsTemplatePath = Configuration.getInstance().getCommonsComponentsTemplatesPath();
+        Path commonsHTMLTemplatesPath = Configuration.getInstance().getCommonsHTMLTemplatesPath();
         Path voidPagePath = Paths.get(pageReference);
 
         Logger.debug("Load page %s from file %s in HTML source file.", voidPagePath, jsonPartialPath);
 
         Caller pageCaller = new Caller(getBasePath(), getPartialFilePath(), 0, caller);
-        HTMLSourceFile pageSourceFile = new HTMLPageSourceFile(getSite(), commonsComponentsTemplatePath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
+        HTMLSourceFile pageSourceFile = new HTMLPageSourceFile(getSite(), commonsHTMLTemplatesPath, voidPagePath, getTemplateVariables(), textsFile, pageCaller);
         pageSourceFile.loadHTMLFile();
+        pageSourceFile.loadCSSFile();
+        pageSourceFile.loadJSFile();
         profiles.add(pageSourceFile.getProfiles());
         libraries.add(pageSourceFile.getLibraries());
         css.add(pageSourceFile.getCascadingStyleSheetImports());
@@ -276,6 +278,14 @@ abstract class HTMLSourceFile implements SofiaSource {
     } while (false);
   }
 //
+
+  void loadCSSFile() throws IOException, LocatedSiteCreationException {
+    css.load(basePath, cssPartialFileName, caller);
+  }
+
+  void loadJSFile() throws IOException, LocatedSiteCreationException {
+    js.loadFile();
+  }
 
   abstract String replaceTemplateVariables(String line, int lineNumber, Path htmlSourceFilePath) throws LocatedSiteCreationException;
 

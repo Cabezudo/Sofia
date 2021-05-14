@@ -1,0 +1,72 @@
+
+{
+  "menu": {
+    "name": "#{site.name}",
+    "description": "site description",
+    "color": "#2980B9",
+    "font": {
+      "family": "Serif",
+      "size": {
+        "default": "20px",
+        "480": "20px",
+        "750": "16px",
+        "1024": "16px",
+        "1250": "16px",
+        "1800": "16px"
+      }
+    },
+    "padding": {
+      "top": {
+        "default": "0",
+        "480": "40px",
+        "750": "40px",
+        "1024": "40px",
+        "1250": "40px",
+        "1800": "40px"
+      },
+      "right": {
+        "default": "30px",
+        "480": "30px",
+        "750": "30px",
+        "1024": "30px",
+        "1250": "30px",
+        "1800": "30px"
+      },
+      "bottom": {
+        "default": "0",
+        "480": "40px",
+        "750": "40px",
+        "1024": "40px",
+        "1250": "40px",
+        "1800": "40px"
+      },
+      "left": {
+        "default": "30px",
+        "480": "30px",
+        "750": "30px",
+        "1024": "30px",
+        "1250": "30px",
+        "1800": "30px"
+      }
+    },
+    "items": [
+      {
+        "id": "item 1",
+        "url": "url",
+        "logged": null,
+        "hide": [
+          "url1",
+          "url2"
+        ],
+        "profiles": [
+          "profile1"
+        ]
+      },
+      {
+        "id": "item 2",
+        "url": "url",
+        "logged": null
+      }
+    ]
+  }
+}

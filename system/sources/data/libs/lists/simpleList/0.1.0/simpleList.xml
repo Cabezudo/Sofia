@@ -1,0 +1,46 @@
+<root>
+  <date>14/05/2019</date>
+  <author>Esteban Cabezudo</author>
+  <title>Lado del servidor</title>
+  Del lado del servidor necesitamos un servicio rest que pueda ser llamado de la siguiente forma:
+  <code>GET /api/v1/patients?sort=+name,-lastName&fields=name,lastName&filter=+esteban,-cabezudo&offset=10&limit=50</code>
+  El servicio rest debe entregar, en una llamada sin <code>offset</code> ni <code>limit</code>lo siguiente.
+  <code type="JSON">
+    {
+    "filters": "strings to filter"
+    "headers":[
+    {
+    "title":"Id"
+    },
+    {
+    "title":"Nombre de la ciudad"
+    }
+    ],
+    "totalRecords":12673,
+    "pageSize":200
+    }
+  </code>
+  Si especificamos un parámetro offset, el servicio REST debe entregar una lista de objectos con la siguiente estructura:
+  <code type="JSON">
+    {
+    "list":[
+    {
+    "row":"5",
+    "fields":[
+    "6",
+    "Andorra"
+    ]
+    }
+    ]
+    }
+  </code>
+  <title>Uso</title>
+
+  <param>{String} id El id del elemento al cual se le va a aplicar la lista.</param>
+  <param>{type} source El servicio REST que se va a llamar para obtener los datos de la lista. Sin query string.</param>
+  <param>{type} filterInputElement El id del elemento del tipo INPUT de donde se obtiene los valores para filtrar la lista.</param>
+  <param>{type} cellMaker Una función que crea la celda de la tabla con la lista. Si no se especifica se crean celdas vacías cuando no hay datos y una celda por cada campo retornado por el servicio REST con su dato.</param>
+  <param>{type} onClick La función que se va a ejecutar cuando se haga clic en la fila. Si no se especifica hacer clic en la fila no tiene efecto.</param>
+  <param>{type} notLoggedURL La URL donde se redirige la página si no se tienen permisos para ejecutar el servicio. Si no se especifica se redirecciona a la raiz del servidor.</param>
+  <return>{list} Nada</return>
+</root>

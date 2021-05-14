@@ -1,0 +1,10 @@
+{
+  "loginButton": {
+    "en": "Login",
+    "es": "Acceder"
+  },
+  "type.user.and.password": {
+    "en": "Type user and password",
+    "es": "Coloque el usuario y la contraseña"
+  }
+}

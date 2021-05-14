@@ -1,0 +1,35 @@
+<script>
+  {
+    const createGUI = () => {
+      setTexts();
+    };
+    const setTexts = () => {
+      Core.setTextsFor(["license"]);
+    };
+    Core.addOnSetLanguageFunction(setTexts);
+    Core.addOnloadFunction(createGUI);
+  }
+</script>
+<style>
+  footer {
+    font-family: "#{theme.fonts.sansSerif.fontFamily}";
+    background-color: #222;
+    bottom: 0px;
+    color: #fff;
+    display: flex;
+    flex-grow: 0;
+    font-size: 12px;
+    justify-content: center;
+    padding: 40px 0;
+  }
+  @media all and ( min-width: 450px ) {
+    footer {
+      font-size: 10px;
+    }
+  }
+</style>
+<footer>
+  <div>
+    &copy; #{copyright.startDate} - #{copyright.endDate} <a href="mailto:#{copyright.owner.eMail}">#{copyright.owner.name}</a>&nbsp;|&nbsp;<a href="#{copyright.license.url}" id="license"></a>
+  </div>
+</footer>

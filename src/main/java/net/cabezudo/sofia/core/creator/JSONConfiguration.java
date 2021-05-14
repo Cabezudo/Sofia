@@ -35,6 +35,7 @@ class JSONConfiguration {
 
       int lineNumber = 1;
       for (String line : jsonLines) {
+        System.out.println(line);
         try {
           sb.append(htmlSourceFile.getTemplateVariables().replace(line));
           sb.append('\n');
@@ -51,6 +52,7 @@ class JSONConfiguration {
       // Parse the configuration file
       try {
         jsonObject = JSON.parse(sb.toString()).toJSONObject();
+        System.out.println(jsonObject);
       } catch (JSONParseException e) {
         throw new SiteCreationException("Can't parse " + jsonSourceFilePath + ". " + e.getMessage());
       }

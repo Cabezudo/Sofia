@@ -1,0 +1,34 @@
+{
+  "html.page.title": {
+    "en": "Article page",
+    "es": "Página para artículo"
+  },
+  "title": {
+    "en": "Sofia",
+    "es": "Sofía"
+  },
+  "0001": {
+    "en": "Sofía is a server with support to create a Web application in ten minutes and then easily extend it without limits. Quick creation, easy maintenance.",
+    "es": "Sofía es un servidor con soporte para crear una aplicacion Web en diez minutos y luego fácilmente extenderlas sin límites. Rápida creación, fácil mantenimiento."
+  },
+  "0002": {
+    "en": "Sofía's philosophy is based on the idea that a large part of a Web application is common to many other Web applications and it seeks to facilitate the reuse of that common code.",
+    "es": "La filosofía de Sofía se basa en la idea de que una gran parte de una aplicación Web es común a muchas otras aplicaciones Web y se busca facilitar la reutilización de ese código en común."
+  },
+  "0003": {
+    "en": "When designing the framework, the idea of creating as few new concepts as possible was kept in mind. The framework allows the reuse of Java and HTML5 code using very few new ideas.",
+    "es": "Al diseñar el marco de trabajo se tuvo presente la idea de crear la menor cantidad de conceptos nuevos posibles. El marco de trabajo permite la reutilización de código Java y HTML5 utilizando muy pocas ideas nuevas."
+  },
+  "0004": {
+    "en": "Sofía is a web server, a framework, a set of libraries and an API that allows creating Web applications using existing components that work based on an API that offers a large number of web services.",
+    "es": "Sofía es un servidor web, un marco de trabajo, un conjunto de librerías y una API que permite crear aplicaciones Web utilizando componentes ya existentes que trabajan apoyándose en una API que ofrece una gran cantidad de servicios web."
+  },
+  "0005": {
+    "en": "Sofia's way of working is based on code reuse. When we create our pages we can reuse existing page templates, existing components, reuse HTML code snippets and create our own templates or components.",
+    "es": "La forma de trabajo de Sofía se basa en la reutilización de código. Cuando creamos nuestras páginas podemos reutilizar plantillas de páginas ya existentes, componentes ya existentes, reutilizar fragmentos de código HTML y crear plantillas o componentes propios."
+  },
+  "0006": {
+    "en": "El cliente Web se comunica con servicios ya existentes en el backend para reutilizar servicios de back y permite crear servicios propios o extender la funcionalidad con nuevas características",
+    "es": "El cliente Web se comunica con servicios ya existentes en el backend para reutilizar servicios de back y permite crear servicios propios o extender la funcionalidad con nuevas características"
+  }
+}

@@ -148,7 +148,8 @@ class CSSSourceFile implements SofiaSource {
   }
 
   void load(Path fileBasePath, String partialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
-    Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(fileBasePath, getBasePath(), partialFileName, newCaller);
+    Path defaultBasePath = getBasePath();
+    Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(fileBasePath, defaultBasePath, partialFileName, newCaller);
 
     if (!Files.exists(cssFullSourceFilePath)) {
       Logger.debug("[CSSSourceFile:load] File %s NOT FOUND.", partialFileName);

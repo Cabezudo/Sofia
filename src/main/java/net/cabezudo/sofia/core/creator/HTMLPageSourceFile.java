@@ -43,9 +43,9 @@ class HTMLPageSourceFile extends HTMLSourceFile {
   Path getSourceFilePath(Caller caller) throws SiteCreationException {
     Path htmlSourceFilePath;
     if (getPartialFilePath().startsWith("/")) {
-      htmlSourceFilePath = Configuration.getInstance().getCommonsComponentsTemplatesPath().resolve(getPartialFilePath().toString().substring(1));
+      htmlSourceFilePath = Configuration.getInstance().getCommonsHTMLTemplatesPath().resolve(getPartialFilePath().toString().substring(1));
     } else {
-      htmlSourceFilePath = Configuration.getInstance().getCommonsComponentsTemplatesPath().resolve(getPartialFilePath().toString());
+      htmlSourceFilePath = Configuration.getInstance().getCommonsHTMLTemplatesPath().resolve(getPartialFilePath().toString());
     }
     Logger.debug("Load HTML source file %s.", htmlSourceFilePath);
 

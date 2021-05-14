@@ -372,7 +372,7 @@ public class WebServer {
   }
 
   private void createCommonsFile(Site site) throws IOException {
-    File file = site.getVersionedSourcesCommonsFilePath().toFile();
+    File file = site.getVersionedSourcesCommonsConfigurationFilePath().toFile();
     Logger.debug("Check for %s.", file.getAbsoluteFile());
     if (file.createNewFile()) {
       try (FileWriter writer = new FileWriter(file)) {

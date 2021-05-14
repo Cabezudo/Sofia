@@ -1,0 +1,46 @@
+{
+  "afterLoginSucessfullPage": "home.html",
+  "theme": {
+    "caption": {
+      "title": {
+        "font": {
+          "family": "'Ubuntu', sans-serif",
+          "size": {
+            "default": "34px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      },
+      "option": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "38px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      },
+      "text": {
+        "font": {
+          "family": "Roboto Condensed",
+          "size": {
+            "default": "22px",
+            "480": "48px",
+            "750": "48px",
+            "1024": "48px",
+            "1250": "48px",
+            "1800": "48px"
+          }
+        }
+      }
+    }
+  }
+}

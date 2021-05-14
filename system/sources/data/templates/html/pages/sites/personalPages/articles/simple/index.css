@@ -1,0 +1,68 @@
+/*
+    Created on : May 12, 2021, 9:56:52 AM
+    Author     : Esteban Cabezudo
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+body, html {
+  margin: 0;
+  padding: 0;
+}
+body {
+  opacity: 0;
+  transition: opacity .2s;
+  font-family: "#{theme.fonts.serif.fontFamily}";
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+#application {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+#mainSection {
+  display: flex;
+  width: 100%;
+}
+#mainContent {
+  display: flex;
+  flex-direction: column;
+}
+#article {
+  margin: 10px 40px 50px;
+}
+#title {
+  margin: 40px;
+  font-size: 30px;
+  text-align: center;
+}
+#languages {
+  position: fixed;
+  align-self: flex-end;
+  background-color: red;
+  margin: 10px;
+}
+
+@media all and ( min-width: 450px ) {
+  #mainSection{
+  }
+  #mainContent {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  #languages {
+    align-self: flex-start;
+  }
+}
+
+@media all and ( min-width: 750px ) {
+  #mainSection {
+  }
+  #mainContent {
+  }
+}
