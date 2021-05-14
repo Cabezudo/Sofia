@@ -149,6 +149,7 @@
   {
     const createGUI = () => {
       const items = #{menu}.items;
+      console.log('menu.html :: createGUI :: Items: ', items);
       const menu = Core.validateById('menu');
       for (const i in items) {
         const item = items[i];
@@ -236,7 +237,9 @@
                 break;
               }
               case 'languages':
-                const flag = new TwoLanguageFlag(item.template.data);
+                const languageItemElement = document.createElement('DIV');
+                menu.appendChild(languageItemElement);
+                const flag = new TwoLanguageFlag({"element": languageItemElement, data: item.template.data});
                 menu.appendChild(flag.element);
                 break;
               default:
