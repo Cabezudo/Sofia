@@ -1,0 +1,87 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+.squareLinks {
+  display: flex;
+  flex-direction: column;
+}
+.squareLinks > .titleContainer {
+  margin: auto;
+  width: 100%;
+  max-width: 800px;
+}
+.squareLinks > .titleContainer > .title {
+  margin: 30px;
+  font-size: 28px;
+  text-align: center;
+}
+.squareLinks > .content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 800px;
+  margin: auto;
+  width: 100%;
+  justify-content: center;
+}
+
+.squareLinks > .content > .square {
+  width: 100%;
+}
+
+.squareLinks > .content > .square > a.link {
+  display: block;
+}
+
+.squareLinks > .content > .square > a.link:hover {
+  text-decoration: none;
+  border: 1px solid #{theme.colors.borders.highlight};
+  transition: 0.2s;
+  cursor: pointer;
+}
+
+.squareLinks > .content > .square > .squareContent {
+  margin: 10px;
+  padding: 20px;
+  border: 1px solid #{theme.colors.borders.normal};
+  border-radius: 2px;
+  text-align: center;
+}
+
+.squareLinks > .content > .square > .squareContent > .title {
+  font-family: "#{theme.fonts.serif.fontFamily}";
+  font-size: 28px;
+}
+
+.squareLinks > .content > .square > .squareContent > .description {
+  font-family: "#{theme.fonts.sansSerif.fontFamily}";
+  font-weight: 100;
+  margin: 20px;
+}
+
+@media all and ( min-width: 450px ) {
+  .squareLinks {
+    margin: 40px auto;
+  }
+
+  .squareLinks > .titleContainer > .title {
+    text-align: left;
+    width: 60%;
+  }
+
+  .squareLinks > .content > .square {
+    width: 50%;
+  }
+}
+
+@media all and ( min-width: 750px ) {
+  .squareLinks > .titleContainer > .title {
+    width: 40%;
+  }
+
+  .squareLinks > .content > .square {
+    width: 33.3333%;
+  }
+}

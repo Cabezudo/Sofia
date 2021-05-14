@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html profiles="all">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="html.page.title"></title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+    <script src="/variables.js"></script>
+    <script src="index.js"></script>
+    <script lib="core/0.1.0"></script>
+    <script lib="languages/twoLanguageFlag/0.1.0"></script>
+    <script>
+      {
+        const createGUI = () => {
+          new TwoLanguageFlag({id: 'languages'});
+          setTexts();
+        };
+        const setTexts = () => {
+          Core.setTextsFor(['html.page.title', 'title', '0001', '0002', '0003', '0004', '0005', '0006']);
+        };
+        Core.addOnSetLanguageFunction(setTexts);
+        Core.addOnloadFunction(createGUI);
+      }
+    </script>
+  </head>
+  <body>
+    <section id="application">
+      <section id="mainSection">
+        <section id ="mainContent">
+          <div id="languages"></div>
+          <section id="article">
+            <div id="title"></div>
+            <p id="0001"></p>
+            <p id="0002"></p>
+            <p id="0003"></p>
+            <p id="0004"></p>
+            <p id="0005"></p>
+            <p id="0006"></p>
+          </section>
+        </section>
+      </section>
+      <section id="links">
+        <section id="linksBackground"></section>
+        <section id="squareLinks"></section>
+      </section>
+      <section file="footer.html"></section>
+    </section>
+  </body>
+</html>

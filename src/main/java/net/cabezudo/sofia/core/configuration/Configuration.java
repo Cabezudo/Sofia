@@ -73,7 +73,7 @@ public final class Configuration {
   private Path commonsFontsPath;
   private Path commonsLibsPath;
   private Path commonsTemplatesPath;
-  private Path commonsComponentsTemplatesPath;
+  private Path commonsHTMLTemplatesPath;
   private Path commonsThemesPath;
   private Path commonsMailTemplatesPath;
   private Path sitesSourcesPath;
@@ -171,7 +171,7 @@ public final class Configuration {
     commonsFontsPath = createSystemPath(sitesDataPath, "fonts");
     commonsLibsPath = createSystemPath(sitesDataPath, "libs");
     commonsTemplatesPath = createSystemPath(sitesDataPath, "templates");
-    commonsComponentsTemplatesPath = createSystemPath(commonsTemplatesPath, "components");
+    commonsHTMLTemplatesPath = createSystemPath(commonsTemplatesPath, "html");
     commonsMailTemplatesPath = createSystemPath(commonsTemplatesPath, "mail");
     commonsThemesPath = createSystemPath(sitesDataPath, "themes");
     sitesSourcesPath = createSystemPath(commonSourcesPath, "sites");
@@ -293,8 +293,8 @@ public final class Configuration {
     return commonsLibsPath;
   }
 
-  public Path getCommonsComponentsTemplatesPath() {
-    return commonsComponentsTemplatesPath;
+  public Path getCommonsHTMLTemplatesPath() {
+    return commonsHTMLTemplatesPath;
   }
 
   public Path getCommonsThemesPath() {

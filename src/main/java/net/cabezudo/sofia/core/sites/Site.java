@@ -20,7 +20,8 @@ import net.cabezudo.sofia.emails.EMail;
  */
 public class Site implements Comparable<Integer> {
 
-  public static final String COMMONS_FILE_NAME = "commons.json";
+  public static final String COMMONS_CONFIGURATION_FILE_NAME = "commons.json";
+  public static final String COMMONS_CSS_FILE_NAME = "commons.css";
   public static final String TEXTS_FILE_NAME = "texts.json";
   public static final int NAME_MAX_LENGTH = 80;
 
@@ -166,8 +167,8 @@ public class Site implements Comparable<Integer> {
     return getSourcesPath(basePath).resolve(Integer.toString(version));
   }
 
-  public Path getVersionedSourcesCommonsFilePath() {
-    return getVersionedSourcesPath().resolve(COMMONS_FILE_NAME);
+  public Path getVersionedSourcesCommonsConfigurationFilePath() {
+    return getVersionedSourcesPath().resolve(COMMONS_CONFIGURATION_FILE_NAME);
   }
 
   public Path getSourcesImagesPath() {

@@ -1,0 +1,92 @@
+/*
+ * Created on: 30/10/2018
+ * Author:     Esteban Cabezudo
+ */
+
+.button {
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  box-shadow: none;
+  color: #fff;
+  cursor: default;
+  display: inline-flex;
+  flex-grow: 1;
+  font-size: 18px;
+  font-weight: 500;
+  justify-content: center;
+  line-height: 12px;
+  margin: 0 0 10px 0;
+  padding: 10px 24px;
+  text-align: center;
+  vertical-align: top;
+  white-space: nowrap;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+}
+
+.button:active, button:focus {
+  outline: none;
+}
+
+.button:focus {
+  border-color: transparent;
+  color: #fff;
+}
+
+.button:not([disabled]):hover {
+  cursor: pointer;
+}
+
+.button[disabled] {
+  color: lightgray;
+  background-color: white;
+  border: 1px solid lightgray;
+}
+
+.blueButton {
+  background-color: #001787;
+}
+
+.blueButton:not([disabled]):hover {
+  background-color: #0023D0;
+}
+
+.redButton {
+  background-color: #870003;
+}
+
+.redButton:not([disabled]):hover {
+  background-color: #D0000A;
+}
+
+.greenButton {
+  background-color: #008707;
+}
+
+.greenButton:not([disabled]):hover {
+  background-color: #00D015;
+}
+
+.blackButton {
+  background-color: #000;
+}
+
+.blackButton:not([disabled]):hover {
+  background-color: #333;
+}
+
+@media all and ( min-width: 550px ) {
+  .button {
+    margin: 10px;
+    width: 50%;
+  }
+}
+@media all and ( min-width: 750px ) {
+}
+@media all and ( min-width: 1024px ) {
+}
+@media all and ( min-width: 1250px ) {
+}
+@media all and ( min-width: 1800px ) {
+}

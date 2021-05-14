@@ -63,7 +63,7 @@ public class SiteCreator {
     TextsFile textsFile = new TextsFile();
 
     try {
-      templateVariables.add(site.getVersionedSourcesPath(), Site.COMMONS_FILE_NAME);
+      templateVariables.add(site.getVersionedSourcesPath(), Site.COMMONS_CONFIGURATION_FILE_NAME);
     } catch (UndefinedLiteralException e) {
       throw new SiteCreationException(e.getMessage());
     }
@@ -81,20 +81,23 @@ public class SiteCreator {
     HTMLSourceFile baseFile = new HTMLPageSourceFile(site, basePath, htmlPartialPath, templateVariables, textsFile, null);
     baseFile.loadHTMLFile();
 
-    Caller baseFileCaller = new Caller(baseFile, 0);
+    Caller caller = new Caller(baseFile, 0);
     createPagePermissions(site, baseFile, requestURI);
 
-    JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, baseFileCaller);
+    JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
     jsFile.add(baseFile.getLibraries());
     jsFile.add(baseFile.getJavaScriptLines());
     Path jsFilePath = site.getFilesPath(jsPartialPath);
     jsFile.save(jsFilePath);
 
-    CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, baseFileCaller);
+    CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
     if (themeSourceFile != null) {
       cssFile.add(themeSourceFile.getCascadingStyleSheetImports());
       cssFile.add(themeSourceFile.getCascadingStyleSheetLines());
     }
+
+    cssFile.load(site.getVersionedSourcesPath(), Site.COMMONS_CSS_FILE_NAME, caller);
+
     cssFile.add(baseFile.getLibraries());
     cssFile.add(baseFile.getCascadingStyleSheetImports());
     cssFile.add(baseFile.getCascadingStyleSheetLines());
