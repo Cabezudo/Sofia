@@ -40,8 +40,10 @@ class TwoLanguageFlag {
       } else {
         if (element === null) {
           throw Error('You must define a property id or a property element.');
+        } else {
+          this.element = element;
+          this.id = this.element.id;
         }
-        this.id = this.element.id;
       }
     };
     const createGUI = () => {
