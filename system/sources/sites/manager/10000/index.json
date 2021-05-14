@@ -39,5 +39,25 @@
         }
       ]
     }
+  },
+  "footer": {
+    "font": {
+      "family": "#{theme.fonts.sansSerif.fontFamily}"
+    },
+    "colors": {
+      "color": "#fff",
+      "background": "#222"
+    },
+    "copyright": {
+      "startDate": 2013,
+      "endDate": 2021,
+      "owner": {
+        "name": "Esteban Cabezudo",
+        "eMail": "esteban@cabezudo.net"
+      },
+      "license": {
+        "url": "http://sofia.academy/license"
+      }
+    }
   }
 }

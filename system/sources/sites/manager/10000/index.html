@@ -21,8 +21,12 @@
             id: 'documentationLink',
             onClick: '/docs/'
           });
-          Core.setTextsFor(['message', 'title']);
+          setTexts();
         };
+        const setTexts = () => {
+          Core.setTextsFor(['message', 'title', 'wellcome.message']);
+        };
+        Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);
       }
     </script>
@@ -34,7 +38,7 @@
         <section class="content">
           <h2 class="title" id="title"></h2>
           <p>&nbsp;</p>
-          <p id="message" class="center"></p>
+          <p id="wellcome.message" class="center"></p>
           <p>&nbsp;</p>
           <div id="managerLink" class="screenMenuItem"></div>
           <div id="documentationLink" class="screenMenuItem"></div>
