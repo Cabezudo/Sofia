@@ -57,6 +57,7 @@
 
 .squareLinks > .content > .square > .squareContent > .description {
   font-family: "#{theme.fonts.sansSerif.fontFamily}";
+  font-size: 12px;
   font-weight: 100;
   margin: 20px;
 }
