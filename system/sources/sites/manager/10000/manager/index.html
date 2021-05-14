@@ -21,8 +21,12 @@
             id: 'usersLink',
             onClick: '/manager/users/users.html'
           });
+          setTexts();
+        };
+        const setTexts = () => {
           Core.setTextsFor(['title']);
         };
+        Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);
       }
     </script>

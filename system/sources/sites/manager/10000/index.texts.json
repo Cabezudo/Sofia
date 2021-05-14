@@ -7,7 +7,7 @@
     "en": "Manager",
     "es": "Administrador"
   },
-  "message": {
+  "wellcome.message": {
     "en": "The server is working!",
     "es": "¡El servidor está funcionando!"
   },
