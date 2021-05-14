@@ -1,13 +1,22 @@
 {
-  "copyright": {
-    "startDate": 2013,
-    "endDate": 2021,
-    "owner": {
-      "name": "Juan Pérez",
-      "eMail": "juan@perez.com"
+  "footer": {
+    "font": {
+      "family": "#{theme.fonts.sansSerif.fontFamily}"
     },
-    "license": {
-      "url": "http://sofia.academy/license"
+    "colors": {
+      "color": "#fff",
+      "background": "#222"
+    },
+    "copyright": {
+      "startDate": 2013,
+      "endDate": 2021,
+      "owner": {
+        "name": "Juan Pérez",
+        "eMail": "juan@perez.com"
+      },
+      "license": {
+        "url": "http://sofia.academy/license"
+      }
     }
   }
 }
