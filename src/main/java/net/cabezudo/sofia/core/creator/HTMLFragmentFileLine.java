@@ -22,15 +22,19 @@ public class HTMLFragmentFileLine extends HTMLFileLine {
 
   @Override
   Path getConfigurationFilePath(Caller caller) {
-    String fileName = getFilePath().toString();
-    int i = fileName.lastIndexOf(".");
-    String partialFile;
-    if (i != -1) {
-      partialFile = fileName.substring(0, i);
+    String htmlFileName = getFilePath().toString();
+    String voidFileName = FileHelper.removeExtension(htmlFileName);
+    String fileName = voidFileName + ".json";
+    Path configurationFilePath;
+    if (htmlFileName.startsWith("/")) {
+      Path siteBasePath = getSite().getVersionedSourcesPath();
+      Logger.debug("Start with /, Use site path: %s", siteBasePath);
+      configurationFilePath = siteBasePath.resolve(fileName.substring(1));
     } else {
-      partialFile = fileName;
+      Path callerBasePath = caller.getBasePath();
+      Logger.debug("Use caller base path path: %s", callerBasePath);
+      configurationFilePath = callerBasePath.resolve(caller.getRelativePath()).getParent().resolve(fileName);
     }
-    Path configurationFilePath = caller.getBasePath().resolve(caller.getRelativePath()).getParent().resolve(partialFile + ".json");
     Logger.debug("Configuration file path: %s", configurationFilePath);
     return configurationFilePath;
   }
