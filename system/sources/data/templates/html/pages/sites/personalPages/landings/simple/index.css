@@ -11,7 +11,7 @@ body, html {
 body {
   opacity: 0;
   transition: opacity .2s;
-  font-family: "#{theme.fonts.serif.fontFamily}";
+  font-family: "#{theme.fonts.serif.name}";
 }
 a {
   color: inherit;
@@ -51,24 +51,24 @@ a:hover {
 }
 #description{
   font-size: 10px;
-  font-family: "#{theme.fonts.sansSerif.fontFamily}";
+  font-family: "#{theme.fonts.sansSerif.name}";
   text-transform: uppercase;
   color: darkblue;
   padding-bottom: 20px;
 }
 #profesion{
-  font-family: "#{theme.fonts.serif.fontFamily}";
+  font-family: "#{theme.fonts.serif.name}";
   font-size: 28px;
   color: darkblue;
 }
 #name{
-  font-family: "#{theme.fonts.serif.fontFamily}";
+  font-family: "#{theme.fonts.serif.name}";
   font-size: 28px;
   color: darkblue;
 }
 #detail{
   font-size: 20px;
-  font-family: "#{theme.fonts.sansSerif.fontFamily}";
+  font-family: "#{theme.fonts.sansSerif.name}";
   padding: 20px 0;
   font-weight: 100;
 }

@@ -78,6 +78,8 @@
   #itemsContainer > .menu > .icon {
     height: 20px;
     width: 20px;
+    display: flex;
+    align-items: center;
   }
   #itemsContainer > .menu > .icon svg {
     height: 20px;
@@ -237,10 +239,17 @@
                 break;
               }
               case 'languages':
+                const languageItemContainerElement = document.createElement('DIV');
+                languageItemContainerElement.className = 'item icon';
+                menu.appendChild(languageItemContainerElement);
+
                 const languageItemElement = document.createElement('DIV');
-                menu.appendChild(languageItemElement);
-                const flag = new TwoLanguageFlag({"element": languageItemElement, data: item.template.data});
-                menu.appendChild(flag.element);
+                languageItemContainerElement.appendChild(languageItemElement);
+
+                const flag = new TwoLanguageFlag({
+                  element: languageItemElement,
+                  data: item.template.data
+                });
                 break;
               default:
                 throw new Error(`Invalid template name ${templateName}`);

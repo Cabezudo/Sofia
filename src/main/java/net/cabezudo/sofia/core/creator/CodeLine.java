@@ -98,12 +98,12 @@ public class CodeLine extends Line {
 
   @Override
   CSSImports getCascadingStyleSheetImports() {
-    return null;
+    return new CSSImports();
   }
 
   @Override
   Lines getCascadingStyleSheetLines() {
-    return null;
+    return new CSSLines();
   }
 
   @Override
