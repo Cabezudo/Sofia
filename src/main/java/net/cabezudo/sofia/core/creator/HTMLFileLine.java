@@ -10,6 +10,7 @@ import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.html.Tag;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
@@ -79,6 +80,15 @@ public abstract class HTMLFileLine extends Line {
       htmlSourceFile = getHTMLSourceFile(caller);
       htmlSourceFile.loadHTMLFile();
 
+      Path cssBasePath = htmlSourceFile.getBasePath();
+      Path htmlPartialPath = htmlSourceFile.getPartialFilePath();
+      String cssPartialName = FileHelper.removeExtension(htmlPartialPath) + ".css";
+      htmlSourceFile.loadCSSFile(cssBasePath, cssPartialName, caller);
+
+      // TODO add the js file
+//      if (tag.getId().equals("messages")) {
+//        throw new SofiaRuntimeException("");
+//      }
       JSONObject jsonObject;
       Path jsonIdConfigurationFilePath = configurationFilePath.getParent().resolve(tagId + ".json");
       Logger.debug("Search configuration file %s for id %s.", jsonIdConfigurationFilePath, tagId);

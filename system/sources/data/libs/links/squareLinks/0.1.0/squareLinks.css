@@ -51,12 +51,12 @@
 }
 
 .squareLinks > .content > .square > .squareContent > .title {
-  font-family: "#{theme.fonts.serif.fontFamily}";
+  font-family: "#{theme.fonts.serif.name}";
   font-size: 28px;
 }
 
 .squareLinks > .content > .square > .squareContent > .description {
-  font-family: "#{theme.fonts.sansSerif.fontFamily}";
+  font-family: "#{theme.fonts.sansSerif.name}";
   font-size: 12px;
   font-weight: 100;
   margin: 20px;

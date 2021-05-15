@@ -10,7 +10,7 @@ import java.util.List;
  */
 abstract class Lines implements Iterable<Line> {
 
-  List<Line> lines = new ArrayList<>();
+  List<Line> list = new ArrayList<>();
 
   protected abstract Line transform(Line line);
 
@@ -19,7 +19,7 @@ abstract class Lines implements Iterable<Line> {
     if (line == null) {
       return;
     }
-    lines.add(line);
+    list.add(line);
   }
 
   void add(Lines ls) {
@@ -33,29 +33,29 @@ abstract class Lines implements Iterable<Line> {
 
   @Override
   public Iterator<Line> iterator() {
-    return lines.iterator();
+    return list.iterator();
   }
 
   int getSize() {
-    return lines.size();
+    return list.size();
   }
 
   Line get(int i
   ) {
-    return lines.get(i);
+    return list.get(i);
   }
 
   void set(int i, Line line) {
-    lines.set(i, line);
+    list.set(i, line);
   }
 
   boolean isNotEmpty() {
-    return !lines.isEmpty();
+    return !list.isEmpty();
   }
 
   String getCode() {
     StringBuilder sb = new StringBuilder();
-    for (Line line : lines) {
+    for (Line line : list) {
       sb.append(line.getCode());
       sb.append('\n');
     }

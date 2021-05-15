@@ -39,5 +39,4 @@ public abstract class Line implements Comparable<Line> {
   boolean isCSSImport() {
     return false;
   }
-
 }

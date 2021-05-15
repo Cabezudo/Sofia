@@ -152,16 +152,16 @@ class CSSSourceFile implements SofiaSource {
     Path cssFullSourceFilePath = FileHelper.resolveFullFilePath(fileBasePath, defaultBasePath, partialFileName, newCaller);
 
     if (!Files.exists(cssFullSourceFilePath)) {
-      Logger.debug("[CSSSourceFile:load] File %s NOT FOUND.", partialFileName);
+      Logger.debug("File %s NOT FOUND.", partialFileName);
       return;
     } else {
-      Logger.debug("[CSSSourceFile:load] Cascading Style Sheet file %s FOUND.", partialFileName);
+      Logger.debug("Cascading Style Sheet file %s FOUND.", partialFileName);
     }
 
     add(new CodeLine("/* " + partialFileName + " addeded by " + newCaller + " */"));
     List<String> linesFromFile = Files.readAllLines(cssFullSourceFilePath);
     int lineNumber = 1;
-    Logger.debug("[CSSSourceFile:load] Replace template variables on source file %s.", cssFullSourceFilePath);
+    Logger.debug("Replace template variables on source file %s.", cssFullSourceFilePath);
     for (String line : linesFromFile) {
       try {
         String newLine = getTemplateVariables().replace(line);
