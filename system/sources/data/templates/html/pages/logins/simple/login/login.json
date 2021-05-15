@@ -25,6 +25,11 @@
             "name": "twitter",
             "url": "#{site.socialMedia.twitter.url}"
           }
+        },
+        {
+          "template": {
+            "name": "languages"
+          }
         }
       ]
     }

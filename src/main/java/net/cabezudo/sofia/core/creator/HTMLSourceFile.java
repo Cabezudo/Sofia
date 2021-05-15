@@ -283,6 +283,10 @@ abstract class HTMLSourceFile implements SofiaSource {
     css.load(basePath, cssPartialFileName, caller);
   }
 
+  void loadCSSFile(Path basePath, String cssPartialFileName, Caller newCaller) throws IOException, LocatedSiteCreationException {
+    css.load(basePath, cssPartialFileName, newCaller);
+  }
+
   void loadJSFile() throws IOException, LocatedSiteCreationException {
     js.loadFile();
   }
@@ -395,8 +399,8 @@ abstract class HTMLSourceFile implements SofiaSource {
   }
 
   @Override
-  public void add(Lines lines) {
-    lines.add(lines);
+  public void add(Lines ls) {
+    lines.add(ls);
   }
 
   @Override

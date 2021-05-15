@@ -1,4 +1,5 @@
 /*
+    templates/html/messages/section/simple
     Created on : Oct 31, 2019, 11:40:48 AM
     Author     : Esteban Cabezudo
 */
@@ -6,11 +7,11 @@
 .simpleStaticMessage {
   display: flex;
   justify-content: center;
-  font-family: #{messages.font.family};
+  font-family: #{theme.fonts.sansSerif.name};
   font-size: 18px;
   font-weight: 200;
   color: #fff;
-  background-color: #{messages.ok.color};
+  background-color: #{theme.application.color.ok};
   padding: 10px;
   transition: background-color 0.5s linear;
   align-content: center;
@@ -23,14 +24,14 @@
 }
 
 .simpleStaticMessage.error {
-  background-color: #{messages.error.color};
+  background-color: #{theme.application.color.error};
 }
 
 .simpleStaticMessage.ok {
-  background-color: #{messages.ok.color};
+  background-color: #{theme.application.color.ok};
 }
 
 .simpleStaticMessage.message {
-  background-color: #{messages.message.color};
+  background-color: #{theme.application.color.message};
 }
 

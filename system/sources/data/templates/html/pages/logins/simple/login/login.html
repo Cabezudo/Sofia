@@ -9,13 +9,16 @@
     <script src="/login.js"></script>
     <script lib="core/0.1.0"></script>
     <script lib="links/link/0.1.0"></script>
-    <script lib="messages/simpleStaticMessage/0.1.0"></script>
     <script>
       const login = (() => {
         const createGUI = () => {
-          Core.setTextsFor(['title', 'passwordRecovery']);
           Core.setMessagesContainer('messages');
+          setTexts();
         };
+        const setTexts = () => {
+          Core.setTextsFor(['title', 'passwordRecovery']);
+        };
+        Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);
       })();
     </script>

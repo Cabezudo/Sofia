@@ -3,10 +3,10 @@
   "theme": {
     "fonts": {
       "serif": {
-        "fontFamily": "Lora"
+        "name": "Lora"
       },
       "sansSerif": {
-        "fontFamily": "Ubuntu"
+        "name": "Ubuntu"
       }
     },
     "colors": {

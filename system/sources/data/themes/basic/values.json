@@ -2,15 +2,18 @@
   "theme": {
     "fonts": {
       "serif": {
-        "fontFamily": "Lora"
+        "name": "Lora"
       },
       "sansSerif": {
-        "fontFamily": "Ubuntu"
+        "name": "Ubuntu"
       }
     },
     "application": {
       "color": {
-        "main": "#2980B9"
+        "main": "#2980B9",
+        "ok": "#3D904A",
+        "message": "#3D4590",
+        "error": "#B1001C"
       }
     },
     "deprecated": {
@@ -122,15 +125,6 @@
         "font": {
           "family": "'Ubuntu', sans-serif"
         },
-        "ok": {
-          "color": "#3D904A"
-        },
-        "message": {
-          "color": "#3D4590"
-        },
-        "error": {
-          "color": "#B1001C"
-        }
       },
       "caption": {
         "title": {

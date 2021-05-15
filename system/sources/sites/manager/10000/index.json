@@ -42,7 +42,7 @@
   },
   "footer": {
     "font": {
-      "family": "#{theme.fonts.sansSerif.fontFamily}"
+      "family": "#{theme.fonts.sansSerif.name}"
     },
     "colors": {
       "color": "#fff",

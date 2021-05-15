@@ -63,7 +63,7 @@ class HTMLTemplateLine extends HTMLFileLine {
   @Override
   HTMLSourceFile getHTMLSourceFile(Caller caller) throws IOException, SiteCreationException, LocatedSiteCreationException {
     Path templatesBasePath = Configuration.getInstance().getCommonsHTMLTemplatesPath();
-    Logger.debug("[HTMLTemplateLine:getHTMLSourceFile] Create new HTMLTemplateSectionSourceFile using %s.", templatesBasePath);
+    Logger.debug("Create new HTMLTemplateSectionSourceFile using %s.", templatesBasePath);
     return new HTMLTemplateSectionSourceFile(getSite(), templatesBasePath, getFilePath(), getTag().getId(), getTemplateVariables(), getTextsFile(), caller);
   }
 }
