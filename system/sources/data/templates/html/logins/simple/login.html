@@ -36,7 +36,7 @@
 
       new InputEMailValidator({
         element: loginEMailElement,
-        placeholderKey: "email",
+        placeholderKey: "placeholder.email",
         onValid: () => {
           validEMail = true;
           changeAcceptButton();
@@ -54,7 +54,7 @@
 
       new InputPasswordValidator({
         element: loginPasswordElement,
-        placeholderKey: "password",
+        placeholderKey: "placeholder.password",
         onValid: () => {
           passwordValid = true;
           changeAcceptButton();
@@ -104,8 +104,8 @@
 
 </script>
 <div>
-  <div class="field"><input id="loginEMail" type="email" name="username" placeholder="correo electrónico"></div>
-  <div class="field"><input id="loginPassword" type="password" name="password" placeholder="contraseña"></div>
+  <div class="field"><input id="loginEMail" type="email" name="username"></div>
+  <div class="field"><input id="loginPassword" type="password" name="password"></div>
   <div class="field centered">
     <div id="loginButton"></div>
   </div>

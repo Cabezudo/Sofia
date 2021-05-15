@@ -8,8 +8,6 @@
 class InputGenericValidator {
   constructor(
   { element = null, id = null, placeholderKey = null, placeholderParameters = null, getValidationURL = null, onValid = null, onNotValid = null, onEnter = null, onFocus = null } = {}) {
-    this.placeholderKey = placeholderKey;
-    this.placeholderParameters = placeholderParameters;
     this.verificationTimer;
     this.requestId = 0;
     const validateOptions = () => {
@@ -21,7 +19,7 @@ class InputGenericValidator {
       }
     };
     const setTexts = () => {
-      element.placeholder = Core.getText(this.placeholderKey, this.placeholderParameters);
+      element.placeholder = Core.getText(placeholderKey, placeholderParameters);
     };
     const createGUI = () => {
       if (element === null) {

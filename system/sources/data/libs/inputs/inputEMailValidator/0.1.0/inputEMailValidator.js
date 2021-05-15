@@ -6,13 +6,16 @@
 /* global Core */
 
 class InputEMailValidator {
-  constructor( { element = null, onValid = null, onNotValid = null, onKeyPress = null } = {}) {
+  constructor( { element = null, placeholderKey = null, placeholderParameters = null, onValid = null, onNotValid = null, onKeyPress = null } = {}) {
     this.verificationTimer;
     this.requestId = 0;
     const validateOptions = () => {
       if (element === null) {
         throw Error('You must define an element to apply the validator.');
       }
+    };
+    const setTexts = () => {
+      element.placeholder = Core.getText(placeholderKey, placeholderParameters);
     };
     const createGUI = () => {
       element.className = 'inputEMailValidator';
@@ -23,6 +26,7 @@ class InputEMailValidator {
       if (element.value && element.value.length > 0) {
         sendValidationRequest(element);
       }
+      Core.addOnSetLanguageFunction(setTexts);
     };
     const assignTriggers = () => {
       element.addEventListener('response', event => {

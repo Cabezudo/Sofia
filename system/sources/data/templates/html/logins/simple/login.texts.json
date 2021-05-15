@@ -3,6 +3,14 @@
     "en": "Login",
     "es": "Acceder"
   },
+  "placeholder.email": {
+    "en": "e-mail",
+    "es": "correo electrónico"
+  },
+  "placeholder.password": {
+    "en": "password",
+    "es": "contraseña"
+  },
   "type.user.and.password": {
     "en": "Type user and password",
     "es": "Coloque el usuario y la contraseña"
