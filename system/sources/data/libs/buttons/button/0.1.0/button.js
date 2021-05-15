@@ -12,6 +12,7 @@ class Button {
 
     const validateOptions = () => {
       this.element = Core.validateIdOrElement(id, this.element);
+      this.id = this.element.id;
       if (type === null) {
         throw Error('Button :: setLanguage :: You must specify a button type.');
       }
@@ -28,7 +29,7 @@ class Button {
         this.element.innerHTML = text;
         return;
       }
-      if (id !== null) {
+      if (this.id !== null) {
         const text = Core.getText(id, parameters);
         console.log(`Button :: setLanguage :: Set text '${text}' from id for button ${id}`);
         this.element.innerHTML = text;

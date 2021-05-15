@@ -9,9 +9,9 @@
     <script src="/manager/sites/add.js"></script>
     <script src="/variables.js"></script>
     <script lib="core/0.1.0"></script>
-    <script lib="inputGenericValidator/0.1.0"></script>
-    <script lib="linkTo/0.1.0"></script>
-    <script lib="button/0.1.0"></script>
+    <script lib="inputs/inputGenericValidator/0.1.0"></script>
+    <script lib="links/link/0.1.0"></script>
+    <script lib="buttons/button/0.1.0"></script>
     <script>
       {
         let addSiteButton, detailDiv, nameInput, hostnameInput, nameValidated, hostnameValidated, nameErrorMessage, hostnameErrorMessage;
@@ -103,6 +103,9 @@
               }
             }
           });
+          setTexts();
+        };
+        const setTexts = () => {
           Core.setTextsFor(['title']);
         };
         const setMessage = () => {
@@ -151,6 +154,7 @@
             Core.trigger(addSiteButton, 'disabled');
           }
         };
+        Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);
         Core.addSetFunction(() => {
           setMessage();

@@ -8,5 +8,15 @@
       }
     }
   },
+  "footer": {
+    "copyright": {
+      "startDate": 2013,
+      "endDate": 2021,
+      "owner": {
+        "name": "Esteban Cabezudo",
+        "eMail": "esteban@cabezudo.net"
+      }
+    }
+  },
   "themeName": "basic"
 }

@@ -1,0 +1,19 @@
+{
+  "title": {
+    "en": "Sofia server",
+    "es": "Servidor Sofía"
+  },
+  "link.sofia": {
+    "en": "Sofia",
+    "es": "Sofía"
+  },
+  "link.templates.and.libraries": {
+    "en": "Templates and libraries",
+    "es": "Plantillas y librerías"
+  },
+  "link.image.cnd": {
+    "en": "Sofia Image Code",
+    "es": "Código para imágenes de Sofía"
+  }
+}
+
