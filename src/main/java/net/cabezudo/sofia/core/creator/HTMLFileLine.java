@@ -91,9 +91,6 @@ public abstract class HTMLFileLine extends Line {
       String cssPartialName = FileHelper.removeExtension(htmlPartialPath) + ".css";
       htmlSourceFile.loadCSSFile(cssBasePath, cssPartialName, caller);
       JSONObject jsonObject;
-      System.out.println("configurationFilePath: " + configurationFilePath);
-      System.out.println("configurationFilePath.getParent(): " + configurationFilePath.getParent());
-      System.out.println("tagId: " + tagId);
 
       Path jsonIdConfigurationFilePath = configurationFilePath.getParent().resolve(tagId + ".json");
       Logger.debug("Search configuration file %s for id %s.", jsonIdConfigurationFilePath, tagId);
