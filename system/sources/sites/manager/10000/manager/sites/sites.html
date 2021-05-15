@@ -8,15 +8,15 @@
     <style file="../../commons.css"></style>
     <script src="/variables.js"></script>
     <script src="/manager/sites/sites.js"></script>
-    <script lib="button/0.1.0"></script>
+    <script lib="buttons/button/0.1.0"></script>
     <script lib="core/0.1.0"></script>
-    <script lib="linkTo/0.1.0"></script>
-    <script lib="simpleList/0.1.0"></script>
+    <script lib="links/link/0.1.0"></script>
+    <script lib="lists/simpleList/0.1.0"></script>
     <script>
       {
         const createGUI = () => {
           blueButton({
-            element: addSiteButton,
+            id: 'addSiteButton',
             enabled: true,
             onClick: () => {
               document.location.href = 'add.html';
@@ -51,8 +51,12 @@
             },
             notLoggedURL: '/'
           });
+          setTexts();
+        };
+        const setTexts = () => {
           Core.setTextsFor(['addSiteButton', 'title']);
         };
+        Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);
       }
     </script>

@@ -53,7 +53,6 @@
 
     const createGUI = () => {
       let image, exampleMessages;
-      ;
       const createCodeExample = (id) => {
         const container = Core.validateById(id);
         const code = container.innerText;
@@ -65,7 +64,6 @@
         const buttonContainer = document.createElement("DIV");
         buttonContainer.className = 'buttonContainer';
         const button = document.createElement("DIV");
-        button.innerText = 'Run';
         buttonContainer.appendChild(button);
         exampleMessages = document.createElement("DIV");
         buttonContainer.appendChild(exampleMessages);
@@ -89,6 +87,7 @@
         });
         blueButton({
           element: button,
+          key: 'run',
           enabled: false,
           onClick: () => {
             const code = editor.getURLCode();

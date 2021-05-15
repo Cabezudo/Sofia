@@ -5,6 +5,7 @@
     "font": {
       "family": "Kanit"
     },
+    "change": "550px",
     "items": [
       {
         "id": "home",
@@ -19,6 +20,11 @@
         "template": {
           "name": "twitter",
           "url": "#{site.socialMedia.twitter.url}"
+        }
+      },
+      {
+        "template": {
+          "name": "languages"
         }
       }
     ]

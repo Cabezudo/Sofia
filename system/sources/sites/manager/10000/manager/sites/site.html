@@ -9,11 +9,11 @@
     <script src="/manager/sites/site.js"></script>
     <script src="/variables.js"></script>
     <script lib="core/0.1.0"></script>
-    <script lib="editableField/0.1.0"></script>
-    <script lib="linkTo/0.1.0"></script>
-    <script lib="button/0.1.0"></script>
-    <script lib="crossButton/0.1.0"></script>
-    <script lib="inputGenericValidator/0.1.0"></script>
+    <script lib="inputs/editableField/0.1.0"></script>
+    <script lib="links/link/0.1.0"></script>
+    <script lib="buttons/button/0.1.0"></script>
+    <script lib="buttons/crossButton/0.1.0"></script>
+    <script lib="inputs/inputGenericValidator/0.1.0"></script>
     <script>
       {
         let
@@ -136,6 +136,9 @@
               Core.enable(deleteSiteButton);
             }
           });
+          setTexts();
+        };
+        const setTexts = () => {
           Core.setTextsFor(['title', 'domains.subtitle']);
         };
         const addNewHostOnServer = () => {
@@ -296,6 +299,7 @@
           setMessage();
           setFormStatus();
         };
+        Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);
         Core.addSetFunction(() => {
           Core.screenBlocker.block();

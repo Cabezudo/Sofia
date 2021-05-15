@@ -338,7 +338,8 @@ abstract class HTMLSourceFile implements SofiaSource {
           throw new SiteCreationException(e.getMessage());
         }
 
-        HTMLTemplateLine templateLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), textsFile, tag, lineNumber, getCaller());
+        Caller newCaller = new Caller(this, lineNumber);
+        HTMLTemplateLine templateLine = new HTMLTemplateLine(getSite(), getBasePath(), getPartialFilePath(), getTemplateVariables(), textsFile, tag, lineNumber, newCaller);
         templateLine.load();
 
         return templateLine;

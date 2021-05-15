@@ -9,7 +9,18 @@
     <script src="/variables.js"></script>
     <script src="/docs/index.js"></script>
     <script lib="core/0.1.0"></script>
-    <script></script>
+    <script>
+      {
+        const createGUI = () => {
+          setTexts();
+        };
+        const setTexts = () => {
+          Core.setTextsFor(['title', 'link.sofia', 'link.templates.and.libraries', 'link.image.cnd']);
+        };
+        Core.addOnSetLanguageFunction(setTexts);
+        Core.addOnloadFunction(createGUI);
+      }
+    </script>
     <style file="documentation.css"></style>
   </head>
   <body>
@@ -19,15 +30,15 @@
         <section class="content">
           <div class="documentation">
             <section id="introducingSofia" class="documentation">
-              <span class="title">Sofia server</span>
-              <div><a href="sofia.html">Sofia</a></div>
-              <div><a href="templatesAndLibraries.html">Templates and libraries</a></div>
-              <div><a href="imageCND.html">Image CND</a></div>
+              <span class="title" id="title">Sofia server</span>
+              <div><a href="sofia.html" id="link.sofia">Sofia</a></div>
+              <div><a href="templatesAndLibraries.html" id="link.templates.and.libraries">Templates and libraries</a></div>
+              <div><a href="imageCND.html" id="link.image.cnd">Image CND</a></div>
             </section>
           </div>
         </section>
       </section>
-      <section id="footer" file="footer.html"></section>
+      <section id="footer" file="/footer.html"></section>
     </section>
   </body>
 </html>
