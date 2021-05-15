@@ -42,6 +42,10 @@ public class Caller {
     return basePath;
   }
 
+  public Path getFullPath() {
+    return basePath.resolve(relativePath);
+  }
+
   public Integer getLineNumber() {
     return lineNumber;
   }

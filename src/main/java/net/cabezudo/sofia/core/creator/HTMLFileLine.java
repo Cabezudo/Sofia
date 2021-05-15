@@ -52,13 +52,19 @@ public abstract class HTMLFileLine extends Line {
     Logger.debug("Load file line %s.", getFilePath());
 
     Path configurationFilePath;
-    String configurationFile = tag.getValue("configurationFile");
-    if (configurationFile == null) {
+    String configurationFileTagValue = tag.getValue("configurationFile");
+    if (configurationFileTagValue == null) {
       Logger.debug("configurationFile tag attribute NOT FOUND.");
       configurationFilePath = getConfigurationFilePath(caller);
     } else {
-      Logger.debug("configurationFile tag attribute FOUND.");
-      configurationFilePath = Paths.get(configurationFile);
+      Logger.debug("configurationFile tag attribute FOUND: %s", configurationFileTagValue);
+      if (configurationFileTagValue.startsWith("/")) {
+        configurationFilePath = site.getBasePath().resolve(configurationFileTagValue);
+      } else {
+        Path fullPath = caller.getFullPath();
+        Path parent = fullPath.getParent();
+        configurationFilePath = parent.resolve(configurationFileTagValue);
+      }
     }
 
     Logger.debug("Search configuration file %s.", configurationFilePath);
@@ -84,12 +90,11 @@ public abstract class HTMLFileLine extends Line {
       Path htmlPartialPath = htmlSourceFile.getPartialFilePath();
       String cssPartialName = FileHelper.removeExtension(htmlPartialPath) + ".css";
       htmlSourceFile.loadCSSFile(cssBasePath, cssPartialName, caller);
-
-      // TODO add the js file
-//      if (tag.getId().equals("messages")) {
-//        throw new SofiaRuntimeException("");
-//      }
       JSONObject jsonObject;
+      System.out.println("configurationFilePath: " + configurationFilePath);
+      System.out.println("configurationFilePath.getParent(): " + configurationFilePath.getParent());
+      System.out.println("tagId: " + tagId);
+
       Path jsonIdConfigurationFilePath = configurationFilePath.getParent().resolve(tagId + ".json");
       Logger.debug("Search configuration file %s for id %s.", jsonIdConfigurationFilePath, tagId);
       if (Files.isRegularFile(jsonIdConfigurationFilePath)) {
