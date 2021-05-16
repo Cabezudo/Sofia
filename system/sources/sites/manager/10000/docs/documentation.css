@@ -2,28 +2,28 @@
 
 @font-face{
   font-family: "Lava Std";
-  src: url(/fonts/LavaStd-Regular.otf) format("opentype");
+  src: url(/fonts/lavaStd/LavaStd-Regular.otf) format("opentype");
   font-weight: 400;
   font-style: normal;
   font-stretch: normal
 }
 @font-face{
   font-family:"Lava Std";
-  src: url(/fonts/LavaStd-RegularItalic.otf) format("opentype");
+  src: url(/fonts/lavaStd/LavaStd-RegularItalic.otf) format("opentype");
   font-weight: 400;
   font-style: italic;
   font-stretch: normal
 }
 @font-face{
   font-family: "GT America";
-  src: url(/fonts/GT-America-Standard-Regular.woff) format("woff");
+  src: url(/fonts/gtAmericaStandar/GT-America-Standard-Regular.woff) format("woff");
   font-weight: 400;
   font-style: normal;
   font-stretch: normal
 }
 @font-face{
   font-family: "GT America";
-  src: url(/fonts/GT-America-Standard-Bold.woff) format("woff");
+  src: url(/fonts/gtAmericaStandar/GT-America-Standard-Bold.woff) format("woff");
   font-weight: 900;
   font-style: normal;
   font-stretch: normal

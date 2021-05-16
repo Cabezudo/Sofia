@@ -12,11 +12,11 @@
 
 @font-face {
   font-family: Menu;
-  src: url(/fonts/Menu-Bold.woff2);
+  src: url(/fonts/menu/Menu-Bold.woff2);
   font-weight: bold;
 }
 @font-face {
   font-family: MenuText;
-  src: url(/fonts/MenuText-Regular.woff2);
+  src: url(/fonts/menu/MenuText-Regular.woff2);
   font-weight: normal;
 }
