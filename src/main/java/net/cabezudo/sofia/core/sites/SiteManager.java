@@ -173,7 +173,7 @@ public class SiteManager extends Manager {
 
   private void createSiteDefaultConfigurationFile(Site site) {
     JSONObject jsonObject = new JSONObject();
-    jsonObject.add(new JSONPair("page", "pages/sites/default/index"));
+    jsonObject.add(new JSONPair("page", "pages/sites/default/index.html"));
     Path path = site.getVersionedSourcesPath().resolve("index.json");
     Logger.debug("Check for default configuration file: %s", path);
     if (!Files.exists(path)) {
