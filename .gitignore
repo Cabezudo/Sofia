@@ -8,10 +8,13 @@ sofia.configuration.properties
 **/.DS_Store
 varios/
 sql.tests.txt
-**/images/**/cache
 nbactions.xml
 /target/
 nb-configuration.xml
 /system/data/libs/**
 **/cluster/
 !/src/main/java/net/cabezudo/sofia/core/cluster/
+system/sources/sites/cabezudo.net/**
+!system/sources/sites/manager/**
+!system/sources/sites/playground/**
+**/images/**/cache
