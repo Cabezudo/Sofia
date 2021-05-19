@@ -16,7 +16,7 @@ public class WebUserDataTable {
           = "CREATE TABLE " + NAME + " "
           + "("
           + "`id` INT NOT NULL AUTO_INCREMENT, "
-          + "`sessionId` VARCHAR(32) NOT NULL, "
+          + "`sessionId` VARCHAR(80) NOT NULL, "
           + "`failLoginResponseTime` INT NOT NULL, "
           + "`countryLanguage` INT NOT NULL, "
           + "`actualLanguage` INT NOT NULL, "
