@@ -169,7 +169,7 @@ const Core = {
         let i = 0;
         values.forEach(value => {
           const searchRegExp = new RegExp("{${i}}", 'g');
-          text = Core.replaceAll(text, searchRegExp, value);
+          text = replace(text, searchRegExp, value);
           i++;
         });
       } else {
