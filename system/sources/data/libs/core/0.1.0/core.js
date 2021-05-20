@@ -71,7 +71,8 @@ const Core = {
     if (pathname.endsWith('/')) {
       pathname += 'index.html';
     }
-    const pageName = pathname.replace('.html', '').replaceAll('/', '.');
+    const voidPageName = pathname.replace('.html', '');
+    const pageName = voidPageName.replace(/\//g, '.');
     return `/api/v1/sites/${variables.site.id}/pages/${pageName}/texts/${language}`;
   },
   changeLanguageTo: language => {
@@ -167,7 +168,8 @@ const Core = {
       if (Core.isArray(values)) {
         let i = 0;
         values.forEach(value => {
-          text = text.replaceAll(`{${i}}`, value);
+          const searchRegExp = new RegExp("{${i}}", 'g');
+          text = Core.replaceAll(text, searchRegExp, value);
           i++;
         });
       } else {
