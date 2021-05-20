@@ -168,8 +168,9 @@ const Core = {
       if (Core.isArray(values)) {
         let i = 0;
         values.forEach(value => {
-          const searchRegExp = new RegExp("{${i}}", 'g');
-          text = replace(text, searchRegExp, value);
+          const RegExpText = "\\{" + i + "\\}";
+          const searchRegExp = new RegExp(RegExpText, 'g');
+          text = text.replace(searchRegExp, value);
           i++;
         });
       } else {
