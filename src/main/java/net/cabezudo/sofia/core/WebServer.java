@@ -445,7 +445,7 @@ public class WebServer {
 // Configure the SslContextFactory with the keyStore information.
     SslContextFactory.Server sslContextFactory = new SslContextFactory.Server();
 
-    File file = new File("/home/esteban/Documents/hayquecomer.com/goddady/hayquecomer.com.certificate/sofia.keystore");
+    File file = new File("/home/sofia/ssl/sofia.keystore");
     if (!file.exists()) {
       throw new FileNotFoundException(file.toString());
     }
