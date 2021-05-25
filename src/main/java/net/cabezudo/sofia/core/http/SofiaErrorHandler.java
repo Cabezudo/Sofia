@@ -3,15 +3,14 @@ package net.cabezudo.sofia.core.http;
 import java.io.IOException;
 import java.io.Writer;
 import javax.servlet.http.HttpServletRequest;
-import org.eclipse.jetty.server.handler.ErrorHandler;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.02.06
  */
-public class SofiaErrorHandler extends ErrorHandler {
+public class SofiaErrorHandler {
+//public class SofiaErrorHandler extends ErrorHandler {
 
-  @Override
   protected void writeErrorPage(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks) throws IOException {
     switch (code) {
       // TODO load either, beatifull pages form the user site or beatifull default pages
@@ -28,7 +27,7 @@ public class SofiaErrorHandler extends ErrorHandler {
         writer.write("</body></html>");
         break;
       default:
-        super.writeErrorPage(request, writer, code, message, showStacks);
+//        super.writeErrorPage(request, writer, code, message, showStacks);
         break;
     }
   }

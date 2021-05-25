@@ -37,6 +37,7 @@ public final class Configuration {
   private static final String DATABASE_PASSWORD_PROPERTY_NAME = "database.password";
   private static final String SERVER_PORT_PROPERTY_NAME = "server.port";
   private static final String SYSTEM_HOME_PROPERTY_NAME = "system.home";
+  private static final String KEY_STORE_FILE_NAME = "keystore.jks";
 
   private static final Configuration INSTANCE = new Configuration();
 
@@ -79,6 +80,7 @@ public final class Configuration {
   private Path sitesSourcesPath;
   private Path commonSourcesPath;
   private Path sitesPath;
+  private Path keyStoreFilesPath;
   private Path clusterFilesPath;
   private Path clusterFileSelectLogPath;
   private Path clusterFileLogPath;
@@ -183,6 +185,7 @@ public final class Configuration {
         throw new SofiaRuntimeException(e);
       }
     }
+    keyStoreFilesPath = createSystemPath(systemResourcesPath, "ssl");
     clusterFilesPath = createSystemPath(systemResourcesPath, "cluster");
 
     clusterFileSelectLogPath = clusterFilesPath.resolve("select.log");
@@ -355,5 +358,9 @@ public final class Configuration {
 
   public Path getSofiaAPIConfigurationPath() {
     return systemPath.resolve("apiDefinition.json");
+  }
+
+  public Path getKeyStoreFileName() {
+    return keyStoreFilesPath.resolve(KEY_STORE_FILE_NAME);
   }
 }

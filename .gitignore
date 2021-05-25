@@ -18,3 +18,4 @@ system/sources/sites/**
 !system/sources/sites/manager/**
 !system/sources/sites/playground/**
 **/images/**/cache
+/system/resources/ssl/**

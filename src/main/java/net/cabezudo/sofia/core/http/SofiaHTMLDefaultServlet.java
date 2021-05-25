@@ -14,15 +14,15 @@ import net.cabezudo.sofia.core.server.js.VariablesJSServlet;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.emails.EMailNotExistException;
 import net.cabezudo.sofia.logger.Logger;
-import org.eclipse.jetty.servlet.DefaultServlet;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2020.08.25
  */
-public class SofiaHTMLDefaultServlet extends DefaultServlet {
+//public class SofiaHTMLDefaultServlet extends DefaultServlet {
+public class SofiaHTMLDefaultServlet {
 
-  @Override
+//  @Override
   protected void doGet(HttpServletRequest req, HttpServletResponse response) throws ServletException, IOException {
 
     SofiaHTMLServletRequest request = new SofiaHTMLServletRequest(req);
@@ -46,7 +46,7 @@ public class SofiaHTMLDefaultServlet extends DefaultServlet {
       } else {
         Logger.debug("Request server name: %s", request.getServerName());
         Logger.debug("Request URI: %s", request.getRequestURI());
-        super.doGet(request, response);
+//        super.doGet(request, response);
       }
     } catch (ClusterException | EMailNotExistException | JSONParseException | URISyntaxException e) {
       throw new ServletException(e);
