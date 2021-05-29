@@ -30,7 +30,7 @@ public class SofiaHTMLDefaultServlet extends DefaultServlet {
     DomainName domainName = new DomainName(request.getServerName());
     String requestURI = request.getRequestURI();
 
-    try {
+    try (PrintWriter writer = response.getWriter()) {
       Site site = new SessionManager(request).getSite();
       if (site == null) {
         throw new ServletException("Site for " + domainName + " NOT FOUND.");
@@ -40,10 +40,8 @@ public class SofiaHTMLDefaultServlet extends DefaultServlet {
         VariablesJSServlet variablesJSServlet = new VariablesJSServlet();
         String script = variablesJSServlet.getScript(request);
         response.setContentType("text/javascript");
-        PrintWriter writer = response.getWriter();
         writer.print(script);
         writer.flush();
-        writer.close();
       } else {
         Logger.debug("Request server name: %s", request.getServerName());
         Logger.debug("Request URI: %s", request.getRequestURI());

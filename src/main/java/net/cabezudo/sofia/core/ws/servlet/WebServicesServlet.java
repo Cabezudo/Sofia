@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
 import net.cabezudo.sofia.core.configuration.Configuration;
@@ -36,8 +37,10 @@ public class WebServicesServlet extends HttpServlet {
     Logger.debug("GET request for: %s.", uri);
     URLTokens tokens = URLPathTokenizer.tokenize(uri);
 
-    try {
+    try (PrintWriter out = response.getWriter()) {
       WebServicesUniverse.getInstance().runGET(request, response, tokens);
+      out.flush();
+      super.doGet(request, response);
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       throw new SofiaRuntimeException(e);
     } catch (WebServiceNotFoundException e) {

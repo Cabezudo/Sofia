@@ -49,7 +49,6 @@ import net.cabezudo.sofia.core.ws.WebServicesUniverse;
 import net.cabezudo.sofia.core.ws.servlet.WebServicesServlet;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -71,7 +70,6 @@ public class WebServer {
           throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
           SiteCreationException, LibraryVersionConflictException, DataCreationException, NamingException, ClusterException, PropertyNotExistException, DataConversionException {
 
-    PropertyConfigurator.configure("log4j.properties");
     Utils.consoleOutLn("Sofia 0.1 (http://sofia.systems)");
     WebServer webServer = WebServer.getInstance();
 
@@ -261,17 +259,18 @@ public class WebServer {
   }
 
   public static void add(DomainName domainName) {
-//    HandlerCollection handlerCollection = (HandlerCollection) INSTANCE.server.getHandler();
-//
-//    Handler[] contexts = handlerCollection.getHandlers();
-//
-//    for (Handler handler : contexts) {
-//      ServletContextHandler context = (ServletContextHandler) handler;
-//      String siteName = Integer.toString(domainName.getSiteId());
-//      if (siteName.equals(context.getDisplayName())) {
-//        context.addVirtualHosts(new String[]{domainName.getName(), "local." + domainName.getName()});
-//      }
-//    }
+    Logger.debug("Add domain name: " + domainName);
+    HandlerCollection handlerCollection = (HandlerCollection) INSTANCE.server.getHandler();
+
+    ServletContextHandler[] contexts = (ServletContextHandler[]) handlerCollection.getHandlers();
+
+    for (ServletContextHandler context : contexts) {
+      String siteName = Integer.toString(domainName.getSiteId());
+      if (siteName.equals(context.getDisplayName())) {
+        Logger.debug("Add virtual host: " + domainName.getName());
+        context.addVirtualHosts(new String[]{domainName.getName(), "local." + domainName.getName()});
+      }
+    }
   }
 
   public static void delete(DomainName domainName) {
