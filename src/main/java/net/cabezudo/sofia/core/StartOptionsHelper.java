@@ -295,10 +295,10 @@ class StartOptionsHelper {
 
   public String getDefaultDomainName() throws DataCreationException {
     try {
-      Logger.info("Ask for the default domain name.");
       if (System.console() != null && !startOptions.hasIDE()) {
         return askUserForDefaultDomainName();
       } else {
+        Logger.info("Default domain name not set. " + (startOptions.hasIDE() ? "IDE mode set." : "No console found to ask."));
         return null;
       }
     } catch (SQLException | IOException e) {

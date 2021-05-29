@@ -63,7 +63,7 @@ public class SiteHostnameAddService extends Service {
       String messageKey = HostnameValidator.getInstance().validate(hostname);
 
       DomainName domainName = DomainNameManager.getInstance().add(connection, site.getId(), hostname);
-      WebServer.add(domainName);
+      WebServer.addHostNameToVirtualHost(domainName);
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", domainName.getId()));
       data.add(new JSONPair("name", domainName.getName()));

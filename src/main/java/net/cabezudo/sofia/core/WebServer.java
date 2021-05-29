@@ -65,6 +65,7 @@ public class WebServer {
 
   private static WebServer INSTANCE;
   private Server server;
+  private HandlerCollection handlerCollection;
 
   public static void main(String... args)
           throws ServerException, PortAlreadyInUseException, ConfigurationException, IOException, JSONParseException, JSONParseException,
@@ -161,8 +162,7 @@ public class WebServer {
       System.exit(1);
     }
 
-// org.slf4j.Logger logger = LoggerFactory.getLogger(WebServer.class);
-// Create and configure a ThreadPool.
+    // Create and configure a ThreadPool.
     QueuedThreadPool threadPool = new QueuedThreadPool();
     threadPool.setName("main");
     server = new Server(threadPool);
@@ -258,11 +258,10 @@ public class WebServer {
     return context;
   }
 
-  public static void add(DomainName domainName) {
-    Logger.debug("Add domain name: " + domainName);
-    HandlerCollection handlerCollection = (HandlerCollection) INSTANCE.server.getHandler();
+  public static void addHostNameToVirtualHost(DomainName domainName) {
+    Logger.debug("Add hostname to handler: " + domainName);
 
-    ServletContextHandler[] contexts = (ServletContextHandler[]) handlerCollection.getHandlers();
+    ServletContextHandler[] contexts = (ServletContextHandler[]) INSTANCE.handlerCollection.getHandlers();
 
     for (ServletContextHandler context : contexts) {
       String siteName = Integer.toString(domainName.getSiteId());
@@ -273,18 +272,30 @@ public class WebServer {
     }
   }
 
-  public static void delete(DomainName domainName) {
-//    HandlerCollection handlerCollection = (HandlerCollection) INSTANCE.server.getHandler();
-//
-//    Handler[] contexts = handlerCollection.getHandlers();
-//
-//    for (Handler handler : contexts) {
-//      ServletContextHandler context = (ServletContextHandler) handler;
-//      String siteName = Integer.toString(domainName.getSiteId());
-//      if (siteName.equals(context.getDisplayName())) {
-//        context.removeVirtualHosts(new String[]{domainName.getName(), "local." + domainName.getName()});
-//      }
-//    }
+  public static void deleteHostNameToVirtualHost(DomainName domainName) {
+    ServletContextHandler[] contexts = (ServletContextHandler[]) INSTANCE.handlerCollection.getHandlers();
+
+    for (ServletContextHandler context : contexts) {
+      String siteName = Integer.toString(domainName.getSiteId());
+      if (siteName.equals(context.getDisplayName())) {
+        context.removeVirtualHosts(new String[]{domainName.getName(), "local." + domainName.getName()});
+      }
+    }
+  }
+
+  public static void addHandler(DomainName domainName) throws ClusterException, ServerException, ConfigurationException {
+    try {
+      Logger.debug("Add handler for domain name: " + domainName);
+      Site site = SiteManager.getInstance().getByHostame(domainName.getName());
+      Handler serverHandler = INSTANCE.setServer(site);
+      INSTANCE.handlerCollection.addHandler(serverHandler);
+      serverHandler.start();
+      Handler apiHandler = INSTANCE.setAPI(site);
+      INSTANCE.handlerCollection.addHandler(apiHandler);
+      apiHandler.start();
+    } catch (Exception e) {
+      throw new ServerException(e);
+    }
   }
 
   private void createCommonsFile(Site site) throws IOException {
@@ -338,7 +349,7 @@ public class WebServer {
   }
 
   public void start() throws ServerException, IOException, ConfigurationException {
-    HandlerCollection handlerCollection = new HandlerCollection();
+    handlerCollection = new HandlerCollection();
 
     SiteList siteList;
     try {

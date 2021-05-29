@@ -66,7 +66,7 @@ public class DeleteSiteHostnameService extends Service {
 
     try {
       DomainName domainName = DomainNameManager.getInstance().get(hostId);
-      WebServer.delete(domainName);
+      WebServer.deleteHostNameToVirtualHost(domainName);
       DomainNameManager.getInstance().delete(hostId);
 
       JSONObject data = new JSONObject();

@@ -9,11 +9,15 @@ import java.nio.file.Paths;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.cluster.ClusterException;
+import net.cabezudo.sofia.core.configuration.ConfigurationException;
+import net.cabezudo.sofia.core.exceptions.ServerException;
 import net.cabezudo.sofia.core.hostname.HostnameMaxSizeException;
 import net.cabezudo.sofia.core.hostname.HostnameValidationException;
 import net.cabezudo.sofia.core.hostname.HostnameValidator;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
+import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.core.sites.SiteManager;
 import net.cabezudo.sofia.core.sites.SiteValidationException;
 import net.cabezudo.sofia.core.sites.validators.SiteNameValidator;
@@ -76,8 +80,9 @@ public class AddSiteService extends Service {
     Path basePath = Paths.get(basePathName);
 
     try {
-      SiteManager.getInstance().create(name, basePath, hostname);
-    } catch (ClusterException | IOException e) {
+      Site newSite = SiteManager.getInstance().create(name, basePath, hostname);
+      WebServer.addHandler(newSite.getBaseDomainName());
+    } catch (ClusterException | IOException | ServerException | ConfigurationException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }
     sendResponse(new Response(Response.Status.OK, Response.Type.CREATE, "site.created"));
