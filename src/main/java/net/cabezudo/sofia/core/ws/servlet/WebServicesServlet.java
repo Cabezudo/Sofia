@@ -40,7 +40,6 @@ public class WebServicesServlet extends HttpServlet {
     try (PrintWriter out = response.getWriter()) {
       WebServicesUniverse.getInstance().runGET(request, response, tokens);
       out.flush();
-      super.doGet(request, response);
     } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       throw new SofiaRuntimeException(e);
     } catch (WebServiceNotFoundException e) {
