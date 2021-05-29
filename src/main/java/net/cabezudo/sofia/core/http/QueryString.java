@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.http;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +10,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.mapping;
 import static java.util.stream.Collectors.toList;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -26,9 +26,9 @@ public class QueryString {
       query = Collections.emptyMap();
     } else {
       query = Arrays
-          .stream(queryString.split("&"))
-          .map(this::splitQueryParameter)
-          .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
+              .stream(queryString.split("&"))
+              .map(this::splitQueryParameter)
+              .collect(Collectors.groupingBy(SimpleImmutableEntry::getKey, LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
     }
   }
 

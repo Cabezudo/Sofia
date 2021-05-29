@@ -1,14 +1,14 @@
 package net.cabezudo.sofia.core.ws.servlet.services;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.list.Filters;
 import net.cabezudo.sofia.core.list.Limit;
 import net.cabezudo.sofia.core.list.ListOptions;
 import net.cabezudo.sofia.core.list.Offset;
 import net.cabezudo.sofia.core.list.Sort;
-import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

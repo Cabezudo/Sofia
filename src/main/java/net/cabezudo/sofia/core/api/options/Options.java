@@ -1,12 +1,12 @@
 package net.cabezudo.sofia.core.api.options;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
-import net.cabezudo.sofia.core.list.ListOptionFactory;
 import net.cabezudo.sofia.core.configuration.Configuration;
+import net.cabezudo.sofia.core.list.ListOptionFactory;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

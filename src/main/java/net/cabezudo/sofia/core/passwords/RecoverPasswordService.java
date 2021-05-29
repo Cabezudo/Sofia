@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.core.passwords;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;

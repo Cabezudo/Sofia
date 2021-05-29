@@ -1,15 +1,15 @@
 package net.cabezudo.sofia.core.http;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.Writer;
-import javax.servlet.http.HttpServletRequest;
+import org.eclipse.jetty.server.handler.ErrorHandler;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2019.02.06
  */
-public class SofiaErrorHandler {
-//public class SofiaErrorHandler extends ErrorHandler {
+public class SofiaErrorHandler extends ErrorHandler {
 
   protected void writeErrorPage(HttpServletRequest request, Writer writer, int code, String message, boolean showStacks) throws IOException {
     switch (code) {

@@ -1,10 +1,10 @@
 package net.cabezudo.sofia.core.sites.services;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Connection;
 import java.sql.SQLException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;

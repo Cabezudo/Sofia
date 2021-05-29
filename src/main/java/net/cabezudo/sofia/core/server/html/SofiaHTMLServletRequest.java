@@ -1,7 +1,7 @@
 package net.cabezudo.sofia.core.server.html;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

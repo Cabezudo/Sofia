@@ -1,10 +1,10 @@
 package net.cabezudo.sofia.core.server.js;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.cluster.ClusterException;

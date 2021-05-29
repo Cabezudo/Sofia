@@ -1,5 +1,8 @@
 package net.cabezudo.sofia.core;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Queue;
 import net.cabezudo.sofia.logger.Level;
 import net.cabezudo.sofia.logger.Logger;
@@ -10,17 +13,16 @@ import net.cabezudo.sofia.logger.Logger;
  */
 public class StartOptions {
 
-  private String invalidArgument;
   private boolean help;
   private boolean debug;
-  private String customConfigurationFile;
+  private Path customConfigurationFilePath;
   private boolean configureAdministrator;
   private boolean changeUserPassword;
   private boolean dropDatabase;
   private boolean createTestData;
   private boolean ide;
 
-  public StartOptions(Queue<String> arguments) {
+  public StartOptions(Queue<String> arguments) throws InvalidParameterException {
     Logger.debug("Check start options.");
     if (arguments != null && arguments.isEmpty()) {
       Logger.debug("%s command lines argument FOUND.", arguments.size());
@@ -28,7 +30,8 @@ public class StartOptions {
     while (arguments != null && !arguments.isEmpty()) {
       String argument = arguments.poll();
       String[] parts = argument.split("=");
-      switch (parts[0]) {
+      String parameter = parts[0];
+      switch (parameter) {
         case "--help":
         case "-h":
           help = true;
@@ -41,12 +44,20 @@ public class StartOptions {
           break;
         case "--configurationFile":
         case "-cf":
+          String customConfigurationFile;
           if (parts.length == 1) {
             throw new InvalidParameterException("No value for configuration file parameter.");
           } else {
             customConfigurationFile = parts[1];
           }
-          Logger.debug("Custom configuration file %s", customConfigurationFile);
+          if (customConfigurationFile != null) {
+            customConfigurationFilePath = Paths.get(customConfigurationFile);
+            if (!Files.exists(customConfigurationFilePath)) {
+              throw new InvalidParameterException("Configuration file not exist: " + customConfigurationFilePath);
+            }
+          }
+
+          Logger.info("Custom configuration file %s", customConfigurationFilePath);
           break;
         case "--createAdministrator":
         case "-ca":
@@ -76,13 +87,12 @@ public class StartOptions {
           ide = true;
           break;
         default:
-          invalidArgument = argument;
-          break;
+          throw new InvalidParameterException("Invalid parameter: " + parameter);
       }
     }
   }
 
-  public String getHelp() {
+  public static String getHelp() {
     StringBuilder sb = new StringBuilder();
     sb.append("-h, --help - This help.").append('\n');
     sb.append("-d, --debug - Print all the debug information.").append('\n');
@@ -103,8 +113,8 @@ public class StartOptions {
     return debug;
   }
 
-  public String getCustomConfigurationFile() {
-    return customConfigurationFile;
+  public Path getCustomConfigurationFilePath() {
+    return customConfigurationFilePath;
   }
 
   public boolean hasConfigureAdministrator() {
@@ -121,14 +131,6 @@ public class StartOptions {
 
   public boolean hasCreateTestData() {
     return createTestData;
-  }
-
-  public String getInvalidArgument() {
-    return invalidArgument;
-  }
-
-  public boolean hasInvalidArgument() {
-    return invalidArgument != null;
   }
 
   public boolean hasIDE() {

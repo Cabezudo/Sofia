@@ -1,6 +1,6 @@
 package net.cabezudo.sofia.core.list;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.api.options.Option;
 import net.cabezudo.sofia.core.api.options.Options;
 

@@ -1,13 +1,13 @@
 package net.cabezudo.sofia.core.qr;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.http.SessionManager;
 import net.cabezudo.sofia.core.passwords.Hash;
 import net.cabezudo.sofia.core.sites.Site;

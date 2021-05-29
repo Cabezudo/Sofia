@@ -1,5 +1,6 @@
 package net.cabezudo.sofia.core.languages;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,7 +8,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Enumeration;
 import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.sql.Database;

@@ -1,5 +1,9 @@
 package net.cabezudo.sofia.core.server.images;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -18,10 +22,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import javax.imageio.ImageIO;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.SofiaImage;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.Environment;

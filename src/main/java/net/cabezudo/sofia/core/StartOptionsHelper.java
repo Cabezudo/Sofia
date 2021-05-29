@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
@@ -26,9 +27,11 @@ import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DataCreationException;
 import net.cabezudo.sofia.core.configuration.DataCreator;
+import net.cabezudo.sofia.core.configuration.SofiaDatabaseCreator;
 import net.cabezudo.sofia.core.database.sql.Database;
 import net.cabezudo.sofia.core.database.sql.DatabaseCreators;
 import net.cabezudo.sofia.core.database.sql.DatabaseDataCreator;
+import net.cabezudo.sofia.core.exceptions.DataConversionException;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.mail.MailServerException;
 import net.cabezudo.sofia.core.passwords.Password;
@@ -411,4 +414,63 @@ class StartOptionsHelper {
     }
   }
 
+  void checkForDropDatabase(SofiaDatabaseCreator mainDefaultDataCreator, DatabaseCreators defaultDataCreators) throws IOException, DataCreationException {
+    if (startOptions.hasDropDatabase()) {
+
+      Path path = Configuration.getInstance().getClusterFileLogPath();
+      Files.deleteIfExists(path);
+
+      for (DataCreator defaultDataCreator : defaultDataCreators) {
+        defaultDataCreator.dropDatabase();
+      }
+      mainDefaultDataCreator.dropDatabase();
+    }
+  }
+
+  void createDatabases(SofiaDatabaseCreator mainDefaultDataCreator, DatabaseCreators defaultDataCreators) throws DataCreationException {
+    if (!mainDefaultDataCreator.databaseExists()) {
+      mainDefaultDataCreator.createDatabase();
+      mainDefaultDataCreator.createDatabaseStructure();
+      mainDefaultDataCreator.riseDatabaseCreatedFlag();
+    }
+    for (DataCreator defaultDataCreator : defaultDataCreators) {
+      if (!defaultDataCreator.databaseExists()) {
+        defaultDataCreator.createDatabase();
+        defaultDataCreator.createDatabaseStructure();
+        defaultDataCreator.riseDatabaseCreatedFlag();
+      }
+    }
+  }
+
+  void createDefaultData(SofiaDatabaseCreator mainDefaultDataCreator, DatabaseCreators defaultDataCreators)
+          throws IOException, ClusterException, DataCreationException, ConfigurationException, DataConversionException {
+    if (mainDefaultDataCreator.isDatabaseCreated()) {
+      String baseDomainName = getDefaultDomainName();
+      Logger.info("Create the default sites.");
+      SiteManager.getInstance().create("Manager", Paths.get("manager"), "manager", "localhost", baseDomainName);
+      SiteManager.getInstance().create("Playground", Paths.get("playground"), "playground");
+      createAdministrator();
+      mainDefaultDataCreator.createDefaultData();
+    }
+
+    for (DataCreator defaultDataCreator : defaultDataCreators) {
+      if (defaultDataCreator.isDatabaseCreated()) {
+        defaultDataCreator.createDefaultData();
+      }
+    }
+  }
+
+  void createTestData(SofiaDatabaseCreator mainDefaultDataCreator, DatabaseCreators defaultDataCreators) throws DataCreationException {
+    if (startOptions.hasCreateTestData()) {
+      if (mainDefaultDataCreator.isDatabaseCreated()) {
+        Logger.info("Create test data for sofia.");
+        mainDefaultDataCreator.createTestData();
+      }
+      for (DataCreator defaultDataCreator : defaultDataCreators) {
+        if (defaultDataCreator.isDatabaseCreated()) {
+          defaultDataCreator.createTestData();
+        }
+      }
+    }
+  }
 }

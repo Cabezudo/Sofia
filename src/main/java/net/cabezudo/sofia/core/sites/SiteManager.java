@@ -16,11 +16,11 @@ import java.sql.Statement;
 import java.util.List;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
-import net.cabezudo.sofia.core.InvalidParameterException;
 import net.cabezudo.sofia.core.api.options.OptionValue;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.database.sql.Database;
+import net.cabezudo.sofia.core.database.sql.InvalidDatabaseFieldException;
 import net.cabezudo.sofia.core.database.sql.Manager;
 import net.cabezudo.sofia.core.database.sql.QueryHelper;
 import net.cabezudo.sofia.core.database.sql.ValidSortColumns;
@@ -119,12 +119,6 @@ public class SiteManager extends Manager {
 
   public Site add(Connection connection, String name, Path basePath, String... domainNameNames) throws IOException, ClusterException {
     Logger.info("Create site using name '%s' and base path: %s", name, basePath);
-    if (name == null || name.isEmpty()) {
-      throw new InvalidParameterException("Invalid parameter name: " + name);
-    }
-    if (domainNameNames == null) {
-      throw new InvalidParameterException("Invalid null parameter for domain names");
-    }
     // TODO revisar que haya dominios que agregar
 
     ResultSet rs = null;
@@ -311,7 +305,7 @@ public class SiteManager extends Manager {
         validateVersion(value);
         break;
       default:
-        throw new InvalidParameterException("Invalid parameter value: " + field);
+        throw new InvalidDatabaseFieldException("Invalid parameter value: " + field);
     }
     String query = "UPDATE " + SitesTable.DATABASE_NAME + "." + SitesTable.NAME + " SET " + field + " = ? WHERE id = ?";
     try (PreparedStatement ps = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {

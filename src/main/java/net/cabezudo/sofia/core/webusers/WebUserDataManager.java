@@ -1,12 +1,12 @@
 package net.cabezudo.sofia.core.webusers;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.cluster.ClusterManager;
 import net.cabezudo.sofia.core.currency.CurrenciesTable;

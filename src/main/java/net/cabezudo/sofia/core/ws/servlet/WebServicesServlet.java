@@ -1,12 +1,12 @@
 package net.cabezudo.sofia.core.ws.servlet;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URLDecoder;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.exceptions.SofiaRuntimeException;
 import net.cabezudo.sofia.core.http.url.parser.URLPathTokenizer;

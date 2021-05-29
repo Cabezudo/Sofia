@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.core.geolocation;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;

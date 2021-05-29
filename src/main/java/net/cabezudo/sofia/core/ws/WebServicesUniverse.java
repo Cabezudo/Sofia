@@ -1,9 +1,9 @@
 package net.cabezudo.sofia.core.ws;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.lang.reflect.InvocationTargetException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import net.cabezudo.json.exceptions.PropertyNotExistException;
 import net.cabezudo.sofia.core.APIConfiguration;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;

@@ -1,10 +1,10 @@
 package net.cabezudo.sofia.core.http;
 
-import net.cabezudo.sofia.core.webusers.WebUserData;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.sites.Site;
+import net.cabezudo.sofia.core.webusers.WebUserData;
 import net.cabezudo.sofia.core.webusers.WebUserDataManager;
 
 /**

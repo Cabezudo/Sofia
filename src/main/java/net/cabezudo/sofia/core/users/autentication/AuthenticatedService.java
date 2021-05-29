@@ -1,8 +1,8 @@
 package net.cabezudo.sofia.core.users.autentication;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
 import net.cabezudo.sofia.core.ws.responses.Response;
 import net.cabezudo.sofia.core.ws.servlet.services.Service;
