@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.files;
+package net.cabezudo.sofia.core.server.files;
 
 import jakarta.servlet.MultipartConfigElement;
 import jakarta.servlet.ServletException;
@@ -21,12 +21,12 @@ import org.eclipse.jetty.server.Request;
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
  * @version 0.01.00, 2018.07.13
  */
-public abstract class UploadFileService extends Service {
+public abstract class AbstractUploadFilesService extends Service {
 
   private static final MultipartConfigElement MULTI_PART_CONFIG = new MultipartConfigElement(System.getProperty("java.io.tmpdir"));
   private Path filePartialPath;
 
-  public UploadFileService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException, IOException {
+  public AbstractUploadFilesService(HttpServletRequest request, HttpServletResponse response, URLTokens tokens) throws ServletException, IOException {
     super(request, response, tokens);
   }
 
@@ -34,14 +34,14 @@ public abstract class UploadFileService extends Service {
     return filePartialPath;
   }
 
-  protected abstract Path getTargetPath();
+  protected abstract Path getFileTargetPath();
 
   protected abstract Response getOKResponse();
 
   @Override
   public void post() throws ServletException {
     try {
-      Path imagesTargetPath = getTargetPath();
+      Path imagesTargetPath = getFileTargetPath();
 
       String contentType = request.getContentType();
       if (contentType != null && contentType.startsWith("multipart/")) {
@@ -52,15 +52,14 @@ public abstract class UploadFileService extends Service {
         String filename = Paths.get(filenamSubmitted).getFileName().toString(); // MSIE fix.
 
         Path newFilePath = imagesTargetPath.resolve(filename);
-        filePartialPath = site.getSourcesImagesPath().relativize(newFilePath);
 
         InputStream is = filePart.getInputStream();
-        // TODO Check if we need a a while to read big files. Improve the performance.
+        // TODO Check if we need a while to read big files. Improve the performance.
         byte[] buffer = new byte[is.available()];
         is.read(buffer);
 
         File file = newFilePath.toFile();
-        // TODO check if the file existe and send a warning
+        // TODO check if the file exist and send a warning
         try (OutputStream outStream = new FileOutputStream(file);) {
           outStream.write(buffer);
         }

@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.values.JSONObject;
 import net.cabezudo.sofia.core.InvalidPathParameterException;
+import net.cabezudo.sofia.core.WebServer;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLToken;
 import net.cabezudo.sofia.core.http.url.parser.tokens.URLTokens;
@@ -43,13 +44,14 @@ public class DeleteSiteService extends Service {
         return;
       }
 
-      Site site = SiteManager.getInstance().getById(siteId);
-      if (site == null) {
+      Site newSite = SiteManager.getInstance().getById(siteId);
+      if (newSite == null) {
         sendError(HttpServletResponse.SC_NOT_FOUND, "Resource " + siteId + " not found");
         return;
       }
 
       SiteManager.getInstance().delete(siteId);
+      WebServer.delHandler(newSite);
       JSONObject data = new JSONObject();
       data.add(new JSONPair("id", siteId));
       sendResponse(new Response(Response.Status.OK, Response.Type.DELETE, data, "site.deleted"));

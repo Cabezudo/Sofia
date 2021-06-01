@@ -81,7 +81,7 @@ public class AddSiteService extends Service {
 
     try {
       Site newSite = SiteManager.getInstance().create(name, basePath, hostname);
-      WebServer.addHandler(newSite.getBaseDomainName());
+      WebServer.addHandler(newSite);
     } catch (ClusterException | IOException | ServerException | ConfigurationException e) {
       sendError(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Service unavailable", e);
     }

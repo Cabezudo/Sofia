@@ -40,5 +40,4 @@ public class DomainNames implements Iterable<DomainName> {
   int size() {
     return list.size();
   }
-
 }

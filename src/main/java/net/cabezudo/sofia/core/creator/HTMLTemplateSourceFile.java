@@ -2,6 +2,7 @@ package net.cabezudo.sofia.core.creator;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import net.cabezudo.sofia.core.Position;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;
 

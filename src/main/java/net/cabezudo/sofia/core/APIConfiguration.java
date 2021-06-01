@@ -8,6 +8,7 @@ import java.util.TreeMap;
 import net.cabezudo.json.JSON;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.json.values.JSONValue;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.configuration.ConfigurationException;
 import net.cabezudo.sofia.core.configuration.DataCreator;
@@ -23,13 +24,13 @@ public class APIConfiguration {
   public void add(Path apiConfigurationFilePath) throws ConfigurationException {
     try {
       JSONObject jsonObject = JSON.parse(apiConfigurationFilePath, Configuration.getDefaultCharset()).toJSONObject();
-      add(jsonObject);
+      add(jsonObject, apiConfigurationFilePath);
     } catch (JSONParseException | IOException e) {
       throw new ConfigurationException(e);
     }
   }
 
-  public void add(JSONObject jsonObject) {
+  public void add(JSONObject jsonObject, Path apiConfigurationFilePath) throws ConfigurationException {
     List<String> keys = jsonObject.getKeyList();
     for (String key : keys) {
       APIEntries apiEntries = map.get(key);
@@ -37,13 +38,33 @@ public class APIConfiguration {
         apiEntries = new APIEntries();
         map.put(key, apiEntries);
       }
-      apiEntries.add(jsonObject.getNullJSONArray(key));
+      for (JSONValue jsonValue : jsonObject.getNullJSONArray(key)) {
+        JSONObject jsonEntry = jsonValue.toJSONObject();
+        JSONValue jsonClassName = jsonEntry.getNullValue("class");
+        if (jsonClassName == null) {
+          continue;
+        }
+        String className = jsonClassName.toString();
+        if (className.isBlank()) {
+          continue;
+        }
+        try {
+          Class.forName(className);
+        } catch (ClassNotFoundException e) {
+          net.cabezudo.json.Position position = jsonClassName.getPosition();
+          PositionFile positionFile = new PositionFile(apiConfigurationFilePath, position.getLine(), position.getRow());
+          throw new ConfigurationException("Class not found: " + className + ":" + positionFile);
+        }
+        APIEntry apiEntry = new APIEntry(jsonEntry.getNullString("path"), className);
+        apiEntries.add(apiEntry);
+
+      }
     }
   }
 
-  public void add(DataCreator dataCreator) {
+  public void add(DataCreator dataCreator, Path path) throws ConfigurationException {
     JSONObject apiConfiguration = dataCreator.getAPIConfiguration();
-    add(apiConfiguration);
+    add(apiConfiguration, path);
   }
 
   public APIEntries get(String key) {

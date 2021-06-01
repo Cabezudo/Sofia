@@ -43,7 +43,7 @@ public class SiteList extends EntryList<Site> {
       jsonSite.add(new JSONPair("row", row));
       jsonSite.add(new JSONPair("id", site.getId()));
       jsonSite.add(new JSONPair("name", site.getName()));
-      jsonSite.add(new JSONPair("basePath", site.getBasePath().toString()));
+      jsonSite.add(new JSONPair("basePath", site.getFullBasePath().toString()));
       jsonSite.add(new JSONPair("version", site.getVersion()));
       jsonList.add(jsonSite);
       row++;

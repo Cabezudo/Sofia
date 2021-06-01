@@ -41,7 +41,7 @@ public class SiteCreator {
     String htmlPartialPathName = requestURI.substring(1);
     String voidPartialPathName = FileHelper.removeExtension(htmlPartialPathName); // Used to create the javascript and css files for this html page
     Path htmlPartialPath = Paths.get(voidPartialPathName + ".html");
-    Path htmlFilePath = site.getVersionPath().resolve(htmlPartialPath);
+    Path htmlFilePath = site.getVersionedBasePath().resolve(htmlPartialPath);
     if (Environment.getInstance().isProduction() && Files.exists(htmlFilePath)) {
       return;
     }
@@ -50,14 +50,16 @@ public class SiteCreator {
     Path jsPartialPath = Paths.get(voidPartialPathName + ".js");
     Path textsPartialPath = Paths.get(voidPartialPathName);
 
-    Path versionPath = site.getVersionPath();
+    Path versionPath = site.getVersionedBasePath();
     Path fileContentPath = versionPath.resolve(htmlPartialPath);
     if (Environment.getInstance().isProduction() && Files.exists(fileContentPath)) {
       return;
     }
     Files.createDirectories(fileContentPath.getParent());
-    Files.createDirectories(site.getBasePath());
-    Files.createDirectories(site.getVersionPath());
+    Files.createDirectories(site.getFullBasePath());
+    Files.createDirectories(site.getVersionedBasePath());
+    Files.createDirectories(site.getCustomVersionedImagesPath());
+    Files.createDirectories(site.getCustomFilesPath());
 
     TemplateVariables templateVariables = new TemplateVariables();
     TextsFile textsFile = new TextsFile();
@@ -87,7 +89,7 @@ public class SiteCreator {
     JSSourceFile jsFile = new JSSourceFile(site, basePath, jsPartialPath, templateVariables, caller);
     jsFile.add(baseFile.getLibraries());
     jsFile.add(baseFile.getJavaScriptLines());
-    Path jsFilePath = site.getFilesPath(jsPartialPath);
+    Path jsFilePath = site.getCreatedFilesPath(jsPartialPath);
     jsFile.save(jsFilePath);
 
     CSSSourceFile cssFile = new CSSSourceFile(site, basePath, cssPartialPath, templateVariables, caller);
@@ -102,7 +104,7 @@ public class SiteCreator {
     cssFile.add(baseFile.getCascadingStyleSheetImports());
     cssFile.add(baseFile.getCascadingStyleSheetLines());
     // Read all the CSS files from the CSS path
-    Path cssFilePath = site.getFilesPath(cssPartialPath);
+    Path cssFilePath = site.getCreatedFilesPath(cssPartialPath);
     cssFile.save(cssFilePath);
 
     Path commonsFileTextsPath = site.getVersionedSourcesPath().resolve(Site.TEXTS_FILE_NAME);
@@ -124,7 +126,7 @@ public class SiteCreator {
     }
 
     textsFile.add(baseFile.getLibraries());
-    Path textsFilePath = site.getFilesPath(textsPartialPath);
+    Path textsFilePath = site.getCreatedFilesPath(textsPartialPath);
     textsFile.save(textsFilePath);
 
     baseFile.save(htmlFilePath);

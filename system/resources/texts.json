@@ -32,6 +32,9 @@
   "email.domainOk": {
     "es": "El dominio de la dirección de correo es correcto"
   },
+  "file.upload.ok": {
+    "es": "El archivo fué subido correctamente con el nombre '{0},'"
+  },
   "hostname.empty": {
     "es": "El nombre de host no puede estar vacío"
   },

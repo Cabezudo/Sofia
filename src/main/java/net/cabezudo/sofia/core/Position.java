@@ -1,4 +1,4 @@
-package net.cabezudo.sofia.core.creator;
+package net.cabezudo.sofia.core;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>
@@ -9,7 +9,7 @@ public class Position {
   private final int line;
   private final int row;
 
-  Position(int line, int row) {
+  public Position(int line, int row) {
     this.line = line;
     this.row = row;
   }

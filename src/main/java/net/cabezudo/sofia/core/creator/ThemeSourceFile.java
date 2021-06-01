@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.sofia.core.Position;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.sites.Site;
 import net.cabezudo.sofia.logger.Logger;

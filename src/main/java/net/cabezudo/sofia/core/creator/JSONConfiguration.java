@@ -9,6 +9,7 @@ import net.cabezudo.json.JSON;
 import net.cabezudo.json.JSONPair;
 import net.cabezudo.json.exceptions.JSONParseException;
 import net.cabezudo.json.values.JSONObject;
+import net.cabezudo.sofia.core.Position;
 import net.cabezudo.sofia.core.configuration.Environment;
 import net.cabezudo.sofia.logger.Logger;
 

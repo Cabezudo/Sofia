@@ -32,6 +32,7 @@ import net.cabezudo.sofia.core.http.SofiaErrorHandler;
 import net.cabezudo.sofia.core.http.SofiaHTMLDefaultServlet;
 import net.cabezudo.sofia.core.languages.ChangeLanguageServlet;
 import net.cabezudo.sofia.core.qr.QRImageServlet;
+import net.cabezudo.sofia.core.server.files.DownloadFileServlet;
 import net.cabezudo.sofia.core.server.fonts.FontHolder;
 import net.cabezudo.sofia.core.server.html.DataFilter;
 import net.cabezudo.sofia.core.server.html.HTMLFilter;
@@ -179,16 +180,16 @@ public class WebServer {
       throw new ConfigurationException("Configuration error. " + e.getMessage(), e);
     }
 
-    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-    context.setDisplayName(Integer.toString(site.getId()));
-    context.setContextPath("/");
-    String sitePath = site.getVersionPath().toString();
+    ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    handler.setDisplayName(Integer.toString(site.getId()));
+    handler.setContextPath("/");
+    String sitePath = site.getVersionedBasePath().toString();
     Logger.debug("Create handler for host %s using site path %s.", site.getBaseDomainName().getName(), sitePath);
 
-    context.setResourceBase(sitePath);
+    handler.setResourceBase(sitePath);
     DomainNameList domainNames;
     try {
-      domainNames = site.getDomainNames();
+      domainNames = site.getDomainNamesList();
     } catch (SQLException e) {
       throw new ServerException(e);
     }
@@ -208,42 +209,45 @@ public class WebServer {
       }
     }
 
-    context.setVirtualHosts(virtualHosts);
+    handler.setVirtualHosts(virtualHosts);
 
-    context.addFilter(URLTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-    context.addFilter(DataFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-    context.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
-    context.addFilter(HTMLAuthorizationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+    handler.addFilter(URLTransformationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+    handler.addFilter(DataFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+    handler.addFilter(HTMLFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
+    handler.addFilter(HTMLAuthorizationFilter.class, "/*", EnumSet.of(DispatcherType.REQUEST));
     ServletHolder logoutHolder = new ServletHolder("logout", LogoutHolder.class);
-    context.addServlet(logoutHolder, "/logout");
+    handler.addServlet(logoutHolder, "/logout");
 
     // TODO Add JSON 500 error to the api
     ServletHolder apiHolder = new ServletHolder("webServices", WebServicesServlet.class);
-    context.addServlet(apiHolder, "/api/*");
+    handler.addServlet(apiHolder, "/api/*");
 
     ServletHolder fontsHolder = new ServletHolder("fonts", FontHolder.class);
-    context.addServlet(fontsHolder, "/fonts/*");
+    handler.addServlet(fontsHolder, "/fonts/*");
 
     ServletHolder imageHolder = new ServletHolder("image", ImageServlet.class);
-    context.addServlet(imageHolder, "/images/*");
+    handler.addServlet(imageHolder, "/images/*");
+
+    ServletHolder fileHolder = new ServletHolder("download", DownloadFileServlet.class);
+    handler.addServlet(fileHolder, "/download/*");
 
     ServletHolder changeLanguageHolder = new ServletHolder("changeLanguage", ChangeLanguageServlet.class);
-    context.addServlet(changeLanguageHolder, "/changeLanguage");
+    handler.addServlet(changeLanguageHolder, "/changeLanguage");
 
     ServletHolder qrImageHolder = new ServletHolder("qrImage", QRImageServlet.class);
-    context.addServlet(qrImageHolder, "/images/upload/qr.png");
+    handler.addServlet(qrImageHolder, "/images/upload/qr.png");
 
     ServletHolder defaultServlet = new ServletHolder("static", SofiaHTMLDefaultServlet.class);
-    context.addServlet(defaultServlet, "/*");
+    handler.addServlet(defaultServlet, "/*");
 
-    context.setErrorHandler(new SofiaErrorHandler());
+    handler.setErrorHandler(new SofiaErrorHandler());
 
-    for (String vh : context.getVirtualHosts()) {
+    for (String vh : handler.getVirtualHosts()) {
       Logger.debug("Virtual host: " + vh);
     }
 
     // Check and create mandatory directories and files
-    Path cacheImagesPath = site.getSourcesImagesPath().resolve("cache");
+    Path cacheImagesPath = site.getVersionedSourcesImagesPath().resolve("cache");
     try {
       Files.createDirectories(cacheImagesPath);
     } catch (IOException e) {
@@ -255,7 +259,7 @@ public class WebServer {
       throw new ServerException("Can't create the commons file for " + site.getName(), e);
     }
 
-    return context;
+    return handler;
   }
 
   public static void addHostNameToVirtualHost(DomainName domainName) {
@@ -277,16 +281,15 @@ public class WebServer {
 
     for (ServletContextHandler context : contexts) {
       String siteName = Integer.toString(domainName.getSiteId());
-      if (siteName.equals(context.getDisplayName())) {
+      if (siteName.equals(context.getClassPath())) {
         context.removeVirtualHosts(new String[]{domainName.getName(), "local." + domainName.getName()});
       }
     }
   }
 
-  public static void addHandler(DomainName domainName) throws ClusterException, ServerException, ConfigurationException {
+  public static void addHandler(Site site) throws ClusterException, ServerException, ConfigurationException {
     try {
-      Logger.debug("Add handler for domain name: " + domainName);
-      Site site = SiteManager.getInstance().getByHostame(domainName.getName());
+      Logger.debug("Add handler for domain name: " + site.getName());
       Handler serverHandler = INSTANCE.setServer(site);
       INSTANCE.handlerCollection.addHandler(serverHandler);
       serverHandler.start();
@@ -295,6 +298,16 @@ public class WebServer {
       apiHandler.start();
     } catch (Exception e) {
       throw new ServerException(e);
+    }
+  }
+
+  public static void delHandler(Site site) {
+    String siteId = Integer.toString(site.getId());
+    for (Handler h : INSTANCE.handlerCollection.getHandlers()) {
+      ServletContextHandler sch = (ServletContextHandler) h;
+      if (siteId.equals(sch.getDisplayName())) {
+        INSTANCE.handlerCollection.removeHandler(h);
+      }
     }
   }
 
@@ -324,19 +337,20 @@ public class WebServer {
 
   private Handler setAPI(Site site) {
     Logger.debug("Create API handler for host %s", site.getBaseDomainName().getName());
-    ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-    context.setContextPath("/");
-    String sitePath = site.getVersionPath().toString();
-    context.setResourceBase(sitePath);
+    ServletContextHandler handler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    handler.setDisplayName(Integer.toString(site.getId()));
+    handler.setContextPath("/");
+    String sitePath = site.getVersionedBasePath().toString();
+    handler.setResourceBase(sitePath);
     String[] virtualHosts = new String[1];
     virtualHosts[0] = "api." + site.getBaseDomainName().getName();
-    context.setVirtualHosts(virtualHosts);
+    handler.setVirtualHosts(virtualHosts);
     ServletHolder apiHolder = new ServletHolder("webServices", WebServicesServlet.class);
-    context.addServlet(apiHolder, "/*");
+    handler.addServlet(apiHolder, "/*");
 
-    context.setErrorHandler(new SofiaErrorHandler());
+    handler.setErrorHandler(new SofiaErrorHandler());
 
-    return context;
+    return handler;
   }
 
   public void stop() throws ServerException {
@@ -364,6 +378,7 @@ public class WebServer {
     }
 
     INSTANCE.server.setHandler(handlerCollection);
+
     try {
       server.start();
       Logger.info("Server started");

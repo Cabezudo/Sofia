@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import net.cabezudo.sofia.core.Position;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.sites.Site;
@@ -175,8 +176,8 @@ class CSSSourceFile implements SofiaSource {
   }
 
   StringBuilder readFileFor(Path filePath) throws IOException {
-    Path htmlPartialPath = site.getVersionPath().relativize(filePath);
-    Path cssBasePath = site.getFilesPath(htmlPartialPath);
+    Path htmlPartialPath = site.getVersionedBasePath().relativize(filePath);
+    Path cssBasePath = site.getCreatedFilesPath(htmlPartialPath);
     String htmlFileName = filePath.getFileName().toString();
     String cssFileName = FileHelper.removeExtension(htmlFileName) + ".css";
     Path cssFilePath = cssBasePath.resolve(cssFileName);

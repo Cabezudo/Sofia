@@ -31,6 +31,13 @@ public class Site implements Comparable<Integer> {
   private final DomainName baseDomainName;
   private final DomainNameList domainNames;
   private final int version;
+  private final Path fullBasePath;
+  private final Path versionedSourcesPath;
+  private final Path versionedSourcesImagesPath;
+  private final Path versionedSourcesFilesPath;
+  private final Path versionedSiteBasePath;
+  private final Path customVersionedImagesPath;
+  private final Path customFilesPath;
 
   public Site(int id, String name, Path basePath, DomainName baseDomainName, DomainNameList domainNameList, int version) {
     this.id = id;
@@ -40,6 +47,14 @@ public class Site implements Comparable<Integer> {
     this.baseDomainName = baseDomainName;
     this.version = version;
     checkSiteData();
+
+    fullBasePath = Configuration.getInstance().getSitesPath().resolve(basePath);
+    versionedSourcesPath = getVersionedSourcesPath(basePath, version);
+    versionedSourcesImagesPath = versionedSourcesPath.resolve("images");
+    versionedSourcesFilesPath = versionedSourcesPath.resolve("files");
+    versionedSiteBasePath = fullBasePath.resolve(Integer.toString(version));
+    customVersionedImagesPath = versionedSiteBasePath.resolve("images");
+    customFilesPath = fullBasePath.resolve("files");
   }
 
   Site(RawSite rawSite) {
@@ -71,13 +86,20 @@ public class Site implements Comparable<Integer> {
       rawSite.add(baseDomainNameId, domainName);
     } while (rs.next());
 
-    this.id = siteId;
-    this.name = siteName;
-    this.basePath = siteBasePath;
+    id = rawSite.getId();
+    name = rawSite.getName();
+    basePath = rawSite.getBasePath();
     this.domainNames = rawSite.getDomainNameList();
     this.baseDomainName = rawSite.getBaseDomainName();
-    this.version = siteVersion;
-    checkSiteData();
+    version = rawSite.getVersion();
+
+    fullBasePath = Configuration.getInstance().getSitesPath().resolve(basePath);
+    versionedSourcesPath = getVersionedSourcesPath(basePath, version);
+    versionedSourcesImagesPath = versionedSourcesPath.resolve("images");
+    versionedSourcesFilesPath = versionedSourcesPath.resolve("files");
+    versionedSiteBasePath = fullBasePath.resolve(Integer.toString(version));
+    customVersionedImagesPath = versionedSiteBasePath.resolve("images");
+    customFilesPath = fullBasePath.resolve("files");
   }
 
   private void checkSiteData() {
@@ -118,7 +140,7 @@ public class Site implements Comparable<Integer> {
     domainNames.add(domainName);
   }
 
-  public DomainNameList getDomainNames() throws SQLException {
+  public DomainNameList getDomainNamesList() throws SQLException {
     return domainNames;
   }
 
@@ -127,28 +149,44 @@ public class Site implements Comparable<Integer> {
     return "[id: " + id + ", name: " + name + ", basePath: " + basePath + ", domainName: " + baseDomainName + ", version: " + version + " ]";
   }
 
-  Path getBasePath(Path basePath) {
+  public Path getBasePath() {
+    return basePath;
+  }
+
+  Path getFullBasePath(Path basePath) {
     return Configuration.getInstance().getSitesPath().resolve(basePath);
   }
 
-  public Path getBasePath() {
-    return getBasePath(basePath);
+  public Path getFullBasePath() {
+    return fullBasePath;
   }
 
-  public Path getVersionPath() {
-    return this.getBasePath().resolve(Integer.toString(version));
+  public Path getVersionedBasePath() {
+    return versionedSiteBasePath;
   }
 
-  public Path getFilesPath(Path partialPath) {
+  public Path getCustomVersionedImagesPath() {
+    return customVersionedImagesPath;
+  }
+
+  public Path getCustomFilesPath() {
+    return customFilesPath;
+  }
+
+  public Path getCreatedFilesPath(Path partialPath) {
     Path fileName = partialPath.getFileName();
     Path parentPath = partialPath.getParent();
-    Path basePath;
+    Path siteBasePath;
     if (parentPath == null) {
-      basePath = getVersionPath();
+      siteBasePath = getVersionedBasePath();
     } else {
-      basePath = getVersionPath().resolve(parentPath);
+      siteBasePath = getVersionedBasePath().resolve(parentPath);
     }
-    return basePath.resolve(fileName);
+    return siteBasePath.resolve(fileName);
+  }
+
+  public Path getVersionedSourcesFilesPath() {
+    return versionedSourcesFilesPath;
   }
 
   public Path getSourcesPath(Path basePath) {
@@ -156,14 +194,14 @@ public class Site implements Comparable<Integer> {
   }
 
   public Path getVersionedSourcesPath() {
-    return Site.this.getVersionedSourcesPath(basePath, version);
+    return versionedSourcesPath;
   }
 
   public Path getVersionedSourcesPath(Path basePath) {
     return Site.this.getVersionedSourcesPath(basePath, version);
   }
 
-  public Path getVersionedSourcesPath(Path basePath, int version) {
+  public final Path getVersionedSourcesPath(Path basePath, int version) {
     return getSourcesPath(basePath).resolve(Integer.toString(version));
   }
 
@@ -171,8 +209,8 @@ public class Site implements Comparable<Integer> {
     return getVersionedSourcesPath().resolve(COMMONS_CONFIGURATION_FILE_NAME);
   }
 
-  public Path getSourcesImagesPath() {
-    return Site.this.getVersionedSourcesPath().resolve("images");
+  public Path getVersionedSourcesImagesPath() {
+    return versionedSourcesImagesPath;
   }
 
   @Override

@@ -59,7 +59,7 @@ public abstract class HTMLFileLine extends Line {
     } else {
       Logger.debug("configurationFile tag attribute FOUND: %s", configurationFileTagValue);
       if (configurationFileTagValue.startsWith("/")) {
-        configurationFilePath = site.getBasePath().resolve(configurationFileTagValue);
+        configurationFilePath = site.getFullBasePath().resolve(configurationFileTagValue);
       } else {
         Path fullPath = caller.getFullPath();
         Path parent = fullPath.getParent();

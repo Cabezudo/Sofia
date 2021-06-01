@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import net.cabezudo.json.exceptions.JSONParseException;
+import net.cabezudo.sofia.core.Position;
 import net.cabezudo.sofia.core.cluster.ClusterException;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.files.FileHelper;
@@ -45,7 +46,7 @@ class HTMLTemplateLine extends HTMLFileLine {
 
     Path textsFilePath;
     if (caller == null) {
-      textsFilePath = getSite().getBasePath().resolve(textsFileName);
+      textsFilePath = getSite().getFullBasePath().resolve(textsFileName);
     } else {
       textsFilePath = caller.getBasePath().resolve(caller.getRelativePath()).getParent().resolve(textsFileName);
     }

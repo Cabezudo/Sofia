@@ -1,6 +1,7 @@
 package net.cabezudo.sofia.core.creator;
 
 import java.nio.file.Path;
+import net.cabezudo.sofia.core.Position;
 
 /**
  * @author <a href="http://cabezudo.net">Esteban Cabezudo</a>

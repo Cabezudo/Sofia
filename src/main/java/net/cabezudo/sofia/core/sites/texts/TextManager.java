@@ -30,7 +30,7 @@ public class TextManager {
 
   public static JSONObject get(Site site, String absolutPage, Language language) throws JSONParseException, IOException {
     String page = absolutPage.substring(1);
-    Path path = site.getVersionPath().resolve(page + ".texts").resolve(language.getTwoLetterCode() + ".json");
+    Path path = site.getVersionedBasePath().resolve(page + ".texts").resolve(language.getTwoLetterCode() + ".json");
     Logger.debug("Read the language file %s.", path);
     try {
       return JSON.parse(path, Configuration.getDefaultCharset()).toJSONObject();

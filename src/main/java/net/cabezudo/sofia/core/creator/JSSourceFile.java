@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import net.cabezudo.sofia.core.Position;
 import net.cabezudo.sofia.core.configuration.Configuration;
 import net.cabezudo.sofia.core.files.FileHelper;
 import net.cabezudo.sofia.core.sites.Site;

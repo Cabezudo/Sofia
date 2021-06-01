@@ -159,6 +159,8 @@ public class SiteManager extends Manager {
     Path siteSourcesBasePath = site.getVersionedSourcesPath();
     if (!Files.exists(siteSourcesBasePath)) {
       Files.createDirectories(siteSourcesBasePath);
+      Files.createDirectory(site.getVersionedSourcesImagesPath());
+      Files.createDirectory(site.getVersionedSourcesFilesPath());
     }
     createSiteDefaultConfigurationFile(site);
     createSiteDefaultCommonsJSONFile(site);
@@ -374,8 +376,8 @@ public class SiteManager extends Manager {
     Path newSourceBasePath = site.getVersionedSourcesPath(basePath).getParent();
     Logger.debug("Moving source path from %s to %s.", oldSourceBasePath, newSourceBasePath);
     Files.move(oldSourceBasePath, newSourceBasePath, ATOMIC_MOVE);
-    Path oldBasePath = site.getBasePath();
-    Path newBasePath = site.getBasePath(basePath);
+    Path oldBasePath = site.getFullBasePath();
+    Path newBasePath = site.getFullBasePath(basePath);
     Logger.debug("Moving site path from %s to %s.", oldBasePath, newBasePath);
     try {
       if (Files.exists(oldBasePath, LinkOption.NOFOLLOW_LINKS)) {
@@ -388,7 +390,7 @@ public class SiteManager extends Manager {
 
   public synchronized void update(Site site, DomainName domainName, User owner) throws ClusterException {
     DomainName baseDomainName = site.getBaseDomainName();
-    Path basePath = site.getBasePath();
+    Path basePath = site.getFullBasePath();
     if (basePath.toString().equals(baseDomainName.getName())) {
       basePath = Paths.get(domainName.getName());
     }

@@ -170,11 +170,6 @@
       <version>5.0.0</version>
     </dependency>
     <dependency>
-      <groupId>net.cabezudo</groupId>
-      <artifactId>json-lib</artifactId>
-      <version>0.9.5</version>
-    </dependency>
-    <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>sofia-image-code</artifactId>
       <version>${project.version}</version>
@@ -236,6 +231,11 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>1.7.30</version>
+    </dependency>
+    <dependency>
+      <groupId>net.cabezudo</groupId>
+      <artifactId>json-lib</artifactId>
+      <version>0.9.6</version>
     </dependency>
   </dependencies>
   <properties>

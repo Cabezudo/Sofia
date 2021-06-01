@@ -228,7 +228,7 @@ public final class Configuration {
     apiConfiguration.add(apiConfigurationFilePath);
 
     for (DataCreator dataCreator : dataCreators) {
-      apiConfiguration.add(dataCreator);
+      apiConfiguration.add(dataCreator, apiConfigurationFilePath);
     }
   }
 
