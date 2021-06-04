@@ -122,7 +122,7 @@ public class WebServer {
     Configuration.load(customConfigurationFilePath);
 
     SofiaDatabaseCreator mainDefaultDataCreator = new SofiaDatabaseCreator();
-    checkDatabase(mainDefaultDataCreator);
+    checkDatabase(startOptions, mainDefaultDataCreator);
 
     DatabaseCreators defaultDataCreators = soh.readModuleData();
 
@@ -392,7 +392,7 @@ public class WebServer {
     }
   }
 
-  private void checkDatabase(SofiaDatabaseCreator mainDefaultDataCreator) throws ConfigurationException, DataCreationException {
+  private void checkDatabase(StartOptions startOptions, SofiaDatabaseCreator mainDefaultDataCreator) throws ConfigurationException, DataCreationException {
     String databaseName = Configuration.getInstance().getDatabaseName();
     Utils.consoleOutLn("Using database: " + databaseName);
 
@@ -400,26 +400,28 @@ public class WebServer {
       return;
     }
     Utils.consoleOutLn("Configured database DO NOT exist: " + databaseName);
-    int maxAttempsNumber = 100;
-    int i = 0;
-    for (; i < maxAttempsNumber; i++) {
-      Utils.consoleOut("Create the database or terminate the excecution? [Y/n]: ");
-      if (System.console() == null) {
-        throw new ConfigurationException("Database do not exist: " + databaseName);
-      }
-      String response = System.console().readLine();
-      if (response != null) {
-        if ("n".equalsIgnoreCase(response)) {
-          System.exit(1);
+    if (!startOptions.hasIDE()) {
+      int maxAttempsNumber = 100;
+      int i = 0;
+      for (; i < maxAttempsNumber; i++) {
+        Utils.consoleOut("Create the database or terminate the excecution? [Y/n]: ");
+        if (System.console() == null) {
+          throw new ConfigurationException("Database do not exist: " + databaseName);
         }
-        if (response.isBlank() || "y".equalsIgnoreCase(response)) {
-          break;
+        String response = System.console().readLine();
+        if (response != null) {
+          if ("n".equalsIgnoreCase(response)) {
+            System.exit(1);
+          }
+          if (response.isBlank() || "y".equalsIgnoreCase(response)) {
+            break;
+          }
         }
+        Utils.consoleOutLn("Invalid response: " + response);
       }
-      Utils.consoleOutLn("Invalid response: " + response);
-    }
-    if (i >= maxAttempsNumber) {
-      System.exit(1);
+      if (i >= maxAttempsNumber) {
+        System.exit(1);
+      }
     }
   }
 }
