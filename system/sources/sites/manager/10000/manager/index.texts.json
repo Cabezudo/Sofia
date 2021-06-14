@@ -1,11 +1,15 @@
 {
+  "htmlPageTitle": {
+    "en": "Manager page",
+    "es": "Página de administrador"
+  },
   "sitesLink": {
     "en": "Sites",
     "es": "Sitios"
   },
   "title": {
     "en": "Manager",
-    "es": "Administración"
+    "es": "Administrador"
   },
   "usersLink": {
     "en": "Users",

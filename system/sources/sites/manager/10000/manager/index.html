@@ -3,7 +3,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pagina principal</title>
+    <title id="htmlPageTitle"></title>
     <link rel="stylesheet" type="text/css" href="/manager/index.css">
     <style file="../commons.css"></style>
     <script src="/variables.js"></script>
@@ -24,7 +24,7 @@
           setTexts();
         };
         const setTexts = () => {
-          Core.setTextsFor(['title']);
+          Core.setTextsFor(['htmlPageTitle', 'title']);
         };
         Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);

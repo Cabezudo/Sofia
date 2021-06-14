@@ -1,0 +1,89 @@
+{
+  "theme": {
+    "fonts": {
+      "serif": {
+        "name": "Lora"
+      },
+      "sansSerif": {
+        "name": "Ubuntu"
+      }
+    },
+    "colors": {
+      "main": "",
+      "borders": {
+        "normal": "#e1ebf7",
+        "highlight": "#a7c5eb"
+      }
+    }
+  },
+  "content": {
+    "image": "images/people/00001.png",
+    "background": {
+      "image": "images/backgrounds/00000.png",
+      "color": "transparent"
+    }
+  },
+  "twoLanguageFlag": {
+    "languages": [
+      {
+        "twoLetterCode": "es",
+        "image": "/images/flags/ES.png"
+      },
+      {
+        "twoLetterCode": "en",
+        "image": "/images/flags/US.png"
+      }
+    ]
+  },
+  "links": {
+    "background": {
+      "image": "/images/backgrounds/00001-blue.png",
+      "opacity": 0.03
+    }
+  },
+  "squareLinks": {
+    "title": "squareLinks.title",
+    "background": "/images/backgrounds/00001.png",
+    "links": [
+      {
+        "title": "squareLink.title.one",
+        "description": "squareLink.description.one",
+        "link": "sofia.academy"
+      },
+      {
+        "title": "squareLink.title.two",
+        "description": "squareLink.description.two"
+      },
+      {
+        "title": "squareLink.title.three",
+        "description": "squareLink.description.three",
+        "link": "sofia.academy"
+      },
+      {
+        "title": "squareLink.title.four",
+        "description": "squareLink.description.four",
+        "link": "sofia.academy"
+      },
+      {
+        "title": "squareLink.title.five",
+        "description": "squareLink.description.five",
+        "link": "sofia.academy"
+      },
+      {
+        "title": "squareLink.title.six",
+        "description": "squareLink.description.six",
+        "link": "sofia.academy"
+      },
+      {
+        "title": "squareLink.title.seven",
+        "description": "squareLink.description.seven",
+        "link": "sofia.academy"
+      },
+      {
+        "title": "squareLink.title.eight",
+        "description": "squareLink.description.eight",
+        "link": "sofia.academy"
+      }
+    ]
+  }
+}

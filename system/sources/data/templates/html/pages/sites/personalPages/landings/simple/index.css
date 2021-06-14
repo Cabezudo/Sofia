@@ -1,17 +1,18 @@
 /*
     Created on : May 11, 2021, 9:56:52 AM
-    Author     : esteban
+    Author     : Esteban Cabezudo
 */
 
-@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat&display=swap');
+
 body, html {
+  font-family: 'Montserrat';
   margin: 0;
   padding: 0;
 }
 body {
   opacity: 0;
   transition: opacity .2s;
-  font-family: "#{theme.fonts.serif.name}";
 }
 a {
   color: inherit;
@@ -24,128 +25,92 @@ a:hover {
   display: flex;
   flex-direction: column;
   height: 100vh;
-}
-#mainSection {
-  display: flex;
-  width: 100%;
-  background-image: url(#{content.background.image});
+  background-image: url(#{content.background.image.default});
   background-color: url(#{content.background.color});
-  background-position: right bottom;
+  background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
 }
-#mainContent {
+#pageContainer {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  flex-grow: 1;
+  font-size: 26px;
+  text-align: center;
+  margin: auto;
 }
 #languages {
   position: fixed;
   align-self: flex-end;
-  background-color: red;
   margin: 10px;
 }
-#text {
-  padding: 20px;
-  text-align: center;
-  background-color: white;
-}
-#description{
-  font-size: 10px;
-  font-family: "#{theme.fonts.sansSerif.name}";
-  text-transform: uppercase;
-  color: darkblue;
-  padding-bottom: 20px;
-}
-#profesion{
-  font-family: "#{theme.fonts.serif.name}";
-  font-size: 28px;
-  color: darkblue;
-}
-#name{
-  font-family: "#{theme.fonts.serif.name}";
-  font-size: 28px;
-  color: darkblue;
-}
-#detail{
-  font-size: 20px;
-  font-family: "#{theme.fonts.sansSerif.name}";
-  padding: 20px 0;
-  font-weight: 100;
-}
-#buttons{
-}
-#photo {
-  background-image: url('#{content.image}?resize(height=300)');
-  background-position: center bottom;
-  background-repeat: no-repeat;
-  height: 320px;
-}
-#links {
-  margin-top: 40px;
-}
-#linksBackground {
-  width: 100%;
-  height: 500px;
-  position: absolute;
-  pointer-events: none;
-  background-image: url(#{links.background.image});
-  opacity: #{links.background.opacity};
-  background-size: 71%;
-  background-repeat: no-repeat;
-  background-position: left top;
+
+#messageContainer {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white;
 }
 
+#textContainer {
+  display: flex;
+  flex-direction: column;
+  margin: #{content.text.margin.default};
+  text-shadow: 1px 1px 4px white;
+  justify-content: center;
+}
+#nameContainer {
+  display: flex;
+  justify-content: center;
+}
+#name {
+  white-space: nowrap;
+}
+#ocupation {
+  white-space: nowrap;
+  margin: 6px;
+  font-size: 12px;
+}
+.line{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.line > div {
+  background-color: white;
+  width: 40px;
+  margin: 0 10px;
+  height: 1px;
+}
 
 @media all and ( min-width: 450px ) {
-  #mainSection{
+  #application {
+    background-image: url(#{content.background.image.450});
   }
-  #mainContent {
-    margin: auto;
-    flex-direction: row-reverse;
-    max-width: 500px;
-    background-color: transparent;
-    background-position: right;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-image: url(#{content.image});
+  #pageContainer {
+    width: 60%;
   }
-  #languages {
-    align-self: flex-start;
-  }
-  #photo {
-    flex-grow: 1;
-    background-image: none;
-  }
-  #text {
-    text-align: left;
-    background-color: transparent;
-    width: 45%;
+  #textContainer {
+    margin: #{content.text.margin.450};
   }
 }
 
 @media all and ( min-width: 750px ) {
-  #mainSection {
-    background-size: cover;
+  #application {
+    background-image: url(#{content.background.image.750});
   }
-  #mainContent {
-    width: 750px;
-    max-width: none;
+  #textContainer {
+    margin: #{content.text.margin.750};
   }
-  #text {
-    align-self: center;
-    padding: 60px;
+}
+
+@media all and ( min-width: 1024px ) {
+  #application {
+    background-image: url(#{content.background.image.1024});
   }
-  #description{
-    font-size: 12px;
-  }
-  #profesion{
-    font-size: 38px;
-  }
-  #name{
-    font-size: 38px;
-  }
-  #detail{
-    font-size: 28px;
-    width: 70%;
+  #textContainer {
+    margin: #{content.text.margin.1024};
   }
 }

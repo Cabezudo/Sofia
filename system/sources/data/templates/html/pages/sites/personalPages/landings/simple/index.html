@@ -3,24 +3,20 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="html.page.title"></title>
+    <title id="htmlPageTitle"></title>
     <link rel="stylesheet" type="text/css" href="index.css">
     <script src="/variables.js"></script>
     <script src="index.js"></script>
     <script lib="core/0.1.0"></script>
-    <script lib="links/squareLinks/0.1.0"></script>
     <script lib="languages/twoLanguageFlag/0.1.0"></script>
     <script>
       {
         const createGUI = () => {
-          new SquareLinks({
-            id: 'squareLinks'
-          });
           new TwoLanguageFlag({id: 'languages'});
           setTexts();
         };
         const setTexts = () => {
-          Core.setTextsFor(['description', 'profesion', 'name', 'detail', 'buttons']);
+          Core.setTextsFor(['htmlPageTitle', 'name', 'ocupation']);
         };
         Core.addOnSetLanguageFunction(setTexts);
         Core.addOnloadFunction(createGUI);
@@ -29,25 +25,15 @@
   </head>
   <body>
     <section id="application">
-      <section id="mainSection">
-        <section id ="mainContent">
-          <div id="languages"></div>
-          <section id="photo"></section>
-          <section id="text">
-            <div id="description"></div>
-            <div id="profesion"></div>
-            <div id="name"></div>
-            <div id="detail"></div>
-            <div id="buttons">
-            </div>
-          </section>
-        </section>
-      </section>
-      <section id="links">
-        <section id="linksBackground"></section>
-        <section id="squareLinks"></section>
-      </section>
-      <section file="footer.html"></section>
+      <div id="pageContainer">
+        <div id="languages"></div>
+        <div id="messageContainer">
+          <div id="textContainer">
+            <div id="nameContainer"><div class="line"><div></div></div><div id="name"></div><div class="line"><div></div></div></div>
+            <div id="ocupation"></div>
+          </div>
+        </div>
+      </div>
     </section>
   </body>
 </html>

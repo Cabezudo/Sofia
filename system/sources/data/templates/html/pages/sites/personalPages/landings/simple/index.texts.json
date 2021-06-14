@@ -1,90 +1,13 @@
 {
-  "default.html.page.title": {
+  "htmlPageTitle": {
     "en": "Home page",
-    "es": "Pagina inicial"
-  },
-  "description": {
-    "en": "Get every single solutions",
-    "es": "Entregando soluciones"
-  },
-  "detail": {
-    "en": "I'm a creative director based on New York, who loves clean, simple & unique design.",
-    "es": "Soy un director creativo establecido en Nueva York, al que le gustan los diseños limpios, simples y únicos."
+    "es": "Página inicial"
   },
   "name": {
-    "en": "Hi there, I am Juan",
-    "es": "Hola. Soy Juan"
+    "es": "Rick Sánchez"
   },
-  "profesion": {
-    "en": "Creative director",
-    "es": "Director creativo"
-  },
-  "squareLinks.title": {
-    "en": "A short list of the things I have done",
-    "es": "Una breve lista de las cosas que he hecho"
-  },
-  "squareLink.title.one": {
-    "en": "Title one",
-    "es": "Título uno"
-  },
-  "squareLink.description.one": {
-    "en": "Description one",
-    "es": "Descripción uno"
-  },
-  "squareLink.title.two": {
-    "en": "Title two",
-    "es": "Título dos"
-  },
-  "squareLink.description.two": {
-    "en": "Description two",
-    "es": "Descripción dos"
-  },
-  "squareLink.title.three": {
-    "en": "Title three",
-    "es": "Título tres"
-  },
-  "squareLink.description.three": {
-    "en": "Description three",
-    "es": "Descripción tres"
-  },
-  "squareLink.title.four": {
-    "en": "Title four",
-    "es": "Título cuatro"
-  },
-  "squareLink.description.four": {
-    "en": "Description four",
-    "es": "Descripción cuatro"
-  },
-  "squareLink.title.five": {
-    "en": "Title five",
-    "es": "Título cinco"
-  },
-  "squareLink.description.five": {
-    "en": "Description five",
-    "es": "Descripción cinco"
-  },
-  "squareLink.title.six": {
-    "en": "Title six",
-    "es": "Título seis"
-  },
-  "squareLink.description.six": {
-    "en": "Description six",
-    "es": "Descripción seis"
-  },
-  "squareLink.title.seven": {
-    "en": "Title seven",
-    "es": "Título siete"
-  },
-  "squareLink.description.seven": {
-    "en": "Description seven",
-    "es": "Descripción siete"
-  },
-  "squareLink.title.eight": {
-    "en": "Title eight",
-    "es": "Título ocho"
-  },
-  "squareLink.description.eight": {
-    "en": "Description eight",
-    "es": "Descripción ocho"
+  "ocupation": {
+    "en": "DOG",
+    "es": "PERRO"
   }
 }

@@ -30,6 +30,8 @@ public class SofiaHTMLDefaultServlet extends DefaultServlet {
     DomainName domainName = new DomainName(request.getServerName());
     String requestURI = request.getRequestURI();
 
+    response.setContentType("text/html; charset=UTF-8");
+
     try (PrintWriter writer = response.getWriter()) {
       Site site = new SessionManager(request).getSite();
       if (site == null) {
